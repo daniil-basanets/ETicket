@@ -1,0 +1,35 @@
+﻿using ETicket.PrivatBankApi.Interfaces;
+
+namespace ETicket.PrivatBankApi.AnyBank
+{
+    public class SendToAnyBankCardRequest : IRequestData
+    {
+        public string PaymentId { get; set; }
+
+        public string CardNumber { get; set; }
+
+        public decimal Amount { get; set; }
+
+        public string Currency { get; set; }
+
+        public string ReceiverName { get; set; }
+
+        public string Details { get; set; }
+
+        public string Endpoint => PrivatBankApiEndpoint.PayToAnyBank;
+
+        public string GetXML()
+        {
+            return "<oper>cmt</oper>"
+                 + "<wait>0</wait>"
+                 + "<test>1</test>"
+                 + $@"<payment id=""{PaymentId}"">"
+                 + $@"<prop name=""b_card_or_acc"" value=""{CardNumber}""/>"
+                 + $@"<prop name=""amt"" value=""{Amount}""/>"
+                 + $@"<prop name=""ccy"" value=""{Currency}""/>"
+                 + $@"<prop name=""b_name"" value=""{ReceiverName}""/>"
+                 + $@"<prop name=""details"" value=""{Details}"" />"
+                 + "</payment>";
+        }
+    }
+}
