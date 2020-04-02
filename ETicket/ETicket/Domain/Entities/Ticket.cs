@@ -9,8 +9,12 @@ namespace ETicket.Domain.Entities
         [Key]
         public Guid Id { get; set; }
 
+        [Required]
+        public int TicketTypeId { get; set; }
+
+        [Required]
         [ForeignKey("TicketTypeId")]
-        public TicketType TicketTypeID { get; set; }
+        public TicketType TicketType { get; set; }
 
         [Required]
         public DateTime CreatedUTCDate { get; set; }
