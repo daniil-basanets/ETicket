@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ETicket.Domain.Entities
 {
@@ -10,17 +6,21 @@ namespace ETicket.Domain.Entities
     {
         [Key]
         public int ID { get; set; }
+        
         [Required]
         [MaxLength(50)]
         public string TypeName { get; set; }
+        
         [Required]
-        [Range(1, Int32.MaxValue)]
+        [Range(1, int.MaxValue)]
         public int DurationHours { get; set; }
+        
         [Required]
         public bool IsPersonal { get; set; }
+        
         [Required]
-        [Range(0, Double.MaxValue)]
+        [Range(0, double.MaxValue)]
         public float Price { get; set; }
-
+        
     }
 }

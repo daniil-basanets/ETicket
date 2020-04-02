@@ -7,6 +7,7 @@ namespace ETicket.Domain
     {
         public DbSet<TransactionHistory> TransactionHistory { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<TicketType> TicketTypes { get; set; }
 
         public ETicketDataContext(DbContextOptions<ETicketDataContext> options): base(options) { }
 
