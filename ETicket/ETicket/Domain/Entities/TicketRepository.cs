@@ -1,41 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 using ETicket.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.Domain.Entities
 {
     public class TicketRepository : IRepository<Ticket>
     {
-        private readonly ETicketDataContext eTicketDataContext;
+        private readonly ETicketDataContext context;
 
         public TicketRepository(ETicketDataContext eTicketDataContext)
         {
-            this.eTicketDataContext = eTicketDataContext;
+            this.context = eTicketDataContext;
         }
 
         public void Create(Ticket item)
-        {// TODO CreateTicket
-            throw new NotImplementedException();
+        {
+            context.Tickets.Add(item);
         }
 
         public void Delete(int id)
-        {// TODO DeleteTicket
+        {// TODO DeleteTicket?
             throw new NotImplementedException();
+            Ticket ticket = Get(id);
+            if (ticket != null)
+            {
+                context.Tickets.Remove(ticket);
+            }
         }
 
         public Ticket Get(int id)
-        {//TODO GetTicket
-            throw new NotImplementedException();
+        {
+            return context.Tickets.Find(id);
         }
 
         public IEnumerable<Ticket> GetAll()
-        {//TODO IEnumerable<Ticket>
-            throw new NotImplementedException();
+        {
+            return context.Tickets;
         }
 
         public void Update(Ticket item)
-        {// TODO UpdateTicket
+        {//TODO UpdateTicket?
             throw new NotImplementedException();
+            context.Entry(item).State = EntityState.Modified;
         }
     }
 }
