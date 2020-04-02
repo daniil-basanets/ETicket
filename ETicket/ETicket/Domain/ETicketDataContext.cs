@@ -1,17 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ETicket.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.Domain
 {
     public class ETicketDataContext : DbContext
     {
-        public ETicketDataContext(DbContextOptions<ETicketDataContext> options): base(options)
-        {
+        public DbSet<TransactionHistory> TransactionHistory { get; set; }
 
-        }
+        public ETicketDataContext(DbContextOptions<ETicketDataContext> options): base(options) { }
 
         public void EnsureCreated()
         {
