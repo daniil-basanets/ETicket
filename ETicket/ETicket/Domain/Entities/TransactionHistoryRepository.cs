@@ -25,7 +25,9 @@ namespace ETicket.Domain.Entities
         {
             // TODO
 
-            return null;
+            var transaction = eTicketDataContext.TransactionHistory.Find(id);
+
+            return transaction;
         }
 
         public IEnumerable<TransactionHistory> GetAll()
