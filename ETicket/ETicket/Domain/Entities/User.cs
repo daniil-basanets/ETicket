@@ -34,6 +34,6 @@ namespace ETicket.Domain.Entities
 
         [ForeignKey("DocumentId")]
         public Document Document { get; set; }
-        public int DocumentId { get; set; }
+        public Guid DocumentId { get; set; }
     }
 }
