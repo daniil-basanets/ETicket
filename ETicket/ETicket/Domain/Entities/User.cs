@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,8 +20,11 @@ namespace ETicket.Domain.Entities
         [Required]
         [MaxLength(13)]
         public string Phone { get; set; }
-        public virtual Role RoleID { get; set; }
-        public virtual Privilegie PrivilegieID { get; set; }
-        public virtual Document DocumentID { get; set; }
+        [ForeignKey("RoleId")]
+        public Role Role { get; set; }
+        [ForeignKey("PrivelegeID")]
+        public Privelege Privelege { get; set; }
+        [ForeignKey("DocumentID")]
+        public Document Document { get; set; }
     }
 }
