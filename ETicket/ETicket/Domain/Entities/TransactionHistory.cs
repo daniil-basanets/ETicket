@@ -10,6 +10,7 @@ namespace ETicket.Domain.Entities
         public int Id { get; set; }
 
         [Required]
+        [Range(0.0, double.MaxValue)]
         public float TotalPrice { get; set; }
 
         [Required]

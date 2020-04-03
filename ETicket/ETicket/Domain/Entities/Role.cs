@@ -5,7 +5,7 @@ namespace ETicket.Domain.Entities
     public class Role
     {
         [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [MaxLength(50)]

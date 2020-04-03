@@ -13,6 +13,7 @@ namespace ETicket.Domain.Entities
 		[MaxLength(50)]
 		public string Name { get; set; }
 
+		//TODO Range
 		[Required]
 		public float Coefficient { get; set; }
 	}

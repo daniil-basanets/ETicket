@@ -8,6 +8,7 @@ namespace ETicket.Domain.Entities
 {
     public class DocumentType
     {
+        //TODO
         [Key]
         public Guid Id { get; set; }
 
