@@ -1,11 +1,12 @@
-﻿using ETicket.Domain.Interfaces;
+﻿using ETicket.Domain.Entities;
+using ETicket.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ETicket.Domain.Entities
+namespace ETicket.Domain.Repositories
 {
     public class DocumentTypeRepository : IRepository<DocumentType>
     {

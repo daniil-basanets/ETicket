@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using ETicket.Domain.Entities;
 using ETicket.Domain.Interfaces;
 
-namespace ETicket.Domain.Entities
+namespace ETicket.Domain.Repositories
 {
     public class TransactionHistoryRepository : IRepository<TransactionHistory>
     {

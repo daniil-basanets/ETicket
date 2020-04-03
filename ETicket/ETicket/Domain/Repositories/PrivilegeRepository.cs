@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using ETicket.Domain.Entities;
 using ETicket.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace ETicket.Domain.Entities
+namespace ETicket.Domain.Repositories
 {
 	public class PrivilegeRepository: IRepository<Privilege>
 	{
