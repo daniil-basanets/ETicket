@@ -24,7 +24,7 @@ namespace ETicket.Domain.Entities
         [Required]
         public DateTime ExpirationUTCDate { get; set; }
 
-        public long? UserID { get; set; }
+        public long? UserId { get; set; }
 
         [ForeignKey("UserId")]
         public User User { get; set; }
