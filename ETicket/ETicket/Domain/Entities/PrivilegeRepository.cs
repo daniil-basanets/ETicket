@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.Domain.Entities
 {
-	public class PrivilegyRepository: IRepository<Privilege>
+	public class PrivilegeRepository: IRepository<Privilege>
 	{
         #region
 
@@ -13,6 +13,38 @@ namespace ETicket.Domain.Entities
 
         #endregion
 
+        public PrivilegeRepository(ETicketDataContext context)
+        {
+            this.context = context;
+        }
 
+        public void Create(Privelege privelege)
+        {
+            context.Privilegies.Add(privelege);
+        }
+
+        public void Delete(int id)
+        {
+            Privilege deleted = context.Privilegies.Find(id);
+            if (deleted != null)
+            {
+                context.Privilegies.Remove(deleted);
+            }
+        }
+
+        public Role Get(int id)
+        {
+            return context.Privilegies.Find(id);
+        }
+
+        public IEnumerable<Privilege> GetAll()
+        {
+            return context.Privilegies;
+        }
+
+        public void Update(Privilege privilege)
+        {
+            context.Entry(privilege).State = EntityState.Modified;
+        }
     }
 }

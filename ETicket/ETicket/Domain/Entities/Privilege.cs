@@ -7,7 +7,7 @@ namespace ETicket.Domain.Entities
 	public class Privilege
 	{
 		[Key]
-		public int ID { get; set; }
+		public int Id { get; set; }
 
 		[Required]
 		[MaxLength(50)]
@@ -15,6 +15,5 @@ namespace ETicket.Domain.Entities
 
 		[Required]
 		public float Coefficient { get; set; }
-
 	}
 }
