@@ -10,9 +10,9 @@ namespace ETicket.Domain
         public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<Document> Document { get; set; }
-        public DbSet<DocumentType> DocumentType { get; set; }
-        public DbSet<Privilege> Privilege { get; set; }
+        public DbSet<Document> Documents { get; set; }
+        public DbSet<DocumentType> DocumentTypes { get; set; }
+        public DbSet<Privilege> Privileges { get; set; }
 
         public ETicketDataContext(DbContextOptions<ETicketDataContext> options) : base(options) { }
 
