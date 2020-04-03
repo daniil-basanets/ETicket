@@ -5,13 +5,18 @@ namespace ETicket.Domain.Entities
 {
     public class TransactionHistoryRepository : IRepository<TransactionHistory>
     {
+        #region Private Members
+
         private readonly ETicketDataContext eTicketDataContext;
+
+        #endregion
+
         public TransactionHistoryRepository(ETicketDataContext eTicketDataContext)
         {
             this.eTicketDataContext = eTicketDataContext;
         }
 
-        public void Create(TransactionHistory item)
+        public void Create(TransactionHistory transaction)
         {
             // TODO
         }
@@ -35,7 +40,7 @@ namespace ETicket.Domain.Entities
             return eTicketDataContext.TransactionHistory;
         }
 
-        public void Update(TransactionHistory item)
+        public void Update(TransactionHistory transaction)
         {
             // TODO
         }
