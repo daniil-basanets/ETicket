@@ -22,8 +22,8 @@ namespace ETicket.Domain.Entities
         public string Phone { get; set; }
         [ForeignKey("RoleId")]
         public Role Role { get; set; }
-        [ForeignKey("PrivilegieID")]
-        public Privilegie Privilegie { get; set; }
+        [ForeignKey("PrivelegeID")]
+        public Privelege Privelege { get; set; }
         [ForeignKey("DocumentID")]
         public Document Document { get; set; }
 
