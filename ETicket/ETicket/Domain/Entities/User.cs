@@ -10,7 +10,7 @@ namespace ETicket.Domain.Entities
     public class User
     {
         [Key]
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [MaxLength(25)]
@@ -24,13 +24,16 @@ namespace ETicket.Domain.Entities
         [MaxLength(13)]
         public string Phone { get; set; }
 
-        [ForeignKey("RoleID")]
+        [ForeignKey("RoleId")]
         public Role Role { get; set; }
+        public int RoleId { get; set; }
 
-        [ForeignKey("PrivelegeID")]
+        [ForeignKey("PrivelegeId")]
         public Privilege Privilege { get; set; }
+        public int PrivilegeId { get; set; }
 
-        [ForeignKey("DocumentID")]
+        [ForeignKey("DocumentId")]
         public Document Document { get; set; }
+        public int DocumentId { get; set; }
     }
 }
