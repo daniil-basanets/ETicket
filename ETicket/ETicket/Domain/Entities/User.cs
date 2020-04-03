@@ -19,8 +19,11 @@ namespace ETicket.Domain.Entities
         [Required]
         [MaxLength(13)]
         public string Phone { get; set; }
-        public virtual Role RoleID { get; set; }
-        public virtual Privilegie PrivilegieID { get; set; }
-        public virtual Document DocumentID { get; set; }
+        public int RoleID { get; set; }
+        public virtual Role Role { get; set; }
+        public  int PrivilegieID { get; set; }
+        public virtual Privilegie Privilegie { get; set; }
+        public virtual int DocumentID { get; set; }
+        public virtual Document Document { get; set; }
     }
 }
