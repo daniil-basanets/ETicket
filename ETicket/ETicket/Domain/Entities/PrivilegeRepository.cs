@@ -32,7 +32,7 @@ namespace ETicket.Domain.Entities
             }
         }
 
-        public Role Get(int id)
+        public Privilege Get(int id)
         {
             return context.Privilegies.Find(id);
         }
