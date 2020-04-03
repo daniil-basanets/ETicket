@@ -20,7 +20,7 @@ namespace ETicket.Domain.Entities
         [Required]
         [MaxLength(13)]
         public string Phone { get; set; }
-        [ForeignKey("RoleId")]
+        [ForeignKey("RoleID")]
         public Role Role { get; set; }
         [ForeignKey("PrivelegeID")]
         public Privelege Privelege { get; set; }

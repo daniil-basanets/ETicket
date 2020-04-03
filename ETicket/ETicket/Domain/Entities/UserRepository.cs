@@ -26,23 +26,23 @@ namespace ETicket.Domain.Entities
             return context.Users.Find(id);
         }
 
-        public void Create(User ticketType)
+        public void Create(User user)
         {
-            context.Users.Add(ticketType);
+            context.Users.Add(user);
         }
 
-        public void Update(User ticketType)
+        public void Update(User user)
         {
-            context.Entry(ticketType).State = EntityState.Modified;
+            context.Entry(user).State = EntityState.Modified;
         }
 
         public void Delete(int id)
         {
-            var ticketType = context.Users.Find(id);
+            var user = context.Users.Find(id);
 
-            if (ticketType != null)
+            if (user != null)
             {
-                context.Users.Remove(ticketType);
+                context.Users.Remove(user);
             }
         }
     }
