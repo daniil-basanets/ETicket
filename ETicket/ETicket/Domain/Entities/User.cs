@@ -26,13 +26,5 @@ namespace ETicket.Domain.Entities
         public Privelege Privelege { get; set; }
         [ForeignKey("DocumentID")]
         public Document Document { get; set; }
-
-
-        //public int RoleID { get; set; }
-        //public virtual Role Role { get; set; }
-        //public  int PrivilegieID { get; set; }
-        //public virtual Privilegie Privilegie { get; set; }
-        //public virtual int DocumentID { get; set; }
-        //public virtual Document Document { get; set; }
     }
 }
