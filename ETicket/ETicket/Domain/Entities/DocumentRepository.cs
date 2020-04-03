@@ -18,26 +18,26 @@ namespace ETicket.Domain.Entities
 
         public void Create(Document item)
         {
-            db.Document.Add(item);
+            db.Documents.Add(item);
         }
 
         public void Delete(int id)
         {
-            Document document = db.Document.Find(id);
+            Document document = db.Documents.Find(id);
             if (document != null)
             {
-                db.Document.Remove(document);
+                db.Documents.Remove(document);
             }
         }
 
         public Document Get(int id)
         {
-            return db.Document.Find(id);
+            return db.Documents.Find(id);
         }
 
         public IEnumerable<Document> GetAll()
         {
-            return db.Document;
+            return db.Documents;
         }
 
         public void Update(Document item)

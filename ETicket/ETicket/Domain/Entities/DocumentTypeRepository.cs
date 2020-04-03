@@ -18,26 +18,26 @@ namespace ETicket.Domain.Entities
 
         public void Create(DocumentType item)
         {
-            db.DocumentType.Add(item);
+            db.DocumentTypes.Add(item);
         }
 
         public void Delete(int id)
         {
-            DocumentType documentType = db.DocumentType.Find(id);
+            DocumentType documentType = db.DocumentTypes.Find(id);
             if (documentType != null)
             {
-                db.DocumentType.Remove(documentType);
+                db.DocumentTypes.Remove(documentType);
             }
         }
 
         public DocumentType Get(int id)
         {
-            return db.DocumentType.Find(id);
+            return db.DocumentTypes.Find(id);
         }
 
         public IEnumerable<DocumentType> GetAll()
         {
-            return db.DocumentType;
+            return db.DocumentTypes;
         }
 
         public void Update(DocumentType item)
