@@ -11,19 +11,25 @@ namespace ETicket.Domain.Entities
     {
         [Key]
         public int ID { get; set; }
+
         [Required]
         [MaxLength(25)]
         public string FirstName { get; set; }
+
         [Required]
         [MaxLength(25)]
         public string LastName { get; set; }
+
         [Required]
         [MaxLength(13)]
         public string Phone { get; set; }
+
         [ForeignKey("RoleID")]
         public Role Role { get; set; }
+
         [ForeignKey("PrivelegeID")]
-        public Privelege Privelege { get; set; }
+        public Privilege Privilege { get; set; }
+
         [ForeignKey("DocumentID")]
         public Document Document { get; set; }
     }

@@ -18,28 +18,28 @@ namespace ETicket.Domain.Entities
             this.context = context;
         }
 
-        public void Create(Privelege privelege)
+        public void Create(Privilege privelege)
         {
-            context.Privilegies.Add(privelege);
+            context.Privilege.Add(privelege);
         }
 
         public void Delete(int id)
         {
-            Privilege deleted = context.Privilegies.Find(id);
+            Privilege deleted = context.Privilege.Find(id);
             if (deleted != null)
             {
-                context.Privilegies.Remove(deleted);
+                context.Privilege.Remove(deleted);
             }
         }
 
         public Privilege Get(int id)
         {
-            return context.Privilegies.Find(id);
+            return context.Privilege.Find(id);
         }
 
         public IEnumerable<Privilege> GetAll()
         {
-            return context.Privilegies;
+            return context.Privilege;
         }
 
         public void Update(Privilege privilege)
