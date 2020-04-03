@@ -31,7 +31,9 @@ namespace ETicket.Domain
             base.OnModelCreating(modelBuilder);
 
 
-            //'Introducing FOREIGN KEY constraint 'FK_Tickets_TransactionHistory_TransactionHistoryId' on table 'Tickets' may cause cycles or multiple cascade paths. Specify ON DELETE NO ACTION or ON UPDATE NO ACTION, or modify other FOREIGN KEY 
+            //'Introducing FOREIGN KEY constraint 'FK_Tickets_TransactionHistory_TransactionHistoryId' 
+            //on table 'Tickets' may cause cycles or multiple cascade paths. Specify ON DELETE NO ACTION or 
+            //ON UPDATE NO ACTION, or modify other FOREIGN KEY 
         }
     }
 }
