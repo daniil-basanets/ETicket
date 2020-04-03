@@ -23,8 +23,8 @@ namespace ETicket.Domain.Entities
 
         [Required]
         public DateTime ExpirationUTCDate { get; set; }
-
-        public long? UserId { get; set; }
+                
+        public Guid UserId { get; set; }
 
         [ForeignKey("UserId")]
         public User User { get; set; }
@@ -33,6 +33,7 @@ namespace ETicket.Domain.Entities
         public int TransactionHistoryId { get; set; }
 
         [ForeignKey("TransactionHistoryId")]
+
         public TransactionHistory TransactionHistory { get; set; }
     }
 }
