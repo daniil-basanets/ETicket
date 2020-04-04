@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ETicket.Domain.Interfaces
+namespace DBContextLibrary.Domain.Interfaces
 {
     public interface IRepository<T> 
         where T : class

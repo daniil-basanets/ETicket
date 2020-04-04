@@ -1,9 +1,9 @@
-﻿using ETicket.Domain.Entities;
-using ETicket.Domain.Interfaces;
+﻿using DBContextLibrary.Domain.Entities;
+using DBContextLibrary.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
-namespace ETicket.Domain.Repositories
+namespace DBContextLibrary.Domain.Repositories
 {
     public class RoleRepository : IRepository<Role>
     {

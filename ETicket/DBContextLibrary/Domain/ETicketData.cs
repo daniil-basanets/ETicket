@@ -1,9 +1,9 @@
 ﻿using System;
 
-using ETicket.Domain.Entities;
-using ETicket.Domain.Repositories;
+using DBContextLibrary.Domain.Entities;
+using DBContextLibrary.Domain.Repositories;
 
-namespace ETicket.Domain
+namespace DBContextLibrary.Domain
 {
     public class ETicketData : IDisposable
     {

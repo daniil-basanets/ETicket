@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ETicket.Domain.Entities
+namespace DBContextLibrary.Domain.Entities
 {
     public class TransactionHistory
     {

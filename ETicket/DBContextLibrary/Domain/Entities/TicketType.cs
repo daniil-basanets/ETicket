@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ETicket.Domain.Entities
+namespace DBContextLibrary.Domain.Entities
 {
     public class TicketType
     {

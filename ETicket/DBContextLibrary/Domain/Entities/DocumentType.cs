@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ETicket.Domain.Entities
+namespace DBContextLibrary.Domain.Entities
 {
     public class DocumentType
     {

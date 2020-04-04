@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ETicket.Domain;
+using DBContextLibrary.Domain;
 using ETicket.Models;
 using ETicket.Models.Interfaces;
 using Microsoft.AspNetCore.Builder;

@@ -1,7 +1,7 @@
-﻿using ETicket.Domain.Entities;
+﻿using DBContextLibrary.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ETicket.Domain
+namespace DBContextLibrary.Domain
 {
     public class ETicketDataContext : DbContext
     {
