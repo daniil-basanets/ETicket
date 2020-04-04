@@ -23,10 +23,10 @@ namespace ETicket.Domain
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {          
-            modelBuilder.Entity<Ticket>()
-                .HasOne<TransactionHistory>(s => s.TransactionHistory)
+            modelBuilder.Entity<TransactionHistory>()
+                .HasOne<TicketType>(s => s.TicketType)
                 .WithMany()
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             base.OnModelCreating(modelBuilder);
 
