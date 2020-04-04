@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ETicket.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +26,11 @@ namespace ETicketAdmin
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
+            
+            ServiceProvider serviceProvider = services.BuildServiceProvider();
+            ETicketDataContext appDbContext = serviceProvider.GetService<ETicketDataContext>();
+            services.AddScoped<ETicketData>(uow => new ETicketData(appDbContext));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

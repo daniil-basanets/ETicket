@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ETicket", "ETicket\ETicket.csproj", "{387D3E64-9D0A-4D17-8098-DF30121886E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETicketAdmin", "ETicketAdmin\ETicketAdmin.csproj", "{30F8BD35-78FE-4AA9-A531-E6AE140F6C5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ETicketAdmin", "ETicketAdmin\ETicketAdmin.csproj", "{30F8BD35-78FE-4AA9-A531-E6AE140F6C5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBContextLibrary", "DBContextLibrary\DBContextLibrary.csproj", "{CB3463F4-E4D3-4296-9E25-92E91B31027D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{30F8BD35-78FE-4AA9-A531-E6AE140F6C5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30F8BD35-78FE-4AA9-A531-E6AE140F6C5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30F8BD35-78FE-4AA9-A531-E6AE140F6C5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB3463F4-E4D3-4296-9E25-92E91B31027D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB3463F4-E4D3-4296-9E25-92E91B31027D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB3463F4-E4D3-4296-9E25-92E91B31027D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB3463F4-E4D3-4296-9E25-92E91B31027D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

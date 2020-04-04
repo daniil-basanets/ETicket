@@ -14,7 +14,11 @@ namespace ETicket.Domain
         public DbSet<DocumentType> DocumentTypes { get; set; }
         public DbSet<Privilege> Privileges { get; set; }
 
-        public ETicketDataContext(DbContextOptions<ETicketDataContext> options) : base(options) { }
+        public ETicketDataContext(DbContextOptions<ETicketDataContext> options) : base(options)
+        {
+            var roles = this.Roles;
+            
+        }
 
         public void EnsureCreated()
         {

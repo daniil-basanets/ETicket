@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ETicket\ETicket.csproj" />
+    <ProjectReference Include="..\DBContextLibrary\DBContextLibrary.csproj" />
   </ItemGroup>
 
 
