@@ -6,10 +6,10 @@ namespace DBContextLibrary.Domain.Entities
 {
     public class Ticket
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public Guid Id { get; set; }
 
-        [Required]
         public int TicketTypeId { get; set; }
 
         [ForeignKey("TicketTypeId")]
@@ -23,7 +23,7 @@ namespace DBContextLibrary.Domain.Entities
         [Required]
         public DateTime ExpirationUTCDate { get; set; }
                 
-        public Guid UserId { get; set; }
+        public Guid? UserId { get; set; }
 
         [ForeignKey("UserId")]
         public User User { get; set; }

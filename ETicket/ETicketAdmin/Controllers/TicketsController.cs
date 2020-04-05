@@ -10,11 +10,11 @@ using DBContextLibrary.Domain.Entities;
 
 namespace ETicketAdmin.Controllers
 {
-    public class TicketsController : Controller
+    public class TicketController : Controller
     {
         private readonly ETicketDataContext _context;
 
-        public TicketsController(ETicketDataContext context)
+        public TicketController(ETicketDataContext context)
         {
             _context = context;
         }
