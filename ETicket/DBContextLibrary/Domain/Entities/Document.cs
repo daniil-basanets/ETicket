@@ -11,13 +11,10 @@ namespace DBContextLibrary.Domain.Entities
     {
         [Key]
         public Guid Id { get; set; }
-
-        //TODO 
-        [Required]
-        [ForeignKey("DocumentTypeId")]
+      
         public int DocumentTypeId { get; set; }
 
-        [Required]
+        [ForeignKey("DocumentTypeId")]
         public DocumentType DocumentType { get; set; }
 
         [Required]

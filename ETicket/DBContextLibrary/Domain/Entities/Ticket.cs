@@ -12,7 +12,6 @@ namespace DBContextLibrary.Domain.Entities
         [Required]
         public int TicketTypeId { get; set; }
 
-        [Required]
         [ForeignKey("TicketTypeId")]
         public TicketType TicketType { get; set; }
 
@@ -28,12 +27,10 @@ namespace DBContextLibrary.Domain.Entities
 
         [ForeignKey("UserId")]
         public User User { get; set; }
-
-        [Required]
+                
         public int TransactionHistoryId { get; set; }
 
         [ForeignKey("TransactionHistoryId")]
-
         public TransactionHistory TransactionHistory { get; set; }
     }
 }

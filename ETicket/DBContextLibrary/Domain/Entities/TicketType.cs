@@ -8,19 +8,19 @@ namespace DBContextLibrary.Domain.Entities
         public int Id { get; set; }
         
         [Required]
-        [MaxLength(50)]
+        [StringLength(50)]
         public string TypeName { get; set; }
         
         [Required]
-        [Range(1, int.MaxValue)]
-        public int DurationHours { get; set; }
+        [Range(1, uint.MaxValue)]
+        public uint DurationHours { get; set; }
         
         [Required]
         public bool IsPersonal { get; set; }
         
         [Required]
+        [DataType(DataType.Currency)]
         [Range(0, double.MaxValue)]
         public float Price { get; set; }
-        
     }
 }

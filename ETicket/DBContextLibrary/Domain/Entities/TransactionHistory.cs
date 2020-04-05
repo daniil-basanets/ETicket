@@ -10,6 +10,7 @@ namespace DBContextLibrary.Domain.Entities
         public int Id { get; set; }
 
         [Required]
+        [DataType(DataType.Currency)]
         [Range(0.0, double.MaxValue)]
         public float TotalPrice { get; set; }
 
