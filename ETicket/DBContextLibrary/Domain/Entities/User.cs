@@ -34,14 +34,17 @@ namespace DBContextLibrary.Domain.Entities
 
         [ForeignKey("RoleId")]
         public Role Role { get; set; }
+        [DisplayName("Role")]
         public int? RoleId { get; set; }
 
         [ForeignKey("PrivilegeId")]
         public Privilege Privilege { get; set; }
+        [DisplayName("Privilege")]
         public int? PrivilegeId { get; set; }
 
         [ForeignKey("DocumentId")]
         public Document Document { get; set; }
+        [DisplayName("Document")]
         public Guid? DocumentId { get; set; }
     }
 }
