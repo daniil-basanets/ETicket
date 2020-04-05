@@ -13,19 +13,17 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.TotalPrice)
+                @Html.ActionLink("TotalPrice", "Index", new { sortBy = "TotalPrice", sortDirection = ViewBag.SortDirection })
             </th>
             <th>
-                @Html.ActionLink("Date", "Index", new { sortOrder = ViewBag.DateSortParm })
-                @*@Html.DisplayNameFor(model => model.Date)*@
+                @Html.ActionLink("Date", "Index", new { sortBy = "Date", sortDirection = ViewBag.SortDirection })
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TicketType)
+                @Html.ActionLink("TicketType", "Index", new { sortBy = "TicketType", sortDirection = ViewBag.SortDirection })
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Count)
+                @Html.ActionLink("Count", "Index", new { sortBy = "Count", sortDirection = ViewBag.SortDirection })
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -34,6 +32,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.TotalPrice)
             </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
@@ -45,8 +44,8 @@
             </td>
             <td>
                 @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
+            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>*@
             </td>
         </tr>
 }

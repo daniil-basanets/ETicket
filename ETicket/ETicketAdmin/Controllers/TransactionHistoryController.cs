@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
+using System.Linq.Expressions;
+using ETicketAdmin.Extensions;
 
 namespace ETicketAdmin.Controllers
 {
@@ -20,31 +22,35 @@ namespace ETicketAdmin.Controllers
         }
 
         // GET: TransactionHistories
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortBy, string sortDirection)
         {
-            if (string.IsNullOrEmpty(sortOrder))
-                sortOrder = "DateDesc";
+            if (string.IsNullOrEmpty(sortBy) || string.IsNullOrEmpty(sortDirection))
+            {
+                sortBy = "date";
+                sortDirection = "desc";
+            }
+            else
+            {
+                sortBy = sortBy.ToLower();
+                sortDirection = sortDirection.ToLower();
+            }
 
-            ViewBag.DateSortParm = sortOrder == "DateDesc"
-                ? "DateAsc"
-                : "DateDesc";
+            ViewBag.SortDirection = sortDirection == "desc"
+                ? "asc"
+                : "desc";
 
             IQueryable<TransactionHistory> eTicketDataContext = _context
                 .TransactionHistory
                 .Include(t => t.TicketType);
 
-            switch (sortOrder)
+            eTicketDataContext = sortBy switch
             {
-                case "DateAsc":
-                    eTicketDataContext = eTicketDataContext
-                        .OrderBy(x => x.Date);
-                    break;
-
-                case "DateDesc":
-                    eTicketDataContext = eTicketDataContext
-                        .OrderByDescending(x => x.Date);
-                    break;
-            }
+                "totalprice" => eTicketDataContext.ApplySortBy(x => x.TotalPrice, sortDirection),
+                "date" => eTicketDataContext.ApplySortBy(x => x.Date, sortDirection),
+                "tickettype" => eTicketDataContext.ApplySortBy(x => x.TicketType, sortDirection),
+                "count" => eTicketDataContext.ApplySortBy(x => x.Count, sortDirection),
+                _ => eTicketDataContext
+            };
 
             return View(await eTicketDataContext.ToListAsync());
         }
