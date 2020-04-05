@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -14,26 +15,33 @@ namespace DBContextLibrary.Domain.Entities
 
         [Required]
         [MaxLength(25)]
+        [DisplayName("First name")]
         public string FirstName { get; set; }
 
         [Required]
         [MaxLength(25)]
+        [DisplayName("Last name")]
         public string LastName { get; set; }
 
         [Required]
         [MaxLength(13)]
+        [DisplayName("Phone number")]
         public string Phone { get; set; }
+
+        [MaxLength(50)]
+        [DisplayName("Email")]
+        public string Email { get; set; }
 
         [ForeignKey("RoleId")]
         public Role Role { get; set; }
-        public int RoleId { get; set; }
+        public int? RoleId { get; set; }
 
-        [ForeignKey("PrivelegeId")]
+        [ForeignKey("PrivilegeId")]
         public Privilege Privilege { get; set; }
-        public int PrivilegeId { get; set; }
+        public int? PrivilegeId { get; set; }
 
         [ForeignKey("DocumentId")]
         public Document Document { get; set; }
-        public Guid DocumentId { get; set; }
+        public Guid? DocumentId { get; set; }
     }
 }

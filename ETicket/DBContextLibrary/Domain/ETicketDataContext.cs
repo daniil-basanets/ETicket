@@ -22,11 +22,26 @@ namespace DBContextLibrary.Domain
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {          
+        {
             modelBuilder.Entity<TransactionHistory>()
-                .HasOne<TicketType>(s => s.TicketType)
-                .WithMany()
-                .OnDelete(DeleteBehavior.NoAction);
+            .HasOne<TicketType>(s => s.TicketType)
+            .WithMany()
+            .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<User>()
+           .HasOne(i => i.Role)
+           .WithMany()
+           .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<User>()
+            .HasOne(i => i.Privilege)
+            .WithMany()
+            .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<User>()
+            .HasOne(i => i.Document)
+            .WithMany()
+            .OnDelete(DeleteBehavior.SetNull);
 
             base.OnModelCreating(modelBuilder);
 
