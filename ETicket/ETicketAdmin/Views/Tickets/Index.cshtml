@@ -1,0 +1,65 @@
+﻿@model IEnumerable<DBContextLibrary.Domain.Entities.Ticket>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TicketType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedUTCDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActivatedUTCDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpirationUTCDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionHistory)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TicketType.TypeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedUTCDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ActivatedUTCDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpirationUTCDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionHistory.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
