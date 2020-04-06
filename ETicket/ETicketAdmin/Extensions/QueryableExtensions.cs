@@ -1,15 +1,14 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using DBContextLibrary.Domain.Entities;
 
 namespace ETicketAdmin.Extensions
 {
-    public static class QueryableTicketTypeExtensions
+    public static class QueryableExtensions
     {
-        public static IQueryable<TicketType> ApplySortBy<T>(
-            this IQueryable<TicketType> query,
-            Expression<Func<TicketType, T>> expression,
+        public static IQueryable<T> ApplySortBy<T, TResult>(
+            this IQueryable<T> query,
+            Expression<Func<T, TResult>> expression,
             string sortDirection
         )
         {

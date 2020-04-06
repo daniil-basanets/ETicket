@@ -63,6 +63,7 @@ namespace ETicketAdmin.Controllers
             var transactionHistory = await _context.TransactionHistory
                 .Include(t => t.TicketType)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (transactionHistory == null)
             {
                 return NotFound();
