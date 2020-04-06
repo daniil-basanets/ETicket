@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
+using ETicketAdmin.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace ETicketAdmin.Controllers
@@ -15,9 +16,42 @@ namespace ETicketAdmin.Controllers
             this.context = context;
         }
         
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortBy, string sortDirection, string searchString)
         {
-            return View(await context.TicketTypes.ToListAsync());
+            IQueryable<TicketType> eTicketDataContext = context.TicketTypes;
+            
+            if (!(string.IsNullOrEmpty(sortBy) || string.IsNullOrEmpty(sortDirection)))
+            {
+                sortBy = sortBy.ToLower();
+                sortDirection = sortDirection.ToLower();
+            }
+            
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                eTicketDataContext = eTicketDataContext.Where(t => t.TypeName.Contains(searchString));
+            }
+
+            ViewBag.SortDirection = sortDirection == "desc" ? "asc" : "desc";
+
+            switch (sortBy)
+            {
+                case "price":
+                    eTicketDataContext = eTicketDataContext.ApplySortBy(t => t.Price, sortDirection);
+                    break;
+                
+                case "ispersonal":
+                    eTicketDataContext = eTicketDataContext.ApplySortBy(t => t.IsPersonal, sortDirection);
+                    break;
+                
+                case "durationhours":
+                    eTicketDataContext = eTicketDataContext.ApplySortBy(t => t.DurationHours, sortDirection);
+                    break;
+                default:
+                    eTicketDataContext = eTicketDataContext.ApplySortBy(t => t.Price, "asc");
+                    break;
+            }
+            
+            return View(await eTicketDataContext.ToListAsync());
         }
         
         public async Task<IActionResult> Details(int? id)
@@ -46,15 +80,12 @@ namespace ETicketAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,TypeName,DurationHours,IsPersonal,Price")] TicketType ticketType)
         {
-            if (ModelState.IsValid)
-            {
-                context.Add(ticketType);
-                await context.SaveChangesAsync();
+            if (!ModelState.IsValid) return View(ticketType);
+            context.Add(ticketType);
+            await context.SaveChangesAsync();
                 
-                return RedirectToAction(nameof(Index));
-            }
-            
-            return View(ticketType);
+            return RedirectToAction(nameof(Index));
+
         }
         
         public async Task<IActionResult> Edit(int? id)
@@ -104,6 +135,7 @@ namespace ETicketAdmin.Controllers
                 
                 return RedirectToAction(nameof(Index));
             }
+            
             return View(ticketType);
         }
         

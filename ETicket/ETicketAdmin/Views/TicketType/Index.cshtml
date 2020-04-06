@@ -5,28 +5,33 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Ticket Types</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+@using (Html.BeginForm())
+{
+    <p>
+        Find by name: @Html.TextBox("SearchString")  
+        <input type="submit" value="Search" /></p>
+}
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.TypeName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DurationHours)
+                @Html.ActionLink("Price", "Index", new { sortBy = "Price", sortDirection = ViewBag.SortDirection })
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsPersonal)
+                @Html.ActionLink("IsPersonal", "Index", new { sortBy = "IsPersonal", sortDirection = ViewBag.SortDirection })
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.ActionLink("DurationHours", "Index", new { sortBy = "DurationHours", sortDirection = ViewBag.SortDirection })
             </th>
             <th></th>
         </tr>
@@ -35,19 +40,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.TypeName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DurationHours)
+                @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsPersonal)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Price)
+                @Html.DisplayFor(modelItem => item.DurationHours)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
