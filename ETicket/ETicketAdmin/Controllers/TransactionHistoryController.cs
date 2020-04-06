@@ -1,5 +1,5 @@
-﻿using DBContextLibrary.Domain;
-using DBContextLibrary.Domain.Entities;
+﻿using DBContextLibrary.Domain.Entities;
+using DBContextLibrary.Domain.Interfaces;
 using ETicketAdmin.Common;
 using ETicketAdmin.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +11,11 @@ namespace ETicketAdmin.Controllers
 {
     public class TransactionHistoryController : Controller
     {
-        private readonly ETicketDataContext _context;
+        private readonly IUnitOfWork unitOfWork;
 
-        public TransactionHistoryController(ETicketDataContext context)
+        public TransactionHistoryController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            this.unitOfWork = unitOfWork;
         }
 
         // GET: TransactionHistories
@@ -41,8 +41,9 @@ namespace ETicketAdmin.Controllers
                 ? "asc"
                 : "desc";
 
-            IQueryable<TransactionHistory> eTicketDataContext = _context
+            IQueryable<TransactionHistory> eTicketDataContext = unitOfWork
                 .TransactionHistory
+                .GetAll()
                 .AsNoTracking()
                 .Include(t => t.TicketType);
 
@@ -71,7 +72,8 @@ namespace ETicketAdmin.Controllers
                 return NotFound();
             }
 
-            var transactionHistory = await _context.TransactionHistory
+            var transactionHistory = await unitOfWork.TransactionHistory
+                .GetAll()
                 .AsNoTracking()
                 .Include(t => t.TicketType)
                 .FirstOrDefaultAsync(m => m.Id == id);

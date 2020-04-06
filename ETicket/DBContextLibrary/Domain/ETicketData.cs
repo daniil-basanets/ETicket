@@ -1,11 +1,10 @@
-﻿using System;
-
-using DBContextLibrary.Domain.Entities;
+﻿using DBContextLibrary.Domain.Interfaces;
 using DBContextLibrary.Domain.Repositories;
+using System;
 
 namespace DBContextLibrary.Domain
 {
-    public class ETicketData : IDisposable
+    public class ETicketData : IUnitOfWork, IDisposable
     {
         #region private members
 

@@ -2,6 +2,7 @@
 using DBContextLibrary.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DBContextLibrary.Domain.Repositories
 {
@@ -33,7 +34,7 @@ namespace DBContextLibrary.Domain.Repositories
             return db.Roles.Find(id);
         }
 
-        public IEnumerable<Role> GetAll()
+        public IQueryable<Role> GetAll()
         {
             return db.Roles;
         }
