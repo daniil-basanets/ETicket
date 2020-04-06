@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Repositories;
+using ETicketAdmin.Models;
 
 namespace ETicketAdmin.Controllers
 {
@@ -75,6 +76,35 @@ namespace ETicketAdmin.Controllers
             ViewData["PrivilegeId"] = new SelectList(_context.Privileges, "Id", "Name", user.PrivilegeId);
             ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name", user.RoleId);
             return View(user);
+        }
+
+        // GET: User/SendMessage/5
+        public async Task<IActionResult> SendMessage(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return View(user);
+        }
+
+        // POST: User/SendMessage
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SendMessage([FromRoute] string message)
+        {
+            if (ModelState.IsValid)
+            {
+                
+                return RedirectToAction(nameof(Index));
+            } 
+            return View(message);
         }
 
         // GET: User/Edit/5
