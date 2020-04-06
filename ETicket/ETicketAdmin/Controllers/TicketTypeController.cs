@@ -28,7 +28,8 @@ namespace ETicketAdmin.Controllers
             
             if (!string.IsNullOrEmpty(searchString))
             {
-                eTicketDataContext = eTicketDataContext.Where(t => t.TypeName.Contains(searchString));
+                eTicketDataContext = eTicketDataContext.Where(t => t.TypeName.Contains(searchString)
+                || t.Price.ToString().Contains(searchString) || t.DurationHours.ToString().Contains(searchString));
             }
 
             ViewBag.SortDirection = sortDirection == "desc" ? "asc" : "desc";
