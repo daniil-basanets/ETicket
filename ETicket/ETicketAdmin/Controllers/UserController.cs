@@ -9,6 +9,7 @@ using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Repositories;
 using ETicketAdmin.Models;
+using ETicketAdmin.Services;
 
 namespace ETicketAdmin.Controllers
 {
@@ -97,11 +98,18 @@ namespace ETicketAdmin.Controllers
         // POST: User/SendMessage
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SendMessage([FromRoute] string message)
+        public async Task<IActionResult> SendMessage(Guid id, [FromRoute] string message)
         {
             if (ModelState.IsValid)
             {
-                
+                var user = await _context.Users.FindAsync(id);
+                if (user == null)
+                {
+                    return NotFound();
+                } 
+
+                MailService emailService = new MailService();
+                await emailService.SendEmailAsync(user.Email, "Message from admin.");
                 return RedirectToAction(nameof(Index));
             } 
             return View(message);
