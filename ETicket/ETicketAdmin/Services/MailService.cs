@@ -1,4 +1,5 @@
 ﻿using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Mvc;
 using MimeKit;
 using System.Threading.Tasks;
 
@@ -9,23 +10,26 @@ namespace ETicketAdmin.Services
     {
         public async Task SendEmailAsync(string email, string message)
         {
-            var emailMessage = new MimeMessage();
-
-            emailMessage.From.Add(new MailboxAddress("Administrations", "dnazarenko817@gmail.com"));
-            emailMessage.To.Add(new MailboxAddress("", email));
-            emailMessage.Subject = "Reminders";
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            if (email != null)
             {
-                Text = message
-            };
+                var emailMessage = new MimeMessage();
 
-            using (var client = new SmtpClient())
-            {
-                await client.ConnectAsync("smtp.gmail.com", 587, false);
-                await client.AuthenticateAsync("dnazarenko817@gmail.com", "1234567890@DN");
-                await client.SendAsync(emailMessage);
+                emailMessage.From.Add(new MailboxAddress("Administrations", "dnazarenko817@gmail.com"));
+                emailMessage.To.Add(new MailboxAddress("", email));
+                emailMessage.Subject = "Reminders";
+                emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+                {
+                    Text = message
+                };
 
-                await client.DisconnectAsync(true);
+                using (var client = new SmtpClient())
+                {
+                    await client.ConnectAsync("smtp.gmail.com", 587, false);
+                    await client.AuthenticateAsync("dnazarenko817@gmail.com", "1234567890@DN");
+                    await client.SendAsync(emailMessage);
+
+                    await client.DisconnectAsync(true);
+                }
             }
         }
     }
