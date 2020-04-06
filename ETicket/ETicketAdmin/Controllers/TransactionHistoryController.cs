@@ -1,5 +1,6 @@
 ﻿using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
+using ETicketAdmin.Common;
 using ETicketAdmin.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,11 @@ namespace ETicketAdmin.Controllers
         }
 
         // GET: TransactionHistories
-        public async Task<IActionResult> Index(string sortBy, string sortDirection)
+        public async Task<IActionResult> Index(
+            string sortBy,
+            string sortDirection,
+            int? pageNumber
+        )
         {
             if (string.IsNullOrEmpty(sortBy) 
              || string.IsNullOrEmpty(sortDirection))
@@ -38,6 +43,7 @@ namespace ETicketAdmin.Controllers
 
             IQueryable<TransactionHistory> eTicketDataContext = _context
                 .TransactionHistory
+                .AsNoTracking()
                 .Include(t => t.TicketType);
 
             eTicketDataContext = sortBy switch
@@ -49,7 +55,12 @@ namespace ETicketAdmin.Controllers
                 _ => eTicketDataContext
             };
 
-            return View(await eTicketDataContext.ToListAsync());
+            if (!pageNumber.HasValue)
+                pageNumber = 1;
+
+            var pageSize = CommonSettings.DefaultPageSize;
+
+            return View(await PaginatedList<TransactionHistory>.CreateAsync(eTicketDataContext, pageNumber.Value, pageSize));
         }
 
         // GET: TransactionHistories/Details/5
@@ -61,6 +72,7 @@ namespace ETicketAdmin.Controllers
             }
 
             var transactionHistory = await _context.TransactionHistory
+                .AsNoTracking()
                 .Include(t => t.TicketType)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
