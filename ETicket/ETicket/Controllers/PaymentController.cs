@@ -7,14 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ETicket.Controllers
 {
+    /// <summary>
+    /// Pattern State
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    // Context
     public class PaymentController : ControllerBase
     {
         private readonly PrivatBankApiClient client;
 
+        /// <param name="merchant">State</param>
         public PaymentController(IMerchant merchant)
         {
+            // depends on merchant state which user account will be used in privatBank api
             client = new PrivatBankApiClient(merchant.MerchantId, merchant.Password);
         }
 
@@ -32,6 +38,9 @@ namespace ETicket.Controllers
             return "value";
         }
 
+        /// <summary>
+        /// State Handler
+        /// </summary>
         [HttpGet]
         [Route("[action]")]
         public IActionResult BuyTicket(string cardNum, string amount)

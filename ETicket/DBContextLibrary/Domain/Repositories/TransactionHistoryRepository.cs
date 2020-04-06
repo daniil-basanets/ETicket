@@ -19,12 +19,12 @@ namespace DBContextLibrary.Domain.Repositories
 
         public void Create(TransactionHistory transaction)
         {
-            // TODO
+            // Stopper
         }
 
         public void Delete(int id)
         {
-            // TODO
+            // Stopper
         }
 
         public TransactionHistory Get(int id)
@@ -43,7 +43,7 @@ namespace DBContextLibrary.Domain.Repositories
 
         public void Update(TransactionHistory transaction)
         {
-            // TODO
+            // Stopper
         }
     }
 }

@@ -13,8 +13,8 @@ namespace DBContextLibrary.Domain.Entities
 		[MaxLength(50)]
 		public string Name { get; set; }
 
-		//TODO Range
 		[Required]
+		[Range(0d, 1)]
 		public float Coefficient { get; set; }
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,34 +7,37 @@ namespace DBContextLibrary.Domain.Entities
 {
     public class Ticket
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public Guid Id { get; set; }
 
-        [Required]
         public int TicketTypeId { get; set; }
 
-        [Required]
         [ForeignKey("TicketTypeId")]
+        [DisplayName("Ticket type")]
         public TicketType TicketType { get; set; }
 
         [Required]
+        [DisplayName("Created")]
         public DateTime CreatedUTCDate { get; set; }
 
+        [DisplayName("Activated")]
         public DateTime? ActivatedUTCDate { get; set; }
 
         [Required]
+        [DisplayName("Expiration")]
         public DateTime ExpirationUTCDate { get; set; }
-                
-        public Guid UserId { get; set; }
+
+        public Guid? UserId { get; set; }
 
         [ForeignKey("UserId")]
+        [DisplayName("User")]
         public User User { get; set; }
 
-        [Required]
         public int TransactionHistoryId { get; set; }
 
+        [DisplayName("Transaction")]
         [ForeignKey("TransactionHistoryId")]
-
         public TransactionHistory TransactionHistory { get; set; }
     }
 }

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DBContextLibrary.Domain;
+using DBContextLibrary.Domain.Entities;
+using ETicketAdmin.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DBContextLibrary.Domain;
-using DBContextLibrary.Domain.Entities;
 
 namespace ETicketAdmin.Controllers
 {
@@ -20,31 +18,36 @@ namespace ETicketAdmin.Controllers
         }
 
         // GET: TransactionHistories
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortBy, string sortDirection)
         {
-            if (string.IsNullOrEmpty(sortOrder))
-                sortOrder = "DateDesc";
+            if (string.IsNullOrEmpty(sortBy) 
+             || string.IsNullOrEmpty(sortDirection))
+            {
+                sortBy = "date";
+                sortDirection = "desc";
+            }
+            else
+            {
+                sortBy = sortBy.ToLower();
+                sortDirection = sortDirection.ToLower();
+            }
 
-            ViewBag.DateSortParm = sortOrder == "DateDesc"
-                ? "DateAsc"
-                : "DateDesc";
+            ViewBag.SortDirection = sortDirection == "desc"
+                ? "asc"
+                : "desc";
 
             IQueryable<TransactionHistory> eTicketDataContext = _context
                 .TransactionHistory
                 .Include(t => t.TicketType);
 
-            switch (sortOrder)
+            eTicketDataContext = sortBy switch
             {
-                case "DateAsc":
-                    eTicketDataContext = eTicketDataContext
-                        .OrderBy(x => x.Date);
-                    break;
-
-                case "DateDesc":
-                    eTicketDataContext = eTicketDataContext
-                        .OrderByDescending(x => x.Date);
-                    break;
-            }
+                "totalprice" => eTicketDataContext.ApplySortBy(x => x.TotalPrice, sortDirection),
+                "date" => eTicketDataContext.ApplySortBy(x => x.Date, sortDirection),
+                "tickettype" => eTicketDataContext.ApplySortBy(x => x.TicketType, sortDirection),
+                "count" => eTicketDataContext.ApplySortBy(x => x.Count, sortDirection),
+                _ => eTicketDataContext
+            };
 
             return View(await eTicketDataContext.ToListAsync());
         }
@@ -60,126 +63,13 @@ namespace ETicketAdmin.Controllers
             var transactionHistory = await _context.TransactionHistory
                 .Include(t => t.TicketType)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (transactionHistory == null)
             {
                 return NotFound();
             }
 
             return View(transactionHistory);
-        }
-
-        // GET: TransactionHistories/Create
-        public IActionResult Create()
-        {
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "TypeName");
-            return View();
-        }
-
-        // POST: TransactionHistories/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TotalPrice,Date,TicketTypeId,Count")] TransactionHistory transactionHistory)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(transactionHistory);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "TypeName", transactionHistory.TicketTypeId);
-            return View(transactionHistory);
-        }
-
-        // GET: TransactionHistories/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var transactionHistory = await _context.TransactionHistory.FindAsync(id);
-            if (transactionHistory == null)
-            {
-                return NotFound();
-            }
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "TypeName", transactionHistory.TicketTypeId);
-            return View(transactionHistory);
-        }
-
-        // POST: TransactionHistories/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(
-            int id,
-            [Bind("Id,TotalPrice,Date,TicketTypeId,Count")] TransactionHistory transactionHistory)
-        {
-            if (id != transactionHistory.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(transactionHistory);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TransactionHistoryExists(transactionHistory.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "TypeName", transactionHistory.TicketTypeId);
-            return View(transactionHistory);
-        }
-
-        // GET: TransactionHistories/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var transactionHistory = await _context.TransactionHistory
-                .Include(t => t.TicketType)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (transactionHistory == null)
-            {
-                return NotFound();
-            }
-
-            return View(transactionHistory);
-        }
-
-        // POST: TransactionHistories/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var transactionHistory = await _context.TransactionHistory.FindAsync(id);
-            _context.TransactionHistory.Remove(transactionHistory);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool TransactionHistoryExists(int id)
-        {
-            return _context.TransactionHistory.Any(e => e.Id == id);
         }
     }
 }
