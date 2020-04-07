@@ -24,9 +24,8 @@ namespace DBContextLibrary.Domain.Entities
         [DisplayName("Activated")]
         public DateTime? ActivatedUTCDate { get; set; }
 
-        [Required]
         [DisplayName("Expiration")]
-        public DateTime ExpirationUTCDate { get; set; }
+        public DateTime? ExpirationUTCDate { get; set; }
 
         public Guid? UserId { get; set; }
 

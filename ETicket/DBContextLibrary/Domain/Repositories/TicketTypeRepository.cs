@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,7 @@ namespace DBContextLibrary.Domain.Repositories
             this.context = context;
         }
         
-        public IEnumerable<TicketType> GetAll()
+        public IQueryable<TicketType> GetAll()
         {
             return context.TicketTypes;
         }

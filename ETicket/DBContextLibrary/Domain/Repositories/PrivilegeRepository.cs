@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -38,7 +39,7 @@ namespace DBContextLibrary.Domain.Repositories
             return context.Privileges.Find(id);
         }
 
-        public IEnumerable<Privilege> GetAll()
+        public IQueryable<Privilege> GetAll()
         {
             return context.Privileges;
         }

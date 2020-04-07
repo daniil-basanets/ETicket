@@ -17,7 +17,7 @@ namespace DBContextLibrary.Domain.Repositories
             this.context = context;
         }
 
-        public IEnumerable<User> GetAll()
+        public IQueryable<User> GetAll()
         {
             return context.Users;
         }
