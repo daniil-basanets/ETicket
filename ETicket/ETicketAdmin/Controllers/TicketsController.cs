@@ -20,9 +20,59 @@ namespace ETicketAdmin.Controllers
         }
 
         // GET: Tickets
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
-            var eTicketDataContext = _context.Tickets.Include(t => t.TicketType).Include(t => t.TransactionHistory).Include(t => t.User);
+            ViewData["TicketTypeSortParm"] = sortOrder == "ticket_type" ? "ticket_type_desc" : "ticket_type";
+            ViewData["CreatedSortParm"] = String.IsNullOrEmpty(sortOrder) ? "created_date_desc" : "";
+            ViewData["ActivatedSortParm"] = sortOrder == "activated_date" ? "activated_date_desc" : "activated_date";
+            ViewData["ExpirationSortParm"] = sortOrder == "expiration_date" ? "expiration_date_desc" : "expiration_date";
+            ViewData["UserSortParm"] = sortOrder == "user" ? "user_desc" : "user";
+            ViewData["TransactionSortParm"] = sortOrder == "transaction" ? "transaction_desc" : "transaction";
+
+            var eTicketDataContext = from s in _context.Tickets.Include(t => t.TicketType)
+                .Include(t => t.TransactionHistory)
+                .Include(t => t.User)
+                          select s;
+            switch (sortOrder)
+            {
+                case "created_date_desc":
+                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.CreatedUTCDate);
+                    break;
+                case "ticket_type":
+                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.TicketType);
+                    break;
+                case "ticket_type_desc":
+                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.TicketType);
+                    break;
+                case "activated_date":
+                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.ActivatedUTCDate);
+                    break;
+                case "activated_date_desc":
+                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.ActivatedUTCDate);
+                    break;
+                case "expiration_date":
+                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.ExpirationUTCDate);
+                    break;
+                case "expiration_date_desc":
+                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.ExpirationUTCDate);
+                    break;
+                case "user":
+                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.UserId);
+                    break;
+                case "user_desc":
+                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.User);
+                    break;
+                case "transaction":
+                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.TransactionHistoryId);
+                    break;
+                case "transaction_desc":
+                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.TransactionHistoryId);
+                    break;
+                default:
+                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.CreatedUTCDate);
+                    break;
+            }
+
             return View(await eTicketDataContext.ToListAsync());
         }
 

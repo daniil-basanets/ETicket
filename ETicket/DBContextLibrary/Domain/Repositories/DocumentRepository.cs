@@ -36,7 +36,7 @@ namespace DBContextLibrary.Domain.Repositories
             return db.Documents.Find(id);
         }
 
-        public IEnumerable<Document> GetAll()
+        public IQueryable<Document> GetAll()
         {
             return db.Documents;
         }

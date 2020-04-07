@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
 
@@ -19,31 +21,27 @@ namespace DBContextLibrary.Domain.Repositories
 
         public void Create(TransactionHistory transaction)
         {
-            // Stopper
+            throw new NotImplementedException();
         }
 
         public void Delete(int id)
         {
-            // Stopper
+            throw new NotImplementedException();
         }
 
         public TransactionHistory Get(int id)
         {
-            // TODO
-
-            var transaction = eTicketDataContext.TransactionHistory.Find(id);
-
-            return transaction;
+            return eTicketDataContext.TransactionHistory.Find(id);
         }
 
-        public IEnumerable<TransactionHistory> GetAll()
+        public IQueryable<TransactionHistory> GetAll()
         {
             return eTicketDataContext.TransactionHistory;
         }
 
         public void Update(TransactionHistory transaction)
         {
-            // Stopper
+            throw new NotImplementedException();
         }
     }
 }
