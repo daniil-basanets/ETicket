@@ -12,9 +12,7 @@ namespace ETicketAdmin.Extensions
             string sortDirection
         )
         {
-            return sortDirection == "asc"
-                ? query.OrderBy(expression)
-                : query.OrderByDescending(expression);
+            return (sortDirection == "asc") ? query.OrderBy(expression) : query.OrderByDescending(expression);
         }
     }
 }
