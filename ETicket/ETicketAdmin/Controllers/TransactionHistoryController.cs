@@ -20,13 +20,13 @@ namespace ETicketAdmin.Controllers
 
         // GET: TransactionHistories
         public async Task<IActionResult> Index(
-            string sortBy,
-            string sortDirection,
+            string sortBy,          //
+            string sortDirection,   //
             int? pageNumber
         )
         {
             if (string.IsNullOrEmpty(sortBy) 
-             || string.IsNullOrEmpty(sortDirection))
+                    || string.IsNullOrEmpty(sortDirection))
             {
                 sortBy = "date";
                 sortDirection = "desc";

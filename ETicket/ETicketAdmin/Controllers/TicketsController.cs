@@ -33,6 +33,7 @@ namespace ETicketAdmin.Controllers
                 .Include(t => t.TransactionHistory)
                 .Include(t => t.User)
                           select s;
+
             switch (sortOrder)
             {
                 case "created_date_desc":
@@ -103,6 +104,7 @@ namespace ETicketAdmin.Controllers
             ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "TypeName");
             ViewData["TransactionHistoryId"] = new SelectList(_context.TransactionHistory, "Id", "Id");
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName");
+
             return View();
         }
 
@@ -118,11 +120,14 @@ namespace ETicketAdmin.Controllers
                 ticket.Id = Guid.NewGuid();
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "TypeName", ticket.TicketTypeId);
             ViewData["TransactionHistoryId"] = new SelectList(_context.TransactionHistory, "Id", "Id", ticket.TransactionHistoryId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", ticket.UserId);
+
             return View(ticket);
         }
 
@@ -135,13 +140,16 @@ namespace ETicketAdmin.Controllers
             }
 
             var ticket = await _context.Tickets.FindAsync(id);
+
             if (ticket == null)
             {
                 return NotFound();
             }
+
             ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "TypeName", ticket.TicketTypeId);
             ViewData["TransactionHistoryId"] = new SelectList(_context.TransactionHistory, "Id", "Id", ticket.TransactionHistoryId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", ticket.UserId);
+
             return View(ticket);
         }
 
