@@ -38,7 +38,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TicketType.TypeName)
+                    @Html.ActionLink(item.TicketType.TypeName, "Details", "TicketType", new { id = item.TicketTypeId}, null)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedUTCDate)
@@ -50,10 +50,13 @@
                     @Html.DisplayFor(modelItem => item.ExpirationUTCDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.User.FirstName)
+                    @if(item.User == null)
+                        @Html.DisplayFor(modelItem => item.User.FirstName)
+                    else
+                        @Html.ActionLink(item.User.FirstName, "Details", "User", new { id = item.UserId }, null)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.TransactionHistory.Id)
+                    @Html.ActionLink(item.TransactionHistoryId.ToString(), "Details", "TransactionHistory", new { id = item.TransactionHistoryId }, null)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

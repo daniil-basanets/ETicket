@@ -77,6 +77,7 @@ namespace DBContextLibrary.Domain
             {
                 if (ticketTypeRepository == null)
                     ticketTypeRepository = new TicketTypeRepository(eTicketDataContext);
+
                 return ticketTypeRepository;
             }
         }
@@ -87,6 +88,7 @@ namespace DBContextLibrary.Domain
             {
                 if (transactionHistoryRepository == null)
                     transactionHistoryRepository = new TransactionHistoryRepository(eTicketDataContext);
+
                 return transactionHistoryRepository;
             }
         }
