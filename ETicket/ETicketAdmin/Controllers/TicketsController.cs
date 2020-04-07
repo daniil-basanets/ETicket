@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -23,21 +22,20 @@ namespace ETicketAdmin.Controllers
         public async Task<IActionResult> Index(string sortOrder)
         {
             ViewData["TicketTypeSortParm"] = sortOrder == "ticket_type" ? "ticket_type_desc" : "ticket_type";
-            ViewData["CreatedSortParm"] = String.IsNullOrEmpty(sortOrder) ? "created_date_desc" : "";
+            ViewData["CreatedSortParm"] = String.IsNullOrEmpty(sortOrder) ? "created_date" : "";
             ViewData["ActivatedSortParm"] = sortOrder == "activated_date" ? "activated_date_desc" : "activated_date";
             ViewData["ExpirationSortParm"] = sortOrder == "expiration_date" ? "expiration_date_desc" : "expiration_date";
             ViewData["UserSortParm"] = sortOrder == "user" ? "user_desc" : "user";
             ViewData["TransactionSortParm"] = sortOrder == "transaction" ? "transaction_desc" : "transaction";
 
-            var eTicketDataContext = from s in _context.Tickets.Include(t => t.TicketType)
-                .Include(t => t.TransactionHistory)
-                .Include(t => t.User)
-                          select s;
+            IQueryable<Ticket> eTicketDataContext = _context.Tickets.Include(t => t.TicketType)
+               .Include(t => t.TransactionHistory)
+               .Include(t => t.User);
 
             switch (sortOrder)
             {
-                case "created_date_desc":
-                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.CreatedUTCDate);
+                case "created_date":
+                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.CreatedUTCDate);
                     break;
                 case "ticket_type":
                     eTicketDataContext = eTicketDataContext.OrderBy(s => s.TicketType);
@@ -70,7 +68,7 @@ namespace ETicketAdmin.Controllers
                     eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.TransactionHistoryId);
                     break;
                 default:
-                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.CreatedUTCDate);
+                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.CreatedUTCDate);
                     break;
             }
 
@@ -90,6 +88,7 @@ namespace ETicketAdmin.Controllers
                 .Include(t => t.TransactionHistory)
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (ticket == null)
             {
                 return NotFound();
@@ -109,8 +108,6 @@ namespace ETicketAdmin.Controllers
         }
 
         // POST: Tickets/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,TicketTypeId,CreatedUTCDate,ActivatedUTCDate,ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
@@ -154,8 +151,6 @@ namespace ETicketAdmin.Controllers
         }
 
         // POST: Tickets/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,TicketTypeId,CreatedUTCDate,ActivatedUTCDate,ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
@@ -183,11 +178,14 @@ namespace ETicketAdmin.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "TypeName", ticket.TicketTypeId);
             ViewData["TransactionHistoryId"] = new SelectList(_context.TransactionHistory, "Id", "Id", ticket.TransactionHistoryId);
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", ticket.UserId);
+
             return View(ticket);
         }
 
@@ -204,6 +202,7 @@ namespace ETicketAdmin.Controllers
                 .Include(t => t.TransactionHistory)
                 .Include(t => t.User)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (ticket == null)
             {
                 return NotFound();
@@ -220,6 +219,7 @@ namespace ETicketAdmin.Controllers
             var ticket = await _context.Tickets.FindAsync(id);
             _context.Tickets.Remove(ticket);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
