@@ -1,28 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
+using DBContextLibrary.Domain.Interfaces;
 
 namespace ETicketAdmin.Controllers
 {
     public class DocumentTypesController : Controller
     {
-        private readonly ETicketData eTicketData;
+        private readonly IUnitOfWork unitOfWork;
 
-        public DocumentTypesController(ETicketDataContext context)
+        public DocumentTypesController(IUnitOfWork unitOfWork)
         {
-            eTicketData = new ETicketData(context);
+            this.unitOfWork = unitOfWork;
         }
 
         // GET: DocumentTypes
         public IActionResult Index()
         {
-            return View(eTicketData.DocumentTypes.GetAll());
+            return View(unitOfWork.DocumentTypes.GetAll());
         }
 
         // GET: DocumentTypes/Details/5
@@ -33,7 +30,7 @@ namespace ETicketAdmin.Controllers
                 return NotFound();
             }
 
-            var documentType = eTicketData.DocumentTypes.Get((int)id);
+            var documentType = unitOfWork.DocumentTypes.Get((int)id);
             if (documentType == null)
             {
                 return NotFound();
@@ -57,10 +54,11 @@ namespace ETicketAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
-                eTicketData.DocumentTypes.Create(documentType);
-                eTicketData.Save();
+                unitOfWork.DocumentTypes.Create(documentType);
+                unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(documentType);
         }
 
@@ -72,11 +70,12 @@ namespace ETicketAdmin.Controllers
                 return NotFound();
             }
 
-            var documentType = eTicketData.DocumentTypes.Get((int)id);
+            var documentType = unitOfWork.DocumentTypes.Get((int)id);
             if (documentType == null)
             {
                 return NotFound();
             }
+
             return View(documentType);
         }
 
@@ -96,8 +95,8 @@ namespace ETicketAdmin.Controllers
             {
                 try
                 {
-                    eTicketData.DocumentTypes.Update(documentType);
-                    eTicketData.Save();
+                    unitOfWork.DocumentTypes.Update(documentType);
+                    unitOfWork.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -110,8 +109,10 @@ namespace ETicketAdmin.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(documentType);
         }
 
@@ -123,7 +124,7 @@ namespace ETicketAdmin.Controllers
                 return NotFound();
             }
 
-            var documentType = eTicketData.DocumentTypes.Get((int)id);
+            var documentType = unitOfWork.DocumentTypes.Get((int)id);
             if (documentType == null)
             {
                 return NotFound();
@@ -137,14 +138,15 @@ namespace ETicketAdmin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            eTicketData.DocumentTypes.Delete(id);
-            eTicketData.Save();
+            unitOfWork.DocumentTypes.Delete(id);
+            unitOfWork.Save();
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool DocumentTypeExists(int id)
         {
-            return eTicketData.DocumentTypes.Get(id) != null;
+            return unitOfWork.DocumentTypes.Get(id) != null;
         }
     }
 }
