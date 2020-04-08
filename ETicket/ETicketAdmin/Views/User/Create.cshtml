@@ -34,15 +34,18 @@
             </div>
             <div class="form-group">
                 <label asp-for="RoleId" class="control-label"></label>
-                <select asp-for="RoleId" class="form-control" asp-items="ViewBag.RoleId"></select>
+                @Html.DropDownListFor(model => model.RoleId, (SelectList)ViewBag.RoleId, "", new { @class = "form-control" })
+                <span asp-validation-for="RoleId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PrivilegeId" class="control-label"></label>
-                <select asp-for="PrivilegeId" class="form-control" asp-items="ViewBag.PrivilegeId"></select>
+                @Html.DropDownListFor(model => model.PrivilegeId, (SelectList)ViewBag.PrivilegeId, "", new { @class = "form-control" })
+                <span asp-validation-for="PrivilegeId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="DocumentId" class="control-label"></label>
-                <select asp-for="DocumentId" class="form-control" asp-items="ViewBag.DocumentId"></select>
+                @Html.DropDownListFor(model => model.DocumentId, (SelectList)ViewBag.DocumentId, "", new { @class = "form-control" })
+                <span asp-validation-for="DocumentId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
