@@ -9,7 +9,7 @@
 @using (Html.BeginForm())
 {
 <div>
-    @Html.DropDownListFor(r => r, new SelectList(Model.Records))
+    @Html.DropDownListFor(r => r.Records, new SelectList(Model.Records))
     <input type="submit" />
 </div>
 }
