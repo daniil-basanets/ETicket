@@ -12,15 +12,8 @@ namespace ETicketAdmin.Common
 
         public int TotalPages { get; set; }
 
-        public int[] Records { get; }
-
         public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
         {
-            Records = new int[]
-            {
-                10, 25, 50, 100
-            };
-
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
 

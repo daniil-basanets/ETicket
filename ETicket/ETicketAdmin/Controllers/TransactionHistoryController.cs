@@ -13,20 +13,29 @@ namespace ETicketAdmin.Controllers
     public class TransactionHistoryController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
+        private static int pageSize = CommonSettings.DefaultPageSize;
 
         public TransactionHistoryController(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
         }
 
+        [HttpPost]
+        public IActionResult SetPageSize([FromBody]string pageSizeValue)
+        {
+            pageSize = int.Parse(pageSizeValue);
+
+            return Ok("{}");
+        }
+
         // GET: TransactionHistories
         public async Task<IActionResult> Index(
             string sortBy,
             string sortDirection,
-            string searchBy,
-            string searchFrom,
-            string searchTo,
-            int? pageNumber
+            int? pageNumber,
+            string searchBy, // = "count",
+            string searchFrom, // = "3",
+            string searchTo // = "10"
         )
         {
             if (string.IsNullOrEmpty(sortBy)
@@ -49,10 +58,6 @@ namespace ETicketAdmin.Controllers
                     .AsNoTracking()
                     .Include(t => t.TicketType);
 
-            searchBy = "count";
-            searchFrom = "3";
-            searchTo = "10";
-
             if (!string.IsNullOrEmpty(searchFrom)
              && !string.IsNullOrEmpty(searchTo))
             {
@@ -71,7 +76,7 @@ namespace ETicketAdmin.Controllers
             if (!pageNumber.HasValue)
                 pageNumber = 1;
 
-            var pageSize = CommonSettings.DefaultPageSize;
+            ViewBag.PageSize = pageSize;
 
             return View(await PaginatedList<TransactionHistory>.CreateAsync(eTicketDataContext, pageNumber.Value, pageSize));
         }

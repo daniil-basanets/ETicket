@@ -6,13 +6,42 @@
 
 <h1>Transaction History</h1>
 
-@using (Html.BeginForm())
-{
-<div>
-    @Html.DropDownListFor(r => r.Records, new SelectList(Model.Records))
-    <input type="submit" />
-</div>
-}
+<select id="Records" onchange="return postSelectedRecord()">
+    <!option @(ViewBag.PageSize == 1 ? "selected" : "")>1</!option>
+    <!option @(ViewBag.PageSize == 2 ? "selected" : "")>2</!option>
+    <!option @(ViewBag.PageSize == 10 ? "selected" : "")>10</!option>
+    <!option @(ViewBag.PageSize == 25 ? "selected" : "")>25</!option>
+    <!option @(ViewBag.PageSize == 50 ? "selected" : "")>50</!option>
+    <!option @(ViewBag.PageSize == 100 ? "selected" : "")>100</!option>
+</select>
+
+<script type="text/javascript">
+    function postSelectedRecord() {
+        var postData = GetSelectedCountRecords();
+
+        $.ajax({
+            type: "POST",
+            url: 'https://localhost:44381/TransactionHistory/SetPageSize',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify(postData),
+            error: function (response) {
+                console.log(response);
+            },
+            success: function (response) {
+                console.log(response);
+                location.reload();
+            }
+        });
+    }
+
+    function GetSelectedCountRecords() {
+        var records = document.getElementById("Records");
+        var selectedValue = records.options[records.selectedIndex].value;
+
+        return selectedValue;
+    }
+</script>
 
 <table class="table">
     <thead>
@@ -67,9 +96,9 @@
 }
 
 <a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+    asp-route-sortOrder="@ViewData["CurrentSort"]"
+    asp-route-pageNumber="@(Model.PageIndex - 1)"
+    asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
@@ -77,18 +106,18 @@
 @for (var pageNumber = 1; pageNumber <= Model.TotalPages; pageNumber++)
 {
     <a asp-action="Index"
-       asp-route-sortOrder="@ViewData["CurrentSort"]"
-       asp-route-pageNumber="@pageNumber"
-       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+        asp-route-sortOrder="@ViewData["CurrentSort"]"
+        asp-route-pageNumber="@pageNumber"
+        asp-route-currentFilter="@ViewData["CurrentFilter"]"
        class="btn btn-default">
         @pageNumber
     </a>
 }
 
 <a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+    asp-route-sortOrder="@ViewData["CurrentSort"]"
+    asp-route-pageNumber="@(Model.PageIndex + 1)"
+    asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @nextDisabled">
     Next
 </a>
