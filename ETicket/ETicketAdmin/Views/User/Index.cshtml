@@ -1,4 +1,6 @@
-﻿@model IEnumerable<DBContextLibrary.Domain.Entities.User>
+﻿@*@model IEnumerable<DBContextLibrary.Domain.Entities.User>*@
+@model ETicketAdmin.Common.PaginatedList<DBContextLibrary.Domain.Entities.User>
+@using System.Linq; 
 
 @{
     ViewData["Title"] = "Index";
@@ -15,25 +17,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().FirstName);
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Phone)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Phone)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Role)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Role)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Privilege)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Privilege)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Document)
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Document)
             </th>
             <th></th>
         </tr>
@@ -73,3 +75,34 @@
         }
     </tbody>
 </table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+
+@for (var pageNumber = 1; pageNumber <= Model.TotalPages; pageNumber++)
+{
+    <a asp-action="Index"
+       asp-route-sortOrder="@ViewData["CurrentSort"]"
+       asp-route-pageNumber="@pageNumber"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-default">
+        @pageNumber
+    </a>
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

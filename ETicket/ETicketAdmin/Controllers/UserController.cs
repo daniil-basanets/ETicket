@@ -10,6 +10,7 @@ using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Repositories;
 using ETicketAdmin.Models;
 using ETicketAdmin.Services;
+using ETicketAdmin.Common;
 
 namespace ETicketAdmin.Controllers
 {
@@ -25,10 +26,16 @@ namespace ETicketAdmin.Controllers
         }
 
         // GET: User
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
             var eTicketDataContext = _context.Users.Include(u => u.Document).Include(u => u.Privilege).Include(u => u.Role);
-            return View(await eTicketDataContext.ToListAsync());
+            //return View(await eTicketDataContext.ToListAsync());
+            if (!pageNumber.HasValue)
+                pageNumber = 1;
+
+            var pageSize = CommonSettings.DefaultPageSize;
+
+            return View(await PaginatedList<User>.CreateAsync(eTicketDataContext, pageNumber.Value, pageSize));
         }
 
         // GET: User/Details/5
