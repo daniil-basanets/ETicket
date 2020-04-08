@@ -10,6 +10,7 @@ using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Repositories;
 using ETicketAdmin.Models;
 using ETicketAdmin.Services;
+using ETicketAdmin.Common;
 
 namespace ETicketAdmin.Controllers
 {
@@ -25,10 +26,36 @@ namespace ETicketAdmin.Controllers
         }
 
         // GET: User
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber, string sortOrder)
         {
+            ViewBag.LastNameSortParm = String.IsNullOrEmpty(sortOrder) ? "LastName_desc" : "";
+            ViewBag.FirstNameSortParm = sortOrder == "FirstName" ? "FirstName_desc" : "FirstName";
             var eTicketDataContext = _context.Users.Include(u => u.Document).Include(u => u.Privilege).Include(u => u.Role);
-            return View(await eTicketDataContext.ToListAsync());
+            IOrderedQueryable<User> users;
+
+            switch (sortOrder)
+            {
+                case "LastName_desc":
+                    users = eTicketDataContext.OrderByDescending(s=>s.LastName);
+                    break;
+                case "FirstName_desc":
+                    users = eTicketDataContext.OrderByDescending(s => s.FirstName);
+                    break;
+                case "FirstName":
+                    users = eTicketDataContext.OrderBy(s => s.FirstName);
+                    break;
+                default:
+                    users = eTicketDataContext.OrderBy(s => s.LastName);
+                    break;
+            }
+ 
+            if (!pageNumber.HasValue)
+            {
+                pageNumber = 1;
+            }  
+            var pageSize = CommonSettings.DefaultPageSize;
+
+            return View(await PaginatedList<User>.CreateAsync(users, pageNumber.Value, pageSize));
         }
 
         // GET: User/Details/5
@@ -43,7 +70,8 @@ namespace ETicketAdmin.Controllers
                 .Include(u => u.Document)
                 .Include(u => u.Privilege)
                 .Include(u => u.Role)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id); 
+
             if (user == null)
             {
                 return NotFound();
@@ -58,6 +86,7 @@ namespace ETicketAdmin.Controllers
             ViewData["DocumentId"] = new SelectList(_context.Documents, "Id", "Number");
             ViewData["PrivilegeId"] = new SelectList(_context.Privileges, "Id", "Name");
             ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name");
+
             return View();
         }
 
@@ -71,11 +100,14 @@ namespace ETicketAdmin.Controllers
                 user.Id = Guid.NewGuid();
                 _context.Add(user);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["DocumentId"] = new SelectList(_context.Documents, "Id", "Number", user.DocumentId);
             ViewData["PrivilegeId"] = new SelectList(_context.Privileges, "Id", "Name", user.PrivilegeId);
             ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name", user.RoleId);
+
             return View(user);
         }
 
@@ -92,6 +124,7 @@ namespace ETicketAdmin.Controllers
             {
                 return NotFound();
             }
+
             return View(user);
         }
 
@@ -110,6 +143,7 @@ namespace ETicketAdmin.Controllers
 
                 MailService emailService = new MailService();
                 await emailService.SendEmailAsync(user.Email, message);
+
                 return RedirectToAction(nameof(Index));
             } 
             return View(message);
@@ -128,9 +162,11 @@ namespace ETicketAdmin.Controllers
             {
                 return NotFound();
             }
+
             ViewData["DocumentId"] = new SelectList(_context.Documents, "Id", "Number", user.DocumentId);
             ViewData["PrivilegeId"] = new SelectList(_context.Privileges, "Id", "Name", user.PrivilegeId);
             ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name", user.RoleId);
+
             return View(user);
         }
 
@@ -162,11 +198,14 @@ namespace ETicketAdmin.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["DocumentId"] = new SelectList(_context.Documents, "Id", "Number", user.DocumentId);
             ViewData["PrivilegeId"] = new SelectList(_context.Privileges, "Id", "Name", user.PrivilegeId);
             ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name", user.RoleId);
+
             return View(user);
         }
 
@@ -183,6 +222,7 @@ namespace ETicketAdmin.Controllers
                 .Include(u => u.Privilege)
                 .Include(u => u.Role)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (user == null)
             {
                 return NotFound();
@@ -199,6 +239,7 @@ namespace ETicketAdmin.Controllers
             var user = await _context.Users.FindAsync(id);
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

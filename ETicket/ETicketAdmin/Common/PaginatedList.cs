@@ -9,10 +9,18 @@ namespace ETicketAdmin.Common
     public class PaginatedList<T> : List<T>
     {
         public int PageIndex { get; private set; }
-        public int TotalPages { get; private set; }
+
+        public int TotalPages { get; set; }
+
+        public int[] Records { get; }
 
         public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
         {
+            Records = new int[]
+            {
+                10, 25, 50, 100
+            };
+
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
 
@@ -32,9 +40,9 @@ namespace ETicketAdmin.Common
             var count = await source.CountAsync();
 
             var items = await source
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+                    .Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
 
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }

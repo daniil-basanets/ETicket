@@ -6,6 +6,14 @@
 
 <h1>Transaction History</h1>
 
+@using (Html.BeginForm())
+{
+<div>
+    @Html.DropDownListFor(r => r.Records, new SelectList(Model.Records))
+    <input type="submit" />
+</div>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -52,6 +60,7 @@
     </tbody>
 </table>
 <br />
+
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
@@ -65,15 +74,15 @@
     Previous
 </a>
 
-@for(var pageNumber = 1; pageNumber <= Model.TotalPages; pageNumber++)
+@for (var pageNumber = 1; pageNumber <= Model.TotalPages; pageNumber++)
 {
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@pageNumber"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default">
-    @pageNumber
-</a>
+    <a asp-action="Index"
+       asp-route-sortOrder="@ViewData["CurrentSort"]"
+       asp-route-pageNumber="@pageNumber"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-default">
+        @pageNumber
+    </a>
 }
 
 <a asp-action="Index"
