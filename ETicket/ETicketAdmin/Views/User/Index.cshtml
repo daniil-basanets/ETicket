@@ -77,7 +77,10 @@
                         <span class="text">Delete</span>
                     </a>
                     <p>
-                        <a asp-action="SendMessage" asp-route-id="@item.Id">Send message</a>
+                        @if (item.Email != null)
+                        {
+                            <a asp-action="SendMessage" asp-route-id="@item.Id">Send message</a>
+                        }                      
                     </p>      
                 </td>
             </tr>
