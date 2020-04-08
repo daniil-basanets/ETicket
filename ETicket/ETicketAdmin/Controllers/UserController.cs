@@ -29,7 +29,6 @@ namespace ETicketAdmin.Controllers
         public async Task<IActionResult> Index(int? pageNumber)
         {
             var eTicketDataContext = _context.Users.Include(u => u.Document).Include(u => u.Privilege).Include(u => u.Role);
-            //return View(await eTicketDataContext.ToListAsync());
             if (!pageNumber.HasValue)
                 pageNumber = 1;
 
