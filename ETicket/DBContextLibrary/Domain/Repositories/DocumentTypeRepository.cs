@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DBContextLibrary.Domain.Repositories
 {
-    public class DocumentTypeRepository : IRepository<DocumentType>
+    public class DocumentTypeRepository : IRepository<DocumentType, int>
     {
         private readonly ETicketDataContext db;
 

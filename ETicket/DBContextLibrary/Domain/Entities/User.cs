@@ -49,5 +49,9 @@ namespace DBContextLibrary.Domain.Entities
 
         [DisplayName("Document")]
         public Guid? DocumentId { get; set; }
+
+        [DisplayName("Date of birth")]
+        [Column(TypeName = "date")]
+        public DateTime DateOfBirth { get; set; }
     }
 }

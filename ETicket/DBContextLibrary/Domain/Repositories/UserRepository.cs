@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DBContextLibrary.Domain.Repositories
 {
-    public class UserRepository : IRepository<User>
+    public class UserRepository : IRepository<User, Guid>
     {
         private readonly ETicketDataContext context;
 
@@ -22,7 +22,7 @@ namespace DBContextLibrary.Domain.Repositories
             return context.Users;
         }
 
-        public User Get(int id)
+        public User Get(Guid id)
         {
             return context.Users.Find(id);
         }
@@ -37,7 +37,7 @@ namespace DBContextLibrary.Domain.Repositories
             context.Entry(user).State = EntityState.Modified;
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             var user = context.Users.Find(id);
 
