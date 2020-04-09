@@ -16,21 +16,21 @@ namespace ETicketAdmin.Controllers
 {
     public class UserController : Controller
     {
-        private readonly ETicketDataContext _context;
-        private readonly ETicketData _repository;
+        private readonly ETicketDataContext context;
+        private readonly ETicketData repository;
 
         public UserController(ETicketDataContext context)
         {
-            _context = context;
-            _repository = new ETicketData(_context);
+            this.context = context;
+            repository = new ETicketData(context);
         }
 
         // GET: User
-        public async Task<IActionResult> Index(int? pageNumber, string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder)
         {
             ViewBag.LastNameSortParm = String.IsNullOrEmpty(sortOrder) ? "LastName_desc" : "";
             ViewBag.FirstNameSortParm = sortOrder == "FirstName" ? "FirstName_desc" : "FirstName";
-            var eTicketDataContext = _context.Users.Include(u => u.Document).Include(u => u.Privilege).Include(u => u.Role);
+            var eTicketDataContext = repository.Users.GetAll();
             IOrderedQueryable<User> users;
 
             switch (sortOrder)
@@ -48,30 +48,20 @@ namespace ETicketAdmin.Controllers
                     users = eTicketDataContext.OrderBy(s => s.LastName);
                     break;
             }
- 
-            if (!pageNumber.HasValue)
-            {
-                pageNumber = 1;
-            }  
-            var pageSize = CommonSettings.DefaultPageSize;
 
-            return View(await PaginatedList<User>.CreateAsync(users, pageNumber.Value, pageSize));
+            return View(await users.ToListAsync());
         }
 
         // GET: User/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public IActionResult Details(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .Include(u => u.Document)
-                .Include(u => u.Privilege)
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(m => m.Id == id); 
-
+            var user = repository.Users.Get(id);
+            
             if (user == null)
             {
                 return NotFound();
@@ -83,9 +73,10 @@ namespace ETicketAdmin.Controllers
         // GET: User/Create
         public IActionResult Create()
         {
-            ViewData["DocumentId"] = new SelectList(_context.Documents, "Id", "Number");
-            ViewData["PrivilegeId"] = new SelectList(_context.Privileges, "Id", "Name");
-            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name");
+            
+            ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number");
+            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
+            ViewData["RoleId"] = new SelectList(context.Roles, "Id", "Name");
 
             return View();
         }
@@ -93,33 +84,34 @@ namespace ETicketAdmin.Controllers
         // POST: User/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Phone,Email,RoleId,PrivilegeId,DocumentId")] User user)
+        public IActionResult Create([Bind("Id,FirstName,LastName,Phone,Email,DateOfBirth,RoleId,PrivilegeId,DocumentId")] User user)
         {
             if (ModelState.IsValid)
             {
                 user.Id = Guid.NewGuid();
-                _context.Add(user);
-                await _context.SaveChangesAsync();
+                repository.Users.Create(user);
+                repository.Save();
 
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["DocumentId"] = new SelectList(_context.Documents, "Id", "Number", user.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(_context.Privileges, "Id", "Name", user.PrivilegeId);
-            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name", user.RoleId);
+            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", user.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", user.PrivilegeId);
+            ViewData["RoleId"] = new SelectList(context.Roles, "Id", "Name", user.RoleId);
 
             return View(user);
         }
 
         // GET: User/SendMessage/5
-        public async Task<IActionResult> SendMessage(Guid? id)
+        public IActionResult SendMessage(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users.FindAsync(id);
+            var user = repository.Users.Get(id);
+
             if (user == null)
             {
                 return NotFound();
@@ -135,7 +127,7 @@ namespace ETicketAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _context.Users.FindAsync(id);
+                var user = repository.Users.Get(id);
                 if (user == null)
                 {
                     return NotFound();
@@ -150,22 +142,22 @@ namespace ETicketAdmin.Controllers
         }
 
         // GET: User/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public IActionResult Edit(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users.FindAsync(id);
+            var user = repository.Users.Get(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            ViewData["DocumentId"] = new SelectList(_context.Documents, "Id", "Number", user.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(_context.Privileges, "Id", "Name", user.PrivilegeId);
-            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name", user.RoleId);
+            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", user.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", user.PrivilegeId);
+            ViewData["RoleId"] = new SelectList(context.Roles, "Id", "Name", user.RoleId);
 
             return View(user);
         }
@@ -173,7 +165,7 @@ namespace ETicketAdmin.Controllers
         // POST: User/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,FirstName,LastName,Phone,Email,RoleId,PrivilegeId,DocumentId")] User user)
+        public IActionResult Edit(Guid id, [Bind("Id,FirstName,LastName,Phone,Email,DateOfBirth,RoleId,PrivilegeId,DocumentId")] User user)
         {
             if (id != user.Id)
             {
@@ -184,12 +176,12 @@ namespace ETicketAdmin.Controllers
             {
                 try
                 {
-                    _context.Update(user);
-                    await _context.SaveChangesAsync();
+                    repository.Users.Update(user);
+                    repository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.Id))
+                    if (!repository.Users.UserExists(user.Id))
                     {
                         return NotFound();
                     }
@@ -202,26 +194,22 @@ namespace ETicketAdmin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["DocumentId"] = new SelectList(_context.Documents, "Id", "Number", user.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(_context.Privileges, "Id", "Name", user.PrivilegeId);
-            ViewData["RoleId"] = new SelectList(_context.Roles, "Id", "Name", user.RoleId);
+            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", user.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", user.PrivilegeId);
+            ViewData["RoleId"] = new SelectList(context.Roles, "Id", "Name", user.RoleId);
 
             return View(user);
         }
 
         // GET: User/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public IActionResult Delete(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .Include(u => u.Document)
-                .Include(u => u.Privilege)
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var user = repository.Users.Get(id);
 
             if (user == null)
             {
@@ -234,18 +222,13 @@ namespace ETicketAdmin.Controllers
         // POST: User/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public IActionResult DeleteConfirmed(Guid id)
         {
-            var user = await _context.Users.FindAsync(id);
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+            repository.Users.Delete(id);
+            repository.Save();
 
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(Guid id)
-        {
-            return _context.Users.Any(e => e.Id == id);
-        }
     }
 }
