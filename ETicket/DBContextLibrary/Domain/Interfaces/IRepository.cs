@@ -2,13 +2,14 @@
 
 namespace DBContextLibrary.Domain.Interfaces
 {
-    public interface IRepository<T> 
-        where T : class
+    public interface IRepository<T, K> 
+        where T : class 
+        where K : struct
     {
         IQueryable<T> GetAll();
-        T Get(int id);
+        T Get(K id);
         void Create(T item);
         void Update(T item);
-        void Delete(int id);
+        void Delete(K id);
     }
 }
