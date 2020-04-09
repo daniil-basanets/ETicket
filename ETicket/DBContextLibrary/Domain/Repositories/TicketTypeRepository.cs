@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DBContextLibrary.Domain.Repositories
 {
-    public class TicketTypeRepository : IRepository<TicketType>
+    public class TicketTypeRepository : IRepository<TicketType, int>
     {
         private readonly ETicketDataContext context;
 

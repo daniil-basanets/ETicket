@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
+using ETicketAdmin.Common;
 using ETicketAdmin.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ namespace ETicketAdmin.Controllers
             this.context = context;
         }
         
-        public async Task<IActionResult> Index(string sortBy, string sortDirection, string searchString)
+        public async Task<IActionResult> Index(string sortBy, string sortDirection, string searchString, int pageNumber = 1)
         {
             IQueryable<TicketType> eTicketDataContext = context.TicketTypes;
             
@@ -48,11 +49,13 @@ namespace ETicketAdmin.Controllers
                     eTicketDataContext = eTicketDataContext.ApplySortBy(t => t.DurationHours, sortDirection);
                     break;
                 default:
-                    eTicketDataContext = eTicketDataContext.ApplySortBy(t => t.Price, "asc");
+                    eTicketDataContext = eTicketDataContext.OrderBy(t => t.Id);
                     break;
             }
             
-            return View(await eTicketDataContext.ToListAsync());
+            var pageSize = CommonSettings.DefaultPageSize;
+            
+            return View(await PaginatedList<TicketType>.CreateAsync(eTicketDataContext, pageNumber, pageSize));
         }
         
         public async Task<IActionResult> Details(int? id)

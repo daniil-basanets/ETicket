@@ -1,9 +1,10 @@
-﻿@model IEnumerable<DBContextLibrary.Domain.Entities.DocumentType>
+﻿@model IEnumerable<DBContextLibrary.Domain.Entities.Document>
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <head>
 
     <meta charset="utf-8">
@@ -12,7 +13,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- Custom styles for this page -->
     <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 </head>
@@ -20,7 +20,6 @@
 <body>
 
     <div class="container-fluid">
-        <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Document types</h6>
@@ -31,7 +30,7 @@
                         <thead>
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Name)
+                                    @Html.DisplayNameFor(model => model.Number)
                                 </th>
                                 <th>
                                     <a asp-action="Create">Create New</a>
@@ -41,7 +40,7 @@
                         <tfoot>
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Name)
+                                    @Html.DisplayNameFor(model => model.Number)
                                 </th>
                                 <th>
                                     <a asp-action="Create">Create New</a>
@@ -53,7 +52,7 @@
                             {
                                 <tr>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Name)
+                                        @Html.DisplayFor(modelItem => item.Number)
                                     </td>
                                     <td>
                                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -67,10 +66,8 @@
                 </div>
             </div>
         </div>
+
     </div>
-
-    <script src="/vendor/jquery/jquery.min.js"></script>
-
     <!-- Page level plugins -->
     <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
@@ -79,3 +76,4 @@
     <script src="/js/datatables-demo.js"></script>
 
 </body>
+

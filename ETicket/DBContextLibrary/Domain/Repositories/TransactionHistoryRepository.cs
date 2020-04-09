@@ -6,7 +6,7 @@ using DBContextLibrary.Domain.Interfaces;
 
 namespace DBContextLibrary.Domain.Repositories
 {
-    public class TransactionHistoryRepository : IRepository<TransactionHistory>
+    public class TransactionHistoryRepository : IRepository<TransactionHistory, Guid>
     {
         #region Private Members
 
@@ -24,12 +24,12 @@ namespace DBContextLibrary.Domain.Repositories
             throw new NotImplementedException();
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public TransactionHistory Get(int id)
+        public TransactionHistory Get(Guid id)
         {
             return eTicketDataContext.TransactionHistory.Find(id);
         }

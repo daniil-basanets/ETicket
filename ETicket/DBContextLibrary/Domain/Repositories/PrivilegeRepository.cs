@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DBContextLibrary.Domain.Repositories
 {
-	public class PrivilegeRepository: IRepository<Privilege>
+	public class PrivilegeRepository: IRepository<Privilege, int>
 	{
         #region
 

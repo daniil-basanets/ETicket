@@ -21,6 +21,6 @@ namespace DBContextLibrary.Domain.Entities
         [Required]
         [DataType(DataType.Currency)]
         [Range(0, double.MaxValue)]
-        public float Price { get; set; }
+        public decimal Price { get; set; }
     }
 }
