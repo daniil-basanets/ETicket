@@ -73,13 +73,13 @@
                     @if (item.Privilege == null)
                     @Html.DisplayFor(modelItem => item.Privilege.Name)
                     else
-                    @Html.ActionLink(item.Privilege.Name, "Details", "Privilege", new { id = item.PrivilegeId }, null)
+                    @Html.ActionLink(item.Privilege.Name, "Details", "Privileges", new { id = item.PrivilegeId }, null)
                 </td>
                 <td>
                     @if (item.Document == null)
                     @Html.DisplayFor(modelItem => item.Document.Number)
                     else
-                    @Html.ActionLink(item.Document.Number, "Details", "Document", new { id = item.DocumentId }, null)
+                    @Html.ActionLink(item.Document.Number, "Details", "Documents", new { id = item.DocumentId }, null)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">

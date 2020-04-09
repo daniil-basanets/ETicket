@@ -73,8 +73,9 @@ namespace ETicketAdmin.Controllers
         // GET: User/Create
         public IActionResult Create()
         {
-            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number");
-            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name");
+            
+            ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number");
+            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
             ViewData["RoleId"] = new SelectList(context.Roles, "Id", "Name");
 
             return View();
