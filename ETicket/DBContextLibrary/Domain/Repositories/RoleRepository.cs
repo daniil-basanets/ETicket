@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace DBContextLibrary.Domain.Repositories
 {
-    public class RoleRepository : IRepository<Role>
+    public class RoleRepository : IRepository<Role, int>
     {
         private readonly ETicketDataContext db;
 

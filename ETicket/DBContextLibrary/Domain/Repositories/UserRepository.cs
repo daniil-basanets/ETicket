@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DBContextLibrary.Domain.Repositories
 {
-    public class UserRepository : IRepository<User>
+    public class UserRepository : IRepository<User, Guid>
     {
         private readonly ETicketDataContext context;
 
@@ -19,12 +19,17 @@ namespace DBContextLibrary.Domain.Repositories
 
         public IQueryable<User> GetAll()
         {
-            return context.Users;
+            return context.Users.Include(u => u.Document).Include(u => u.Privilege).Include(u => u.Role);
         }
 
-        public User Get(int id)
+        public User Get(Guid id)
         {
-            return context.Users.Find(id);
+            var user = context.Users
+                .Include(u => u.Document)
+                .Include(u => u.Privilege)
+                .Include(u => u.Role)
+                .FirstOrDefault(m => m.Id == id);
+            return user;
         }
 
         public void Create(User user)
@@ -34,10 +39,10 @@ namespace DBContextLibrary.Domain.Repositories
 
         public void Update(User user)
         {
-            context.Entry(user).State = EntityState.Modified;
+            context.Update(user);
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             var user = context.Users.Find(id);
 
@@ -45,6 +50,10 @@ namespace DBContextLibrary.Domain.Repositories
             {
                 context.Users.Remove(user);
             }
+        }
+        public bool UserExists(Guid id)
+        {
+            return context.Users.Any(e => e.Id == id);
         }
     }
 }

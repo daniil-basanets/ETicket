@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DBContextLibrary.Domain.Repositories
 {
-    public class DocumentRepository : IRepository<Document>
+    public class DocumentRepository : IRepository<Document, Guid>
     {
         private readonly ETicketDataContext db;
 
@@ -22,7 +22,7 @@ namespace DBContextLibrary.Domain.Repositories
             db.Documents.Add(item);
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             Document document = db.Documents.Find(id);
             if (document != null)
@@ -31,7 +31,7 @@ namespace DBContextLibrary.Domain.Repositories
             }
         }
 
-        public Document Get(int id)
+        public Document Get(Guid id)
         {
             return db.Documents.Find(id);
         }

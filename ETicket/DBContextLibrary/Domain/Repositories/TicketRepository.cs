@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DBContextLibrary.Domain.Repositories
 {
-    public class TicketRepository : IRepository<Ticket>
+    public class TicketRepository : IRepository<Ticket, Guid>
     {
         private readonly ETicketDataContext context;
 
@@ -21,7 +21,7 @@ namespace DBContextLibrary.Domain.Repositories
             context.Tickets.Add(item);
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {// TODO DeleteTicket?
             throw new NotImplementedException();
             Ticket ticket = Get(id);
@@ -31,7 +31,7 @@ namespace DBContextLibrary.Domain.Repositories
             }
         }
 
-        public Ticket Get(int id)
+        public Ticket Get(Guid id)
         {
             return context.Tickets.Find(id);
         }

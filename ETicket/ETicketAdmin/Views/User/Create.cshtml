@@ -33,6 +33,11 @@
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="DateOfBirth" class="control-label"></label>
+                <input asp-for="DateOfBirth" class="form-control" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="RoleId" class="control-label"></label>
                 @Html.DropDownListFor(model => model.RoleId, (SelectList)ViewBag.RoleId, "", new { @class = "form-control" })
                 <span asp-validation-for="RoleId" class="text-danger"></span>

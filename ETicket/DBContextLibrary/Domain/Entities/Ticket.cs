@@ -33,7 +33,7 @@ namespace DBContextLibrary.Domain.Entities
         [DisplayName("User")]
         public User User { get; set; }
 
-        public int TransactionHistoryId { get; set; }
+        public Guid TransactionHistoryId { get; set; }
 
         [DisplayName("Transaction")]
         [ForeignKey("TransactionHistoryId")]

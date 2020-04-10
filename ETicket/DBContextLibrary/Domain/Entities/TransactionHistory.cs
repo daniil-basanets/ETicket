@@ -7,12 +7,15 @@ namespace DBContextLibrary.Domain.Entities
     public class TransactionHistory
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+
+        [Required]
+        public string ReferenceNumber { get; set; }
 
         [Required]
         [DataType(DataType.Currency)]
         [Range(0.0, double.MaxValue)]
-        public float TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
 
         [Required]
         public DateTime Date { get; set; }
