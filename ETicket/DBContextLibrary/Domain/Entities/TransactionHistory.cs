@@ -10,6 +10,9 @@ namespace DBContextLibrary.Domain.Entities
         public Guid Id { get; set; }
 
         [Required]
+        public string ReferenceNumber { get; set; }
+
+        [Required]
         [DataType(DataType.Currency)]
         [Range(0.0, double.MaxValue)]
         public decimal TotalPrice { get; set; }
