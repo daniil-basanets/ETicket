@@ -1,5 +1,5 @@
-@using DBContextLibrary.Domain.Entities
-@model ETicketAdmin.Common.PaginatedList<DBContextLibrary.Domain.Entities.TicketType>
+@model IEnumerable<DBContextLibrary.Domain.Entities.TicketType>
+
 
 @{
     ViewData["Title"] = "Index";
@@ -71,7 +71,7 @@
     </tbody>
 </table>
 
-@{
+@*@{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
@@ -101,4 +101,4 @@
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
    class="btn btn-default @nextDisabled">
     Next
-</a>
+</a>*@
