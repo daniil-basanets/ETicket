@@ -115,9 +115,7 @@ namespace ETicketAdmin.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            else
-                ViewBag.Message = "Запрос не прошел валидацию";
-
+           
             ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticket.TicketTypeId);
             ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticket.TransactionHistoryId);
             ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticket.UserId);
