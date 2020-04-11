@@ -22,10 +22,10 @@ namespace ETicket.Services.BuyTicket
             this.privatBankApiClient = privatBankApiClient;
         }
 
-        public async Task<BuyTicketResponse> ProcessAsync(
-            BuyTicketRequest buyTicketRequest
-        )
+        public async Task<BuyTicketResponse> ProcessAsync(BuyTicketRequest buyTicketRequest)
         {
+            // add coef from user(userId)
+
             // Calculate price
             var ticketType = eTitcketData.TicketTypes.GetAll()
                 .FirstOrDefault(x => x.Id == buyTicketRequest.TicketTypeId);
@@ -33,7 +33,10 @@ namespace ETicket.Services.BuyTicket
             var totalPrice = ticketType.Price * buyTicketRequest.Amount;
 
             // Process with Private
-            await SendTransaction(totalPrice);
+            var errorMessage = await SendTransaction(totalPrice);
+
+            if (!string.IsNullOrEmpty(errorMessage))
+                return new BuyTicketResponse { ErrorMessage = errorMessage };
 
             // Save transaction
             var transactionHistoryId = Guid.NewGuid();
@@ -48,7 +51,7 @@ namespace ETicket.Services.BuyTicket
             return new BuyTicketResponse();
         }
 
-        private async Task SendTransaction(decimal totalPrice)
+        private async Task<string> SendTransaction(decimal totalPrice)
         {
             var cardNum = "4149439103721969";
             var privatBankCardRequest = new SendToPrivatBankCardRequest
@@ -63,7 +66,7 @@ namespace ETicket.Services.BuyTicket
             var privatBankCardResponse = await privatBankApiClient
                 .ExecuteAsync<SendToPrivatBankCardRequest, SendToPrivatBankCardResponse>(privatBankCardRequest);
 
-            return;
+            return privatBankCardResponse.Payment.Message;
         }
 
         private void SaveTransaction(
