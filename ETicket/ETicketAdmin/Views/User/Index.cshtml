@@ -8,11 +8,6 @@
 
 <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
-@*<p>
-    <a asp-action="Create" class="btn btn-success">
-        <span class="text">Create New</span>
-    </a>
-</p>*@
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -21,28 +16,16 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-
                     <thead>
                         <tr>
                             <th>
-                                @*@Html.ActionLink("First Name", "Index", new { sortOrder = ViewBag.FirstNameSortParm })*@
                                 @Html.DisplayNameFor(model => model.FirstName)
                             </th>
                             <th>
-                                @*@Html.ActionLink("Last Name", "Index", new { sortOrder = ViewBag.LastNameSortParm })*@
                                 @Html.DisplayNameFor(model => model.LastName)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Phone)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Email)
-                            </th>
-                            <th>
                                 @Html.DisplayNameFor(model => model.DateOfBirth)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Role)
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.Privilege)
@@ -51,10 +34,32 @@
                                 @Html.DisplayNameFor(model => model.Document)
                             </th>
                             <th>
-                                <a asp-action="Create" class="btn btn-success btn-sm">Create New</a>
+                                <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
                             </th>
                         </tr>
                     </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.FirstName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.LastName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DateOfBirth)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Privilege)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Document)
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </tfoot>
                     <tbody>
                         @foreach (var item in Model)
                         {
@@ -66,19 +71,7 @@
                                     @Html.DisplayFor(modelItem => item.LastName)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Phone)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Email)
-                                </td>
-                                <td>
                                     @Html.DisplayFor(modelItem => item.DateOfBirth)
-                                </td>
-                                <td>
-                                    @if (item.Role == null)
-                                        @Html.DisplayFor(modelItem => item.Role.Name)
-                                        else
-                                            @Html.ActionLink(item.Role.Name, "Details", "Role", new { id = item.RoleId }, null)
                                 </td>
                                 <td>
                                     @if (item.Privilege == null)
@@ -96,12 +89,10 @@
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
                                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                                    <p>
-                                        @if (item.Email != null)
-                                        {
-                                            <a asp-action="SendMessage" asp-route-id="@item.Id" class="btn btn-light btn-sm">Send message</a>
-                                        }
-                                    </p>
+                                    @if (item.Email != null)
+                                    {
+                                        <a asp-action="SendMessage" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Notify</a>
+                                    }
                                 </td>
                             </tr>
                         }
