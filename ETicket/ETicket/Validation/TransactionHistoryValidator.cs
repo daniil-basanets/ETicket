@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using DBContextLibrary.Domain.Entities;
 using FluentValidation;
 
@@ -28,6 +29,13 @@ namespace ETicket.Validation
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotNull()
                 .GreaterThan(decimal.Zero);
+
+            RuleFor(t => t.ReferenceNumber)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty()
+                .Length(13)
+                .Must(t=>t.All(char.IsNumber));
         }
+        
     }
 }
