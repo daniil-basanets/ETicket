@@ -1,16 +1,17 @@
 ﻿using DBContextLibrary.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DBContextLibrary.Domain
 {
-    public class ETicketDataContext : DbContext
+    public class ETicketDataContext : IdentityDbContext
     {
         // ToDo Region
         public DbSet<TransactionHistory> TransactionHistory { get; set; }
-        public DbSet<Role> Roles { get; set; }
+        public DbSet<Role> ETRoles { get; set; }
         public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
-        public DbSet<User> Users { get; set; }
+        public DbSet<User> ETUsers { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentType> DocumentTypes { get; set; }
         public DbSet<Privilege> Privileges { get; set; }

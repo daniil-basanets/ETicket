@@ -11,9 +11,11 @@ using DBContextLibrary.Domain.Repositories;
 using ETicketAdmin.Models;
 using ETicketAdmin.Services;
 using ETicketAdmin.Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly ETicketDataContext context;

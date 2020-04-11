@@ -17,26 +17,26 @@ namespace DBContextLibrary.Domain.Repositories
 
         public void Create(Role item)
         {
-            db.Roles.Add(item);
+            db.ETRoles.Add(item);
         }
 
         public void Delete(int id)
         {
-            Role order = db.Roles.Find(id);
+            Role order = db.ETRoles.Find(id);
             if (order != null)
             {
-                db.Roles.Remove(order);
+                db.ETRoles.Remove(order);
             }
         }
 
         public Role Get(int id)
         {
-            return db.Roles.Find(id);
+            return db.ETRoles.Find(id);
         }
 
         public IQueryable<Role> GetAll()
         {
-            return db.Roles;
+            return db.ETRoles;
         }
 
         public void Update(Role item)
