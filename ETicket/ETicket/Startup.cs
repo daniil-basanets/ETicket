@@ -1,19 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DBContextLibrary.Domain;
+using DBContextLibrary.Domain.Entities;
+using DBContextLibrary.Domain.Interfaces;
 using ETicket.Models;
 using ETicket.Models.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System;
 
 namespace ETicket
 {
@@ -39,6 +35,7 @@ namespace ETicket
             };
 
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
+            services.AddTransient<IUnitOfWork, ETicketData>(x => new ETicketData(x.GetService<ETicketDataContext>()));
             services.AddControllers();
             services.AddSingleton<IMerchant>(merchant);
         }
@@ -53,16 +50,32 @@ namespace ETicket
 
             eTicketDataContext.EnsureCreated();
 
+            //SeedTransactionHistory(eTicketDataContext);
+
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
-
-
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private void SeedTransactionHistory(ETicketDataContext eTicketDataContext)
+        {
+            eTicketDataContext.TransactionHistory.Add(
+                new TransactionHistory
+                {
+                    Count = 1,
+                    TotalPrice = 8,
+                    ReferenceNumber = "P24A00000000000001",
+                    TicketTypeId = 2,
+                    Date = DateTime.UtcNow,
+                    Id = Guid.NewGuid()
+                });
+
+            eTicketDataContext.SaveChanges();
         }
     }
 }

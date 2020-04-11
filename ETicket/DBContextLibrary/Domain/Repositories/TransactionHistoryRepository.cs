@@ -21,7 +21,7 @@ namespace DBContextLibrary.Domain.Repositories
 
         public void Create(TransactionHistory transaction)
         {
-            throw new NotImplementedException();
+            eTicketDataContext.Add(transaction);
         }
 
         public void Delete(Guid id)

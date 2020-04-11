@@ -23,7 +23,7 @@ namespace ETicket.PrivatBankApi.PrivatBank
                  + "<test>1</test>"
                  + $@"<payment id=""{PaymentId}"">"
                  + $@"<prop name=""b_card_or_acc"" value=""{CardNumber}""/>"
-                 + $@"<prop name=""amt"" value=""{Amount}""/>"
+                 + $@"<prop name=""amt"" value=""{Amount.ToString().Replace(',','.')}""/>"
                  + $@"<prop name=""ccy"" value=""{Currency}""/>"
                  + $@"<prop name=""details"" value=""{Details}"" />"
                  + "</payment>";
