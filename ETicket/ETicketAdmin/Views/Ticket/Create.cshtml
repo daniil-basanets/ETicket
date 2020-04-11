@@ -13,7 +13,7 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="TicketTypeId" class="control-label"></label>
+                <label asp-for="TicketTypeId" class="control-label">Ticket type</label>
                 <select asp-for="TicketTypeId" class ="form-control" asp-items="ViewBag.TicketTypeId"></select>
             </div>
             <div class="form-group">
@@ -32,12 +32,14 @@
                 <span asp-validation-for="ExpirationUTCDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+                <label asp-for="UserId" class="control-label">User</label>
+                @Html.DropDownListFor(model => model.UserId, (SelectList)ViewBag.UserId, "", new { @class = "form-control" })
+                <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TransactionHistoryId" class="control-label"></label>
-                <select asp-for="TransactionHistoryId" class ="form-control" asp-items="ViewBag.TransactionHistoryId"></select>
+                <label asp-for="TransactionHistoryId" class="control-label">Transaction Reference Number</label>
+                <select asp-for="TransactionHistoryId" class="form-control" asp-items="ViewBag.TransactionHistoryId"></select>
+                <span asp-validation-for="TransactionHistoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
