@@ -75,18 +75,13 @@ namespace ETicketAdmin.Controllers
         // GET: User/Create
         public IActionResult Create()
         {
-            
-            ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number");
-            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
-            ViewData["RoleId"] = new SelectList(context.Roles, "Id", "Name");
-
             return View();
         }
 
         // POST: User/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,FirstName,LastName,Phone,Email,DateOfBirth,RoleId,PrivilegeId,DocumentId")] User user)
+        public IActionResult Create([Bind("Id,FirstName,LastName,Phone,Email,DateOfBirth")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -96,10 +91,6 @@ namespace ETicketAdmin.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", user.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", user.PrivilegeId);
-            ViewData["RoleId"] = new SelectList(context.Roles, "Id", "Name", user.RoleId);
 
             return View(user);
         }
@@ -157,17 +148,13 @@ namespace ETicketAdmin.Controllers
                 return NotFound();
             }
 
-            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", user.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", user.PrivilegeId);
-            ViewData["RoleId"] = new SelectList(context.Roles, "Id", "Name", user.RoleId);
-
             return View(user);
         }
 
         // POST: User/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, [Bind("Id,FirstName,LastName,Phone,Email,DateOfBirth,RoleId,PrivilegeId,DocumentId")] User user)
+        public IActionResult Edit(Guid id, [Bind("Id,FirstName,LastName,Phone,Email,DateOfBirth")] User user)
         {
             if (id != user.Id)
             {
@@ -195,10 +182,6 @@ namespace ETicketAdmin.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", user.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", user.PrivilegeId);
-            ViewData["RoleId"] = new SelectList(context.Roles, "Id", "Name", user.RoleId);
 
             return View(user);
         }

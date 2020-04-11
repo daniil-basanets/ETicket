@@ -19,16 +19,12 @@ namespace DBContextLibrary.Domain.Repositories
 
         public IQueryable<User> GetAll()
         {
-            return context.ETUsers.Include(u => u.Document).Include(u => u.Privilege).Include(u => u.Role);
+            return context.ETUsers;
         }
 
         public User Get(Guid id)
         {
-            var user = context.ETUsers
-                .Include(u => u.Document)
-                .Include(u => u.Privilege)
-                .Include(u => u.Role)
-                .FirstOrDefault(m => m.Id == id);
+            var user = context.ETUsers.FirstOrDefault(m => m.Id == id);
             return user;
         }
 

@@ -32,15 +32,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.DateOfBirth)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Role)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Privilege)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Document)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -62,24 +53,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DateOfBirth)
-                </td>
-                <td>
-                    @if (item.Role == null)
-                    @Html.DisplayFor(modelItem => item.Role.Name)
-                    else
-                    @Html.ActionLink(item.Role.Name, "Details", "Role", new { id = item.RoleId }, null)
-                </td>
-                <td>
-                    @if (item.Privilege == null)
-                    @Html.DisplayFor(modelItem => item.Privilege.Name)
-                    else
-                    @Html.ActionLink(item.Privilege.Name, "Details", "Privileges", new { id = item.PrivilegeId }, null)
-                </td>
-                <td>
-                    @if (item.Document == null)
-                    @Html.DisplayFor(modelItem => item.Document.Number)
-                    else
-                    @Html.ActionLink(item.Document.Number, "Details", "Documents", new { id = item.DocumentId }, null)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">

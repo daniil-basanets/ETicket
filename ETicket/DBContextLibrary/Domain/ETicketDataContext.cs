@@ -8,7 +8,6 @@ namespace DBContextLibrary.Domain
     {
         // ToDo Region
         public DbSet<TransactionHistory> TransactionHistory { get; set; }
-        public DbSet<Role> ETRoles { get; set; }
         public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<User> ETUsers { get; set; }
@@ -31,21 +30,6 @@ namespace DBContextLibrary.Domain
                     .HasOne<TicketType>(s => s.TicketType)
                     .WithMany()
                     .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<User>()
-                   .HasOne(i => i.Role)
-                   .WithMany()
-                   .OnDelete(DeleteBehavior.SetNull);
-
-            modelBuilder.Entity<User>()
-                    .HasOne(i => i.Privilege)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.SetNull);
-
-            modelBuilder.Entity<User>()
-                    .HasOne(i => i.Document)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.SetNull);
 
             base.OnModelCreating(modelBuilder);
         }
