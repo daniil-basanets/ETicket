@@ -5,75 +5,61 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<head>
+<h1>Documents</h1>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+<p>
+    <a asp-action="Create" class="btn btn-success">
+        <span class="text">Create New</span>
+    </a>
+</p>
 
-    <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-
-</head>
-
-<body>
-
-    <div class="container-fluid">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Document types</h6>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Number)
-                                </th>
-                                <th>
-                                    <a asp-action="Create">Create New</a>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Number)
-                                </th>
-                                <th>
-                                    <a asp-action="Create">Create New</a>
-                                </th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Number)
-                                    </td>
-                                    <td>
-                                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <!-- Page level plugins -->
-    <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
-    <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="/js/datatables-demo.js"></script>
-
-</body>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.ActionLink("Document Type", "Index", new { sortOrder = ViewBag.DocumentSorting })
+            </th>
+            <th>
+                @Html.ActionLink("Number", "Index", new { sortOrder = ViewBag.NumberSorting })
+            </th>           
+        <th>
+            @Html.ActionLink("Expiration Date", "Index", new { sortOrder = ViewBag.ExpirationDateSorting })            
+        </th>
+        <th>
+            @Html.ActionLink("Is Valid", "Index", new { sortOrder = ViewBag.IsValid })
+        </th>            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DocumentType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpirationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsValid)
+                </td>              
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">
+                        <span class="text">Edit</span>
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">
+                        <span class="text">Details</span>
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">
+                        <span class="text">Delete</span>
+                    </a>                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
