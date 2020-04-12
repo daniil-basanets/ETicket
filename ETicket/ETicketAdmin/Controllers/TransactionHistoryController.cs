@@ -1,6 +1,5 @@
 ﻿using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
-using ETicketAdmin.Common;
 using ETicketAdmin.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,30 +12,14 @@ namespace ETicketAdmin.Controllers
     public class TransactionHistoryController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
-        private static int pageSize = CommonSettings.DefaultPageSize;
 
         public TransactionHistoryController(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
         }
 
-        [HttpPost]
-        public IActionResult SetPageSize([FromBody]string pageSizeValue)
-        {
-            pageSize = int.Parse(pageSizeValue);
-
-            return Ok("{}");
-        }
-
         // GET: TransactionHistories
-        public async Task<IActionResult> Index(
-            string sortBy,
-            string sortDirection,
-            int? pageNumber,
-            string searchBy, // = "count",
-            string searchFrom, // = "3",
-            string searchTo // = "10"
-        )
+        public IActionResult Index(string sortBy, string sortDirection)
         {
             if (string.IsNullOrEmpty(sortBy)
              || string.IsNullOrEmpty(sortDirection))
@@ -58,12 +41,6 @@ namespace ETicketAdmin.Controllers
                     .AsNoTracking()
                     .Include(t => t.TicketType);
 
-            if (!string.IsNullOrEmpty(searchFrom)
-             && !string.IsNullOrEmpty(searchTo))
-            {
-                eTicketDataContext = ApplyFilterBy(eTicketDataContext, searchBy, searchFrom, searchTo);
-            }
-
             eTicketDataContext = sortBy switch
             {
                 "totalprice" => eTicketDataContext.ApplySortBy(x => x.TotalPrice, sortDirection),
@@ -73,55 +50,8 @@ namespace ETicketAdmin.Controllers
                 _ => eTicketDataContext
             };
 
-            if (!pageNumber.HasValue)
-                pageNumber = 1;
-
-            ViewBag.PageSize = pageSize;
-
-            return View(await PaginatedList<TransactionHistory>.CreateAsync(eTicketDataContext, pageNumber.Value, pageSize));
+            return View(eTicketDataContext);
         }
-
-        private IQueryable<TransactionHistory> ApplyFilterBy(
-            IQueryable<TransactionHistory> query,
-            string searchBy,
-            string searchFrom,
-            string searchTo) => searchBy switch
-            {
-                "totalprice" => ((Func<IQueryable<TransactionHistory>>)(() =>
-                {
-                    var totalpriceFrom = int.Parse(searchFrom);
-                    var totalpriceTo = int.Parse(searchTo);
-
-                    return query.Where(t => t.TotalPrice >= totalpriceFrom
-                                         && t.TotalPrice <= totalpriceTo);
-                }))(),
-                "date" => ((Func<IQueryable<TransactionHistory>>)(() =>
-                {
-                    var dateFrom = DateTime.Parse(searchFrom);
-                    var dateTo = DateTime.Parse(searchTo);
-
-                    return query.Where(t => t.Date >= dateFrom
-                                         && t.Date <= dateTo);
-                }))(),
-                "tickettype" => ((Func<IQueryable<TransactionHistory>>)(() =>
-                {
-                    var ticketTypeFrom = uint.Parse(searchFrom);
-                    var ticketTypeTo = uint.Parse(searchTo);
-
-                    return query.Where(t => t.TicketType.DurationHours >= ticketTypeFrom
-                                         && t.TicketType.DurationHours <= ticketTypeTo);
-                }))(),
-                "count" => ((Func<IQueryable<TransactionHistory>>)(() =>
-                {
-                    var countFrom = int.Parse(searchFrom);
-                    var countTo = int.Parse(searchTo);
-
-                    return query.Where(t => t.Count >= countFrom
-                                         && t.Count <= countTo);
-                }))(),
-
-                _ => query,
-            };
 
         // GET: TransactionHistories/Details/5
         public async Task<IActionResult> Details(Guid? id)
