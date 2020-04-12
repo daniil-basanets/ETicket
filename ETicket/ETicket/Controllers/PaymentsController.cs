@@ -11,14 +11,14 @@ namespace ETicket.Controllers
     [ApiController]
     public class PaymentsController : ControllerBase
     {
-        private readonly PrivatBankApiClient client;
         private readonly IUnitOfWork eTicketData;
+        private readonly PrivatBankApiClient privatBankApiClient;
 
-        public PaymentsController(IMerchant merchant, IUnitOfWork eTicketData)
+        public PaymentsController(IUnitOfWork eTicketData, IMerchant merchant)
         {
-            client = new PrivatBankApiClient(merchant.MerchantId, merchant.Password);
-
             this.eTicketData = eTicketData;
+
+            privatBankApiClient = new PrivatBankApiClient(merchant.MerchantId, merchant.Password);
         }
 
         // /api/Payments/Buy
@@ -26,8 +26,8 @@ namespace ETicket.Controllers
         [Route("[action]")]
         public async Task<IActionResult> Buy(BuyTicketRequest request)
         {
-            var mediator = new PaymentsAppService(eTicketData, client);
-            var response = await mediator.ProcessAsync(request);
+            var paymentsAppService = new PaymentsAppService(eTicketData, privatBankApiClient);
+            var response = await paymentsAppService.ProcessAsync(request);
 
             return Ok(response);
         }

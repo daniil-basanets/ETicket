@@ -1,104 +1,95 @@
+@using DBContextLibrary.Domain.Entities
 @model IEnumerable<DBContextLibrary.Domain.Entities.TicketType>
-
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Ticket Types</h1>
+<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
-<p>
-    <a asp-action="Create" class="btn btn-success">
-        <span class="text">Create New</span>
-        </a>
-</p>
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Ticket types</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("Type Name")
+                            </th>
+                            <th class="table-action">
+                                @Html.DisplayName("Price")
+                            </th>
+                            <th class="table-action">
+                                @Html.DisplayName("IsPersonal")
+                            </th>
+                            <th class="table-action">
+                                @Html.DisplayName("DurationHours")
+                            </th>
+                            <th>
+                                <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("Type Name")
+                            </th>
+                            <th class="table-action">
+                                @Html.DisplayName("Price")
+                            </th>
+                            <th class="table-action">
+                                @Html.DisplayName("IsPersonal")
+                            </th>
+                            <th class="table-action">
+                                @Html.DisplayName("DurationHours")
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TypeName)
+                                </td>
+                                <td class="table-static">
+                                    @item.Price.ToString("c", CultureInfo.CreateSpecificCulture("en-US"))
+                                </td>
+                                <td class="table-static">
+                                    @Html.DisplayFor(modelItem => item.IsPersonal)                                 
+                                </td>
+                                <td class="table-static">
+                                    @Html.DisplayFor(modelItem => item.DurationHours)
+                                </td>
+                                <td class="table-static">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>
-            @Html.DisplayName("Type Name")
-        </th>
-        <th class="table-action text-center">
-            @Html.ActionLink("Price", "Index", new { sortBy = "Price", sortDirection = ViewBag.SortDirection })
-        </th>
-        <th class="table-action text-center">
-            @Html.ActionLink("IsPersonal", "Index", new { sortBy = "IsPersonal", sortDirection = ViewBag.SortDirection })
-        </th>
-        <th class="table-action text-center">
-            @Html.ActionLink("DurationHours", "Index", new { sortBy = "DurationHours", sortDirection = ViewBag.SortDirection })
-        </th>
-        @using (Html.BeginForm())
-        {
-            <th class="table-static text-center">
-                Search: @Html.TextBox("SearchString")  
-                <input type="submit" value="Search" />
-            </th>
-        }
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TypeName)
-            </td>
-            <td class="table-static text-center">
-                @*@Html.DisplayFor(modelItem => item.Price)*@
-                @item.Price.ToString("c",CultureInfo.CreateSpecificCulture("en-US"))
-            </td>
-            <td class="table-static text-center">
-                @Html.DisplayFor(modelItem => item.IsPersonal)
-            </td>
-            <td class="table-static text-center">
-                @Html.DisplayFor(modelItem => item.DurationHours)
-            </td>
-            <td class="table-static text-center">
-                <div class="my-2"></div>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">
-                    <span class="text">Edit</span>
-                </a>
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">
-                    <span class="text">Details</span>
-                </a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">
-                    <span class="text">Delete</span>
-                </a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<script src="/vendor/jquery/jquery.min.js"></script>
 
-@*@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
+<!-- Page level plugins -->
+<script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
+<!-- Page level custom scripts -->
+<script src="/js/datatables-starter.js"></script>
 
-@for(var pageNumber = 1; pageNumber <= Model.TotalPages; pageNumber++)
-{
-    <a asp-action="Index"
-       asp-route-sortOrder="@ViewData["CurrentSort"]"
-       asp-route-pageNumber="@pageNumber"
-       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       class="btn btn-default">
-        @pageNumber
-    </a>
-}
-
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>*@
