@@ -2,9 +2,10 @@
 @using System.Linq;
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Users";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<link href="~/css/user-style.css" rel="stylesheet" />
 
 <h1>User table</h1>
 
@@ -14,91 +15,156 @@
     </a>
 </p>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.ActionLink("First Name", "Index", new { sortOrder = ViewBag.FirstNameSortParm })
-            </th>
-            <th>
-                @Html.ActionLink("Last Name", "Index", new { sortOrder = ViewBag.LastNameSortParm })
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateOfBirth)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Role)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Privilege)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Document)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Phone)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateOfBirth)
-                </td>
-                <td>
-                    @if (item.Role == null)
-                    @Html.DisplayFor(modelItem => item.Role.Name)
-                    else
-                    @Html.ActionLink(item.Role.Name, "Details", "Role", new { id = item.RoleId }, null)
-                </td>
-                <td>
-                    @if (item.Privilege == null)
-                    @Html.DisplayFor(modelItem => item.Privilege.Name)
-                    else
-                    @Html.ActionLink(item.Privilege.Name, "Details", "Privileges", new { id = item.PrivilegeId }, null)
-                </td>
-                <td>
-                    @if (item.Document == null)
-                    @Html.DisplayFor(modelItem => item.Document.Number)
-                    else
-                    @Html.ActionLink(item.Document.Number, "Details", "Documents", new { id = item.DocumentId }, null)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">
-                        <span class="text">Edit</span>
-                    </a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">
-                        <span class="text">Details</span>
-                    </a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">
-                        <span class="text">Delete</span>
-                    </a>
-                    <p>
-                        @if (item.Email != null)
-                        {
-                            <a asp-action="SendMessage" asp-route-id="@item.Id">Send message</a>
-                        }
-                    </p>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="users">
+
+    <div class="filters">
+        <details>
+            <summary>Filters</summary>
+            <table border="0">
+                <tr>
+                    <th>First name:</th>
+                    <th>
+                        <form class="user-filter-form" method="post">
+                            <input type="text" class="user-filter-form">
+                        </form>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Last name:</th>
+                    <th>
+                        <form class="user-filter-form" method="post">
+                            <input type="text" class="user-filter-form">
+                        </form>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Phone number:</th>
+                    <th>
+                        <form class="user-filter-form" method="post">
+                            <input type="text" class="user-filter-form">
+                        </form>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Email:</th>
+                    <th>
+                        <form class="user-filter-form" method="post">
+                            <input type="text" class="user-filter-form">
+                        </form>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Birth date:</th>
+                    <th>
+                        <form class="user-filter-form" method="post">
+                            <input type="date" id="user-birth-date" class="user-filter-form">
+                        </form>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Privilege:</th>
+                    <th>
+                        <form class="user-filter-form" method="post">
+                            <select id="privilege-select" class="user-filter-form">
+                                <option value="p1">Пункт 1</option>
+                                <option value =" p2">Пункт 2</option>
+                            </select>
+                       </form>
+                    </th>
+                </tr>
+            </table>
+            
+        </details>
+    </div>
+    <div class="user-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.ActionLink("First Name", "Index", new { sortOrder = ViewBag.FirstNameSortParm })
+                    </th>
+                    <th>
+                        @Html.ActionLink("Last Name", "Index", new { sortOrder = ViewBag.LastNameSortParm })
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Phone)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DateOfBirth)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Role)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Privilege)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Document)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FirstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.LastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Phone)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateOfBirth)
+                        </td>
+                        <td>
+                            @if (item.Role == null)
+                                @Html.DisplayFor(modelItem => item.Role.Name)
+                                else
+                                    @Html.ActionLink(item.Role.Name, "Details", "Role", new { id = item.RoleId }, null)
+                        </td>
+                        <td>
+                            @if (item.Privilege == null)
+                                @Html.DisplayFor(modelItem => item.Privilege.Name)
+                                else
+                                    @Html.ActionLink(item.Privilege.Name, "Details", "Privileges", new { id = item.PrivilegeId }, null)
+                        </td>
+                        <td>
+                            @if (item.Document == null)
+                                @Html.DisplayFor(modelItem => item.Document.Number)
+                                else
+                                    @Html.ActionLink(item.Document.Number, "Details", "Documents", new { id = item.DocumentId }, null)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">
+                                <span class="text">Edit</span>
+                            </a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">
+                                <span class="text">Details</span>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">
+                                <span class="text">Delete</span>
+                            </a>
+                            <p>
+                                @if (item.Email != null)
+                                {
+                                    <a asp-action="SendMessage" asp-route-id="@item.Id">Send message</a>
+                                }
+                            </p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript" src="~/js/user-script.js"></script>
