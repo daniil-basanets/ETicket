@@ -4,10 +4,12 @@ using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
 using ETicketAdmin.Common;
 using ETicketAdmin.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace ETicketAdmin.Controllers
 {
+    [Authorize]
     public class TicketTypeController : Controller
     {
         private readonly ETicketDataContext context;
