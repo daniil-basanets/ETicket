@@ -5,61 +5,50 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Documents</h1>
+<h1>Index</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-success">
-        <span class="text">Create New</span>
-    </a>
+    <a asp-action="Create">Create New</a>
 </p>
-
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.ActionLink("Document Type", "Index", new { sortOrder = ViewBag.DocumentSorting })
+                @Html.DisplayNameFor(model => model.DocumentType)
             </th>
             <th>
-                @Html.ActionLink("Number", "Index", new { sortOrder = ViewBag.NumberSorting })
-            </th>           
-        <th>
-            @Html.ActionLink("Expiration Date", "Index", new { sortOrder = ViewBag.ExpirationDateSorting })            
-        </th>
-        <th>
-            @Html.ActionLink("Is Valid", "Index", new { sortOrder = ViewBag.IsValid })
-        </th>            
+                @Html.DisplayNameFor(model => model.Number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpirationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsValid)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DocumentType)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Number)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ExpirationDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsValid)
-                </td>              
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">
-                        <span class="text">Edit</span>
-                    </a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">
-                        <span class="text">Details</span>
-                    </a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">
-                        <span class="text">Delete</span>
-                    </a>                    
-                </td>
-            </tr>
-        }
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DocumentType.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpirationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsValid)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
     </tbody>
 </table>
-

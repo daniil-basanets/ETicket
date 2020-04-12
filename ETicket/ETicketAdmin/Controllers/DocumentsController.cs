@@ -7,73 +7,36 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
-using DBContextLibrary.Domain.Interfaces;
 
 namespace ETicketAdmin.Controllers
 {
     public class DocumentsController : Controller
     {
-        //private readonly ETicketData eTicketData;
-        //private readonly ETicketDataContext _context;
+        private readonly ETicketDataContext _context;
 
-        private readonly IUnitOfWork unitOfWork;
-
-        public DocumentsController(IUnitOfWork unitOfWork)
+        public DocumentsController(ETicketDataContext context)
         {
-            //_context = context;
-            //eTicketData = new ETicketData(_context);
-            this.unitOfWork = unitOfWork;
+            _context = context;
         }
 
-        public IActionResult Index(string sorting)
+        // GET: Documents
+        public async Task<IActionResult> Index()
         {
-            ViewBag.DocumentSorting = String.IsNullOrEmpty(sorting) ? "Documents_Desc" : "";
-            ViewBag.NumberSorting = sorting == "Number" ? "Number_desc" : "Number";
-            ViewBag.ExpirationDateSorting = sorting == "Expiration Date" ? "ExpirationDate_Desc" : "ExpirationDate";
-            ViewBag.IsValid = sorting == "IsValid" ? "IsValid_Desc" : "IsValid";
-
-            var eContext = unitOfWork.Documents.GetAll();
-            IOrderedQueryable<Document> documents;
-
-            switch (sorting)
-            {
-                case "Documents_Desc":
-                    documents = eContext.OrderByDescending(s => s.DocumentType);
-                    break;
-                case "Number_desc":
-                    documents = eContext.OrderByDescending(s => s.Number);
-                    break;
-                case "Number":
-                    documents = eContext.OrderBy(s => s.Number);
-                    break;
-                case "ExpirationDate_Desc":
-                    documents = eContext.OrderByDescending(s => s.ExpirationDate);
-                    break;
-                case "ExpirationDate":
-                    documents = eContext.OrderBy(s => s.ExpirationDate);
-                    break;
-                case "IsValid_Desc":
-                    documents = eContext.OrderByDescending(s => s.IsValid);
-                    break;
-                case "IsValid":
-                    documents = eContext.OrderBy(s => s.IsValid);
-                    break;
-                default:
-                    documents = eContext.OrderBy(s => s.DocumentType);
-                    break;
-            }
-            return View(documents.ToList());
+            var eTicketDataContext = _context.Documents.Include(d => d.DocumentType);
+            return View(await eTicketDataContext.ToListAsync());
         }
 
-        public IActionResult Details(Guid id)
+        // GET: Documents/Details/5
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var document = unitOfWork.Documents.Get(id);
-
+            var document = await _context.Documents
+                .Include(d => d.DocumentType)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (document == null)
             {
                 return NotFound();
@@ -82,51 +45,54 @@ namespace ETicketAdmin.Controllers
             return View(document);
         }
 
+        // GET: Documents/Create
         public IActionResult Create()
         {
-            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name");
-
+            ViewData["DocumentTypeId"] = new SelectList(_context.DocumentTypes, "Id", "Name");
             return View();
         }
 
+        // POST: Documents/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,DocumentType,Number,ExpirationDate,IsValid")] Document document)
+        public async Task<IActionResult> Create([Bind("Id,DocumentTypeId,Number,ExpirationDate,IsValid")] Document document)
         {
             if (ModelState.IsValid)
             {
                 document.Id = Guid.NewGuid();
-                unitOfWork.Documents.Create(document);
-                unitOfWork.Save();
+                _context.Add(document);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", document.DocumentTypeId);
-
+            ViewData["DocumentTypeId"] = new SelectList(_context.DocumentTypes, "Id", "Name", document.DocumentTypeId);
             return View(document);
         }
 
-        public IActionResult Edit(Guid id)
+        // GET: Documents/Edit/5
+        public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var document = unitOfWork.Documents.Get(id);
+            var document = await _context.Documents.FindAsync(id);
             if (document == null)
             {
                 return NotFound();
             }
-
-            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.Documents.GetAll(), "Id", "Name", document.DocumentTypeId);
-
+            ViewData["DocumentTypeId"] = new SelectList(_context.DocumentTypes, "Id", "Name", document.DocumentTypeId);
             return View(document);
         }
 
+        // POST: Documents/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, [Bind("Id,DocumentType,Number,ExpirationDate,IsValid")] Document document)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,DocumentTypeId,Number,ExpirationDate,IsValid")] Document document)
         {
             if (id != document.Id)
             {
@@ -137,8 +103,8 @@ namespace ETicketAdmin.Controllers
             {
                 try
                 {
-                    unitOfWork.Documents.Update(document);
-                    unitOfWork.Save();
+                    _context.Update(document);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -151,23 +117,23 @@ namespace ETicketAdmin.Controllers
                         throw;
                     }
                 }
-
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.Documents.GetAll(), "Id", "Name", document.DocumentTypeId);
-
+            ViewData["DocumentTypeId"] = new SelectList(_context.DocumentTypes, "Id", "Name", document.DocumentTypeId);
             return View(document);
         }
 
-        public IActionResult Delete(Guid id)
+        // GET: Documents/Delete/5
+        public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var document = unitOfWork.Documents.Get(id);
+            var document = await _context.Documents
+                .Include(d => d.DocumentType)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (document == null)
             {
                 return NotFound();
@@ -176,19 +142,20 @@ namespace ETicketAdmin.Controllers
             return View(document);
         }
 
+        // POST: Documents/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            unitOfWork.Documents.Delete(id);
-            unitOfWork.Save();
+            var document = await _context.Documents.FindAsync(id);
+            _context.Documents.Remove(document);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool DocumentExists(Guid id)
         {
-            return unitOfWork.Documents.Get(id) != null;
+            return _context.Documents.Any(e => e.Id == id);
         }
-
     }
 }

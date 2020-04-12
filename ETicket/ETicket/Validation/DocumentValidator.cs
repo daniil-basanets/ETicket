@@ -8,19 +8,19 @@ namespace ETicket.Validation
     {
         public DocumentValidator()
         {
-            RuleFor(d => d.DocumentType)
-                .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty()
-                .SetValidator(new DocumentTypeValidator());
+            //RuleFor(d => d.DocumentType)
+            //    .Cascade(CascadeMode.StopOnFirstFailure)
+            //    .NotEmpty()
+            //    .SetValidator(new DocumentTypeValidator());
             
-            RuleFor(d=>d.Number)
-                .NotEmpty();
+            //RuleFor(d=>d.Number)
+            //    .NotEmpty();
 
-            RuleFor(d => d.ExpirationDate)
-                .GreaterThan(DateTime.Now);
+            //RuleFor(d => d.ExpirationDate)
+            //    .GreaterThan(DateTime.Now);
 
-            RuleFor(d => d.IsValid)
-                .NotNull();
+            //RuleFor(d => d.IsValid)
+            //    .NotNull();
             
         }
     }
