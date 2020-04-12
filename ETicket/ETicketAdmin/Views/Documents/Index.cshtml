@@ -4,94 +4,61 @@
     ViewData["Title"] = "Index";
 }
 
-<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<h1>Documents</h1>
 
-<div class="container-fluid">
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Document types</h6>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.DocumentType)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Number)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ExpirationDate)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.IsValid)
-                            </th>
-                            <th>
-                                <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.DocumentType)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Number)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ExpirationDate)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.IsValid)
-                            </th>
-                            <th>
-                                Actions
-                            </th>
-                        </tr>
-                    </tfoot>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                        <tr>
-                            <td>
-                                @if (item.DocumentType == null)
-                                    @Html.DisplayFor(modelItem => item.DocumentType.Name)
-                                    else
-                                        @Html.ActionLink(item.DocumentType.Name, "Details", "DocumentTypes", new { id = item.DocumentTypeId }, null)
-                                @Html.DisplayFor(modelItem => item.Number)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Number)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ExpirationDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.IsValid)
-                            </td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                            </td>
-                        </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+<p>
+    <a asp-action="Create" class="btn btn-success">
+        <span class="text">Create New</span>
+    </a>
+</p>
 
-<script src="/vendor/jquery/jquery.min.js"></script>
-
-<!-- Page level plugins -->
-<script src="/vendor/datatables/jquery.dataTables.min.js"></script>
-<script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-<!-- Page level custom scripts -->
-<script src="/js/datatables-starter.js"></script>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.ActionLink("Document Type", "Index", new { sortOrder = ViewBag.DocumentSorting })
+            </th>
+            <th>
+                @Html.ActionLink("Number", "Index", new { sortOrder = ViewBag.NumberSorting })
+            </th>           
+        <th>
+            @Html.ActionLink("Expiration Date", "Index", new { sortOrder = ViewBag.ExpirationDateSorting })            
+        </th>
+        <th>
+            @Html.ActionLink("Is Valid", "Index", new { sortOrder = ViewBag.IsValid })
+        </th>            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DocumentType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpirationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsValid)
+                </td>              
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">
+                        <span class="text">Edit</span>
+                    </a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">
+                        <span class="text">Details</span>
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">
+                        <span class="text">Delete</span>
+                    </a>                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
