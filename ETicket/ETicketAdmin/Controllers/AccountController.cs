@@ -10,13 +10,13 @@ namespace ETicketAdmin.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
 
         public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         public IActionResult Index()
@@ -36,13 +36,12 @@ namespace ETicketAdmin.Controllers
             if (ModelState.IsValid)
             {
                 IdentityUser user = new IdentityUser { Email = model.Email, UserName = model.Email };
-                // добавляем пользователя
-                var result = await _userManager.CreateAsync(user, model.Password);
+
+                var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    // установка куки
-                    await _userManager.AddToRoleAsync(user, "Admin");// какая роль при регистрации?
-                    await _signInManager.SignInAsync(user, false);
+                    //await _userManager.AddToRoleAsync(user, "RegisteredUser");// какая роль при регистрации?
+                    await signInManager.SignInAsync(user, false);
                     return RedirectToAction("Login", "Account");
                 }
                 else
@@ -53,6 +52,7 @@ namespace ETicketAdmin.Controllers
                     }
                 }
             }
+
             return View(model);
         }
 
@@ -68,11 +68,9 @@ namespace ETicketAdmin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result =
-                    await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
                 {
-                    // проверяем, принадлежит ли URL приложению
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
                         return Redirect(model.ReturnUrl);
@@ -87,6 +85,7 @@ namespace ETicketAdmin.Controllers
                     ModelState.AddModelError("", "Wrong email or password");
                 }
             }
+
             return View(model);
         }
 
@@ -94,8 +93,8 @@ namespace ETicketAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            // удаляем аутентификационные куки
-            await _signInManager.SignOutAsync();
+            await signInManager.SignOutAsync();
+
             return RedirectToAction("Index", "Account");
         }
     }

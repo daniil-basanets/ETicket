@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model ETicketAdmin.Models.RegisteredUsersViewModels.ChangeRolesViewModel
+
+@{
+    ViewData["Title"] = "EditRoles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>Edit access rights for @Model.UserEmail</h2>
+
+<form asp-action="EditRoles" method="post">
+    <input type="hidden" name="userId" value="@Model.UserId" />
+    <div class="form-group">
+        @foreach (var role in Model.AllRoles)
+        {
+            <input type="checkbox" name="roles" value="@role.Name"
+                   @(Model.UserRoles.Contains(role.Name) ? "checked=\"checked\"" : "") />@role.Name <br />
+            }
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

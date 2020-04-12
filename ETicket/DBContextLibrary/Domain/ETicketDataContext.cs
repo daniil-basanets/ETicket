@@ -31,6 +31,16 @@ namespace DBContextLibrary.Domain
                     .WithMany()
                     .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<User>()
+                   .HasOne(i => i.Privilege)
+                   .WithMany()
+                   .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<User>()
+                    .HasOne(i => i.Document)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.SetNull);
+
             base.OnModelCreating(modelBuilder);
         }
     }

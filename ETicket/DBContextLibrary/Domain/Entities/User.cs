@@ -35,5 +35,17 @@ namespace DBContextLibrary.Domain.Entities
         [DisplayName("Date of birth")]
         [Column(TypeName = "date")]
         public DateTime DateOfBirth { get; set; }
+
+        [ForeignKey("PrivilegeId")]
+        public Privilege Privilege { get; set; }
+
+        [DisplayName("Privilege")]
+        public int? PrivilegeId { get; set; }
+
+        [ForeignKey("DocumentId")]
+        public Document Document { get; set; }
+
+        [DisplayName("Document")]
+        public Guid? DocumentId { get; set; }
     }
 }
