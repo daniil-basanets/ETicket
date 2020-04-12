@@ -22,23 +22,6 @@ namespace ETicketAdmin.Controllers
             return View(unitOfWork.DocumentTypes.GetAll());
         }
 
-        // GET: DocumentTypes/Details/5
-        public IActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var documentType = unitOfWork.DocumentTypes.Get((int)id);
-            if (documentType == null)
-            {
-                return NotFound();
-            }
-
-            return View(documentType);
-        }
-
         // GET: DocumentTypes/Create
         public IActionResult Create()
         {

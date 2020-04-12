@@ -2,8 +2,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
-using ETicketAdmin.Common;
-using ETicketAdmin.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 namespace ETicketAdmin.Controllers
@@ -17,9 +15,9 @@ namespace ETicketAdmin.Controllers
             this.context = context;
         }
         
-        public async Task<IActionResult> Index(string sortBy, string sortDirection, string searchString, int pageNumber = 1)
+        public async Task<IActionResult> Index()
         {
-            IQueryable<TicketType> eTicketDataContext = context.TicketTypes;
+            /*IQueryable<TicketType> eTicketDataContext = context.TicketTypes;
             
             if (!(string.IsNullOrEmpty(sortBy) || string.IsNullOrEmpty(sortDirection)))
             {
@@ -30,7 +28,7 @@ namespace ETicketAdmin.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 eTicketDataContext = eTicketDataContext.Where(t => t.TypeName.Contains(searchString)
-                || t.Price.ToString().Contains(searchString) || t.DurationHours.ToString().Contains(searchString));
+                || t.Price.ToString(CultureInfo.InvariantCulture).Contains(searchString) || t.DurationHours.ToString().Contains(searchString));
             }
 
             ViewBag.SortDirection = sortDirection == "desc" ? "asc" : "desc";
@@ -55,7 +53,9 @@ namespace ETicketAdmin.Controllers
             
             var pageSize = CommonSettings.DefaultPageSize;
             
-            return View(await PaginatedList<TicketType>.CreateAsync(eTicketDataContext, pageNumber, pageSize));
+            return View(await PaginatedList<TicketType>.CreateAsync(eTicketDataContext, pageNumber, pageSize));*/
+            
+            return View(await context.TicketTypes.ToListAsync());
         }
         
         public async Task<IActionResult> Details(int? id)
@@ -84,12 +84,15 @@ namespace ETicketAdmin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,TypeName,DurationHours,IsPersonal,Price")] TicketType ticketType)
         {
-            if (!ModelState.IsValid) return View(ticketType);
+            if (!ModelState.IsValid)
+            {
+                return View(ticketType);
+            }
+                
             context.Add(ticketType);
             await context.SaveChangesAsync();
                 
             return RedirectToAction(nameof(Index));
-
         }
         
         public async Task<IActionResult> Edit(int? id)

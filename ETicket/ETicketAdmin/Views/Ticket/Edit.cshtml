@@ -14,7 +14,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="TicketTypeId" class="control-label"></label>
+                <label asp-for="TicketTypeId" class="control-label">Ticket type</label>
                 <select asp-for="TicketTypeId" class="form-control" asp-items="ViewBag.TicketTypeId"></select>
                 <span asp-validation-for="TicketTypeId" class="text-danger"></span>
             </div>
@@ -34,12 +34,12 @@
                 <span asp-validation-for="ExpirationUTCDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
+                <label asp-for="UserId" class="control-label">User</label>
                 <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
                 <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="TransactionHistoryId" class="control-label"></label>
+                <label asp-for="TransactionHistoryId" class="control-label">Transaction Reference Number</label>
                 <select asp-for="TransactionHistoryId" class="form-control" asp-items="ViewBag.TransactionHistoryId"></select>
                 <span asp-validation-for="TransactionHistoryId" class="text-danger"></span>
             </div>
