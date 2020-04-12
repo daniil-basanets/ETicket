@@ -32,9 +32,6 @@
                                 @Html.DisplayNameFor(model => model.User)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.TransactionHistory)
-                            </th>
-                            <th>
                                 <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
                             </th>
                         </tr>
@@ -55,9 +52,6 @@
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.User)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.TransactionHistory)
                             </th>
                             <th>
                                 Actions
@@ -83,11 +77,8 @@
                                 <td>
                                     @if (item.User == null)
                                         @Html.DisplayFor(modelItem => item.User.FirstName)
-                                        else
-                                            @Html.ActionLink(item.User.FirstName, "Details", "User", new { id = item.UserId }, null)
-                                </td>
-                                <td>
-                                    @Html.ActionLink(item.TransactionHistoryId.ToString(), "Details", "TransactionHistory", new { id = item.TransactionHistoryId }, null)
+                                    else
+                                        @Html.ActionLink(item.User.FirstName, "Details", "User", new { id = item.UserId }, null)
                                 </td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
