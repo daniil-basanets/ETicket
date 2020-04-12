@@ -21,7 +21,7 @@ namespace ETicketAdmin.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Login", "Account");
         }
 
         [HttpGet]
@@ -89,13 +89,13 @@ namespace ETicketAdmin.Controllers
             return View(model);
         }
 
-        [HttpPost]
+        [HttpGet]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
 
-            return RedirectToAction("Index", "Account");
+            return RedirectToAction("Login", "Account");
         }
     }
 }
