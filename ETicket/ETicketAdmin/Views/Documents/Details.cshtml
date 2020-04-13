@@ -26,8 +26,8 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ExpirationDate)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ExpirationDate)
+        <dd class="col-sm-10">
+            @(Model.ExpirationDate?.ToString("yyyy-MM-dd"))
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.IsValid)
