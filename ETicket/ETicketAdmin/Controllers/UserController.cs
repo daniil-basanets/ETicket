@@ -10,7 +10,6 @@ using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Repositories;
 using ETicketAdmin.Models;
 using ETicketAdmin.Services;
-using ETicketAdmin.Common;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
