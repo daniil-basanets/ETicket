@@ -114,9 +114,9 @@ namespace ETicketAdmin.Controllers
             "ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
         {
             ticket.CreatedUTCDate = DateTime.UtcNow;
+            ticket.TicketType = uow.TicketTypes.Get(ticket.TicketTypeId); 
 
-            TicketType ticketType = uow.TicketTypes.Get(ticket.TicketTypeId);
-            if (ticketType.IsPersonal && ticket.UserId == null)
+            if (ticket.TicketType.IsPersonal && ticket.UserId == null)
             {
                 ModelState.AddModelError("", "User is not specified for personal ticket type");
                 ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName");
@@ -126,13 +126,12 @@ namespace ETicketAdmin.Controllers
                 return View(ticket);
             }
 
-            ticket.TicketType = ticketType;
             if (ModelState.IsValid)
             {
                 ticket.Id = Guid.NewGuid();
                 if (ticket.ActivatedUTCDate != null)
                 {
-                    ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(uow.TicketTypes.Get(ticket.TicketTypeId).DurationHours);
+                    ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(ticket.TicketType.DurationHours);
                 }
                 uow.Tickets.Create(ticket);
                 uow.Save();
