@@ -9,9 +9,11 @@ using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
 using System.Collections.Generic;
 using ETicketAdmin.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class TicketController : Controller
     {
         private readonly IUnitOfWork uow;

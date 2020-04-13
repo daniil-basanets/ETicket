@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly ETicketDataContext context;
