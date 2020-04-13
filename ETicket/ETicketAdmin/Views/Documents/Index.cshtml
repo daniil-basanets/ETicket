@@ -62,8 +62,8 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Number)
                                 </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.ExpirationDate)
+                                <td>                      
+                                    @(item.ExpirationDate.HasValue ? item.ExpirationDate.Value.ToString("yyyy-MM-dd") : "")
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.IsValid)

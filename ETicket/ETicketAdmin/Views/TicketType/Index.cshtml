@@ -65,7 +65,7 @@
                                     @item.Price.ToString("c", CultureInfo.CreateSpecificCulture("en-US"))
                                 </td>
                                 <td class="table-static">
-                                    @Html.DisplayFor(modelItem => item.IsPersonal)                                 
+                                    @(item.IsPersonal ? "Yes" : "No")                          
                                 </td>
                                 <td class="table-static">
                                     @Html.DisplayFor(modelItem => item.DurationHours)

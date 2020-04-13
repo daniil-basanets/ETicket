@@ -6,7 +6,7 @@ $(document).ready(function () {
         columnDefs: [
             { orderable: false, targets: -1 }
         ]
-
+		
     });
 
     //Delete container from loyout only for Index
