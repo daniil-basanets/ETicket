@@ -22,7 +22,6 @@ namespace DBContextLibrary.Domain.Entities
         [MaxLength(50)]
         public string Number { get; set; }
 
-        [Required]
         public DateTime? ExpirationDate { get; set; }
 
         [Required]
