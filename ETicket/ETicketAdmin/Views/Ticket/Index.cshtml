@@ -75,10 +75,8 @@
                                     @item.ExpirationUTCDate?.ToString("yyyy-MM-dd hh:mm")
                                 </td>
                                 <td>
-                                    @if (item.User == null)
-                                        @Html.DisplayFor(modelItem => item.User.LastName)
-                                    else
-                                        @Html.ActionLink(item.User.FirstName, "Details", "User", new { id = item.UserId }, null)
+                                    @if (item.User != null)
+                                       @Html.ActionLink(item.User.LastName, "Details", "User", new { id = item.UserId }, null)
                                 </td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
