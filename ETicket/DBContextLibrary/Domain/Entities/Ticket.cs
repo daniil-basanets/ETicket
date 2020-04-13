@@ -19,12 +19,15 @@ namespace DBContextLibrary.Domain.Entities
 
         [Required]
         [DisplayName("Created")]
+        [DataType(DataType.DateTime)]
         public DateTime CreatedUTCDate { get; set; }
 
         [DisplayName("Activated")]
+        [DataType(DataType.DateTime)]
         public DateTime? ActivatedUTCDate { get; set; }
 
         [DisplayName("Expiration")]
+        [DataType(DataType.DateTime)]
         public DateTime? ExpirationUTCDate { get; set; }
 
         public Guid? UserId { get; set; }
@@ -33,6 +36,7 @@ namespace DBContextLibrary.Domain.Entities
         [DisplayName("User")]
         public User User { get; set; }
 
+        [Required]
         public Guid TransactionHistoryId { get; set; }
 
         [DisplayName("Transaction")]

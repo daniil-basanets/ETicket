@@ -33,12 +33,13 @@ namespace DBContextLibrary.Domain.Repositories
 
         public Document Get(Guid id)
         {
-            return db.Documents.Find(id);
+            return db.Documents.Include(d => d.DocumentType)
+                .FirstOrDefault(d => d.Id == id);
         }
 
         public IQueryable<Document> GetAll()
         {
-            return db.Documents;
+            return db.Documents.Include(d => d.DocumentType);
         }
 
         public void Update(Document item)
