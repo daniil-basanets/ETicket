@@ -7,36 +7,39 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
+using DBContextLibrary.Domain.Interfaces;
 
 namespace ETicketAdmin.Controllers
 {
     public class DocumentsController : Controller
     {
-        private readonly ETicketDataContext _context;
+        private readonly IUnitOfWork unitOfWork;
 
-        public DocumentsController(ETicketDataContext context)
+        public DocumentsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            this.unitOfWork = unitOfWork;
         }
 
         // GET: Documents
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var eTicketDataContext = _context.Documents.Include(d => d.DocumentType);
-            return View(await eTicketDataContext.ToListAsync());
+            return View(unitOfWork.Documents.GetAll());
         }
 
         // GET: Documents/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public IActionResult Details(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var document = await _context.Documents
+            IQueryable<Document> eTicketDataContext = unitOfWork.Documents.GetAll();
+
+            var document = eTicketDataContext
                 .Include(d => d.DocumentType)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefault(m => m.Id == id);
+
             if (document == null)
             {
                 return NotFound();
@@ -48,42 +51,46 @@ namespace ETicketAdmin.Controllers
         // GET: Documents/Create
         public IActionResult Create()
         {
-            ViewData["DocumentTypeId"] = new SelectList(_context.DocumentTypes, "Id", "Name");
+            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name");
+            
             return View();
         }
 
         // POST: Documents/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DocumentTypeId,Number,ExpirationDate,IsValid")] Document document)
+        public IActionResult Create([Bind("Id,DocumentTypeId,Number,ExpirationDate,IsValid")] Document document)
         {
             if (ModelState.IsValid)
             {
                 document.Id = Guid.NewGuid();
-                _context.Add(document);
-                await _context.SaveChangesAsync();
+                unitOfWork.Documents.Create(document);
+                unitOfWork.Save();
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DocumentTypeId"] = new SelectList(_context.DocumentTypes, "Id", "Name", document.DocumentTypeId);
+
+            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", document.DocumentTypeId);
+
             return View(document);
         }
 
         // GET: Documents/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public IActionResult Edit(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var document = await _context.Documents.FindAsync(id);
+            var document = unitOfWork.Documents.Get((Guid)id);
+
             if (document == null)
             {
                 return NotFound();
             }
-            ViewData["DocumentTypeId"] = new SelectList(_context.DocumentTypes, "Id", "Name", document.DocumentTypeId);
+
+            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", document.DocumentTypeId);
             return View(document);
         }
 
@@ -92,7 +99,7 @@ namespace ETicketAdmin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,DocumentTypeId,Number,ExpirationDate,IsValid")] Document document)
+        public IActionResult Edit(Guid id, [Bind("Id,DocumentTypeId,Number,ExpirationDate,IsValid")] Document document)
         {
             if (id != document.Id)
             {
@@ -103,8 +110,8 @@ namespace ETicketAdmin.Controllers
             {
                 try
                 {
-                    _context.Update(document);
-                    await _context.SaveChangesAsync();
+                    unitOfWork.Documents.Update(document);
+                    unitOfWork.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -119,21 +126,21 @@ namespace ETicketAdmin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DocumentTypeId"] = new SelectList(_context.DocumentTypes, "Id", "Name", document.DocumentTypeId);
+
+            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", document.DocumentTypeId);
             return View(document);
         }
 
         // GET: Documents/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public IActionResult Delete(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var document = await _context.Documents
-                .Include(d => d.DocumentType)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var document = unitOfWork.Documents.Get((Guid)id);
+
             if (document == null)
             {
                 return NotFound();
@@ -145,17 +152,17 @@ namespace ETicketAdmin.Controllers
         // POST: Documents/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public IActionResult DeleteConfirmed(Guid id)
         {
-            var document = await _context.Documents.FindAsync(id);
-            _context.Documents.Remove(document);
-            await _context.SaveChangesAsync();
+            unitOfWork.Documents.Delete(id);
+            unitOfWork.Save();
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool DocumentExists(Guid id)
         {
-            return _context.Documents.Any(e => e.Id == id);
+            return unitOfWork.Documents.Get(id) != null;
         }
     }
 }
