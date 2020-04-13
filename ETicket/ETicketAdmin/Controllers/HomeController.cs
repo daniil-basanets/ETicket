@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Admin, SuperUser")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

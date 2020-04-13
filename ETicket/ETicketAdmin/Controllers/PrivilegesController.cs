@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class PrivilegesController : Controller
     {
         #region

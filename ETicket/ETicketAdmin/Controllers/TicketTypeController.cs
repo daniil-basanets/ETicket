@@ -1,10 +1,12 @@
 using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ETicketAdmin.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class TicketTypeController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
