@@ -2,6 +2,7 @@
 using DBContextLibrary.Domain.Interfaces;
 using ETicket.PrivatBankApi;
 using ETicket.PrivatBankApi.PrivatBank;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,17 +25,16 @@ namespace ETicket.Services.BuyTicket
 
         public async Task<BuyTicketResponse> ProcessAsync(BuyTicketRequest buyTicketRequest)
         {
-            // add coef from user(userId)
+            // Get User privilege coefficient
+            var privilegeCoef = GetUserPrivilegeCoefficient(buyTicketRequest.UserId);
 
             // Calculate price
-            var ticketType = eTitcketData.TicketTypes.GetAll()
-                .FirstOrDefault(x => x.Id == buyTicketRequest.TicketTypeId);
-
-            var totalPrice = ticketType.Price * buyTicketRequest.Amount;
+            var totalPrice = GetTotalPrice(buyTicketRequest, privilegeCoef);
 
             // Process with Private
             var errorMessage = await SendTransaction(totalPrice);
 
+            // Check if fail transaction
             if (!string.IsNullOrEmpty(errorMessage))
                 return new BuyTicketResponse { ErrorMessage = errorMessage };
 
@@ -49,6 +49,26 @@ namespace ETicket.Services.BuyTicket
             eTitcketData.Save();
 
             return new BuyTicketResponse();
+        }
+
+        private decimal GetUserPrivilegeCoefficient(Guid userId)
+        {
+            var userPrivilege = eTitcketData.Users
+               .GetAll()
+               .Include(p => p.Privilege)
+               .Where(u => u.Id == userId)
+               .Select(p => p.Privilege)
+               .First();
+
+            return (userPrivilege == null) ? 1M : (decimal)userPrivilege.Coefficient;
+        }
+
+        private decimal GetTotalPrice(BuyTicketRequest buyTicketRequest, decimal privilegeCoef)
+        {
+            var ticketType = eTitcketData.TicketTypes.GetAll()
+                .FirstOrDefault(x => x.Id == buyTicketRequest.TicketTypeId);
+
+            return ticketType.Price * buyTicketRequest.Amount * privilegeCoef;
         }
 
         private async Task<string> SendTransaction(decimal totalPrice)
@@ -75,8 +95,7 @@ namespace ETicket.Services.BuyTicket
             Guid transactionHistoryId
         )
         {
-            var random = new Random();
-            var referenceNumber = random.Next(1, 999999999).ToString().PadLeft(13, '0');
+            var referenceNumber = GetRandomRefNumberTransaction();
 
             var transaction = new TransactionHistory
             {
@@ -89,6 +108,13 @@ namespace ETicket.Services.BuyTicket
             };
 
             eTitcketData.TransactionHistory.Create(transaction);
+        }
+
+        private string GetRandomRefNumberTransaction()
+        {
+            var random = new Random();
+
+            return random.Next(1, 999999999).ToString().PadLeft(13, '0');
         }
 
         private void SaveTickets(

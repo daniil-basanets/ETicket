@@ -1,71 +1,32 @@
-using System.Linq;
-using System.Threading.Tasks;
-using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
+using DBContextLibrary.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 namespace ETicketAdmin.Controllers
 {
     public class TicketTypeController : Controller
     {
-        private readonly ETicketDataContext context;
+        private readonly IUnitOfWork unitOfWork;
 
-        public TicketTypeController(ETicketDataContext context)
+        public TicketTypeController(IUnitOfWork unitOfWork)
         {
-            this.context = context;
+            this.unitOfWork = unitOfWork;
         }
         
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            /*IQueryable<TicketType> eTicketDataContext = context.TicketTypes;
-            
-            if (!(string.IsNullOrEmpty(sortBy) || string.IsNullOrEmpty(sortDirection)))
-            {
-                sortBy = sortBy.ToLower();
-                sortDirection = sortDirection.ToLower();
-            }
-            
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                eTicketDataContext = eTicketDataContext.Where(t => t.TypeName.Contains(searchString)
-                || t.Price.ToString(CultureInfo.InvariantCulture).Contains(searchString) || t.DurationHours.ToString().Contains(searchString));
-            }
-
-            ViewBag.SortDirection = sortDirection == "desc" ? "asc" : "desc";
-
-            switch (sortBy)
-            {
-                case "price":
-                    eTicketDataContext = eTicketDataContext.ApplySortBy(t => t.Price, sortDirection);
-                    break;
-                
-                case "ispersonal":
-                    eTicketDataContext = eTicketDataContext.ApplySortBy(t => t.IsPersonal, sortDirection);
-                    break;
-                
-                case "durationhours":
-                    eTicketDataContext = eTicketDataContext.ApplySortBy(t => t.DurationHours, sortDirection);
-                    break;
-                default:
-                    eTicketDataContext = eTicketDataContext.OrderBy(t => t.Id);
-                    break;
-            }
-            
-            var pageSize = CommonSettings.DefaultPageSize;
-            
-            return View(await PaginatedList<TicketType>.CreateAsync(eTicketDataContext, pageNumber, pageSize));*/
-            
-            return View(await context.TicketTypes.ToListAsync());
+            return View(unitOfWork.TicketTypes.GetAll());
         }
         
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var ticketType = await context.TicketTypes.FirstOrDefaultAsync(m => m.Id == id);
+            var ticketType = unitOfWork.TicketTypes.Get((int)id);
             
             if (ticketType == null)
             {
@@ -82,27 +43,27 @@ namespace ETicketAdmin.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TypeName,DurationHours,IsPersonal,Price")] TicketType ticketType)
+        public IActionResult Create([Bind("Id,TypeName,DurationHours,IsPersonal,Price")] TicketType ticketType)
         {
             if (!ModelState.IsValid)
             {
                 return View(ticketType);
             }
                 
-            context.Add(ticketType);
-            await context.SaveChangesAsync();
-                
+            unitOfWork.TicketTypes.Create(ticketType);
+            unitOfWork.Save();
+            
             return RedirectToAction(nameof(Index));
         }
         
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var ticketType = await context.TicketTypes.FindAsync(id);
+            var ticketType = unitOfWork.TicketTypes.Get((int)id);
             
             if (ticketType == null)
             {
@@ -114,46 +75,43 @@ namespace ETicketAdmin.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TypeName,DurationHours,IsPersonal,Price")] TicketType ticketType)
+        public IActionResult Edit(int id, [Bind("Id,TypeName,DurationHours,IsPersonal,Price")] TicketType ticketType)
         {
             if (id != ticketType.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(ticketType);
+            try
             {
-                try
-                {
-                    context.Update(ticketType);
-                    await context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TicketTypeExists(ticketType.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                
-                return RedirectToAction(nameof(Index));
+                unitOfWork.TicketTypes.Update(ticketType);
+                unitOfWork.Save();
             }
-            
-            return View(ticketType);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TicketTypeExists(ticketType.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+                
+            return RedirectToAction(nameof(Index));
+
         }
         
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var ticketType = await context.TicketTypes.FirstOrDefaultAsync(m => m.Id == id);
+            var ticketType = unitOfWork.TicketTypes.Get((int)id);
             
             if (ticketType == null)
             {
@@ -165,12 +123,10 @@ namespace ETicketAdmin.Controllers
         
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var ticketType = await context.TicketTypes.FindAsync(id);
-            
-            context.TicketTypes.Remove(ticketType);
-            await context.SaveChangesAsync();
+            unitOfWork.TicketTypes.Delete(id);
+            unitOfWork.Save();
             
             return RedirectToAction(nameof(Index));
         }
@@ -178,7 +134,7 @@ namespace ETicketAdmin.Controllers
         
         private bool TicketTypeExists(int id)
         {
-            return context.TicketTypes.Any(e => e.Id == id);
+            return unitOfWork.TicketTypes.Get(id) != null;
         }
     }
 }

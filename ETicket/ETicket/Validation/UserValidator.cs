@@ -13,13 +13,13 @@ namespace ETicket.Validation
             RuleFor(u => u.FirstName)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("{PropertyName} is empty")
-                .Length(2, 50).WithMessage("Lenght ({TotalLength}) of {PropertyName} Invalid")
+                .Length(2, 50)
                 .Must(BeAValidName).WithMessage("{PropertyName} Contains invalid characters");
             
             RuleFor(u => u.LastName)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("{PropertyName} is empty")
-                .Length(2, 50).WithMessage("Lenght ({TotalLength}) of {PropertyName} Invalid")
+                .Length(2, 50)
                 .Must(BeAValidName).WithMessage("{PropertyName} Contains invalid characters");
 
             RuleFor(u => u.DateOfBirth)
@@ -32,24 +32,7 @@ namespace ETicket.Validation
                 .NotEmpty().WithMessage("{PropertyName} is empty")
                 .Must(BeAValidPhoneNumber).WithMessage("Invalid {PropertyName}");
             
-            RuleFor(u=>u.Role)
-                .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotNull().When(u=>u.RoleId != null)
-                .SetValidator(new RoleValidator());
-
-            RuleFor(u => u.Privilege)
-                .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotNull().When(u => u.PrivilegeId != null && u.RoleId != null)
-                .SetValidator(new PrivilegeValidator());
-
-            RuleFor(t => t.Document)
-                .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotNull().When(t=>t.DocumentId != null)
-                .SetValidator(new DocumentValidator());
-
             RuleFor(t => t.Email)
-                .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty().WithMessage("{PropertyName} is empty")
                 .EmailAddress().WithMessage("Invalid {PropertyName}");
         }
 

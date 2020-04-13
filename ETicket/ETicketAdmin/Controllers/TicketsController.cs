@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
+using System.Collections.Generic;
+using ETicketAdmin.Models;
 
 namespace ETicketAdmin.Controllers
 {
@@ -105,11 +107,17 @@ namespace ETicketAdmin.Controllers
         // POST: Tickets/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,TicketTypeId,CreatedUTCDate,ActivatedUTCDate,ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
+        public IActionResult Create([Bind("Id,TicketTypeId,CreatedUTCDate,ActivatedUTCDate," +
+            "ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
         {
+
             if (ModelState.IsValid)
             {
                 ticket.Id = Guid.NewGuid();
+                if (ticket.ActivatedUTCDate != null)
+                {
+                    ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(uow.TicketTypes.Get(ticket.TicketTypeId).DurationHours);
+                }
                 uow.Tickets.Create(ticket);
                 uow.Save();
 

@@ -10,7 +10,7 @@ using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Repositories;
 using ETicketAdmin.Models;
 using ETicketAdmin.Services;
-using ETicketAdmin.Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
 {
@@ -26,7 +26,7 @@ namespace ETicketAdmin.Controllers
         }
 
         // GET: User
-        public async Task<IActionResult> Index(string sortOrder)
+        public IActionResult Index(string sortOrder)
         {
             ViewBag.LastNameSortParm = String.IsNullOrEmpty(sortOrder) ? "LastName_desc" : "";
             ViewBag.FirstNameSortParm = sortOrder == "FirstName" ? "FirstName_desc" : "FirstName";
@@ -36,7 +36,7 @@ namespace ETicketAdmin.Controllers
             switch (sortOrder)
             {
                 case "LastName_desc":
-                    users = eTicketDataContext.OrderByDescending(s=>s.LastName);
+                    users = eTicketDataContext.OrderByDescending(s => s.LastName);
                     break;
                 case "FirstName_desc":
                     users = eTicketDataContext.OrderByDescending(s => s.FirstName);
@@ -49,7 +49,7 @@ namespace ETicketAdmin.Controllers
                     break;
             }
 
-            return View(await users.ToListAsync());
+            return View(users.ToList());
         }
 
         // GET: User/Details/5
@@ -61,7 +61,7 @@ namespace ETicketAdmin.Controllers
             }
 
             var user = repository.Users.Get(id);
-            
+
             if (user == null)
             {
                 return NotFound();
@@ -73,10 +73,9 @@ namespace ETicketAdmin.Controllers
         // GET: User/Create
         public IActionResult Create()
         {
-            
+
             ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number");
             ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
-            ViewData["RoleId"] = new SelectList(context.Roles, "Id", "Name");
 
             return View();
         }
@@ -84,7 +83,7 @@ namespace ETicketAdmin.Controllers
         // POST: User/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,FirstName,LastName,Phone,Email,DateOfBirth,RoleId,PrivilegeId,DocumentId")] User user)
+        public IActionResult Create([Bind("Id,FirstName,LastName,Phone,Email,DateOfBirth,PrivilegeId,DocumentId")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -97,7 +96,6 @@ namespace ETicketAdmin.Controllers
 
             ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", user.DocumentId);
             ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", user.PrivilegeId);
-            ViewData["RoleId"] = new SelectList(context.Roles, "Id", "Name", user.RoleId);
 
             return View(user);
         }
@@ -123,7 +121,7 @@ namespace ETicketAdmin.Controllers
         // POST: User/SendMessage
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SendMessage(Guid id, string message)
+        public IActionResult SendMessage(Guid id, string message)
         {
             if (ModelState.IsValid)
             {
@@ -131,13 +129,13 @@ namespace ETicketAdmin.Controllers
                 if (user == null)
                 {
                     return NotFound();
-                } 
+                }
 
                 MailService emailService = new MailService();
-                await emailService.SendEmailAsync(user.Email, message);
+                emailService.SendEmail(user.Email, message);
 
                 return RedirectToAction(nameof(Index));
-            } 
+            }
             return View(message);
         }
 
@@ -157,7 +155,6 @@ namespace ETicketAdmin.Controllers
 
             ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", user.DocumentId);
             ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", user.PrivilegeId);
-            ViewData["RoleId"] = new SelectList(context.Roles, "Id", "Name", user.RoleId);
 
             return View(user);
         }
@@ -165,7 +162,7 @@ namespace ETicketAdmin.Controllers
         // POST: User/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, [Bind("Id,FirstName,LastName,Phone,Email,DateOfBirth,RoleId,PrivilegeId,DocumentId")] User user)
+        public IActionResult Edit(Guid id, [Bind("Id,FirstName,LastName,Phone,Email,DateOfBirth,PrivilegeId,DocumentId")] User user)
         {
             if (id != user.Id)
             {
@@ -196,7 +193,6 @@ namespace ETicketAdmin.Controllers
 
             ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", user.DocumentId);
             ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", user.PrivilegeId);
-            ViewData["RoleId"] = new SelectList(context.Roles, "Id", "Name", user.RoleId);
 
             return View(user);
         }
