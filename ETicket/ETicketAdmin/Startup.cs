@@ -13,6 +13,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ETicket.Validation;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using DBContextLibrary.Domain.Entities;
 
 namespace ETicketAdmin
 {
@@ -35,6 +39,15 @@ namespace ETicketAdmin
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ETicketDataContext>()
                 .AddDefaultTokenProviders();
+            services.AddControllersWithViews().AddFluentValidation();
+            services.AddTransient<IValidator<TicketType>, TicketTypeValidator>();
+            services.AddTransient<IValidator<Ticket>, TicketValidator>();
+            services.AddTransient<IValidator<User>, UserValidator>();
+            services.AddTransient<IValidator<Document>, DocumentValidator>();
+            services.AddTransient<IValidator<DocumentType>, DocumentTypeValidator>();
+            services.AddTransient<IValidator<Privilege>, PrivilegeValidator>();
+            services.AddTransient<IValidator<TransactionHistory>, TransactionHistoryValidator>();
+
 
             services.AddIdentityCore<IdentityUser>(o =>
             {
