@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
-using System.Collections.Generic;
-using ETicketAdmin.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
@@ -114,7 +110,7 @@ namespace ETicketAdmin.Controllers
             "ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
         {
             ticket.CreatedUTCDate = DateTime.UtcNow;
-            ticket.TicketType = uow.TicketTypes.Get(ticket.TicketTypeId); 
+            ticket.TicketType = uow.TicketTypes.Get(ticket.TicketTypeId);
 
             if (ticket.TicketType.IsPersonal && ticket.UserId == null)
             {
@@ -138,7 +134,7 @@ namespace ETicketAdmin.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-           
+
             ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticket.TicketTypeId);
             ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticket.TransactionHistoryId);
             ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticket.UserId);
