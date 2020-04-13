@@ -122,7 +122,7 @@ namespace ETicketAdmin.Controllers
         // POST: User/SendMessage
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SendMessage(Guid id, string message)
+        public IActionResult SendMessage(Guid id, string message)
         {
             if (ModelState.IsValid)
             {
@@ -133,7 +133,7 @@ namespace ETicketAdmin.Controllers
                 }
 
                 MailService emailService = new MailService();
-                await emailService.SendEmailAsync(user.Email, message);
+                emailService.SendEmail(user.Email, message);
 
                 return RedirectToAction(nameof(Index));
             }
