@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
 {
+    [Authorize(Roles = "Admin, SuperUser")]
     public class DocumentsController : Controller
     {
         private readonly IUnitOfWork unitOfWork;

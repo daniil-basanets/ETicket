@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ETicketAdmin.Models.IdentityModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +41,7 @@ namespace ETicketAdmin.Controllers
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    //await _userManager.AddToRoleAsync(user, "RegisteredUser");// какая роль при регистрации?
+                    //await userManager.AddToRoleAsync(user, "SuperUser");// какая роль при регистрации?
                     await signInManager.SignInAsync(user, false);
                     return RedirectToAction("Login", "Account");
                 }
@@ -89,13 +90,19 @@ namespace ETicketAdmin.Controllers
             return View(model);
         }
 
-        [HttpGet]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
 
             return RedirectToAction("Login", "Account");
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

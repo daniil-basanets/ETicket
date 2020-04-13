@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, SuperUser")]
     public class DocumentTypesController : Controller
     {
         private readonly IUnitOfWork unitOfWork;

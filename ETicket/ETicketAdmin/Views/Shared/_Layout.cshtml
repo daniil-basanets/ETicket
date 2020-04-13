@@ -21,7 +21,7 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="~/Home">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-ticket-alt"></i>
                 </div>
@@ -46,13 +46,16 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Components:</h6>
                         <a class="collapse-item" href="~/user">Users</a>
-                        <a class="collapse-item" href="~/Admin">User accounts</a>
-                        <a class="collapse-item" href="~/Documents">Documents</a>
-                        <a class="collapse-item" href="~/DocumentTypes">DocumentTypes</a>
-                        
-                        @*<a class="collapse-item" href="#">Roles</a>*@
-                        <a class="collapse-item" href="~/Privileges">Privilege</a>
-                    </div>
+                        @if (User.IsInRole("SuperUser"))
+                        {
+                            <a class="collapse-item" href="~/Admin">User accounts</a>
+                        }
+                            <a class="collapse-item" href="~/Documents">Documents</a>
+                            <a class="collapse-item" href="~/DocumentTypes">DocumentTypes</a>
+
+                            @*<a class="collapse-item" href="#">Roles</a>*@
+                            <a class="collapse-item" href="~/Privileges">Privilege</a>
+                        </div>
                 </div>
             </li>
 
@@ -179,8 +182,10 @@
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="Views/Account/Login">Logout </a>
-                    @*@Html.ActionLink("Logout", "Logout", "Account", null)*@
+                    @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                    {
+                        <a class="btn btn-primary" href="javascript:document.getElementById('logoutForm').submit()">Logout</a>
+                    }
                 </div>
             </div>
         </div>
