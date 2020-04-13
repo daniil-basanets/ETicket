@@ -89,7 +89,7 @@ namespace ETicketAdmin.Controllers
             return View(model);
         }
 
-        [HttpGet]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
