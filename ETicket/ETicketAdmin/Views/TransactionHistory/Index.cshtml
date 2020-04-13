@@ -62,7 +62,7 @@
                                 </td>
 
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Date)
+                                    @item.Date.ToString("yyyy-MM-dd hh:mm:ss")
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.TicketType.TypeName)
