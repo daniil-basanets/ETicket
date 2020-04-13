@@ -3,7 +3,6 @@ using ETicket.Models.Interfaces;
 using ETicket.PrivatBankApi;
 using ETicket.Services.BuyTicket;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace ETicket.Controllers
 {

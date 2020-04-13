@@ -6,7 +6,6 @@ using ETicket.PrivatBankApi.PrivatBank;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ETicket.Services.BuyTicket
 {
@@ -40,14 +39,18 @@ namespace ETicket.Services.BuyTicket
             var totalPrice = GetTicketsTotalPrice(buyTicketRequest, privilegeCoef);
 
             // Process with Private
-            var errorMessage = SendTransaction(totalPrice);
+            var errorMessage = string.Empty;
+            if (totalPrice != 0)
+                errorMessage = SendTransaction(totalPrice);
 
             // Check if fail transaction
             if (!string.IsNullOrEmpty(errorMessage))
                 return new BuyTicketResponse { ErrorMessage = errorMessage };
 
+            var transactionHistoryId = Guid.NewGuid();
+
             // Save transaction
-            var transactionHistoryId = SaveTransaction(buyTicketRequest, totalPrice);
+            SaveTransaction(buyTicketRequest, transactionHistoryId, totalPrice);
 
             // Save tickets
             SaveTickets(buyTicketRequest, transactionHistoryId);
@@ -60,14 +63,14 @@ namespace ETicket.Services.BuyTicket
 
         private decimal GetUserPrivilegeCoefficient(Guid userId)
         {
-            var coefficient = eTitcketData.Users
+            var privilege = eTitcketData.Users
                .GetAll()
                .Include(p => p.Privilege)
                .Where(u => u.Id == userId)
-               .Select(p => p.Privilege.Coefficient)
+               .Select(p => p.Privilege)
                .FirstOrDefault();
 
-            return coefficient == 0 ? 1M : coefficient;
+            return (privilege == null) ? 1M : privilege.Coefficient;
         }
 
         private decimal GetTicketsTotalPrice(
@@ -103,10 +106,10 @@ namespace ETicket.Services.BuyTicket
 
         private Guid SaveTransaction(
             BuyTicketRequest buyTicketRequest,
+            Guid transactionHistoryId,
             decimal totalPrice
         )
         {
-            var transactionHistoryId = Guid.NewGuid();
             var referenceNumber = GetRandomRefNumberTransaction();
 
             var transaction = new TransactionHistory
@@ -126,9 +129,9 @@ namespace ETicket.Services.BuyTicket
 
         private string GetRandomRefNumberTransaction()
         {
-            var random = new Random();
+            var randomNumber = new Random();
 
-            return random
+            return randomNumber
                 .Next(1, 999999999)
                 .ToString()
                 .PadLeft(13, '0');
