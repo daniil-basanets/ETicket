@@ -4,27 +4,70 @@
     ViewData["Title"] = "Index";
 }
 
-<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="~/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="~/css/trans-style.css" rel="stylesheet">
 
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Transaction history</h6>
         </div>
-        <div class="card-body">
+        <div class="card-body transactions">
+            <div class="filters">
+                <details>
+                    <summary>Filters</summary>
+                    <table border="0" class="filter-table">
+                        <tr>
+                            <th>Total price:</th>
+                            <th>
+                                <form class="trans-filter-form">
+                                    <input type="text" class="trans-filter-form form-control form-control-sm" id="total-price-input">
+                                </form>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Count:</th>
+                            <th>
+                                <form class="trans-filter-form">
+                                    <input type="text" class="trans-filter-form form-control form-control-sm" id="count-input">
+                                </form>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Date:</th>
+                            <th>
+                                <form class="trans-filter-form">
+                                    <input type="date" id="date-input" class="trans-filter-form form-control form-control-sm" value="">
+                                </form>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Ticket type:</th>
+                            <th>
+                                <form class="trans-filter-form">
+
+                                    @Html.DropDownList("type-select", ViewData["TicketTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "trans-filter-form custom-select custom-select-sm form-control form-control-sm" })
+
+                                </form>
+                            </th>
+                        </tr>
+                    </table>
+                </details>
+                <p></p>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 
                     <thead>
                         <tr>
                             <th>
-                                @Html.DisplayName("TotalPrice")
+                                @Html.DisplayName("Total Price")
                             </th>
                             <th>
                                 @Html.DisplayName("Date")
                             </th>
                             <th>
-                                @Html.DisplayName("TicketType")
+                                @Html.DisplayName("Ticket Type")
                             </th>
                             <th>
                                 @Html.DisplayName("Count")
@@ -37,13 +80,13 @@
                     <tfoot>
                         <tr>
                             <th>
-                                @Html.DisplayName("TotalPrice")
+                                @Html.DisplayName("Total Price")
                             </th>
                             <th>
                                 @Html.DisplayName("Date")
                             </th>
                             <th>
-                                @Html.DisplayName("TicketType")
+                                @Html.DisplayName("Ticket Type")
                             </th>
                             <th>
                                 @Html.DisplayName("Count")

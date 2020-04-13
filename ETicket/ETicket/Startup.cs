@@ -1,20 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DBContextLibrary.Domain;
+using DBContextLibrary.Domain.Interfaces;
 using ETicket.Models;
 using ETicket.Models.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace ETicket
 {
@@ -39,7 +33,16 @@ namespace ETicket
                 Password = password
             };
 
+            var cardNumber = Configuration["MerchantSettings:CardNumber"];
+
+            IMerchantSettings merchantSettings = new MerchantSettings
+            {
+                CardNumber = cardNumber
+            };
+
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
+            services.AddTransient<IUnitOfWork, ETicketData>(e => new ETicketData(e.GetService<ETicketDataContext>()));
+            
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ETicketDataContext>();
             services.AddIdentityCore<IdentityUser>(o =>
             {
@@ -51,6 +54,7 @@ namespace ETicket
             });
             services.AddControllers();
             services.AddSingleton<IMerchant>(merchant);
+            services.AddSingleton<IMerchantSettings>(merchantSettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,8 +71,6 @@ namespace ETicket
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
-
 
             app.UseEndpoints(endpoints =>
             {

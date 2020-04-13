@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
-using System.Collections.Generic;
-using ETicketAdmin.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
@@ -26,6 +22,7 @@ namespace ETicketAdmin.Controllers
         // GET: Tickets
         public IActionResult Index(string sortOrder)
         {
+            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName");
             ViewData["TicketTypeSortParm"] = sortOrder == "ticket_type" ? "ticket_type_desc" : "ticket_type";
             ViewData["CreatedSortParm"] = String.IsNullOrEmpty(sortOrder) ? "created_date" : "";
             ViewData["ActivatedSortParm"] = sortOrder == "activated_date" ? "activated_date_desc" : "activated_date";
@@ -113,9 +110,9 @@ namespace ETicketAdmin.Controllers
             "ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
         {
             ticket.CreatedUTCDate = DateTime.UtcNow;
+            ticket.TicketType = uow.TicketTypes.Get(ticket.TicketTypeId);
 
-            TicketType ticketType = uow.TicketTypes.Get(ticket.TicketTypeId);
-            if (ticketType.IsPersonal && ticket.UserId == null)
+            if (ticket.TicketType.IsPersonal && ticket.UserId == null)
             {
                 ModelState.AddModelError("", "User is not specified for personal ticket type");
                 ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName");
@@ -125,20 +122,19 @@ namespace ETicketAdmin.Controllers
                 return View(ticket);
             }
 
-            ticket.TicketType = ticketType;
             if (ModelState.IsValid)
             {
                 ticket.Id = Guid.NewGuid();
                 if (ticket.ActivatedUTCDate != null)
                 {
-                    ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(uow.TicketTypes.Get(ticket.TicketTypeId).DurationHours);
+                    ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(ticket.TicketType.DurationHours);
                 }
                 uow.Tickets.Create(ticket);
                 uow.Save();
 
                 return RedirectToAction(nameof(Index));
             }
-           
+
             ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticket.TicketTypeId);
             ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticket.TransactionHistoryId);
             ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticket.UserId);

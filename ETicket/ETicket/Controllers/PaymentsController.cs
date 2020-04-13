@@ -3,7 +3,6 @@ using ETicket.Models.Interfaces;
 using ETicket.PrivatBankApi;
 using ETicket.Services.BuyTicket;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace ETicket.Controllers
 {
@@ -11,12 +10,22 @@ namespace ETicket.Controllers
     [ApiController]
     public class PaymentsController : ControllerBase
     {
+        #region Privat Members
+
         private readonly IUnitOfWork eTicketData;
+        private readonly IMerchantSettings merchantSettings;
         private readonly PrivatBankApiClient privatBankApiClient;
 
-        public PaymentsController(IUnitOfWork eTicketData, IMerchant merchant)
+        #endregion
+
+        public PaymentsController(
+            IUnitOfWork eTicketData, 
+            IMerchant merchant,
+            IMerchantSettings merchantSettings
+        )
         {
             this.eTicketData = eTicketData;
+            this.merchantSettings = merchantSettings;
 
             privatBankApiClient = new PrivatBankApiClient(merchant.MerchantId, merchant.Password);
         }
@@ -24,10 +33,10 @@ namespace ETicket.Controllers
         // /api/Payments/Buy
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> Buy(BuyTicketRequest request)
+        public IActionResult Buy(BuyTicketRequest request)
         {
-            var paymentsAppService = new PaymentsAppService(eTicketData, privatBankApiClient);
-            var response = await paymentsAppService.ProcessAsync(request);
+            var paymentsAppService = new PaymentsAppService(eTicketData, merchantSettings, privatBankApiClient);
+            var response = paymentsAppService.Process(request);
 
             return Ok(response);
         }

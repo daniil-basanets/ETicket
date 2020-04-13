@@ -24,6 +24,7 @@ namespace ETicketAdmin.Controllers
 
         public IActionResult Index()
         {
+            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.TicketTypes.GetAll(), "Id", "TypeName");
             return View(unitOfWork.Documents.GetAll());
         }
 

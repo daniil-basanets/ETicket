@@ -1,19 +1,22 @@
 ﻿using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
-using ETicketAdmin.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ETicketAdmin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class TransactionHistoryController : Controller
     {
+        #region Private Members
+
         private readonly IUnitOfWork unitOfWork;
+
+        #endregion
 
         public TransactionHistoryController(IUnitOfWork unitOfWork)
         {
@@ -21,21 +24,9 @@ namespace ETicketAdmin.Controllers
         }
 
         // GET: TransactionHistories
-        public IActionResult Index(string sortBy, string sortDirection)
+        public IActionResult Index()
         {
-            if (string.IsNullOrEmpty(sortBy)
-             || string.IsNullOrEmpty(sortDirection))
-            {
-                sortBy = "date";
-                sortDirection = "desc";
-            }
-            else
-            {
-                sortBy = sortBy.ToLower();
-                sortDirection = sortDirection.ToLower();
-            }
-
-            ViewBag.SortDirection = (sortDirection == "desc") ? "asc" : "desc";
+            ViewData["TicketTypeId"] = new SelectList(unitOfWork.TicketTypes.GetAll(), "Id", "TypeName");
 
             IQueryable<TransactionHistory> eTicketDataContext = unitOfWork
                     .TransactionHistory
@@ -43,27 +34,18 @@ namespace ETicketAdmin.Controllers
                     .AsNoTracking()
                     .Include(t => t.TicketType);
 
-            eTicketDataContext = sortBy switch
-            {
-                "totalprice" => eTicketDataContext.ApplySortBy(x => x.TotalPrice, sortDirection),
-                "date" => eTicketDataContext.ApplySortBy(x => x.Date, sortDirection),
-                "tickettype" => eTicketDataContext.ApplySortBy(x => x.TicketType, sortDirection),
-                "count" => eTicketDataContext.ApplySortBy(x => x.Count, sortDirection),
-                _ => eTicketDataContext
-            };
-
             return View(eTicketDataContext);
         }
 
         // GET: TransactionHistories/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public IActionResult Details(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var transactionHistory = await unitOfWork
+            var transactionHistory = unitOfWork
                     .TransactionHistory
                     .GetAll()
                     .AsNoTracking()
