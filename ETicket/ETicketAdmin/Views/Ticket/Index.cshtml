@@ -76,7 +76,7 @@
                                 </td>
                                 <td>
                                     @if (item.User == null)
-                                        @Html.DisplayFor(modelItem => item.User.FirstName)
+                                        @Html.DisplayFor(modelItem => item.User.LastName)
                                     else
                                         @Html.ActionLink(item.User.FirstName, "Details", "User", new { id = item.UserId }, null)
                                 </td>
