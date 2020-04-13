@@ -10,8 +10,6 @@ namespace DBContextLibrary.Domain.Interfaces
 
         PrivilegeRepository Privileges { get; }
 
-        RoleRepository Roles { get; }
-
         TicketRepository Tickets { get; }
 
         TicketTypeRepository TicketTypes { get; }

@@ -8,7 +8,7 @@ namespace ETicketAdmin.Services
 {
     public class MailService
     {
-        public async Task SendEmailAsync(string email, string message)
+        public void SendEmail(string email, string message)
         {
             if (email != null)
             {
@@ -24,11 +24,11 @@ namespace ETicketAdmin.Services
 
                 using (var client = new SmtpClient())
                 {
-                    await client.ConnectAsync("smtp.gmail.com", 587, false);
-                    await client.AuthenticateAsync("dnazarenko817@gmail.com", "1234567890@DN");
-                    await client.SendAsync(emailMessage);
+                    client.Connect("smtp.gmail.com", 587, false);
+                    client.Authenticate("dnazarenko817@gmail.com", "1234567890@DN");
+                    client.Send(emailMessage);
 
-                    await client.DisconnectAsync(true);
+                    client.Disconnect(true);
                 }
             }
         }

@@ -1,6 +1,7 @@
 ﻿using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
 using ETicketAdmin.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace ETicketAdmin.Controllers
 {
+    [Authorize]
     public class TransactionHistoryController : Controller
     {
         private readonly IUnitOfWork unitOfWork;

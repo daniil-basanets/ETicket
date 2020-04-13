@@ -15,6 +15,6 @@ namespace DBContextLibrary.Domain.Entities
 
 		[Required]
 		[Range(0d, 1)]
-		public float Coefficient { get; set; }
+		public decimal Coefficient { get; set; }
 	}
 }
