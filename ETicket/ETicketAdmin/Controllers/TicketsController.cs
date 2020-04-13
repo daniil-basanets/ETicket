@@ -112,7 +112,20 @@ namespace ETicketAdmin.Controllers
         public IActionResult Create([Bind("Id,TicketTypeId,CreatedUTCDate,ActivatedUTCDate," +
             "ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
         {
+            ticket.CreatedUTCDate = DateTime.UtcNow;
 
+            TicketType ticketType = uow.TicketTypes.Get(ticket.TicketTypeId);
+            if (ticketType.IsPersonal && ticket.UserId == null)
+            {
+                ModelState.AddModelError("", "User is not specified for personal ticket type");
+                ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName");
+                ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber");
+                ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName");
+
+                return View(ticket);
+            }
+
+            ticket.TicketType = ticketType;
             if (ModelState.IsValid)
             {
                 ticket.Id = Guid.NewGuid();

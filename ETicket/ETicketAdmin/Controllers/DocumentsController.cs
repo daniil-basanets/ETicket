@@ -22,13 +22,11 @@ namespace ETicketAdmin.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-        // GET: Documents
         public IActionResult Index()
         {
             return View(unitOfWork.Documents.GetAll());
         }
 
-        // GET: Documents/Details/5
         public IActionResult Details(Guid? id)
         {
             if (id == null)
@@ -50,7 +48,6 @@ namespace ETicketAdmin.Controllers
             return View(document);
         }
 
-        // GET: Documents/Create
         public IActionResult Create()
         {
             ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name");
@@ -58,7 +55,6 @@ namespace ETicketAdmin.Controllers
             return View();
         }
 
-        // POST: Documents/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create([Bind("Id,DocumentTypeId,Number,ExpirationDate,IsValid")] Document document)
@@ -77,7 +73,6 @@ namespace ETicketAdmin.Controllers
             return View(document);
         }
 
-        // GET: Documents/Edit/5
         public IActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -96,9 +91,6 @@ namespace ETicketAdmin.Controllers
             return View(document);
         }
 
-        // POST: Documents/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, [Bind("Id,DocumentTypeId,Number,ExpirationDate,IsValid")] Document document)
@@ -133,7 +125,6 @@ namespace ETicketAdmin.Controllers
             return View(document);
         }
 
-        // GET: Documents/Delete/5
         public IActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -151,7 +142,6 @@ namespace ETicketAdmin.Controllers
             return View(document);
         }
 
-        // POST: Documents/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)

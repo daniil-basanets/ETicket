@@ -66,13 +66,13 @@
                                     @Html.ActionLink(item.TicketType.TypeName, "Details", "TicketType", new { id = item.TicketTypeId }, null)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.CreatedUTCDate)
+                                    @item.CreatedUTCDate.ToString("yyyy-MM-dd hh:mm")
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.ActivatedUTCDate)
+                                    @item.CreatedUTCDate.ToString("yyyy-MM-dd hh:mm")
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.ExpirationUTCDate)
+                                    @item.CreatedUTCDate.ToString("yyyy-MM-dd hh:mm")
                                 </td>
                                 <td>
                                     @if (item.User == null)
