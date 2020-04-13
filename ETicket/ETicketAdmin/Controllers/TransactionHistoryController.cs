@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ETicketAdmin.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, SuperUser")]
     public class TransactionHistoryController : Controller
     {
         private readonly IUnitOfWork unitOfWork;

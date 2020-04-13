@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, SuperUser")]
     public class DocumentsController : Controller
     {
         private readonly IUnitOfWork unitOfWork;

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ETicketAdmin.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, SuperUser")]
     public class TicketTypeController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
