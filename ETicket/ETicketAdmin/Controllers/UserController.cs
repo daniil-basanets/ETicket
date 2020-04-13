@@ -27,7 +27,7 @@ namespace ETicketAdmin.Controllers
         }
 
         // GET: User
-        public async Task<IActionResult> Index(string sortOrder)
+        public IActionResult Index(string sortOrder)
         {
             ViewBag.LastNameSortParm = String.IsNullOrEmpty(sortOrder) ? "LastName_desc" : "";
             ViewBag.FirstNameSortParm = sortOrder == "FirstName" ? "FirstName_desc" : "FirstName";
@@ -50,7 +50,7 @@ namespace ETicketAdmin.Controllers
                     break;
             }
 
-            return View(await users.ToListAsync());
+            return View(users.ToList());
         }
 
         // GET: User/Details/5
