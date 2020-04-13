@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
 {
+    [Authorize(Roles = "Admin, SuperUser")]
     public class DocumentTypesController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
@@ -20,23 +22,6 @@ namespace ETicketAdmin.Controllers
         public IActionResult Index()
         {
             return View(unitOfWork.DocumentTypes.GetAll());
-        }
-
-        // GET: DocumentTypes/Details/5
-        public IActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var documentType = unitOfWork.DocumentTypes.Get((int)id);
-            if (documentType == null)
-            {
-                return NotFound();
-            }
-
-            return View(documentType);
         }
 
         // GET: DocumentTypes/Create

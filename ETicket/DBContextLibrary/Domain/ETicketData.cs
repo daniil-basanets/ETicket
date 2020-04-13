@@ -13,7 +13,6 @@ namespace DBContextLibrary.Domain
         private DocumentRepository documentRepository;
         private DocumentTypeRepository documentTypeRepository;
         private PrivilegeRepository privilegeRepository;
-        private RoleRepository roleRepository;
         private TicketRepository ticketRepository;
         private TicketTypeRepository ticketTypeRepository;
         private TransactionHistoryRepository transactionHistoryRepository;
@@ -48,16 +47,6 @@ namespace DBContextLibrary.Domain
                 if (privilegeRepository == null)
                     privilegeRepository = new PrivilegeRepository(eTicketDataContext);
                 return privilegeRepository;
-            }
-        }
-
-        public RoleRepository Roles
-        {
-            get
-            {
-                if (roleRepository == null)
-                    roleRepository = new RoleRepository(eTicketDataContext);
-                return roleRepository;
             }
         }
 

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ETicket", "ETicket\ETicket.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ETicketAdmin", "ETicketAdmin\ETicketAdmin.csproj", "{30F8BD35-78FE-4AA9-A531-E6AE140F6C5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBContextLibrary", "DBContextLibrary\DBContextLibrary.csproj", "{E5E2AF6F-F887-4A4A-BCE4-E3011B277C5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBContextLibrary", "DBContextLibrary\DBContextLibrary.csproj", "{E5E2AF6F-F887-4A4A-BCE4-E3011B277C5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

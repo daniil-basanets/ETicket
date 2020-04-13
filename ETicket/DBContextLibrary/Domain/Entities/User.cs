@@ -32,11 +32,9 @@ namespace DBContextLibrary.Domain.Entities
         [DisplayName("Email")]
         public string Email { get; set; }
 
-        [ForeignKey("RoleId")]
-        public Role Role { get; set; }
-
-        [DisplayName("Role")]
-        public int? RoleId { get; set; }
+        [DisplayName("Date of birth")]
+        [Column(TypeName = "date")]
+        public DateTime DateOfBirth { get; set; }
 
         [ForeignKey("PrivilegeId")]
         public Privilege Privilege { get; set; }
@@ -49,9 +47,5 @@ namespace DBContextLibrary.Domain.Entities
 
         [DisplayName("Document")]
         public Guid? DocumentId { get; set; }
-
-        [DisplayName("Date of birth")]
-        [Column(TypeName = "date")]
-        public DateTime DateOfBirth { get; set; }
     }
 }

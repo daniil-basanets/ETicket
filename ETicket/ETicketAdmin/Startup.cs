@@ -4,13 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ETicket.Validation;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using DBContextLibrary.Domain.Entities;
 
 namespace ETicketAdmin
 {
@@ -29,10 +35,41 @@ namespace ETicketAdmin
             services.AddControllersWithViews();
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
             services.AddTransient<IUnitOfWork, ETicketData>(x => new ETicketData(x.GetService<ETicketDataContext>()));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ETicketDataContext>()
+                .AddDefaultTokenProviders();
+            services.AddControllersWithViews().AddFluentValidation();
+            services.AddTransient<IValidator<TicketType>, TicketTypeValidator>();
+            services.AddTransient<IValidator<Ticket>, TicketValidator>();
+            services.AddTransient<IValidator<User>, UserValidator>();
+            services.AddTransient<IValidator<Document>, DocumentValidator>();
+            services.AddTransient<IValidator<DocumentType>, DocumentTypeValidator>();
+            services.AddTransient<IValidator<Privilege>, PrivilegeValidator>();
+            services.AddTransient<IValidator<TransactionHistory>, TransactionHistoryValidator>();
+
+
+            services.AddIdentityCore<IdentityUser>(o =>
+            {
+                o.Password.RequireDigit = false;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 4;
+            });
+
+            services.ConfigureApplicationCookie(
+                options =>
+                {
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                    options.LoginPath = "/Account/Login";
+                    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                    options.SlidingExpiration = true;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ETicketDataContext eTicketDataContext)
         {
             if (env.IsDevelopment())
             {
@@ -45,11 +82,14 @@ namespace ETicketAdmin
                 app.UseHsts();
             }
 
+            eTicketDataContext.EnsureCreated();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

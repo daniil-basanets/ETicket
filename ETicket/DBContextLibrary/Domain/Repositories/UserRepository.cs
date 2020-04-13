@@ -19,22 +19,21 @@ namespace DBContextLibrary.Domain.Repositories
 
         public IQueryable<User> GetAll()
         {
-            return context.Users.Include(u => u.Document).Include(u => u.Privilege).Include(u => u.Role);
+            return context.ETUsers.Include(u => u.Document).Include(u => u.Privilege);
         }
 
         public User Get(Guid id)
         {
-            var user = context.Users
+            var user = context.ETUsers
                 .Include(u => u.Document)
                 .Include(u => u.Privilege)
-                .Include(u => u.Role)
                 .FirstOrDefault(m => m.Id == id);
             return user;
         }
 
         public void Create(User user)
         {
-            context.Users.Add(user);
+            context.ETUsers.Add(user);
         }
 
         public void Update(User user)
@@ -44,16 +43,16 @@ namespace DBContextLibrary.Domain.Repositories
 
         public void Delete(Guid id)
         {
-            var user = context.Users.Find(id);
+            var user = context.ETUsers.Find(id);
 
             if (user != null)
             {
-                context.Users.Remove(user);
+                context.ETUsers.Remove(user);
             }
         }
         public bool UserExists(Guid id)
         {
-            return context.Users.Any(e => e.Id == id);
+            return context.ETUsers.Any(e => e.Id == id);
         }
     }
 }

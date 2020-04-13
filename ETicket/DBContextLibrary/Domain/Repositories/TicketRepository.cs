@@ -22,8 +22,7 @@ namespace DBContextLibrary.Domain.Repositories
         }
 
         public void Delete(Guid id)
-        {// TODO DeleteTicket?
-            throw new NotImplementedException();
+        {
             Ticket ticket = Get(id);
             if (ticket != null)
             {
@@ -33,17 +32,21 @@ namespace DBContextLibrary.Domain.Repositories
 
         public Ticket Get(Guid id)
         {
-            return context.Tickets.Find(id);
+            return context.Tickets.Include(t => t.TicketType)
+                .Include(t => t.TransactionHistory)
+                .Include(t => t.User)
+                .FirstOrDefault(m => m.Id == id);
         }
 
         public IQueryable<Ticket> GetAll()
         {
-            return context.Tickets;
+            return context.Tickets.Include(t => t.TicketType)
+               .Include(t => t.TransactionHistory)
+               .Include(t => t.User);
         }
 
         public void Update(Ticket item)
-        {//TODO UpdateTicket?
-            throw new NotImplementedException();
+        {
             context.Entry(item).State = EntityState.Modified;
         }
     }

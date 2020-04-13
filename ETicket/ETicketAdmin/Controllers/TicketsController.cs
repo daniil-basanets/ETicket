@@ -6,20 +6,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
+using DBContextLibrary.Domain.Interfaces;
+using System.Collections.Generic;
+using ETicketAdmin.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
 {
+    [Authorize(Roles = "Admin, SuperUser")]
     public class TicketController : Controller
     {
-        private readonly ETicketDataContext _context;
+        private readonly IUnitOfWork uow;
 
-        public TicketController(ETicketDataContext context)
+        public TicketController(IUnitOfWork uow)
         {
-            _context = context;
+            this.uow = uow;
         }
 
         // GET: Tickets
-        public async Task<IActionResult> Index(string sortOrder)
+        public IActionResult Index(string sortOrder)
         {
             ViewData["TicketTypeSortParm"] = sortOrder == "ticket_type" ? "ticket_type_desc" : "ticket_type";
             ViewData["CreatedSortParm"] = String.IsNullOrEmpty(sortOrder) ? "created_date" : "";
@@ -28,9 +33,7 @@ namespace ETicketAdmin.Controllers
             ViewData["UserSortParm"] = sortOrder == "user" ? "user_desc" : "user";
             ViewData["TransactionSortParm"] = sortOrder == "transaction" ? "transaction_desc" : "transaction";
 
-            IQueryable<Ticket> eTicketDataContext = _context.Tickets.Include(t => t.TicketType)
-               .Include(t => t.TransactionHistory)
-               .Include(t => t.User);
+            IQueryable<Ticket> eTicketDataContext = uow.Tickets.GetAll();
 
             switch (sortOrder)
             {
@@ -72,22 +75,18 @@ namespace ETicketAdmin.Controllers
                     break;
             }
 
-            return View(await eTicketDataContext.ToListAsync());
+            return View(eTicketDataContext.ToList());
         }
 
         // GET: Tickets/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public IActionResult Details(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var ticket = await _context.Tickets
-                .Include(t => t.TicketType)
-                .Include(t => t.TransactionHistory)
-                .Include(t => t.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var ticket = uow.Tickets.Get((Guid)id);
 
             if (ticket == null)
             {
@@ -100,9 +99,9 @@ namespace ETicketAdmin.Controllers
         // GET: Tickets/Create
         public IActionResult Create()
         {
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "TypeName");
-            ViewData["TransactionHistoryId"] = new SelectList(_context.TransactionHistory, "Id", "Id");
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName");
+            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName");
+            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber");
+            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName");
 
             return View();
         }
@@ -110,42 +109,48 @@ namespace ETicketAdmin.Controllers
         // POST: Tickets/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TicketTypeId,CreatedUTCDate,ActivatedUTCDate,ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
+        public IActionResult Create([Bind("Id,TicketTypeId,CreatedUTCDate,ActivatedUTCDate," +
+            "ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
         {
+
             if (ModelState.IsValid)
             {
                 ticket.Id = Guid.NewGuid();
-                _context.Add(ticket);
-                await _context.SaveChangesAsync();
+                if (ticket.ActivatedUTCDate != null)
+                {
+                    ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(uow.TicketTypes.Get(ticket.TicketTypeId).DurationHours);
+                }
+                uow.Tickets.Create(ticket);
+                uow.Save();
 
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "TypeName", ticket.TicketTypeId);
-            ViewData["TransactionHistoryId"] = new SelectList(_context.TransactionHistory, "Id", "Id", ticket.TransactionHistoryId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", ticket.UserId);
+           
+            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticket.TicketTypeId);
+            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticket.TransactionHistoryId);
+            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticket.UserId);
 
             return View(ticket);
         }
 
         // GET: Tickets/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public IActionResult Edit(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var ticket = await _context.Tickets.FindAsync(id);
+            var ticket = uow.Tickets.Get((Guid)id);
 
             if (ticket == null)
             {
                 return NotFound();
             }
 
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "TypeName", ticket.TicketTypeId);
-            ViewData["TransactionHistoryId"] = new SelectList(_context.TransactionHistory, "Id", "Id", ticket.TransactionHistoryId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", ticket.UserId);
+            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticket.TicketTypeId);
+            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticket.TransactionHistoryId);
+            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticket.UserId);
 
             return View(ticket);
         }
@@ -153,7 +158,7 @@ namespace ETicketAdmin.Controllers
         // POST: Tickets/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,TicketTypeId,CreatedUTCDate,ActivatedUTCDate,ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
+        public IActionResult Edit(Guid id, [Bind("Id,TicketTypeId,CreatedUTCDate,ActivatedUTCDate,ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
         {
             if (id != ticket.Id)
             {
@@ -164,8 +169,8 @@ namespace ETicketAdmin.Controllers
             {
                 try
                 {
-                    _context.Update(ticket);
-                    await _context.SaveChangesAsync();
+                    uow.Tickets.Update(ticket);
+                    uow.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -182,26 +187,22 @@ namespace ETicketAdmin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "TypeName", ticket.TicketTypeId);
-            ViewData["TransactionHistoryId"] = new SelectList(_context.TransactionHistory, "Id", "Id", ticket.TransactionHistoryId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "FirstName", ticket.UserId);
+            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticket.TicketTypeId);
+            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticket.TransactionHistoryId);
+            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticket.UserId);
 
             return View(ticket);
         }
 
         // GET: Tickets/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public IActionResult Delete(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var ticket = await _context.Tickets
-                .Include(t => t.TicketType)
-                .Include(t => t.TransactionHistory)
-                .Include(t => t.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var ticket = uow.Tickets.Get((Guid)id);
 
             if (ticket == null)
             {
@@ -214,18 +215,17 @@ namespace ETicketAdmin.Controllers
         // POST: Tickets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public IActionResult DeleteConfirmed(Guid id)
         {
-            var ticket = await _context.Tickets.FindAsync(id);
-            _context.Tickets.Remove(ticket);
-            await _context.SaveChangesAsync();
+            uow.Tickets.Delete(id);
+            uow.Save();
 
             return RedirectToAction(nameof(Index));
         }
 
         private bool TicketExists(Guid id)
         {
-            return _context.Tickets.Any(e => e.Id == id);
+            return uow.Tickets.Get(id) != null;
         }
     }
 }

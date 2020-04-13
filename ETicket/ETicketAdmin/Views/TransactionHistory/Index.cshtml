@@ -1,123 +1,93 @@
-﻿@model ETicketAdmin.Common.PaginatedList<DBContextLibrary.Domain.Entities.TransactionHistory>
+﻿@model IEnumerable<DBContextLibrary.Domain.Entities.TransactionHistory>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Transaction History</h1>
+<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
-<select id="Records" onchange="return postSelectedRecord()">
-    <!option @(ViewBag.PageSize == 1 ? "selected" : "")>1</!option>
-    <!option @(ViewBag.PageSize == 2 ? "selected" : "")>2</!option>
-    <!option @(ViewBag.PageSize == 10 ? "selected" : "")>10</!option>
-    <!option @(ViewBag.PageSize == 25 ? "selected" : "")>25</!option>
-    <!option @(ViewBag.PageSize == 50 ? "selected" : "")>50</!option>
-    <!option @(ViewBag.PageSize == 100 ? "selected" : "")>100</!option>
-</select>
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Transaction history</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 
-<script type="text/javascript">
-    function postSelectedRecord() {
-        var postData = GetSelectedCountRecords();
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("TotalPrice")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Date")
+                            </th>
+                            <th>
+                                @Html.DisplayName("TicketType")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Count")
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                @Html.DisplayName("TotalPrice")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Date")
+                            </th>
+                            <th>
+                                @Html.DisplayName("TicketType")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Count")
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                                </td>
 
-        $.ajax({
-            type: "POST",
-            url: 'https://localhost:44381/TransactionHistory/SetPageSize',
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            data: JSON.stringify(postData),
-            error: function (response) {
-                console.log(response);
-            },
-            success: function (response) {
-                console.log(response);
-                location.reload();
-            }
-        });
-    }
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Date)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.TicketType.TypeName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Count)
+                                </td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-    function GetSelectedCountRecords() {
-        var records = document.getElementById("Records");
-        var selectedValue = records.options[records.selectedIndex].value;
+<script src="/vendor/jquery/jquery.min.js"></script>
 
-        return selectedValue;
-    }
-</script>
+<!-- Page level plugins -->
+<script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.ActionLink("TotalPrice", "Index",
-                    new { sortBy = "TotalPrice", sortDirection = ViewBag.SortDirection })
-            </th>
-            <th>
-                @Html.ActionLink("Date", "Index",
-                    new { sortBy = "Date", sortDirection = ViewBag.SortDirection })
-            </th>
-            <th>
-                @Html.ActionLink("TicketType", "Index",
-                    new { sortBy = "TicketType", sortDirection = ViewBag.SortDirection })
-            </th>
-            <th>
-                @Html.ActionLink("Count", "Index",
-                    new { sortBy = "Count", sortDirection = ViewBag.SortDirection })
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalPrice)
-                </td>
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TicketType.TypeName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Count)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<!-- Page level custom scripts -->
+<script src="/js/datatables-starter.js"></script>
 <br />
-
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
-
-<a asp-action="Index"
-    asp-route-sortOrder="@ViewData["CurrentSort"]"
-    asp-route-pageNumber="@(Model.PageIndex - 1)"
-    asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-
-@for (var pageNumber = 1; pageNumber <= Model.TotalPages; pageNumber++)
-{
-    <a asp-action="Index"
-        asp-route-sortOrder="@ViewData["CurrentSort"]"
-        asp-route-pageNumber="@pageNumber"
-        asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       class="btn btn-default">
-        @pageNumber
-    </a>
-}
-
-<a asp-action="Index"
-    asp-route-sortOrder="@ViewData["CurrentSort"]"
-    asp-route-pageNumber="@(Model.PageIndex + 1)"
-    asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>

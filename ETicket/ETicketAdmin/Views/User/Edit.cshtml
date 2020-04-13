@@ -39,9 +39,7 @@
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="RoleId" class="control-label"></label>
-                @Html.DropDownListFor(model => model.RoleId, (SelectList)ViewBag.RoleId, "", new { @class = "form-control" })
-                <span asp-validation-for="RoleId" class="text-danger"></span>
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
             <div class="form-group">
                 <label asp-for="PrivilegeId" class="control-label"></label>
@@ -52,9 +50,6 @@
                 <label asp-for="DocumentId" class="control-label"></label>
                 @Html.DropDownListFor(model => model.DocumentId, (SelectList)ViewBag.DocumentId, "", new { @class = "form-control" })
                 <span asp-validation-for="DocumentId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>

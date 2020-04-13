@@ -1,143 +1,170 @@
-﻿//TODO 
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using DBContextLibrary.Domain;
+using DBContextLibrary.Domain.Entities;
+using DBContextLibrary.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.Mvc.Rendering;
-//using Microsoft.EntityFrameworkCore;
-//using DBContextLibrary.Domain;
-//using DBContextLibrary.Domain.Entities;
+namespace ETicketAdmin.Controllers
+{
+    [Authorize(Roles = "Admin, SuperUser")]
+    public class DocumentsController : Controller
+    {
+        private readonly IUnitOfWork unitOfWork;
 
-//namespace ETicketAdmin.Controllers
-//{
-//    public class DocumentsController : Controller
-//    {
-//        private readonly ETicketData eTicketData;
-//        private readonly ETicketDataContext _context;
+        public DocumentsController(IUnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+        }
 
-//        public DocumentsController(ETicketDataContext context)
-//        {
-//            _context = context;
-//            eTicketData = new ETicketData(_context);
-//        }
+        // GET: Documents
+        public IActionResult Index()
+        {
+            return View(unitOfWork.Documents.GetAll());
+        }
 
-//        public IActionResult Index()
-//        {
-//            return View(eTicketData.Documents.GetAll());
-//        }
+        // GET: Documents/Details/5
+        public IActionResult Details(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-//        public IActionResult Details(int? id)
-//        {
-//            if (id == null)
-//            {
-//                return NotFound();
-//            }
+            IQueryable<Document> eTicketDataContext = unitOfWork.Documents.GetAll();
 
-//            var document = eTicketData.Documents.Get((int)id);
-//            if (document == null)
-//            {
-//                return NotFound();
-//            }
+            var document = eTicketDataContext
+                .Include(d => d.DocumentType)
+                .FirstOrDefault(m => m.Id == id);
 
-//            return View(document);
-//        }
+            if (document == null)
+            {
+                return NotFound();
+            }
 
-//        public IActionResult Create()
-//        {
-//            return View();
-//        }
+            return View(document);
+        }
 
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public IActionResult Create([Bind("Id,DocumentType,Number,ExpirationDate,IsValid")] Document document)
-//        {
-//            if (ModelState.IsValid)
-//            {
-//                eTicketData.Documents.Create(document);
-//                eTicketData.Save();
-//                return RedirectToAction(nameof(Index));
-//            }
-//            return View(document);
-//        }
+        // GET: Documents/Create
+        public IActionResult Create()
+        {
+            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name");
+            
+            return View();
+        }
 
-//        public IActionResult Edit(int? id)
-//        {
-//            if (id == null)
-//            {
-//                return NotFound();
-//            }
+        // POST: Documents/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create([Bind("Id,DocumentTypeId,Number,ExpirationDate,IsValid")] Document document)
+        {
+            if (ModelState.IsValid)
+            {
+                document.Id = Guid.NewGuid();
+                unitOfWork.Documents.Create(document);
+                unitOfWork.Save();
 
-//            var document = eTicketData.Documents.Get((int)id);
-//            if (document == null)
-//            {
-//                return NotFound();
-//            }
-//            return View(document);
-//        }
+                return RedirectToAction(nameof(Index));
+            }
 
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public IActionResult Edit(Guid id, [Bind("Id,DocumentType,Number,ExpirationDate,IsValid")] Document document)
-//        {
-//            if (id != document.Id)
-//            {
-//                return NotFound();
-//            }
+            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", document.DocumentTypeId);
 
-//            if (ModelState.IsValid)
-//            {
-//                try
-//                {
-//                    eTicketData.Documents.Update(document);
-//                    eTicketData.Save();
-//                }
-//                catch (DbUpdateConcurrencyException)
-//                {
-//                    if (!DocumentExists(document.Id))
-//                    {
-//                        return NotFound();
-//                    }
-//                    else
-//                    {
-//                        throw;
-//                    }
-//                }
-//                return RedirectToAction(nameof(Index));
-//            }
-//            return View(document);
-//        }
+            return View(document);
+        }
 
-//        public IActionResult Delete(int? id)
-//        {
-//            if (id == null)
-//            {
-//                return NotFound();
-//            }
+        // GET: Documents/Edit/5
+        public IActionResult Edit(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-//            var document = eTicketData.Documents.Get((int)id);
-//            if (document == null)
-//            {
-//                return NotFound();
-//            }
+            var document = unitOfWork.Documents.Get((Guid)id);
 
-//            return View(document);
-//        }
+            if (document == null)
+            {
+                return NotFound();
+            }
 
-//        [HttpPost, ActionName("Delete")]
-//        [ValidateAntiForgeryToken]
-//        public IActionResult DeleteConfirmed(int id)
-//        {
-//            eTicketData.Documents.Delete(id);
-//            eTicketData.Save();
-//            return RedirectToAction(nameof(Index));
-//        }
+            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", document.DocumentTypeId);
+            return View(document);
+        }
 
-//        private bool DocumentExists(Guid id)
-//        {
-//            return _context.Documents.Any(d => d.Id == id);
-//        }
+        // POST: Documents/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Guid id, [Bind("Id,DocumentTypeId,Number,ExpirationDate,IsValid")] Document document)
+        {
+            if (id != document.Id)
+            {
+                return NotFound();
+            }
 
-//    }
-//}
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    unitOfWork.Documents.Update(document);
+                    unitOfWork.Save();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!DocumentExists(document.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", document.DocumentTypeId);
+            return View(document);
+        }
+
+        // GET: Documents/Delete/5
+        public IActionResult Delete(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var document = unitOfWork.Documents.Get((Guid)id);
+
+            if (document == null)
+            {
+                return NotFound();
+            }
+
+            return View(document);
+        }
+
+        // POST: Documents/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(Guid id)
+        {
+            unitOfWork.Documents.Delete(id);
+            unitOfWork.Save();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool DocumentExists(Guid id)
+        {
+            return unitOfWork.Documents.Get(id) != null;
+        }
+    }
+}
