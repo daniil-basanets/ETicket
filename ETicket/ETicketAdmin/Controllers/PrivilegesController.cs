@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DBContextLibrary.Domain;
 using DBContextLibrary.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
+using DBContextLibrary.Domain.Interfaces;
 
 namespace ETicketAdmin.Controllers
 {
@@ -16,31 +11,31 @@ namespace ETicketAdmin.Controllers
     {
         #region
 
-        private readonly ETicketDataContext _context;
+        private readonly IUnitOfWork unitOfWork;
 
         #endregion
 
-        public PrivilegesController(ETicketDataContext context)
+        public PrivilegesController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            this.unitOfWork = unitOfWork;
         }
 
         // GET: Privileges
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Privileges.ToListAsync());
+            return View(unitOfWork.Privileges.GetAll());
         }
 
         // GET: Privileges/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var privilege = await _context.Privileges
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var privilege = unitOfWork.Privileges.Get((int)id);
+
             if (privilege == null)
             {
                 return NotFound();
@@ -58,26 +53,26 @@ namespace ETicketAdmin.Controllers
         // POST: Privileges/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Coefficient")] Privilege privilege)
+        public IActionResult Create([Bind("Id,Name,Coefficient")] Privilege privilege)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(privilege);
-                await _context.SaveChangesAsync();
+                unitOfWork.Privileges.Create(privilege);
+                unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }
             return View(privilege);
         }
 
         // GET: Privileges/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var privilege = await _context.Privileges.FindAsync(id);
+            var privilege = unitOfWork.Privileges.Get((int)id);
             if (privilege == null)
             {
                 return NotFound();
@@ -88,7 +83,7 @@ namespace ETicketAdmin.Controllers
         // POST: Privileges/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Coefficient")] Privilege privilege)
+        public IActionResult Edit(int id, [Bind("Id,Name,Coefficient")] Privilege privilege)
         {
             if (id != privilege.Id)
             {
@@ -99,8 +94,8 @@ namespace ETicketAdmin.Controllers
             {
                 try
                 {
-                    _context.Update(privilege);
-                    await _context.SaveChangesAsync();
+                    unitOfWork.Privileges.Update(privilege);
+                    unitOfWork.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -119,15 +114,15 @@ namespace ETicketAdmin.Controllers
         }
 
         // GET: Privileges/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var privilege = await _context.Privileges
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var privilege = unitOfWork.Privileges.Get((int)id);
+
             if (privilege == null)
             {
                 return NotFound();
@@ -139,17 +134,17 @@ namespace ETicketAdmin.Controllers
         // POST: Privileges/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var privilege = await _context.Privileges.FindAsync(id);
-            _context.Privileges.Remove(privilege);
-            await _context.SaveChangesAsync();
+            unitOfWork.Privileges.Delete(id);
+            unitOfWork.Save();
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool PrivilegeExists(int id)
         {
-            return _context.Privileges.Any(e => e.Id == id);
+            return unitOfWork.Privileges.Get(id) != null;
         }
     }
 }
