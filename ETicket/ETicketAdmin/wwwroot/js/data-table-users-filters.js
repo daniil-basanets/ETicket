@@ -6,7 +6,7 @@ $.fn.dataTable.ext.search.push(
         var privilegeInput = $('#privilege-select option:selected').text();
         var date = ($('#user-birth-date').val());
         var documentInput = ($('#document-input').val());
-        alert(date);
+        //alert(date);
 
         
         var firstN = String(data[0]); // use data for the first name col

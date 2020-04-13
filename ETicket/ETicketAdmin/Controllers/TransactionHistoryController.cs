@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace ETicketAdmin.Controllers
 {
@@ -23,6 +25,7 @@ namespace ETicketAdmin.Controllers
         // GET: TransactionHistories
         public IActionResult Index(string sortBy, string sortDirection)
         {
+            ViewData["TicketTypeId"] = new SelectList(unitOfWork.TicketTypes.GetAll(), "Id", "TypeName");
             if (string.IsNullOrEmpty(sortBy)
              || string.IsNullOrEmpty(sortDirection))
             {
