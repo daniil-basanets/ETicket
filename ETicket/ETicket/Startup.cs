@@ -33,6 +33,13 @@ namespace ETicket
                 Password = password
             };
 
+            var cardNumber = Configuration["MerchantSettings:CardNumber"];
+
+            IMerchantSettings merchantSettings = new MerchantSettings
+            {
+                CardNumber = cardNumber
+            };
+
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
             services.AddTransient<IUnitOfWork, ETicketData>(e => new ETicketData(e.GetService<ETicketDataContext>()));
             
@@ -47,6 +54,7 @@ namespace ETicket
             });
             services.AddControllers();
             services.AddSingleton<IMerchant>(merchant);
+            services.AddSingleton<IMerchantSettings>(merchantSettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

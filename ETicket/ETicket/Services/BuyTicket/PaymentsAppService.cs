@@ -1,5 +1,6 @@
 ﻿using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
+using ETicket.Models.Interfaces;
 using ETicket.PrivatBankApi;
 using ETicket.PrivatBankApi.PrivatBank;
 using Microsoft.EntityFrameworkCore;
@@ -11,19 +12,26 @@ namespace ETicket.Services.BuyTicket
 {
     public class PaymentsAppService
     {
+        #region Private Members
+
         private readonly IUnitOfWork eTitcketData;
+        private readonly IMerchantSettings merchantSettings;
         private readonly PrivatBankApiClient privatBankApiClient;
+
+        #endregion
 
         public PaymentsAppService(
             IUnitOfWork eTitcketData,
+            IMerchantSettings merchantSettings,
             PrivatBankApiClient privatBankApiClient
         )
         {
             this.eTitcketData = eTitcketData;
+            this.merchantSettings = merchantSettings;
             this.privatBankApiClient = privatBankApiClient;
         }
 
-        public async Task<BuyTicketResponse> ProcessAsync(BuyTicketRequest buyTicketRequest)
+        public BuyTicketResponse Process(BuyTicketRequest buyTicketRequest)
         {
             // Get User privilege coefficient
             var privilegeCoef = GetUserPrivilegeCoefficient(buyTicketRequest.UserId);
@@ -32,7 +40,7 @@ namespace ETicket.Services.BuyTicket
             var totalPrice = GetTicketsTotalPrice(buyTicketRequest, privilegeCoef);
 
             // Process with Private
-            var errorMessage = await SendTransaction(totalPrice);
+            var errorMessage = SendTransaction(totalPrice);
 
             // Check if fail transaction
             if (!string.IsNullOrEmpty(errorMessage))
@@ -70,26 +78,25 @@ namespace ETicket.Services.BuyTicket
             var ticketPrice = eTitcketData.TicketTypes
                 .GetAll()
                 .Where(t => t.Id == buyTicketRequest.TicketTypeId)
-                .Select(x => x.Price)
+                .Select(t => t.Price)
                 .First();
 
             return ticketPrice * buyTicketRequest.Amount * privilegeCoef;
         }
 
-        private async Task<string> SendTransaction(decimal totalPrice)
+        private string SendTransaction(decimal totalPrice)
         {
-            var cardNum = "4149439103721969";
             var privatBankCardRequest = new SendToPrivatBankCardRequest
             {
                 PaymentId = $"{Guid.NewGuid()}",
-                CardNumber = cardNum,
+                CardNumber = merchantSettings.CardNumber,
                 Amount = totalPrice,
                 Currency = "UAH",
                 Details = "Test"
             };
 
-            var privatBankCardResponse = await privatBankApiClient
-                .ExecuteAsync<SendToPrivatBankCardRequest, SendToPrivatBankCardResponse>(privatBankCardRequest);
+            var privatBankCardResponse = privatBankApiClient
+                .ExecuteAsync<SendToPrivatBankCardRequest, SendToPrivatBankCardResponse>(privatBankCardRequest).Result;
 
             return privatBankCardResponse.Payment.Message;
         }
