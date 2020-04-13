@@ -1,0 +1,18 @@
+﻿.users
+{
+    display: flex;
+    flex-direction:column;
+}
+.filters 
+{
+    justify-content:flex-start;
+}
+.details
+{
+    align-self:flex-start;
+}
+.user-filter-form 
+{
+    width: 300px;
+}
+

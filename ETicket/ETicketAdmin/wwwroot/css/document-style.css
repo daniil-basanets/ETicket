@@ -1,0 +1,17 @@
+﻿.documents {
+    display: flex;
+    flex-direction: column;
+}
+.filters 
+{
+    justify-content:flex-start;
+}
+.details
+{
+    align-self:flex-start;
+}
+.document-filter-form 
+{
+    width: 300px;
+}
+

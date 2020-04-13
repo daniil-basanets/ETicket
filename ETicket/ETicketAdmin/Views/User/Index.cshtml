@@ -7,13 +7,65 @@
 }
 
 <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="~/css/user-style.css" rel="stylesheet">
 
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Users</h6>
         </div>
-        <div class="card-body">
+        <div class="card-body users">
+            <div class="filters">
+                <details>
+                    <summary>Filters</summary>
+                    <table border="0" class="filter-table">
+                        <tr>
+                            <th>First name:</th>
+                            <th>
+                                <form class="user-filter-form">
+                                    <input type="text" class="user-filter-form form-control form-control-sm" id="first-name-input">
+                                </form>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Last name:</th>
+                            <th>
+                                <form class="user-filter-form">
+                                    <input type="text" class="user-filter-form form-control form-control-sm" id="last-name-input">
+                                </form>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Birth date:</th>
+                            <th>
+                                <form class="user-filter-form">
+                                    <input type="date" id="user-birth-date" class="user-filter-form form-control form-control-sm" value="">
+                                </form>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Privilege:</th>
+                            <th>
+                                <form class="user-filter-form">
+
+                                    @Html.DropDownList("privilege-select", ViewData["PrivilegeId"] as IEnumerable<SelectListItem>, "", new { @class = "user-filter-form custom-select custom-select-sm form-control form-control-sm" })
+
+                                </form>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Document:</th>
+                            <th>
+                                <form class="user-filter-form">
+                                    <input type="text" class="user-filter-form form-control form-control-sm" id="document-input">
+                                </form>
+                            </th>
+                        </tr>
+                    </table>
+
+                </details>
+                <p></p>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -102,7 +154,7 @@
         </div>
     </div>
 </div>
-
+<script src="~/js/user-script.js"></script>
 <script src="/vendor/jquery/jquery.min.js"></script>
 
 <!-- Page level plugins -->
@@ -110,4 +162,4 @@
 <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
 <!-- Page level custom scripts -->
-<script src="/js/datatables-starter.js"></script>
+<script src="/js/data-table-users-filters.js"></script>
