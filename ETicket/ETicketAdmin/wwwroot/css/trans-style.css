@@ -1,7 +1,6 @@
-﻿.users
-{
+﻿.transactions {
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
 }
 .filters 
 {
@@ -11,7 +10,7 @@
 {
     align-self:flex-start;
 }
-.user-filter-form 
+.trans-filter-form 
 {
     width: 300px;
 }

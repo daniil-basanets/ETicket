@@ -19,5 +19,4 @@ else
     month = today.getMonth() + 1
 }
 document.getElementById("user-birth-date").setAttribute("max", today.getFullYear() + '-' + month + '-' + day);
-document.getElementById("user-birth-date").setAttribute("value", today.getFullYear() + '-' + month + '-' + day);
-
+$("#form_date").data("DateTimePicker").date(null);

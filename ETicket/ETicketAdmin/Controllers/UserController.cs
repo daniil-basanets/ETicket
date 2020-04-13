@@ -28,6 +28,7 @@ namespace ETicketAdmin.Controllers
         // GET: User
         public async Task<IActionResult> Index(string sortOrder)
         {
+            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
             ViewBag.LastNameSortParm = String.IsNullOrEmpty(sortOrder) ? "LastName_desc" : "";
             ViewBag.FirstNameSortParm = sortOrder == "FirstName" ? "FirstName_desc" : "FirstName";
             var eTicketDataContext = repository.Users.GetAll();

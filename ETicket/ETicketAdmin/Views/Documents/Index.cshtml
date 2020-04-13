@@ -5,86 +5,129 @@
 }
 
 <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="~/css/document-style.css" rel="stylesheet">
 
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Document types</h6>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
+        <div class="card-body documents">
+            <div class="filters">
+                <details>
+                    <summary>Filters</summary>
+                    <table border="0" class="filter-table">
                         <tr>
+                            <th>Number:</th>
                             <th>
-                                @Html.DisplayNameFor(model => model.DocumentType)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Number)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ExpirationDate)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.IsValid)
-                            </th>
-                            <th>
-                                <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                                <form class="document-filter-form">
+                                    <input type="text" class="document-filter-form form-control form-control-sm" id="number-input">
+                                </form>
                             </th>
                         </tr>
-                    </thead>
-                    <tfoot>
                         <tr>
+                            <th>Is valid:</th>
                             <th>
-                                @Html.DisplayNameFor(model => model.DocumentType)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Number)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ExpirationDate)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.IsValid)
-                            </th>
-                            <th>
-                                Actions
+                                <form class="document-filter-form">
+                                    <input type="text" class="document-filter-form form-control form-control-sm" id="is-val-input">
+                                </form>
                             </th>
                         </tr>
-                    </tfoot>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
                         <tr>
-                            <td>
-                                @if (item.DocumentType == null)
-                                    @Html.DisplayFor(modelItem => item.DocumentType.Name)
-                                    else
-                                        @Html.ActionLink(item.DocumentType.Name, "Details", "DocumentTypes", new { id = item.DocumentTypeId }, null)
-                                @Html.DisplayFor(modelItem => item.Number)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.Number)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.ExpirationDate)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.IsValid)
-                            </td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                            </td>
+                            <th>Expiration date:</th>
+                            <th>
+                                <form class="document-filter-form">
+                                    <input type="date" id="exp-date-input" class="document-filter-form form-control form-control-sm" value="">
+                                </form>
+                            </th>
                         </tr>
-                        }
-                    </tbody>
-                </table>
+                        <tr>
+                            <th>Document type:</th>
+                            <th>
+                                <form class="document-filter-form">
+
+                                    @Html.DropDownList("type-select", ViewData["DocumentTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "document-filter-form custom-select custom-select-sm form-control form-control-sm" })
+
+                                </form>
+                            </th>
+                        </tr>
+                    </table>
+                </details>
+                <p></p>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DocumentType)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Number)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ExpirationDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.IsValid)
+                                </th>
+                                <th>
+                                    <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DocumentType)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Number)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ExpirationDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.IsValid)
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (item.DocumentType == null)
+                                            @Html.DisplayFor(modelItem => item.DocumentType.Name)
+                                            else
+                                                @Html.ActionLink(item.DocumentType.Name, "Details", "DocumentTypes", new { id = item.DocumentTypeId }, null)
+                                        @Html.DisplayFor(modelItem => item.Number)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Number)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ExpirationDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.IsValid)
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 <script src="/vendor/jquery/jquery.min.js"></script>
 
