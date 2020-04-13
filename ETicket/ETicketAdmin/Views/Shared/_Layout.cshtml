@@ -46,13 +46,16 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Components:</h6>
                         <a class="collapse-item" href="~/user">Users</a>
-                        <a class="collapse-item" href="~/Admin">User accounts</a>
-                        <a class="collapse-item" href="~/Documents">Documents</a>
-                        <a class="collapse-item" href="~/DocumentTypes">DocumentTypes</a>
-                        
-                        @*<a class="collapse-item" href="#">Roles</a>*@
-                        <a class="collapse-item" href="~/Privileges">Privilege</a>
-                    </div>
+                        @if (User.IsInRole("SuperUser"))
+                        {
+                            <a class="collapse-item" href="~/Admin">User accounts</a>
+                        }
+                            <a class="collapse-item" href="~/Documents">Documents</a>
+                            <a class="collapse-item" href="~/DocumentTypes">DocumentTypes</a>
+
+                            @*<a class="collapse-item" href="#">Roles</a>*@
+                            <a class="collapse-item" href="~/Privileges">Privilege</a>
+                        </div>
                 </div>
             </li>
 

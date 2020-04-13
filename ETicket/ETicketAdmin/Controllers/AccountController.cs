@@ -98,5 +98,11 @@ namespace ETicketAdmin.Controllers
 
             return RedirectToAction("Login", "Account");
         }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

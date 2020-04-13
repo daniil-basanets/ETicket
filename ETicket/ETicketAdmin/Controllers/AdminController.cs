@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ETicketAdmin.Controllers
 {
-    [Authorize(Roles = " SuperUser")]
+    [Authorize(Roles = "SuperUser")]
     public class AdminController : Controller
     {
         private readonly UserManager<IdentityUser> userManager;
