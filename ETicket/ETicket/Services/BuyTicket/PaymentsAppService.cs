@@ -29,7 +29,7 @@ namespace ETicket.Services.BuyTicket
             var privilegeCoef = GetUserPrivilegeCoefficient(buyTicketRequest.UserId);
 
             // Calculate price
-            var totalPrice = GetTotalPrice(buyTicketRequest, privilegeCoef);
+            var totalPrice = GetTicketsTotalPrice(buyTicketRequest, privilegeCoef);
 
             // Process with Private
             var errorMessage = await SendTransaction(totalPrice);
@@ -39,8 +39,7 @@ namespace ETicket.Services.BuyTicket
                 return new BuyTicketResponse { ErrorMessage = errorMessage };
 
             // Save transaction
-            var transactionHistoryId = Guid.NewGuid();
-            SaveTransaction(buyTicketRequest, totalPrice, transactionHistoryId);
+            var transactionHistoryId = SaveTransaction(buyTicketRequest, totalPrice);
 
             // Save tickets
             SaveTickets(buyTicketRequest, transactionHistoryId);
@@ -53,22 +52,28 @@ namespace ETicket.Services.BuyTicket
 
         private decimal GetUserPrivilegeCoefficient(Guid userId)
         {
-            var userPrivilege = eTitcketData.Users
+            var coefficient = eTitcketData.Users
                .GetAll()
                .Include(p => p.Privilege)
                .Where(u => u.Id == userId)
-               .Select(p => p.Privilege)
-               .First();
+               .Select(p => p.Privilege.Coefficient)
+               .FirstOrDefault();
 
-            return (userPrivilege == null) ? 1M : (decimal)userPrivilege.Coefficient;
+            return coefficient == 0 ? 1M : coefficient;
         }
 
-        private decimal GetTotalPrice(BuyTicketRequest buyTicketRequest, decimal privilegeCoef)
+        private decimal GetTicketsTotalPrice(
+            BuyTicketRequest buyTicketRequest,
+            decimal privilegeCoef
+        )
         {
-            var ticketType = eTitcketData.TicketTypes.GetAll()
-                .FirstOrDefault(x => x.Id == buyTicketRequest.TicketTypeId);
+            var ticketPrice = eTitcketData.TicketTypes
+                .GetAll()
+                .Where(t => t.Id == buyTicketRequest.TicketTypeId)
+                .Select(x => x.Price)
+                .First();
 
-            return ticketType.Price * buyTicketRequest.Amount * privilegeCoef;
+            return ticketPrice * buyTicketRequest.Amount * privilegeCoef;
         }
 
         private async Task<string> SendTransaction(decimal totalPrice)
@@ -76,7 +81,7 @@ namespace ETicket.Services.BuyTicket
             var cardNum = "4149439103721969";
             var privatBankCardRequest = new SendToPrivatBankCardRequest
             {
-                PaymentId = Guid.NewGuid().ToString(),
+                PaymentId = $"{Guid.NewGuid()}",
                 CardNumber = cardNum,
                 Amount = totalPrice,
                 Currency = "UAH",
@@ -89,12 +94,12 @@ namespace ETicket.Services.BuyTicket
             return privatBankCardResponse.Payment.Message;
         }
 
-        private void SaveTransaction(
+        private Guid SaveTransaction(
             BuyTicketRequest buyTicketRequest,
-            decimal totalPrice,
-            Guid transactionHistoryId
+            decimal totalPrice
         )
         {
+            var transactionHistoryId = Guid.NewGuid();
             var referenceNumber = GetRandomRefNumberTransaction();
 
             var transaction = new TransactionHistory
@@ -108,13 +113,18 @@ namespace ETicket.Services.BuyTicket
             };
 
             eTitcketData.TransactionHistory.Create(transaction);
+
+            return transactionHistoryId;
         }
 
         private string GetRandomRefNumberTransaction()
         {
             var random = new Random();
 
-            return random.Next(1, 999999999).ToString().PadLeft(13, '0');
+            return random
+                .Next(1, 999999999)
+                .ToString()
+                .PadLeft(13, '0');
         }
 
         private void SaveTickets(
@@ -123,14 +133,14 @@ namespace ETicket.Services.BuyTicket
         )
         {
             var length = buyTicketRequest.Amount;
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
                 var ticket = new Ticket
                 {
                     Id = Guid.NewGuid(),
                     TicketTypeId = buyTicketRequest.TicketTypeId,
                     CreatedUTCDate = DateTime.UtcNow,
-                    TransactionHistoryId = transactionHistoryId,
+                    TransactionHistoryId = transactionHistoryId
                 };
 
                 eTitcketData.Tickets.Create(ticket);
