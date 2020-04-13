@@ -8,7 +8,7 @@
 <h1>Details</h1>
 
 <div>
-    <h4>TicketType</h4>
+    <h4>Ticket Type</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -40,5 +40,6 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a href="javascript:history.back()">Back</a> |
+    <a asp-action="Index">Back to Ticket Type table</a>
 </div>
