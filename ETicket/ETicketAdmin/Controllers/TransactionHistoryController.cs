@@ -50,7 +50,7 @@ namespace ETicketAdmin.Controllers
                     .GetAll()
                     .AsNoTracking()
                     .Include(t => t.TicketType)
-                    .FirstOrDefaultAsync(m => m.Id == id);
+                    .FirstOrDefault(m => m.Id == id);
 
             if (transactionHistory == null)
             {
