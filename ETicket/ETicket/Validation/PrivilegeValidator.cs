@@ -14,7 +14,7 @@ namespace ETicket.Validation
 
             RuleFor(p => p.Coefficient)
                 .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty()
+                .NotNull()
                 .InclusiveBetween(0M, 1M).WithMessage("{PropertyName} should be from {From} to {To}");
         }
     }

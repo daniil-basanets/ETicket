@@ -1,0 +1,20 @@
+﻿.tickets {
+    display: flex;
+    flex-direction: column;
+}
+.filters 
+{
+    justify-content:flex-start;
+}
+.details
+{
+    align-self:flex-start;
+}
+.ticket-filter-form 
+{
+    width: 300px;
+}
+#activated-input {
+    width: 20px;
+    height: 20px;
+}
