@@ -5,49 +5,13 @@
 }
 
 <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-<link href="~/css/tickets-style.css" rel="stylesheet">
 
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Tickets</h6>
         </div>
-        <div class="card-body tickets">
-            <div class="filters">
-                <details>
-                    <summary>Filters</summary>
-                    <table border="0" class="filter-table">
-                        <tr>
-                            <th>Ticket type:</th>
-                            <th>
-                                <form class="ticket-filter-form">
-
-                                    @Html.DropDownList("ticket-type-select", ViewData["TicketTypeId"] as IEnumerable<SelectListItem>, "",
-                                   new { @class = "ticket-filter-form custom-select custom-select-sm form-control form-control-sm" })
-
-                                </form>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>User name:</th>
-                            <th>
-                                <form class="ticket-filter-form">
-                                    <input type="text" class="ticket-filter-form form-control form-control-sm" id="user-name-input">
-                                </form>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>Transaction:</th>
-                            <th>
-                                <form class="ticket-filter-form">
-                                    <input type="text" class="ticket-filter-form form-control form-control-sm" id="transaction-input">
-                                </form>
-                            </th>
-                        </tr>
-                    </table>
-                </details>
-                <p></p>
-            </div>
+        <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -66,9 +30,6 @@
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.User)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.TransactionHistory)
                             </th>
                             <th>
                                 <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
@@ -93,9 +54,6 @@
                                 @Html.DisplayNameFor(model => model.User)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.TransactionHistory)
-                            </th>
-                            <th>
                                 Actions
                             </th>
                         </tr>
@@ -108,22 +66,17 @@
                                     @Html.ActionLink(item.TicketType.TypeName, "Details", "TicketType", new { id = item.TicketTypeId }, null)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.CreatedUTCDate)
+                                    @item.CreatedUTCDate.ToString("yyyy-MM-dd hh:mm")
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.ActivatedUTCDate)
+                                    @item.ActivatedUTCDate?.ToString("yyyy-MM-dd hh:mm")
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.ExpirationUTCDate)
+                                    @item.ExpirationUTCDate?.ToString("yyyy-MM-dd hh:mm")
                                 </td>
                                 <td>
-                                    @if (item.User == null)
-                                        @Html.DisplayFor(modelItem => item.User.FirstName)
-                                        else
-                                            @Html.ActionLink(item.User.FirstName, "Details", "User", new { id = item.UserId }, null)
-                                </td>
-                                <td>
-                                    @Html.ActionLink(item.TransactionHistoryId.ToString(), "Details", "TransactionHistory", new { id = item.TransactionHistoryId }, null)
+                                    @if (item.User != null)
+                                       @Html.ActionLink(item.User.LastName, "Details", "User", new { id = item.UserId }, null)
                                 </td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
@@ -146,5 +99,4 @@
 <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
 <!-- Page level custom scripts -->
-@*<script src="/js/datatables-starter.js"></script>*@
-<script src="~/js/data-table-tickets-filters.js"></script>
+<script src="/js/datatables-starter.js"></script>
