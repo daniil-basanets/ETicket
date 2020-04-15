@@ -92,7 +92,7 @@
                                 @(item.ExpirationDate.HasValue ? item.ExpirationDate.Value.ToString("yyyy-MM-dd") : "")
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.IsValid)
+                                @(item.IsValid ? "Yes" : "No")
                             </td>
                             <td>
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>

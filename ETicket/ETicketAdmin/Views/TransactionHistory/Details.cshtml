@@ -14,7 +14,7 @@
             @Html.DisplayNameFor(model => model.TotalPrice)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalPrice)
+            @Model.TotalPrice.ToString("c", CultureInfo.CreateSpecificCulture("ua-UA"))
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Date)
