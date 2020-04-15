@@ -11,87 +11,111 @@
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Tickets</h6>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
+        <div class="card-bod tickets">
+            <div class="filters">
+                <details>
+                    <summary>Filters</summary>
+                    <table border="0" class="filter-table">
                         <tr>
+                            <th>User name:</th>
                             <th>
-                                @Html.DisplayNameFor(model => model.TicketType)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.CreatedUTCDate)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ActivatedUTCDate)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ExpirationUTCDate)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.User)
-                            </th>
-                            <th>
-                                <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                                <form class="ticket-filter-form">
+                                    <input type="text" class="ticket-filter-form form-control form-control-sm" id="user-name-input">
+                                </form>
                             </th>
                         </tr>
-                    </thead>
-                    <tfoot>
                         <tr>
+                            <th>Ticket type:</th>
                             <th>
-                                @Html.DisplayNameFor(model => model.TicketType)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.CreatedUTCDate)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ActivatedUTCDate)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.ExpirationUTCDate)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.User)
-                            </th>
-                            <th>
-                                Actions
+                                <form class="ticket-filter-form">
+                                    @Html.DropDownList("ticket-type-select", ViewData["TicketTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "ticket-filter-form custom-select custom-select-sm form-control form-control-sm" })
+                                </form>
                             </th>
                         </tr>
-                    </tfoot>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
+                    </table>
+
+                </details>
+                <p></p>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
                             <tr>
-                                <td>
-                                    @Html.ActionLink(item.TicketType.TypeName, "Details", "TicketType", new { id = item.TicketTypeId }, null)
-                                </td>
-                                <td>
-                                    @item.CreatedUTCDate.ToString("yyyy-MM-dd hh:mm")
-                                </td>
-                                <td>
-                                    @item.ActivatedUTCDate?.ToString("yyyy-MM-dd hh:mm")
-                                </td>
-                                <td>
-                                    @item.ExpirationUTCDate?.ToString("yyyy-MM-dd hh:mm")
-                                </td>
-                                <td>
-                                    @if (item.User != null)
-                                       @Html.ActionLink(item.User.LastName, "Details", "User", new { id = item.UserId }, null)
-                                </td>
-                                <td>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                                </td>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.TicketType)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CreatedUTCDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ActivatedUTCDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ExpirationUTCDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.User)
+                                </th>
+                                <th>
+                                    <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                                </th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.TicketType)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CreatedUTCDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ActivatedUTCDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ExpirationUTCDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.User)
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.ActionLink(item.TicketType.TypeName, "Details", "TicketType", new { id = item.TicketTypeId }, null)
+                                    </td>
+                                    <td>
+                                        @item.CreatedUTCDate.ToString("yyyy-MM-dd hh:mm")
+                                    </td>
+                                    <td>
+                                        @item.ActivatedUTCDate?.ToString("yyyy-MM-dd hh:mm")
+                                    </td>
+                                    <td>
+                                        @item.ExpirationUTCDate?.ToString("yyyy-MM-dd hh:mm")
+                                    </td>
+                                    <td>
+                                        @if (item.User != null)
+                                            @Html.ActionLink(item.User.LastName, "Details", "User", new { id = item.UserId }, null)
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 </div>
-
+    </div>
 <script src="/vendor/jquery/jquery.min.js"></script>
 
 <!-- Page level plugins -->
@@ -99,4 +123,4 @@
 <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
 <!-- Page level custom scripts -->
-<script src="/js/datatables-starter.js"></script>
+<script src="~/js/data-table-tickets-filters.js"></script>

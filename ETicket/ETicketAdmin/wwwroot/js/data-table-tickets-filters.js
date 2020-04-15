@@ -3,15 +3,12 @@ $.fn.dataTable.ext.search.push(
     function (settings, data, dataIndex) {
         var ticketTypeInput = ($('#ticket-type-select option:selected').text());
         var userNameInput = ($('#user-name-input').val());
-        var transactionInput = ($('#transaction-input').val());
         var ticketType = String(data[0]);
         var userN = String(data[4]); 
-        var trans = String(data[5]);
+
         if (((ticketTypeInput && ticketType.includes(ticketTypeInput)) || !ticketTypeInput) &&
 
-            ((userNameInput && userN.includes(userNameInput)) || !userNameInput) &&
-
-            ((transactionInput && trans.includes(transactionInput)) || !transactionInput)) {
+            ((userNameInput && userN.includes(userNameInput)) || !userNameInput)) {
             return true;
         }
 
@@ -28,7 +25,7 @@ $(document).ready(function () {
 
     });
 
-    $('#user-name-input, #transaction-input').keyup(function () {
+    $('#user-name-input').keyup(function () {
         table.draw();
     });
 
