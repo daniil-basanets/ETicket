@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ETicketAdmin.Models.IdentityModels
+namespace ETicket.Admin.Models.IdentityModels
 {
     public class LoginModel
     {

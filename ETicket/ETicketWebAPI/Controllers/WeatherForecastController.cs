@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace ETicketWebAPI.Controllers
+namespace ETicket.WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]

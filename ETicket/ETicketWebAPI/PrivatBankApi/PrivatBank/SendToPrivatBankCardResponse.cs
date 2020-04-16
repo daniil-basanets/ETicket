@@ -1,7 +1,7 @@
 ﻿using System.Xml.Serialization;
-using ETicketWebAPI.PrivatBankApi.Interfaces;
+using ETicket.WebAPI.PrivatBankApi.Interfaces;
 
-namespace ETicketWebAPI.PrivatBankApi.PrivatBank
+namespace ETicket.WebAPI.PrivatBankApi.PrivatBank
 {
     public class SendToPrivatBankCardResponse : IResponseData
     {

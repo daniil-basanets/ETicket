@@ -1,4 +1,4 @@
-﻿namespace ETicketWebAPI.PrivatBankApi.Interfaces
+﻿namespace ETicket.WebAPI.PrivatBankApi.Interfaces
 {
     public interface IResponseData
     {

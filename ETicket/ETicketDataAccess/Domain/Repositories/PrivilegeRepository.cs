@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ETicketDataAccess.Domain.Entities;
-using ETicketDataAccess.Domain.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace ETicketDataAccess.Domain.Repositories
+namespace ETicket.DataAccess.Domain.Repositories
 {
 	public class PrivilegeRepository: IRepository<Privilege, int>
 	{

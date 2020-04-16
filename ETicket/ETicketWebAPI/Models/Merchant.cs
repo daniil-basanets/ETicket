@@ -1,6 +1,6 @@
-﻿using ETicketWebAPI.Models.Interfaces;
+﻿using ETicket.WebAPI.Models.Interfaces;
 
-namespace ETicketWebAPI.Models
+namespace ETicket.WebAPI.Models
 {
     public class Merchant : IMerchant
     {

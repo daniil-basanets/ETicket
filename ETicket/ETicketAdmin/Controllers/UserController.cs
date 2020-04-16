@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ETicketDataAccess.Domain;
-using ETicketDataAccess.Domain.Entities;
-using ETicketDataAccess.Domain.Repositories;
-using ETicketAdmin.Models;
-using ETicketAdmin.Services;
+using ETicket.DataAccess.Domain;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Repositories;
+using ETicket.Admin.Models;
+using ETicket.Admin.Services;
 using Microsoft.AspNetCore.Authorization;
 
-namespace ETicketAdmin.Controllers
+namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class UserController : Controller

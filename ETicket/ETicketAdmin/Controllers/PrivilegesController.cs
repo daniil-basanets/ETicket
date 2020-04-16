@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ETicketDataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using ETicketDataAccess.Domain.Interfaces;
+using ETicket.DataAccess.Domain.Interfaces;
 
-namespace ETicketAdmin.Controllers
+namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class PrivilegesController : Controller

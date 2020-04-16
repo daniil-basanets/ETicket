@@ -1,13 +1,13 @@
-﻿using ETicketDataAccess.Domain.Entities;
-using ETicketDataAccess.Domain.Interfaces;
-using ETicketWebAPI.Models.Interfaces;
-using ETicketWebAPI.PrivatBankApi;
-using ETicketWebAPI.PrivatBankApi.PrivatBank;
+﻿using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
+using ETicket.WebAPI.Models.Interfaces;
+using ETicket.WebAPI.PrivatBankApi;
+using ETicket.WebAPI.PrivatBankApi.PrivatBank;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
-namespace ETicketWebAPI.Services.BuyTicket
+namespace ETicket.WebAPI.Services.BuyTicket
 {
     public class PaymentsAppService
     {

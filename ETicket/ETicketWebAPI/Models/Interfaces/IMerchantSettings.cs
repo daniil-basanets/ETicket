@@ -1,4 +1,4 @@
-﻿namespace ETicketWebAPI.Models.Interfaces
+﻿namespace ETicket.WebAPI.Models.Interfaces
 {
     public interface IMerchantSettings
     {

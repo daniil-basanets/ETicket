@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace ETicketDataAccess.Domain.Interfaces
+namespace ETicket.DataAccess.Domain.Interfaces
 {
     public interface IRepository<T, K> 
         where T : class 

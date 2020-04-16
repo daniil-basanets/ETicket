@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ETicketWebAPI.Services.BuyTicket
+namespace ETicket.WebAPI.Services.BuyTicket
 {
     public class BuyTicketRequest
     {

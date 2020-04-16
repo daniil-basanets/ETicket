@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace ETicketWebAPI.PrivatBankApi.PrivatBank
+namespace ETicket.WebAPI.PrivatBankApi.PrivatBank
 {
     public class Payment
     {

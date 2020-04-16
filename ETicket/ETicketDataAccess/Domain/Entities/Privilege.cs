@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 
-namespace ETicketDataAccess.Domain.Entities
+namespace ETicket.DataAccess.Domain.Entities
 {
 	public class Privilege
 	{

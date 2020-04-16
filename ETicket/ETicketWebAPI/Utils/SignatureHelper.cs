@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace ETicketWebAPI.Utils
+namespace ETicket.WebAPI.Utils
 {
     public static class SignatureHelper
     {

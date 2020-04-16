@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace ETicketWebAPI
+namespace ETicket.WebAPI
 {
     public class Program
     {

@@ -1,4 +1,4 @@
-﻿namespace ETicketWebAPI.PrivatBankApi
+﻿namespace ETicket.WebAPI.PrivatBankApi
 {
     public static class PrivatBankApiEndpoint
     {

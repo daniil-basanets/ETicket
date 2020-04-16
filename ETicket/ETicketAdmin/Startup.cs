@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ETicketDataAccess.Domain;
-using ETicketDataAccess.Domain.Interfaces;
+using ETicket.DataAccess.Domain;
+using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,10 +15,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using ETicketDataAccess.Domain.Entities;
-using ETicketWebAPI.Validation;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.WebAPI.Validation;
 
-namespace ETicketAdmin
+namespace ETicket.Admin
 {
     public class Startup
     {

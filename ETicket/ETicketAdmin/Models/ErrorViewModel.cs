@@ -1,6 +1,6 @@
 using System;
 
-namespace ETicketAdmin.Models
+namespace ETicket.Admin.Models
 {
     public class ErrorViewModel
     {

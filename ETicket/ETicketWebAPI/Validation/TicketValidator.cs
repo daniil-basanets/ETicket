@@ -1,8 +1,8 @@
 using System;
-using ETicketDataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Entities;
 using FluentValidation;
 
-namespace ETicketWebAPI.Validation
+namespace ETicket.WebAPI.Validation
 {
     public class TicketValidator : AbstractValidator<Ticket>
     {

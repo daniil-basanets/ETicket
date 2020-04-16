@@ -1,10 +1,10 @@
 ﻿using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using ETicketWebAPI.PrivatBankApi.Interfaces;
-using ETicketWebAPI.Utils;
+using ETicket.WebAPI.PrivatBankApi.Interfaces;
+using ETicket.WebAPI.Utils;
 
-namespace ETicketWebAPI.PrivatBankApi
+namespace ETicket.WebAPI.PrivatBankApi
 {
     public class PrivatBankApiClient
     {

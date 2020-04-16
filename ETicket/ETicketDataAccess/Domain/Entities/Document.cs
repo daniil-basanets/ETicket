@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ETicketDataAccess.Domain.Entities
+namespace ETicket.DataAccess.Domain.Entities
 {
     public class Document
     {

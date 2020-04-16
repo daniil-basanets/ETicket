@@ -1,8 +1,8 @@
-﻿using ETicketDataAccess.Domain.Interfaces;
-using ETicketDataAccess.Domain.Repositories;
+﻿using ETicket.DataAccess.Domain.Interfaces;
+using ETicket.DataAccess.Domain.Repositories;
 using System;
 
-namespace ETicketDataAccess.Domain
+namespace ETicket.DataAccess.Domain
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {

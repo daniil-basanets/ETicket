@@ -1,7 +1,7 @@
-using ETicketDataAccess.Domain;
-using ETicketDataAccess.Domain.Interfaces;
-using ETicketWebAPI.Models;
-using ETicketWebAPI.Models.Interfaces;
+using ETicket.DataAccess.Domain;
+using ETicket.DataAccess.Domain.Interfaces;
+using ETicket.WebAPI.Models;
+using ETicket.WebAPI.Models.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace ETicketWebAPI
+namespace ETicket.WebAPI
 {
     public class Startup
     {

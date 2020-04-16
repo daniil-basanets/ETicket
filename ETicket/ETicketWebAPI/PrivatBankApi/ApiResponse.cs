@@ -1,7 +1,7 @@
 ﻿using System.Xml.Serialization;
-using ETicketWebAPI.PrivatBankApi.Interfaces;
+using ETicket.WebAPI.PrivatBankApi.Interfaces;
 
-namespace ETicketWebAPI.PrivatBankApi
+namespace ETicket.WebAPI.PrivatBankApi
 {
     [XmlRoot(ElementName = "response")]
     public class ApiResponse<T>

@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ETicketDataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Entities;
 using FluentValidation;
 
-namespace ETicketWebAPI.Validation
+namespace ETicket.WebAPI.Validation
 {
     public class UserValidator : AbstractValidator<User>
     {

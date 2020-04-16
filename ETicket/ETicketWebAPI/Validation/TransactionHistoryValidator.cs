@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using ETicketDataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Entities;
 using FluentValidation;
 
-namespace ETicketWebAPI.Validation
+namespace ETicket.WebAPI.Validation
 {
     public class TransactionHistoryValidator : AbstractValidator<TransactionHistory>
     {

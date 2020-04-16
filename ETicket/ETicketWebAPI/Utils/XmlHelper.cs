@@ -2,7 +2,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace ETicketWebAPI.Utils
+namespace ETicket.WebAPI.Utils
 {
     public static class XmlHelper
     {

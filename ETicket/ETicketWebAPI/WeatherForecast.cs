@@ -1,6 +1,6 @@
 using System;
 
-namespace ETicketWebAPI
+namespace ETicket.WebAPI
 {
     public class WeatherForecast
     {

@@ -1,8 +1,8 @@
-﻿using ETicketDataAccess.Domain.Entities;
+﻿using ETicket.DataAccess.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ETicketDataAccess.Domain
+namespace ETicket.DataAccess.Domain
 {
     public class ETicketDataContext : IdentityDbContext
     {

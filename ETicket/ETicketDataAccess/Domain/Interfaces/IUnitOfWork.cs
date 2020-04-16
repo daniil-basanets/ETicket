@@ -1,6 +1,6 @@
-﻿using ETicketDataAccess.Domain.Repositories;
+﻿using ETicket.DataAccess.Domain.Repositories;
 
-namespace ETicketDataAccess.Domain.Interfaces
+namespace ETicket.DataAccess.Domain.Interfaces
 {
     public interface IUnitOfWork
     {

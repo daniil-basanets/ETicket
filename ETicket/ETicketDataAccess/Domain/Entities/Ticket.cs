@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ETicketDataAccess.Domain.Entities
+namespace ETicket.DataAccess.Domain.Entities
 {
     public class Ticket
     {
