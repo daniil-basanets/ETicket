@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
 using ETicket.DataAccess.Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
 using ETicket.DataAccess.Domain.Interfaces;
+using ETicketAdmin.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.Admin.Controllers
 {
@@ -12,12 +14,14 @@ namespace ETicket.Admin.Controllers
         #region
 
         private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
 
         #endregion
 
-        public PrivilegesController(IUnitOfWork unitOfWork)
+        public PrivilegesController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
         // GET: Privileges
@@ -53,15 +57,17 @@ namespace ETicket.Admin.Controllers
         // POST: Privileges/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,Name,Coefficient")] Privilege privilege)
+        public IActionResult Create(PrivilegeDto privilegeDto)
         {
             if (ModelState.IsValid)
             {
+                var privilege = mapper.Map<Privilege>(privilegeDto);
+
                 unitOfWork.Privileges.Create(privilege);
                 unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }
-            return View(privilege);
+            return View(privilegeDto);
         }
 
         // GET: Privileges/Edit/5
@@ -83,9 +89,9 @@ namespace ETicket.Admin.Controllers
         // POST: Privileges/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Name,Coefficient")] Privilege privilege)
+        public IActionResult Edit(int id, PrivilegeDto privilegeDto)
         {
-            if (id != privilege.Id)
+            if (id != privilegeDto.Id)
             {
                 return NotFound();
             }
@@ -94,12 +100,14 @@ namespace ETicket.Admin.Controllers
             {
                 try
                 {
+                    var privilege = mapper.Map<Privilege>(privilegeDto);
+
                     unitOfWork.Privileges.Update(privilege);
                     unitOfWork.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PrivilegeExists(privilege.Id))
+                    if (!PrivilegeExists(privilegeDto.Id))
                     {
                         return NotFound();
                     }
@@ -110,7 +118,7 @@ namespace ETicket.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(privilege);
+            return View(privilegeDto);
         }
 
         // GET: Privileges/Delete/5

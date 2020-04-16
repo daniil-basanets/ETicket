@@ -1,11 +1,11 @@
-﻿using ETicket.DataAccess.Domain.Entities;
+﻿using System;
+using System.Linq;
+using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
 
 namespace ETicket.Admin.Controllers
 {
@@ -26,7 +26,8 @@ namespace ETicket.Admin.Controllers
         // GET: TransactionHistories
         public IActionResult Index()
         {
-            ViewData["TicketTypeId"] = new SelectList(unitOfWork.TicketTypes.GetAll(), "Id", "TypeName");
+            var ticketTypes = unitOfWork.TicketTypes.GetAll();
+            ViewData["TicketTypeId"] = new SelectList(ticketTypes, "Id", "TypeName");
 
             IQueryable<TransactionHistory> eTicketDataContext = unitOfWork
                     .TransactionHistory
