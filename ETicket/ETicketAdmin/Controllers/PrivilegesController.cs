@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DBContextLibrary.Domain.Entities;
+using ETicketDataAccess.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using DBContextLibrary.Domain.Interfaces;
+using ETicketDataAccess.Domain.Interfaces;
 
 namespace ETicketAdmin.Controllers
 {

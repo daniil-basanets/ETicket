@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DBContextLibrary.Domain;
-using DBContextLibrary.Domain.Entities;
-using DBContextLibrary.Domain.Repositories;
+using ETicketDataAccess.Domain;
+using ETicketDataAccess.Domain.Entities;
+using ETicketDataAccess.Domain.Repositories;
 using ETicketAdmin.Models;
 using ETicketAdmin.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -18,12 +18,12 @@ namespace ETicketAdmin.Controllers
     public class UserController : Controller
     {
         private readonly ETicketDataContext context;
-        private readonly ETicketData repository;
+        private readonly UnitOfWork repository;
 
         public UserController(ETicketDataContext context)
         {
             this.context = context;
-            repository = new ETicketData(context);
+            repository = new UnitOfWork(context);
         }
 
         // GET: User

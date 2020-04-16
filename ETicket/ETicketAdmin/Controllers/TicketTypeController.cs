@@ -1,5 +1,5 @@
-using DBContextLibrary.Domain.Entities;
-using DBContextLibrary.Domain.Interfaces;
+using ETicketDataAccess.Domain.Entities;
+using ETicketDataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

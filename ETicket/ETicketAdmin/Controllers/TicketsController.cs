@@ -3,8 +3,8 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DBContextLibrary.Domain.Entities;
-using DBContextLibrary.Domain.Interfaces;
+using ETicketDataAccess.Domain.Entities;
+using ETicketDataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ETicketAdmin.Controllers
