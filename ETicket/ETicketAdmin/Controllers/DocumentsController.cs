@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Authorization;
 //TODO (nice ot have) Remove submit use ajax instead
 //TODO add logger for controllers (log4NET)
 //TODO Unit TESTS (coverage: in Services work must be mocked throw UnitOfWork, UOW must return mock instead of real DB data)
+//TODO move Create button from table header
+//TODO (nice ot have) move filter to column header columns
 
 namespace ETicketAdmin.Controllers
 {
