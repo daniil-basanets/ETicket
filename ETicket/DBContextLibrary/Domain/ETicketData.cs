@@ -5,7 +5,7 @@ using System;
 namespace DBContextLibrary.Domain
 {
     public class ETicketData : IUnitOfWork, IDisposable
-    {
+    {//TODO Rename to *UnitOfWork*
         #region private members
 
         private ETicketDataContext eTicketDataContext;

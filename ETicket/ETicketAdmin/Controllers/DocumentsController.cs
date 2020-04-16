@@ -10,6 +10,12 @@ using DBContextLibrary.Domain.Entities;
 using DBContextLibrary.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
+//TODO move common to another common project
+//TODO Try to rename projects like ETicket.Admin...
+//TODO (nice ot have) Remove submit use ajax instead
+//TODO add logger for controllers (log4NET)
+//TODO Unit TESTS (coverage: in Services work must be mocked throw UnitOfWork, UOW must return mock instead of real DB data)
+
 namespace ETicketAdmin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
@@ -60,11 +66,11 @@ namespace ETicketAdmin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create([Bind("Id,DocumentTypeId,Number,ExpirationDate,IsValid")] Document document)
-        {
+        {//TODO remove Bind (base controller)
             if (ModelState.IsValid)
             {
                 document.Id = Guid.NewGuid();
-                unitOfWork.Documents.Create(document);
+                unitOfWork.Documents.Create(document);  //TODO move business logic to Services in another project(each Service has own folder)
                 unitOfWork.Save();
 
                 return RedirectToAction(nameof(Index));
