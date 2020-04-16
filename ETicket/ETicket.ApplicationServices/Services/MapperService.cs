@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using ETicket.ApplicationServices.DTOs;
-using ETicket.DataAccess.Domain.Entities;
-using ETicketAdmin.Mapping;
+using ETicket.ApplicationServices.Mapping;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -16,11 +14,16 @@ namespace ETicket.ApplicationServices.Services
 
         private IMapper ConfigureMapper()
         {
-            var config = new MapperConfiguration(cfg =>  cfg.AddProfile<MapperProfile>());
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<TicketMapperProfile>();
+                cfg.AddProfile<DocumentMapperProfile>();
+                cfg.AddProfile<PrivilegeMapperProfile>();
+                cfg.AddProfile<UserMapperProfile>();
+                cfg.AddProfile<TransactionHistoryMapperProfile>();
+            });
 
-            var mapper = config.CreateMapper();
-
-            return mapper;
+            return config.CreateMapper();
         }
 
         public TDestination Map<TSource, TDestination>(TSource source)
