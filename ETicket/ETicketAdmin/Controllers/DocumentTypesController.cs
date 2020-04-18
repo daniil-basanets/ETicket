@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-using ETicket.DataAccess.Domain;
+﻿using AutoMapper;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
+using ETicketAdmin.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.Admin.Controllers
 {
@@ -12,10 +12,12 @@ namespace ETicket.Admin.Controllers
     public class DocumentTypesController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
 
-        public DocumentTypesController(IUnitOfWork unitOfWork)
+        public DocumentTypesController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
         // GET: DocumentTypes
@@ -35,16 +37,18 @@ namespace ETicket.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,Name")] DocumentType documentType)
+        public IActionResult Create(DocumentTypeDto documentTypeDto)
         {
             if (ModelState.IsValid)
             {
+                var documentType = mapper.Map<DocumentType>(documentTypeDto);
+
                 unitOfWork.DocumentTypes.Create(documentType);
                 unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(documentType);
+            return View(documentTypeDto);
         }
 
         // GET: DocumentTypes/Edit/5
@@ -69,9 +73,9 @@ namespace ETicket.Admin.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Name")] DocumentType documentType)
+        public IActionResult Edit(int id, DocumentTypeDto documentTypeDto)
         {
-            if (id != documentType.Id)
+            if (id != documentTypeDto.Id)
             {
                 return NotFound();
             }
@@ -80,12 +84,14 @@ namespace ETicket.Admin.Controllers
             {
                 try
                 {
+                    var documentType = mapper.Map<DocumentType>(documentTypeDto);
+
                     unitOfWork.DocumentTypes.Update(documentType);
                     unitOfWork.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DocumentTypeExists(documentType.Id))
+                    if (!DocumentTypeExists(documentTypeDto.Id))
                     {
                         return NotFound();
                     }
@@ -98,7 +104,7 @@ namespace ETicket.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(documentType);
+            return View(documentTypeDto);
         }
 
         // GET: DocumentTypes/Delete/5

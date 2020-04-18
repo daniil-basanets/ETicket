@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using AutoMapper;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
+using ETicketAdmin.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ETicket.Admin.Controllers
 {
@@ -13,10 +15,12 @@ namespace ETicket.Admin.Controllers
     public class TicketController : Controller
     {
         private readonly IUnitOfWork uow;
+        private readonly IMapper mapper;
 
-        public TicketController(IUnitOfWork uow)
+        public TicketController(IUnitOfWork uow, IMapper mapper)
         {
             this.uow = uow;
+            this.mapper = mapper;
         }
 
         // GET: Tickets
@@ -106,9 +110,10 @@ namespace ETicket.Admin.Controllers
         // POST: Tickets/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,TicketTypeId,CreatedUTCDate,ActivatedUTCDate," +
-            "ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
+        public IActionResult Create(TicketDto ticketDto)
         {
+            var ticket = mapper.Map<Ticket>(ticketDto);
+
             ticket.CreatedUTCDate = DateTime.UtcNow;
             ticket.TicketType = uow.TicketTypes.Get(ticket.TicketTypeId);
 
@@ -167,9 +172,9 @@ namespace ETicket.Admin.Controllers
         // POST: Tickets/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, [Bind("Id,TicketTypeId,CreatedUTCDate,ActivatedUTCDate,ExpirationUTCDate,UserId,TransactionHistoryId")] Ticket ticket)
+        public IActionResult Edit(Guid id, TicketDto ticketDto)
         {
-            if (id != ticket.Id)
+            if (id != ticketDto.Id)
             {
                 return NotFound();
             }
@@ -178,12 +183,14 @@ namespace ETicket.Admin.Controllers
             {
                 try
                 {
+                    var ticket = mapper.Map<Ticket>(ticketDto);
+
                     uow.Tickets.Update(ticket);
                     uow.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TicketExists(ticket.Id))
+                    if (!TicketExists(ticketDto.Id))
                     {
                         return NotFound();
                     }
@@ -196,11 +203,11 @@ namespace ETicket.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticket.TicketTypeId);
-            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticket.TransactionHistoryId);
-            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticket.UserId);
+            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticketDto.TicketTypeId);
+            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticketDto.TransactionHistoryId);
+            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticketDto.UserId);
 
-            return View(ticket);
+            return View(ticketDto);
         }
 
         // GET: Tickets/Delete/5

@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
+using ETicketAdmin.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ETicket.DataAccess.Domain;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 
 //TODO move common to another common project
 //TODO Try to rename projects like ETicket.WebAPI.Admin...
@@ -24,10 +23,12 @@ namespace ETicket.Admin.Controllers
     public class DocumentsController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
 
-        public DocumentsController(IUnitOfWork unitOfWork)
+        public DocumentsController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
         public IActionResult Index()
@@ -67,10 +68,12 @@ namespace ETicket.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,DocumentTypeId,Number,ExpirationDate,IsValid")] Document document)
+        public IActionResult Create(DocumentDto documentDto)
         {//TODO remove Bind (base controller)
             if (ModelState.IsValid)
             {
+                var document = mapper.Map<Document>(documentDto);
+
                 document.Id = Guid.NewGuid();
                 unitOfWork.Documents.Create(document);  //TODO move business logic to Services in another project(each Service has own folder)
                 unitOfWork.Save();
@@ -78,9 +81,9 @@ namespace ETicket.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", document.DocumentTypeId);
+            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", documentDto.DocumentTypeId);
 
-            return View(document);
+            return View(documentDto);
         }
 
         public IActionResult Edit(Guid? id)
@@ -103,9 +106,9 @@ namespace ETicket.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, [Bind("Id,DocumentTypeId,Number,ExpirationDate,IsValid")] Document document)
+        public IActionResult Edit(Guid id, DocumentDto documentDto)
         {
-            if (id != document.Id)
+            if (id != documentDto.Id)
             {
                 return NotFound();
             }
@@ -114,12 +117,14 @@ namespace ETicket.Admin.Controllers
             {
                 try
                 {
+                    var document = mapper.Map<Document>(documentDto);
+
                     unitOfWork.Documents.Update(document);
                     unitOfWork.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DocumentExists(document.Id))
+                    if (!DocumentExists(documentDto.Id))
                     {
                         return NotFound();
                     }
@@ -131,8 +136,8 @@ namespace ETicket.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", document.DocumentTypeId);
-            return View(document);
+            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", documentDto.DocumentTypeId);
+            return View(documentDto);
         }
 
         public IActionResult Delete(Guid? id)

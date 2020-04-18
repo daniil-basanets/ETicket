@@ -1,22 +1,19 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
 using ETicket.DataAccess.Domain;
+using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
+using ETicket.WebAPI.Validation;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.WebAPI.Validation;
 
 namespace ETicket.Admin
 {
@@ -48,6 +45,7 @@ namespace ETicket.Admin
             services.AddTransient<IValidator<Privilege>, PrivilegeValidator>();
             services.AddTransient<IValidator<TransactionHistory>, TransactionHistoryValidator>();
 
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddIdentityCore<IdentityUser>(o =>
             {
