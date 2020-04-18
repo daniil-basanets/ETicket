@@ -118,22 +118,30 @@ IF @@FETCH_STATUS <> 0
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-    INSERT INTO Tickets
-      (
-        Id,
-        TicketTypeId,
-        CreatedUTCDate,
-        UserID,
-        TransactionHistoryId
-      )
-    VALUES
-      (
-        NEWID(),
-        @TicketTypeID,
-        @Datet,
-        (SELECT TOP 1 Id FROM ETUsers ORDER BY NEWID()),
-        @TransactionID
-      )
+	DECLARE @counter INT = 0;
+
+	WHILE @counter < @TicketCount
+	BEGIN
+		INSERT INTO Tickets
+			(
+			Id,
+			TicketTypeId,
+			CreatedUTCDate,
+			UserID,
+			TransactionHistoryId
+			)
+		VALUES
+			(
+			NEWID(),
+			@TicketTypeID,
+			@Datet,
+			(SELECT TOP 1 Id FROM ETUsers ORDER BY NEWID()),
+			@TransactionID
+			)	   
+	   
+	   SET @counter = @counter + 1;
+	END;
+
     FETCH NEXT FROM TransactionHistory_Cursor INTO @TransactionID, @TicketTypeID, @TicketCount, @Datet
 END  
 
