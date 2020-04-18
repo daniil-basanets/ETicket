@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DBContextLibrary.Domain;
-using DBContextLibrary.Domain.Interfaces;
+using ETicket.DataAccess.Domain;
+using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,12 +13,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ETicket.Validation;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using DBContextLibrary.Domain.Entities;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.WebAPI.Validation;
 
-namespace ETicketAdmin
+namespace ETicket.Admin
 {
     public class Startup
     {
@@ -34,7 +34,7 @@ namespace ETicketAdmin
         {
             services.AddControllersWithViews();
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
-            services.AddTransient<IUnitOfWork, ETicketData>(x => new ETicketData(x.GetService<ETicketDataContext>()));
+            services.AddTransient<IUnitOfWork, UnitOfWork>(x => new UnitOfWork(x.GetService<ETicketDataContext>()));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ETicketDataContext>()

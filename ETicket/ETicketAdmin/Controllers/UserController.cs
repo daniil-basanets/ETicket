@@ -5,25 +5,25 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DBContextLibrary.Domain;
-using DBContextLibrary.Domain.Entities;
-using DBContextLibrary.Domain.Repositories;
-using ETicketAdmin.Models;
-using ETicketAdmin.Services;
+using ETicket.DataAccess.Domain;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Repositories;
+using ETicket.Admin.Models;
+using ETicket.Admin.Services;
 using Microsoft.AspNetCore.Authorization;
 
-namespace ETicketAdmin.Controllers
+namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class UserController : Controller
     {
         private readonly ETicketDataContext context;
-        private readonly ETicketData repository;
+        private readonly UnitOfWork repository;
 
         public UserController(ETicketDataContext context)
         {
             this.context = context;
-            repository = new ETicketData(context);
+            repository = new UnitOfWork(context);
         }
 
         // GET: User

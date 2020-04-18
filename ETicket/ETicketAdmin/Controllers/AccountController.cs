@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ETicketAdmin.Models.IdentityModels;
+using ETicket.Admin.Models.IdentityModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ETicketAdmin.Controllers
+namespace ETicket.Admin.Controllers
 {
     public class AccountController : Controller
     {

@@ -5,10 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ETicketAdmin.Models;
+using ETicket.Admin.Models;
 using Microsoft.AspNetCore.Authorization;
 
-namespace ETicketAdmin.Controllers
+namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles ="Admin, SuperUser")]
     public class HomeController : Controller

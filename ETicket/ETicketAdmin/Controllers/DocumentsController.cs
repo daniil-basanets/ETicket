@@ -5,20 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DBContextLibrary.Domain;
-using DBContextLibrary.Domain.Entities;
-using DBContextLibrary.Domain.Interfaces;
+using ETicket.DataAccess.Domain;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
 //TODO move common to another common project
-//TODO Try to rename projects like ETicket.Admin...
+//TODO Try to rename projects like ETicket.WebAPI.Admin...
 //TODO (nice ot have) Remove submit use ajax instead
 //TODO add logger for controllers (log4NET)
 //TODO Unit TESTS (coverage: in Services work must be mocked throw UnitOfWork, UOW must return mock instead of real DB data)
 //TODO move Create button from table header
 //TODO (nice ot have) move filter to column header columns
 
-namespace ETicketAdmin.Controllers
+namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class DocumentsController : Controller
