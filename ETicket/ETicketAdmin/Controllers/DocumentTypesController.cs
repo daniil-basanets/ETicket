@@ -23,7 +23,21 @@ namespace ETicket.Admin.Controllers
         // GET: DocumentTypes
         public IActionResult Index()
         {
-            return View(unitOfWork.DocumentTypes.GetAll());
+            return View();
+            //return View(unitOfWork.DocumentTypes.GetAll());
+        }
+
+        [HttpPost]
+        public IActionResult GetPage()
+        {
+            var documentTypes = unitOfWork.DocumentTypes.GetAll();
+            return Json(new
+            {
+                draw = 1,
+                recordsTotal = documentTypes.CountAsync().Result,
+                recordsFiltered = 0,
+                data = documentTypes.ToListAsync().Result
+            });
         }
 
         // GET: DocumentTypes/Create
