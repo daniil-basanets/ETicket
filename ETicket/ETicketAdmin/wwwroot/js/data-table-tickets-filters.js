@@ -34,5 +34,4 @@ $(document).ready(function () {
     });
     //Delete container from loyout only for Index
     $('.container').removeClass('container');
-
 });
