@@ -10,17 +10,10 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         ajax: {
+            pages: 3, 
             url: 'DocumentTypes/GetPage',
             datatype: 'json',
-            //contentType: 'application/json',
             type: 'POST',
-            //data: function (d) {
-            //    return JSON.stringify(d);
-            //},
-            //success: function (response) {
-            //    console.log(response);
-            //}
-
         },
 
         //Columns data order       

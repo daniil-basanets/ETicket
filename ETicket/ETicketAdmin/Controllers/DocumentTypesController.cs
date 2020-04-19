@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using ETicket.Admin.Models.DataTables;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicketAdmin.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ETicket.Admin.Controllers
 {
@@ -27,17 +29,73 @@ namespace ETicket.Admin.Controllers
             //return View(unitOfWork.DocumentTypes.GetAll());
         }
 
+        static int drawI = 0;
         [HttpPost]
-        public IActionResult GetPage()
+        public IActionResult GetPage(DataTableParameters dataTableParameters)
         {
             var documentTypes = unitOfWork.DocumentTypes.GetAll();
+            //int totalCount = 
+            drawI++;
+
+            //var temp = dataTableParameters.Order[0].Dir.ToString();
+            documentTypes = SortByColumn(documentTypes, dataTableParameters);
+            //documentTypes.SortByColumn();
+
+            var data = documentTypes.Where(x => x.Name.Contains(dataTableParameters.Search.Value + ""))
+                    .Skip(dataTableParameters.Start * dataTableParameters.Length)
+                    .Take(dataTableParameters.Length);
+
             return Json(new
             {
-                draw = 1,
+                draw = drawI,
                 recordsTotal = documentTypes.CountAsync().Result,
-                recordsFiltered = 0,
-                data = documentTypes.ToListAsync().Result
+                recordsFiltered = documentTypes.CountAsync().Result,
+                data
             });
+        }
+
+        //public static void SortByColumn(this IQueryable<DocumentType> array, DataTableParameters dataTableParameters)
+        //{
+        //    //IOrderedQueryable<DocumentType> result = array.OrderBy(x => x.Name);
+
+        //    foreach (DataOrder order in dataTableParameters.Order)
+        //    {
+        //        if (order.Column == 0)
+        //        {
+        //            if (order.Dir.ToLower() == "desc")
+        //            {
+        //                array = array.OrderByDescending(x => x.Name);
+        //            }
+        //            else if (order.Dir.ToLower() == "asc")
+        //            {
+        //                array = array.OrderBy(x => x.Name);
+        //            }
+        //        }
+        //    }
+
+        //    //return result;
+        //}
+
+        public IQueryable<DocumentType> SortByColumn(IQueryable<DocumentType> array, DataTableParameters dataTableParameters)
+        {
+            IOrderedQueryable<DocumentType> result = array.OrderBy(x => x.Name);
+
+            foreach (DataOrder order in dataTableParameters.Order)
+            {
+                if (order.Column == 0)
+                {
+                    if (order.Dir.ToLower() == "desc")
+                    {
+                        result = array.OrderByDescending(x => x.Name);
+                    }
+                    else if (order.Dir.ToLower() == "asc")
+                    {
+                        result = array.OrderBy(x => x.Name);
+                    }
+                }
+            }
+
+            return result;
         }
 
         // GET: DocumentTypes/Create
