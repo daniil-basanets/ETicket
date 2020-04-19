@@ -51,6 +51,17 @@ function changeClassInExternalDiv(arrIdItems, arrNewClassNames) {
     }
 }
 
+function changeClassInItem(arrIdItems, arrNewClassNames) {
+    let i = 0;
+    for (const item of arrIdItems) {
+        //Clear external div class
+        $(item).removeClass();
+        //Add new classes for external div class
+        $(item).addClass(arrNewClassNames[i]);
+        i++;
+    }
+}
+
 //var buttonId = '#buttonCreate';
 //var entriesLength = '#dataTable_length';
 //var filter = '#dataTables_filter';
