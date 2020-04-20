@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using ETicket.Admin.Extensions;
+using ETicket.Admin.Models.DataTables;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicketAdmin.DTOs;
@@ -35,7 +38,87 @@ namespace ETicket.Admin.Controllers
         {
             ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name");
 
-            return View(unitOfWork.Documents.GetAll());
+            return View(/*unitOfWork.Documents.GetAll()*/);
+        }
+
+        [HttpPost]
+        public IActionResult GetCurrentPage(DataTableParameters dataTableParameters)
+        {
+            var drawStep = int.Parse(Request.Form["draw"]);
+
+            var countRecords = unitOfWork
+                    .Documents
+                    .GetAll()
+                    .AsNoTracking()
+                    .Count();
+
+            IQueryable<Document> documents = unitOfWork
+                    .Documents
+                    .GetAll()
+                    .AsNoTracking()
+                    .Include(t => t.DocumentType);
+
+            SortDataTable(ref documents, dataTableParameters.Order);
+            SearchInDataTable(ref documents, dataTableParameters.Search.Value);
+
+            var countFiltered = documents.Count();
+
+            documents = documents
+                    .Skip(dataTableParameters.Start)
+                    .Take(dataTableParameters.Length);
+
+            return GetCurrentPage(documents, drawStep, countRecords, countFiltered);
+        }
+
+        private void SearchInDataTable(
+            ref IQueryable<Document> users,
+            string searchString
+        )
+        {
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                users = users.ApplySearchBy(
+                    t =>
+                    t.DocumentType.Name.Contains(searchString)
+                     || t.Number.Contains(searchString)
+                     || t.ExpirationDate.ToString().Contains(searchString)
+                     //|| t.IsValid.ToString().Contains(searchString)
+                     );
+            }
+        }
+
+        private void SortDataTable(
+            ref IQueryable<Document> documents,
+            List<DataOrder> orders
+        )
+        {
+            foreach (var order in orders)
+            {
+                documents = order.Column switch
+                {
+                    0 => documents.ApplySortBy(t => t.DocumentType.Name, order.Dir),
+                    1 => documents.ApplySortBy(t => t.Number, order.Dir),
+                    2 => documents.ApplySortBy(t => t.ExpirationDate, order.Dir),
+                    3 => documents.ApplySortBy(t => t.IsValid, order.Dir),
+                    _ => documents.ApplySortBy(t => t.ExpirationDate, "desc")
+                };
+            }
+        }
+
+        private JsonResult GetCurrentPage(
+            IQueryable<Document> documents,
+            int drawStep,
+            int countRecords,
+            int countFiltered
+        )
+        {
+            return Json(new
+            {
+                draw = ++drawStep,
+                recordsTotal = countRecords,
+                recordsFiltered = countFiltered,
+                data = documents
+            });
         }
 
         public IActionResult Details(Guid? id)
