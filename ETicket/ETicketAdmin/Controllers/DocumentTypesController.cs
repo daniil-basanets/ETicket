@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ETicket.Admin.Models.DataTables;
+using ETicket.Admin.Services;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicketAdmin.DTOs;
@@ -25,7 +26,8 @@ namespace ETicket.Admin.Controllers
         // GET: DocumentTypes
         public IActionResult Index()
         {
-            return View(unitOfWork.DocumentTypes.GetAll().AsNoTracking());
+            CRUD cRUD = new CRUD(unitOfWork, mapper);
+            return View(cRUD.Read<DocumentType>(typeof(DocumentType)));
         }
 
         // GET: DocumentTypes/Create
@@ -34,112 +36,110 @@ namespace ETicket.Admin.Controllers
             return View();
         }
 
-        // POST: DocumentTypes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(DocumentTypeDto documentTypeDto)
-        {
-            if (ModelState.IsValid)
-            {
-                var documentType = mapper.Map<DocumentType>(documentTypeDto);
+        //// POST: DocumentTypes/Create
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Create(DocumentTypeDto documentTypeDto)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        Add(documentTypeDto);
+        //        Save();
+        //        return RedirectToAction(nameof(Index));
+        //    }
 
-                unitOfWork.DocumentTypes.Create(documentType);
-                unitOfWork.Save();
-                return RedirectToAction(nameof(Index));
-            }
+        //    return View(documentTypeDto);
+        //}
+     
 
-            return View(documentTypeDto);
-        }
+        //// GET: DocumentTypes/Edit/5
+        //public IActionResult Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-        // GET: DocumentTypes/Edit/5
-        public IActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //    var documentType = Read((int)id);
+        //    if (documentType == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var documentType = unitOfWork.DocumentTypes.Get((int)id);
-            if (documentType == null)
-            {
-                return NotFound();
-            }
+        //    return View(documentType);
+        //}
 
-            return View(documentType);
-        }
 
-        // POST: DocumentTypes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, DocumentTypeDto documentTypeDto)
-        {
-            if (id != documentTypeDto.Id)
-            {
-                return NotFound();
-            }
+        //// POST: DocumentTypes/Edit/5
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult Edit(int id, DocumentTypeDto documentTypeDto)
+        //{
+        //    if (id != documentTypeDto.Id)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var documentType = mapper.Map<DocumentType>(documentTypeDto);
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            Update(documentTypeDto);
+        //            Save();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!DocumentTypeExists(documentTypeDto.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
 
-                    unitOfWork.DocumentTypes.Update(documentType);
-                    unitOfWork.Save();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DocumentTypeExists(documentTypeDto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+        //        return RedirectToAction(nameof(Index));
+        //    }
 
-                return RedirectToAction(nameof(Index));
-            }
+        //    return View(documentTypeDto);
+        //}
+      
+        //// GET: DocumentTypes/Delete/5
+        //public IActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(documentTypeDto);
-        }
+        //    var documentType = Read((int)id);
+        //    if (documentType == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-        // GET: DocumentTypes/Delete/5
-        public IActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //    return View(documentType);
+        //}
 
-            var documentType = unitOfWork.DocumentTypes.Get((int)id);
-            if (documentType == null)
-            {
-                return NotFound();
-            }
+        //// POST: DocumentTypes/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult DeleteConfirmed(int id)
+        //{
+        //    Delete(id);
+        //    Save();
 
-            return View(documentType);
-        }
+        //    return RedirectToAction(nameof(Index));
+        //}
+       
+        //private bool DocumentTypeExists(int id)
+        //{
+        //    return unitOfWork.DocumentTypes.Get(id) != null;
+        //}
 
-        // POST: DocumentTypes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            unitOfWork.DocumentTypes.Delete(id);
-            unitOfWork.Save();
+        #region CRUD service
 
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool DocumentTypeExists(int id)
-        {
-            return unitOfWork.DocumentTypes.Get(id) != null;
-        }
+        #endregion
     }
 }
