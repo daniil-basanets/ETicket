@@ -33,11 +33,27 @@ $(document).ready(function () {
 
         //Columns data order       
         columns: [
-            { data: "ticketType.typeName" },
+            {
+                data: "ticketType",
+                render: function (data, type, row) {
+                    if (data != null) {
+                        return '<a href = "TicketType/Details/' + data.id + '">' + data.typeName + '</a>'
+                    }
+                }
+            },
             { data: "createdUTCDate" },
             { data: "activatedUTCDate" },
             { data: "expirationUTCDate" },
-            { data: "user.lastName" },
+            {
+                data: "user",
+                defaultContent: "",
+                render: function (data, type, row) {
+                    if (data != null) {
+                        return '<a href = "User/Details/' + data.id + '">' + data.firstName + ' ' + data.lastName + '</a>'
+                    }
+                }
+
+            },
             {
                 data: null,
                 //Set default buttons (Edit, Delete)

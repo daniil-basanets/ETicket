@@ -48,12 +48,22 @@ $(document).ready(function () {
             { data: "lastName" },
             { data: "dateOfBirth" },
             {
-                data: "privilege.name",
-                defaultContent: ""
+                data: "privilege",
+                defaultContent: "",
+                render: function (data, type, row) {
+                    if (data != null) {
+                        return '<a href = "Privileges/Details/'+ data.id +'">' + data.name + '</a>'
+                    }
+                }
             },
             {
-                data: "document.number",
-                defaultContent: ""
+                data: "document",
+                defaultContent: "",
+                render: function (data, type, row) {
+                    if (data != null) {
+                        return '<a href = "Documents/Details/' + data.id + '">' + data.number + '</a>'
+                    }
+                }
             },
             {
                 data: null,
