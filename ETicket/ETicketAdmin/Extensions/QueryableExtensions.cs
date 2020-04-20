@@ -22,7 +22,6 @@ namespace ETicket.Admin.Extensions
             Expression<Func<T, bool>> expression
         )
         {
-            var temp = query.Where(expression);
             return query.Where(expression);
         }
     }

@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
-using ETicketAdmin.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
+using AutoMapper;
+using ETicket.Admin.Extensions;
+using ETicket.Admin.Models.DataTables;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
+using ETicketAdmin.DTOs;
+
 
 namespace ETicket.Admin.Controllers
 {
@@ -27,56 +32,91 @@ namespace ETicket.Admin.Controllers
         public IActionResult Index(string sortOrder)
         {
             ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName");
-            ViewData["TicketTypeSortParm"] = sortOrder == "ticket_type" ? "ticket_type_desc" : "ticket_type";
-            ViewData["CreatedSortParm"] = String.IsNullOrEmpty(sortOrder) ? "created_date" : "";
-            ViewData["ActivatedSortParm"] = sortOrder == "activated_date" ? "activated_date_desc" : "activated_date";
-            ViewData["ExpirationSortParm"] = sortOrder == "expiration_date" ? "expiration_date_desc" : "expiration_date";
-            ViewData["UserSortParm"] = sortOrder == "user" ? "user_desc" : "user";
-            ViewData["TransactionSortParm"] = sortOrder == "transaction" ? "transaction_desc" : "transaction";
 
-            IQueryable<Ticket> eTicketDataContext = uow.Tickets.GetAll();
+            return View();
+        }
 
-            switch (sortOrder)
+        [HttpPost]
+        public IActionResult GetCurrentPage(DataTableParameters dataTableParameters)
+        {
+            var drawStep = int.Parse(Request.Form["draw"]);
+            
+            var countRecords = uow
+                    .Tickets
+                    .GetAll()
+                    .AsNoTracking()
+                    .Count();
+
+            IQueryable<Ticket> tickets = uow
+                    .Tickets
+                    .GetAll()
+                    .AsNoTracking()
+                    .Include(t => t.TicketType)
+                    .Include(t => t.User);
+
+            SortDataTable(ref tickets, dataTableParameters.Order);
+            SearchInDataTable(ref tickets, dataTableParameters.Search.Value);
+
+            var countFiltered = tickets.Count();
+
+            tickets = tickets
+                    .Skip(dataTableParameters.Start)
+                    .Take(dataTableParameters.Length);
+
+            return GetCurrentPage(tickets, drawStep, countRecords, countFiltered);
+        }
+
+        private void SearchInDataTable(
+            ref IQueryable<Ticket> eTicketDataContext,
+            string searchString
+        )
+        {
+            if (!string.IsNullOrEmpty(searchString))
             {
-                case "created_date":
-                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.CreatedUTCDate);
-                    break;
-                case "ticket_type":
-                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.TicketType);
-                    break;
-                case "ticket_type_desc":
-                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.TicketType);
-                    break;
-                case "activated_date":
-                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.ActivatedUTCDate);
-                    break;
-                case "activated_date_desc":
-                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.ActivatedUTCDate);
-                    break;
-                case "expiration_date":
-                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.ExpirationUTCDate);
-                    break;
-                case "expiration_date_desc":
-                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.ExpirationUTCDate);
-                    break;
-                case "user":
-                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.UserId);
-                    break;
-                case "user_desc":
-                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.User);
-                    break;
-                case "transaction":
-                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.TransactionHistoryId);
-                    break;
-                case "transaction_desc":
-                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.TransactionHistoryId);
-                    break;
-                default:
-                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.CreatedUTCDate);
-                    break;
+                eTicketDataContext = eTicketDataContext.ApplySearchBy(
+                    t =>
+                    t.TicketType.TypeName.Contains(searchString)
+                     || t.CreatedUTCDate.ToString().Contains(searchString)
+                     || (t.ActivatedUTCDate != null ? t.ActivatedUTCDate.ToString().Contains(searchString) : false)
+                     || (t.ExpirationUTCDate != null ? t.ExpirationUTCDate.ToString().Contains(searchString) : false)
+                     || t.User.LastName.Contains(searchString)
+                     );
             }
+        }
 
-            return View(eTicketDataContext.ToList());
+        private void SortDataTable(
+            ref IQueryable<Ticket> eTicketDataContext,
+            List<DataOrder> orders
+        )
+        {
+            foreach (var order in orders)
+            {
+                eTicketDataContext = order.Column switch
+                {
+                    0 => eTicketDataContext.ApplySortBy(t => t.TicketType.TypeName, order.Dir),
+                    1 => eTicketDataContext.ApplySortBy(t => t.CreatedUTCDate, order.Dir),
+                    2 => eTicketDataContext.ApplySortBy(t => t.ActivatedUTCDate, order.Dir),
+                    3 => eTicketDataContext.ApplySortBy(t => t.ExpirationUTCDate, order.Dir),
+                    4 => eTicketDataContext.ApplySortBy(t => t.User.LastName, order.Dir),
+                    _ => eTicketDataContext.ApplySortBy(t => t.CreatedUTCDate, "desc")
+                };
+            }
+        }
+
+        private JsonResult GetCurrentPage(
+            IQueryable<Ticket> tickets,
+            int drawStep,
+            int countRecords,
+            int countFiltered
+        )
+        {
+            return Json(new
+            {
+                draw = ++drawStep,
+                recordsTotal = countRecords,
+                recordsFiltered = countFiltered,
+                data = tickets
+            });
         }
 
         // GET: Tickets/Details/5

@@ -57,7 +57,7 @@ $(document).ready(function () {
         }
     });
 
-    //Event listener for Delete button 
+    //Event listener for Details button 
     $("#dataTable tbody").on('click', '#detailsButton', function () {
         var data = table.row($(this).parents('tr')).data();
         location.href = "/TransactionHistory/Details/" + data.id;

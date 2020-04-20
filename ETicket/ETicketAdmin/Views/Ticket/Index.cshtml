@@ -11,7 +11,7 @@
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Tickets</h6>
         </div>
-        <div class="card-bod tickets">
+        <div class="card-body tickets">
             <div class="filters">
                 <details>
                     <summary>Filters</summary>
@@ -83,8 +83,10 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            @foreach (var item in Model)
+                            @if (Model != null)
                             {
+                                foreach (var item in Model)
+                                {
                                 <tr>
                                     <td>
                                         @Html.ActionLink(item.TicketType.TypeName, "Details", "TicketType", new { id = item.TicketTypeId }, null)
@@ -108,6 +110,7 @@
                                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
                                     </td>
                                 </tr>
+                                }
                             }
                         </tbody>
                     </table>
