@@ -35,8 +35,6 @@ $(document).ready(function () {
             url: 'TransactionHistory/GetCurrentPage',
             datatype: 'json',
             type: 'POST'
-            
-            //data: new {}
         },
 
         //Columns data order       
@@ -62,7 +60,7 @@ $(document).ready(function () {
     //Event listener for Delete button 
     $("#dataTable tbody").on('click', '#detailsButton', function () {
         var data = table.row($(this).parents('tr')).data();
-        location.href = "/DocumentTypes/Details/" + data.id;
+        location.href = "/TransactionHistory/Details/" + data.id;
     })
 
     $('#total-price-input, #count-input').keyup(function () {
