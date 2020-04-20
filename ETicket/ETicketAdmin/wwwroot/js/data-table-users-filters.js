@@ -32,9 +32,60 @@ $(document).ready(function () {
     var table = $('#dataTable').DataTable({
         columnDefs: [
             { orderable: false, targets: -1 }
-        ]
+        ],
+        processing: true,
+        serverSide: true,
+        order: [[1, "desc"]],
+        ajax: {
+            url: 'User/GetCurrentPage',
+            datatype: 'json',
+            type: 'POST'
+        },
+
+        //Columns data order       
+        columns: [
+            { data: "firstName" },
+            { data: "lastName" },
+            { data: "dateOfBirth" },
+            {
+                data: "privilege.name",
+                defaultContent: ""
+            },
+            {
+                data: "document.number",
+                defaultContent: ""
+            },
+            {
+                data: null,
+                //Set default buttons (Edit, Delete)
+                //href = "#" because <a> without href have a special style
+                defaultContent:
+                    '<a class="btn btn-warning btn-sm" href = "#" id = "editButton">Edit</a>' + ' '
+                    + '<a class="btn btn-info btn-sm" href = "#" id = "detailsButton">Details</a>' + ' '
+                    + '<a class="btn btn-danger btn-sm" href = "#" id = "deleteButton">Delete</a>'
+            }
+        ],
+        language: {
+            //Set message for pop-up window
+            processing: "Take data from server. Please wait..."
+        }
 
     });
+
+    $("#dataTable tbody").on('click', '#editButton', function () {
+        var data = table.row($(this).parents('tr')).data();
+        location.href = "/User/Edit/" + data.id;
+    })
+    //Event listener for Details button 
+    $("#dataTable tbody").on('click', '#detailsButton', function () {
+        var data = table.row($(this).parents('tr')).data();
+        location.href = "/User/Details/" + data.id;
+    })
+    //Event listener for Delete button 
+    $("#dataTable tbody").on('click', '#deleteButton', function () {
+        var data = table.row($(this).parents('tr')).data();
+        location.href = "/User/Delete/" + data.id;
+    })
 
     $('#first-name-input, #last-name-input, #privilege-select, #document-input').keyup(function () {
         table.draw();

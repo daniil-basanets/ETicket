@@ -67,13 +67,13 @@ namespace ETicket.Admin.Controllers
         }
 
         private void SearchInDataTable(
-            ref IQueryable<Ticket> eTicketDataContext,
+            ref IQueryable<Ticket> tickets,
             string searchString
         )
         {
             if (!string.IsNullOrEmpty(searchString))
             {
-                eTicketDataContext = eTicketDataContext.ApplySearchBy(
+                tickets = tickets.ApplySearchBy(
                     t =>
                     t.TicketType.TypeName.Contains(searchString)
                      || t.CreatedUTCDate.ToString().Contains(searchString)
@@ -85,20 +85,20 @@ namespace ETicket.Admin.Controllers
         }
 
         private void SortDataTable(
-            ref IQueryable<Ticket> eTicketDataContext,
+            ref IQueryable<Ticket> tickets,
             List<DataOrder> orders
         )
         {
             foreach (var order in orders)
             {
-                eTicketDataContext = order.Column switch
+                tickets = order.Column switch
                 {
-                    0 => eTicketDataContext.ApplySortBy(t => t.TicketType.TypeName, order.Dir),
-                    1 => eTicketDataContext.ApplySortBy(t => t.CreatedUTCDate, order.Dir),
-                    2 => eTicketDataContext.ApplySortBy(t => t.ActivatedUTCDate, order.Dir),
-                    3 => eTicketDataContext.ApplySortBy(t => t.ExpirationUTCDate, order.Dir),
-                    4 => eTicketDataContext.ApplySortBy(t => t.User.LastName, order.Dir),
-                    _ => eTicketDataContext.ApplySortBy(t => t.CreatedUTCDate, "desc")
+                    0 => tickets.ApplySortBy(t => t.TicketType.TypeName, order.Dir),
+                    1 => tickets.ApplySortBy(t => t.CreatedUTCDate, order.Dir),
+                    2 => tickets.ApplySortBy(t => t.ActivatedUTCDate, order.Dir),
+                    3 => tickets.ApplySortBy(t => t.ExpirationUTCDate, order.Dir),
+                    4 => tickets.ApplySortBy(t => t.User.LastName, order.Dir),
+                    _ => tickets.ApplySortBy(t => t.CreatedUTCDate, "desc")
                 };
             }
         }

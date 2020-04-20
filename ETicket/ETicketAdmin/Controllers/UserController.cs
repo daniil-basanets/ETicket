@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using AutoMapper;
-using ETicket.Admin.Services;
-using ETicket.DataAccess.Domain;
-using ETicket.DataAccess.Domain.Entities;
-using ETicketAdmin.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
+using AutoMapper;
+using ETicket.Admin.Extensions;
+using ETicket.Admin.Models.DataTables;
+using ETicket.Admin.Services;
+using ETicket.DataAccess.Domain;
+using ETicket.DataAccess.Domain.Entities;
+using ETicketAdmin.DTOs;
+
 
 namespace ETicket.Admin.Controllers
 {
@@ -30,28 +35,91 @@ namespace ETicket.Admin.Controllers
         public IActionResult Index(string sortOrder)
         {
             ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
-            ViewBag.LastNameSortParm = String.IsNullOrEmpty(sortOrder) ? "LastName_desc" : "";
-            ViewBag.FirstNameSortParm = sortOrder == "FirstName" ? "FirstName_desc" : "FirstName";
-            var eTicketDataContext = repository.Users.GetAll();
-            IOrderedQueryable<User> users;
 
-            switch (sortOrder)
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult GetCurrentPage(DataTableParameters dataTableParameters)
+        {
+            var drawStep = int.Parse(Request.Form["draw"]);
+
+            var countRecords = repository
+                    .Users
+                    .GetAll()
+                    .AsNoTracking()
+                    .Count();
+
+            IQueryable<User> users = repository
+                    .Users
+                    .GetAll()
+                    .AsNoTracking()
+                    .Include(t => t.Privilege)
+                    .Include(t => t.Document);
+
+            SortDataTable(ref users, dataTableParameters.Order);
+            SearchInDataTable(ref users, dataTableParameters.Search.Value);
+
+            var countFiltered = users.Count();
+
+            users = users
+                    .Skip(dataTableParameters.Start)
+                    .Take(dataTableParameters.Length);
+
+            return GetCurrentPage(users, drawStep, countRecords, countFiltered);
+        }
+
+        private void SearchInDataTable(
+            ref IQueryable<User> users,
+            string searchString
+        )
+        {
+            if (!string.IsNullOrEmpty(searchString))
             {
-                case "LastName_desc":
-                    users = eTicketDataContext.OrderByDescending(s => s.LastName);
-                    break;
-                case "FirstName_desc":
-                    users = eTicketDataContext.OrderByDescending(s => s.FirstName);
-                    break;
-                case "FirstName":
-                    users = eTicketDataContext.OrderBy(s => s.FirstName);
-                    break;
-                default:
-                    users = eTicketDataContext.OrderBy(s => s.LastName);
-                    break;
+                users = users.ApplySearchBy(
+                    t =>
+                    t.FirstName.Contains(searchString)
+                     || t.LastName.Contains(searchString)
+                     || t.DateOfBirth.ToString().Contains(searchString)
+                     || t.Privilege.Name.Contains(searchString)
+                     || t.Document.Number.Contains(searchString)
+                     );
             }
+        }
 
-            return View(users.ToList());
+        private void SortDataTable(
+            ref IQueryable<User> users,
+            List<DataOrder> orders
+        )
+        {
+            foreach (var order in orders)
+            {
+                users = order.Column switch
+                {
+                    0 => users.ApplySortBy(t => t.FirstName, order.Dir),
+                    1 => users.ApplySortBy(t => t.LastName, order.Dir),
+                    2 => users.ApplySortBy(t => t.DateOfBirth, order.Dir),
+                    3 => users.ApplySortBy(t => t.Privilege.Name, order.Dir),
+                    4 => users.ApplySortBy(t => t.Document.Number, order.Dir),
+                    _ => users.ApplySortBy(t => t.FirstName, "asc")
+                };
+            }
+        }
+
+        private JsonResult GetCurrentPage(
+            IQueryable<User> users,
+            int drawStep,
+            int countRecords,
+            int countFiltered
+        )
+        {
+            return Json(new
+            {
+                draw = ++drawStep,
+                recordsTotal = countRecords,
+                recordsFiltered = countFiltered,
+                data = users
+            });
         }
 
         // GET: User/Details/5
