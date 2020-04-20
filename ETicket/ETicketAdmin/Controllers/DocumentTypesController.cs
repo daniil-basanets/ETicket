@@ -25,77 +25,7 @@ namespace ETicket.Admin.Controllers
         // GET: DocumentTypes
         public IActionResult Index()
         {
-            return View();
-            //return View(unitOfWork.DocumentTypes.GetAll());
-        }
-
-        static int drawI = 0;
-        [HttpPost]
-        public IActionResult GetPage(DataTableParameters dataTableParameters)
-        {
-            var documentTypes = unitOfWork.DocumentTypes.GetAll();
-            //int totalCount = 
-            drawI++;
-
-            //var temp = dataTableParameters.Order[0].Dir.ToString();
-            documentTypes = SortByColumn(documentTypes, dataTableParameters);
-            //documentTypes.SortByColumn();
-
-            var data = documentTypes.Where(x => x.Name.Contains(dataTableParameters.Search.Value + ""))
-                    .Skip(dataTableParameters.Start * dataTableParameters.Length)
-                    .Take(dataTableParameters.Length);
-
-            return Json(new
-            {
-                draw = drawI,
-                recordsTotal = documentTypes.CountAsync().Result,
-                recordsFiltered = documentTypes.CountAsync().Result,
-                data
-            });
-        }
-
-        //public static void SortByColumn(this IQueryable<DocumentType> array, DataTableParameters dataTableParameters)
-        //{
-        //    //IOrderedQueryable<DocumentType> result = array.OrderBy(x => x.Name);
-
-        //    foreach (DataOrder order in dataTableParameters.Order)
-        //    {
-        //        if (order.Column == 0)
-        //        {
-        //            if (order.Dir.ToLower() == "desc")
-        //            {
-        //                array = array.OrderByDescending(x => x.Name);
-        //            }
-        //            else if (order.Dir.ToLower() == "asc")
-        //            {
-        //                array = array.OrderBy(x => x.Name);
-        //            }
-        //        }
-        //    }
-
-        //    //return result;
-        //}
-
-        public IQueryable<DocumentType> SortByColumn(IQueryable<DocumentType> array, DataTableParameters dataTableParameters)
-        {
-            IOrderedQueryable<DocumentType> result = array.OrderBy(x => x.Name);
-
-            foreach (DataOrder order in dataTableParameters.Order)
-            {
-                if (order.Column == 0)
-                {
-                    if (order.Dir.ToLower() == "desc")
-                    {
-                        result = array.OrderByDescending(x => x.Name);
-                    }
-                    else if (order.Dir.ToLower() == "asc")
-                    {
-                        result = array.OrderBy(x => x.Name);
-                    }
-                }
-            }
-
-            return result;
+            return View(unitOfWork.DocumentTypes.GetAll().AsNoTracking());
         }
 
         // GET: DocumentTypes/Create
