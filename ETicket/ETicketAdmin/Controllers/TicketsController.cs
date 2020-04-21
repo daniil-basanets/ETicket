@@ -134,12 +134,26 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
+            var ticket = mapper.Map<Ticket>(ticketDto);
+            var ticketType = uow.TicketTypes.Get(ticket.TicketTypeId);  //TODO change to service
+
+            if (ticketType.IsPersonal && ticket.UserId == null)
+            {
+                ModelState.AddModelError("", "User is not specified for personal ticket type");
+
+                //TODO change to service
+                ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName");
+                ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber");
+                ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName");
+
+                return View(ticket);
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var ticket = mapper.Map<Ticket>(ticketDto);
-
+                    
                     ticketService.Update(ticket);
                 }
                 catch (DbUpdateConcurrencyException)
