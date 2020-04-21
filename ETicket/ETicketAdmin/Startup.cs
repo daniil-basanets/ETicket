@@ -1,5 +1,7 @@
 using System;
 using AutoMapper;
+using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
@@ -44,6 +46,8 @@ namespace ETicket.Admin
             services.AddTransient<IValidator<DocumentType>, DocumentTypeValidator>();
             services.AddTransient<IValidator<Privilege>, PrivilegeValidator>();
             services.AddTransient<IValidator<TransactionHistory>, TransactionHistoryValidator>();
+
+            services.AddTransient<ITicketService, TicketService>();
 
             services.AddAutoMapper(typeof(Startup));
 
