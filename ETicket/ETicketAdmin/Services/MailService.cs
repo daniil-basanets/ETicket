@@ -4,7 +4,7 @@ using MimeKit;
 using System.Threading.Tasks;
 
 
-namespace ETicketAdmin.Services
+namespace ETicket.Admin.Services
 {
     public class MailService
     {
