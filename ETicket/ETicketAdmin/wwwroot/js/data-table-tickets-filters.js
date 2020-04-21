@@ -94,11 +94,15 @@ $(document).ready(function () {
             processing: "Take data from server. Please wait..."
         }
     });
-    ////Event listener for User reference 
-    //$("#dataTable tbody").on('click', '#userDetailsButton', function () {
-    //    var data = table.row($(this).parents('tr')).data();
-    //    location.href = "/User/Detatils/" + data.user.id;
-    //})
+
+    //Change event listener for search
+    //Search after pressing Enter or defocusing the search input field
+    $("#dataTable_filter input").unbind()
+        .bind("change", function (e) {
+            var searchValue = $(this).val();
+            table.search(searchValue).draw();
+        });
+
     //Event listener for Edit button 
     $("#dataTable tbody").on('click', '#editButton', function () {
         var data = table.row($(this).parents('tr')).data();

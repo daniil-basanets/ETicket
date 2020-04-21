@@ -65,6 +65,14 @@ $(document).ready(function () {
         }
     });
 
+    //Change event listener for search
+    //Search after pressing Enter or defocusing the search input field
+    $("#dataTable_filter input").unbind()
+        .bind("change", function (e) {
+            var searchValue = $(this).val();
+            table.search(searchValue).draw();
+        });
+
     //Event listener for Details button 
     $("#dataTable tbody").on('click', '#detailsButton', function () {
         var data = table.row($(this).parents('tr')).data();
@@ -77,6 +85,7 @@ $(document).ready(function () {
     $('#type-select').change(function () {
         table.draw();
     });
+
     //Delete container from loyout only for Index
     $('.container').removeClass('container');
 

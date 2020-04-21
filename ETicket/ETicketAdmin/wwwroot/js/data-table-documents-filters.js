@@ -71,8 +71,15 @@ $(document).ready(function () {
             //Set message for pop-up window
             processing: "Take data from server. Please wait..."
         }
-
     });
+
+    //Change event listener for search
+    //Search after pressing Enter or defocusing the search input field
+    $("#dataTable_filter input").unbind()
+        .bind("change", function (e) {
+            var searchValue = $(this).val();
+            table.search(searchValue).draw();
+        });
 
     $("#dataTable tbody").on('click', '#editButton', function () {
         var data = table.row($(this).parents('tr')).data();

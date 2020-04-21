@@ -79,6 +79,7 @@ namespace ETicket.Admin.Controllers
                      || t.CreatedUTCDate.ToString().Contains(searchString)
                      || t.ActivatedUTCDate.ToString().Contains(searchString)
                      || t.ExpirationUTCDate.ToString().Contains(searchString)
+                     || t.User.FirstName.StartsWith(searchString)
                      || t.User.LastName.StartsWith(searchString)
                      );
             }
