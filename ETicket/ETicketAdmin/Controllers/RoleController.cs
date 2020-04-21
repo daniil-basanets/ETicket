@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ETicketAdmin.Controllers
+namespace ETicket.Admin.Controllers
 {
     [Produces("application/json")]
     [Route("[controller]")]

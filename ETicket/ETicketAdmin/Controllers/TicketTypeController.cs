@@ -1,19 +1,23 @@
-using DBContextLibrary.Domain.Entities;
-using DBContextLibrary.Domain.Interfaces;
+using AutoMapper;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
+using ETicketAdmin.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ETicketAdmin.Controllers
+namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class TicketTypeController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
 
-        public TicketTypeController(IUnitOfWork unitOfWork)
+        public TicketTypeController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
         
         public IActionResult Index()
@@ -45,13 +49,15 @@ namespace ETicketAdmin.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,TypeName,DurationHours,IsPersonal,Price")] TicketType ticketType)
+        public IActionResult Create(TicketTypeDto ticketTypeDto)
         {
             if (!ModelState.IsValid)
             {
-                return View(ticketType);
+                return View(ticketTypeDto);
             }
-                
+
+            var ticketType = mapper.Map<TicketType>(ticketTypeDto);
+
             unitOfWork.TicketTypes.Create(ticketType);
             unitOfWork.Save();
             
@@ -77,22 +83,24 @@ namespace ETicketAdmin.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,TypeName,DurationHours,IsPersonal,Price")] TicketType ticketType)
+        public IActionResult Edit(int id, TicketTypeDto ticketTypeDto)
         {
-            if (id != ticketType.Id)
+            if (id != ticketTypeDto.Id)
             {
                 return NotFound();
             }
 
-            if (!ModelState.IsValid) return View(ticketType);
+            if (!ModelState.IsValid) return View(ticketTypeDto);
             try
             {
+                var ticketType = mapper.Map<TicketType>(ticketTypeDto);
+
                 unitOfWork.TicketTypes.Update(ticketType);
                 unitOfWork.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TicketTypeExists(ticketType.Id))
+                if (!TicketTypeExists(ticketTypeDto.Id))
                 {
                     return NotFound();
                 }

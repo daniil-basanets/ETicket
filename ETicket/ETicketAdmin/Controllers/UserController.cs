@@ -1,29 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
+using ETicket.Admin.Services;
+using ETicket.DataAccess.Domain;
+using ETicket.DataAccess.Domain.Entities;
+using ETicketAdmin.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using DBContextLibrary.Domain;
-using DBContextLibrary.Domain.Entities;
-using DBContextLibrary.Domain.Repositories;
-using ETicketAdmin.Models;
-using ETicketAdmin.Services;
-using Microsoft.AspNetCore.Authorization;
 
-namespace ETicketAdmin.Controllers
+namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class UserController : Controller
     {
         private readonly ETicketDataContext context;
-        private readonly ETicketData repository;
+        private readonly UnitOfWork repository;
+        private readonly IMapper mapper;
 
-        public UserController(ETicketDataContext context)
+        public UserController(ETicketDataContext context, IMapper mapper)
         {
             this.context = context;
-            repository = new ETicketData(context);
+            repository = new UnitOfWork(context);
+            this.mapper = mapper;
         }
 
         // GET: User
@@ -85,10 +85,12 @@ namespace ETicketAdmin.Controllers
         // POST: User/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,FirstName,LastName,Phone,Email,DateOfBirth,PrivilegeId,DocumentId")] User user)
+        public IActionResult Create(UserDto userDto)
         {
             if (ModelState.IsValid)
             {
+                var user = mapper.Map<User>(userDto);
+
                 user.Id = Guid.NewGuid();
                 repository.Users.Create(user);
                 repository.Save();
@@ -96,10 +98,10 @@ namespace ETicketAdmin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", user.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", user.PrivilegeId);
+            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", userDto.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", userDto.PrivilegeId);
 
-            return View(user);
+            return View(userDto);
         }
 
         // GET: User/SendMessage/5
@@ -164,9 +166,9 @@ namespace ETicketAdmin.Controllers
         // POST: User/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, [Bind("Id,FirstName,LastName,Phone,Email,DateOfBirth,PrivilegeId,DocumentId")] User user)
+        public IActionResult Edit(Guid id, UserDto userDto)
         {
-            if (id != user.Id)
+            if (id != userDto.Id)
             {
                 return NotFound();
             }
@@ -175,12 +177,14 @@ namespace ETicketAdmin.Controllers
             {
                 try
                 {
+                    var user = mapper.Map<User>(userDto);
+
                     repository.Users.Update(user);
                     repository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!repository.Users.UserExists(user.Id))
+                    if (!repository.Users.UserExists(userDto.Id))
                     {
                         return NotFound();
                     }
@@ -193,10 +197,10 @@ namespace ETicketAdmin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", user.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", user.PrivilegeId);
+            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", userDto.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", userDto.PrivilegeId);
 
-            return View(user);
+            return View(userDto);
         }
 
         // GET: User/Delete/5
