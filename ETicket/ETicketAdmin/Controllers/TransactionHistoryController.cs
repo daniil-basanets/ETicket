@@ -77,11 +77,11 @@ namespace ETicket.Admin.Controllers
             {
                 eTicketDataContext = eTicketDataContext.ApplySearchBy(
                     t =>
-                    t.TicketType.TypeName.Contains(searchString)
-                     || t.ReferenceNumber.Contains(searchString)
+                    t.TicketType.TypeName.StartsWith(searchString)
+                     || t.ReferenceNumber.StartsWith(searchString)
                      || t.Date.ToString().Contains(searchString)
-                     || t.Count.ToString().Contains(searchString)
-                     || t.TotalPrice.ToString().Contains(searchString)
+                     || t.Count.ToString().StartsWith(searchString)
+                     || t.TotalPrice.ToString().StartsWith(searchString)
                      );
             }
         }

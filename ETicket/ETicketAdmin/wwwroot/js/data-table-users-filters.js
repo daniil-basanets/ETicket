@@ -46,7 +46,15 @@ $(document).ready(function () {
         columns: [
             { data: "firstName" },
             { data: "lastName" },
-            { data: "dateOfBirth" },
+            {
+                data: "dateOfBirth",
+                render: function (data, type, row) {
+                    if (data != null) {
+                        var date = new Date(Date.parse(data));
+                        return date.toLocaleDateString();
+                    }
+                }
+            },
             {
                 data: "privilege",
                 defaultContent: "",

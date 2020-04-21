@@ -40,7 +40,15 @@ $(document).ready(function () {
         //Columns data order       
         columns: [
             { data: "totalPrice" },
-            { data: "date" },
+            {
+                data: "date",
+                render: function (data, type, row) {
+                    if (data != null) {
+                        var date = new Date(Date.parse(data));
+                        return date.toLocaleString();
+                    }
+                }
+            },
             { data: "ticketType.typeName" },
             { data: "count"},
             {

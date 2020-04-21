@@ -38,7 +38,7 @@ namespace ETicket.Admin.Controllers
         {
             ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name");
 
-            return View(/*unitOfWork.Documents.GetAll()*/);
+            return View();
         }
 
         [HttpPost]
@@ -79,10 +79,11 @@ namespace ETicket.Admin.Controllers
             {
                 users = users.ApplySearchBy(
                     t =>
-                    t.DocumentType.Name.Contains(searchString)
-                     || t.Number.Contains(searchString)
-                     || t.ExpirationDate.ToString().Contains(searchString)
-                     //|| t.IsValid.ToString().Contains(searchString)
+                    t.DocumentType.Name.StartsWith(searchString)
+                     || t.Number.StartsWith(searchString)
+                     || t.ExpirationDate.ToString().StartsWith(searchString)
+                     || "Yes".StartsWith(searchString) ? t.IsValid == true : false
+                     || "No".StartsWith(searchString) ? t.IsValid == false : false
                      );
             }
         }

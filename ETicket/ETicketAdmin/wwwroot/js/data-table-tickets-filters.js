@@ -41,9 +41,35 @@ $(document).ready(function () {
                     }
                 }
             },
-            { data: "createdUTCDate" },
-            { data: "activatedUTCDate" },
-            { data: "expirationUTCDate" },
+            {
+                data: "createdUTCDate",
+                render: function (data, type, row) {
+                    if (data != null) {
+                        var date = new Date(Date.parse(data));
+                        return date.toLocaleString();
+                    }
+                }
+            },
+            {
+                data: "activatedUTCDate",
+                defaultContent: "",
+                render: function (data, type, row) {
+                    if (data != null) {
+                        var date = new Date(Date.parse(data));
+                        return date.toLocaleString();
+                    }
+                }
+            },
+            {
+                data: "expirationUTCDate",
+                defaultContent: "",
+                render: function (data, type, row) {
+                    if (data != null) {
+                        var date = new Date(Date.parse(data));
+                        return date.toLocaleString();
+                    }
+                }
+            },
             {
                 data: "user",
                 defaultContent: "",
@@ -52,7 +78,6 @@ $(document).ready(function () {
                         return '<a href = "User/Details/' + data.id + '">' + data.firstName + ' ' + data.lastName + '</a>'
                     }
                 }
-
             },
             {
                 data: null,

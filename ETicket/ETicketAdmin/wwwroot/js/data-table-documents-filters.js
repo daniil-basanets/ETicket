@@ -38,7 +38,13 @@ $(document).ready(function () {
             { data: "number" },
             {
                 data: "expirationDate",
-                defaultContent: ""
+                defaultContent: "",
+                render: function (data, type, row) {
+                    if (data != null) {
+                        var date = new Date(Date.parse(data));
+                        return date.toLocaleDateString();
+                    }
+                }
             },
             {
                 data: "isValid",

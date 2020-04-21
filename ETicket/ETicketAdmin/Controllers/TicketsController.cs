@@ -75,11 +75,11 @@ namespace ETicket.Admin.Controllers
             {
                 tickets = tickets.ApplySearchBy(
                     t =>
-                    t.TicketType.TypeName.Contains(searchString)
+                    t.TicketType.TypeName.StartsWith(searchString)
                      || t.CreatedUTCDate.ToString().Contains(searchString)
-                     || (t.ActivatedUTCDate != null ? t.ActivatedUTCDate.ToString().Contains(searchString) : false)
-                     || (t.ExpirationUTCDate != null ? t.ExpirationUTCDate.ToString().Contains(searchString) : false)
-                     || t.User.LastName.Contains(searchString)
+                     || t.ActivatedUTCDate.ToString().Contains(searchString)
+                     || t.ExpirationUTCDate.ToString().Contains(searchString)
+                     || t.User.LastName.StartsWith(searchString)
                      );
             }
         }

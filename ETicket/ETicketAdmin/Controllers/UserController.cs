@@ -78,11 +78,11 @@ namespace ETicket.Admin.Controllers
             {
                 users = users.ApplySearchBy(
                     t =>
-                    t.FirstName.Contains(searchString)
-                     || t.LastName.Contains(searchString)
+                    t.FirstName.StartsWith(searchString)
+                     || t.LastName.StartsWith(searchString)
                      || t.DateOfBirth.ToString().Contains(searchString)
-                     || t.Privilege.Name.Contains(searchString)
-                     || t.Document.Number.Contains(searchString)
+                     || t.Privilege.Name.StartsWith(searchString)
+                     || t.Document.Number.StartsWith(searchString)
                      );
             }
         }
