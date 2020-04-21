@@ -1740,7 +1740,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ETicketDataAccess\ETicket.DataAccess.csproj" />
+    <ProjectReference Include="..\ETicket.ApplicationServices\ETicket.ApplicationServices.csproj" />
     <ProjectReference Include="..\ETicketWebAPI\ETicket.WebAPI.csproj" />
   </ItemGroup>
 
