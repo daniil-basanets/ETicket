@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ETicketDataAccess\ETicket.DataAccess.csproj" />
+    <ProjectReference Include="..\ETicket.ApplicationServices\ETicket.ApplicationServices.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
