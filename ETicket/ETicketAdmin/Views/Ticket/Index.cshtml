@@ -5,13 +5,20 @@
 }
 
 <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="~/css/ButtonMoves/moved-data-table-controls.css" rel="stylesheet" />
+<link href="~/css/document-style.css" rel="stylesheet" />
 
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Tickets</h6>
+            <div>
+                <div id="buttonCreate" class="button_create">
+                    <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                </div>
+            </div>
         </div>
-        <div class="card-bod tickets">
+        <div class="card-body tickets">
             <div class="filters">
                 <details>
                     <summary>Filters</summary>
@@ -56,7 +63,7 @@
                                     @Html.DisplayNameFor(model => model.User)
                                 </th>
                                 <th>
-                                    <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                                    Actions
                                 </th>
                             </tr>
                         </thead>
@@ -124,3 +131,4 @@
 
 <!-- Page level custom scripts -->
 <script src="~/js/data-table-tickets-filters.js"></script>
+<script src="~/js/button-create-moves/button-create-move.js"></script>
