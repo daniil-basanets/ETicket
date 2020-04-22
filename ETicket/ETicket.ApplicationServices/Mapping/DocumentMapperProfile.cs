@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using ETicket.ApplicationServices.DTOs;
 using ETicket.DataAccess.Domain.Entities;
-using ETicketAdmin.DTOs;
 
-namespace ETicketAdmin.Mapping
+namespace ETicket.ApplicationServices.Mapping
 {
-    public class DocumentMapperProfile:Profile
+    public class DocumentMapperProfile : Profile
     {
         public DocumentMapperProfile()
         {

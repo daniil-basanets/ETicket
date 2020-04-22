@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
+using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
-using ETicketAdmin.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ETicket.ApplicationServices.Services;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.ApplicationServices.Services.Interfaces;
 
 namespace ETicket.Admin.Controllers
 {

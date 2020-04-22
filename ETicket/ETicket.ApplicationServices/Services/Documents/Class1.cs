@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ETicket.ApplicationServices.Services.DocumentType
+namespace ETicket.ApplicationServices.Services.Documents
 {
     class Class1
     {

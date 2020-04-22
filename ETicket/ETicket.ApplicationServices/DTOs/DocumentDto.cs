@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ETicketAdmin.DTOs
+namespace ETicket.ApplicationServices.DTOs
 {
     public class DocumentDto
     {

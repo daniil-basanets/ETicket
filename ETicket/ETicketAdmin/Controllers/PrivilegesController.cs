@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
-using ETicketAdmin.DTOs;
+using ETicket.ApplicationServices.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

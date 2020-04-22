@@ -49,8 +49,6 @@ namespace ETicket.Admin
 
             services.AddTransient<ITicketService, TicketService>();
 
-            services.AddAutoMapper(typeof(Startup));
-
             services.AddIdentityCore<IdentityUser>(o =>
             {
                 o.Password.RequireDigit = false;

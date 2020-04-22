@@ -1,4 +1,4 @@
-﻿namespace ETicketAdmin.DTOs
+﻿namespace ETicket.ApplicationServices.DTOs
 {
 	public class PrivilegeDto
 	{

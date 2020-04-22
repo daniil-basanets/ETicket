@@ -4,7 +4,7 @@ using AutoMapper;
 using ETicket.Admin.Services;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
-using ETicketAdmin.DTOs;
+using ETicket.ApplicationServices.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;

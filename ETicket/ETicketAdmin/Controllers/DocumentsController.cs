@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
-using AutoMapper;
+using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
-using ETicketAdmin.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -22,20 +21,22 @@ namespace ETicket.Admin.Controllers
     [Authorize(Roles = "Admin, SuperUser")]
     public class DocumentsController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly IMapper mapper;
+        private readonly DatabaseServices services;
 
-        public DocumentsController(IUnitOfWork unitOfWork, IMapper mapper)
+        public DocumentsController(IUnitOfWork unitOfWork)
         {
-            this.unitOfWork = unitOfWork;
-            this.mapper = mapper;
+            services = new DatabaseServices(unitOfWork);
         }
 
         public IActionResult Index()
         {
-            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name");
+            var documentsTypes = services.Read<DocumentType>();
 
-            return View(unitOfWork.Documents.GetAll());
+            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
+
+            var documents = services.Read<Document>();
+
+            return View(documents);
         }
 
         public IActionResult Details(Guid? id)
@@ -45,11 +46,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            IQueryable<Document> eTicketDataContext = unitOfWork.Documents.GetAll();
-
-            var document = eTicketDataContext
-                .Include(d => d.DocumentType)
-                .FirstOrDefault(m => m.Id == id);
+            var document = services.Read<Document>(id.Value);
 
             if (document == null)
             {
@@ -61,7 +58,9 @@ namespace ETicket.Admin.Controllers
 
         public IActionResult Create()
         {
-            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name");
+            var documentsTypes = services.Read<DocumentType>();
+
+            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
             
             return View();
         }
@@ -69,19 +68,18 @@ namespace ETicket.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(DocumentDto documentDto)
-        {//TODO remove Bind (base controller)
+        {
             if (ModelState.IsValid)
             {
-                var document = mapper.Map<Document>(documentDto);
-
-                document.Id = Guid.NewGuid();
-                unitOfWork.Documents.Create(document);  //TODO move business logic to Services in another project(each Service has own folder)
-                unitOfWork.Save();
+                services.Create(documentDto);
+                services.Save();
 
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", documentDto.DocumentTypeId);
+            var documentsTypes = services.Read<DocumentType>();
+
+            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
 
             return View(documentDto);
         }
@@ -93,14 +91,16 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var document = unitOfWork.Documents.Get((Guid)id);
+            var document = services.Read<Document>(id.Value);
 
             if (document == null)
             {
                 return NotFound();
             }
 
-            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", document.DocumentTypeId);
+            var documentsTypes = services.Read<DocumentType>();
+
+            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", document.DocumentTypeId);
             return View(document);
         }
 
@@ -117,10 +117,8 @@ namespace ETicket.Admin.Controllers
             {
                 try
                 {
-                    var document = mapper.Map<Document>(documentDto);
-
-                    unitOfWork.Documents.Update(document);
-                    unitOfWork.Save();
+                    services.Update(documentDto);
+                    services.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -136,7 +134,9 @@ namespace ETicket.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["DocumentTypeId"] = new SelectList(unitOfWork.DocumentTypes.GetAll(), "Id", "Name", documentDto.DocumentTypeId);
+            var documentsTypes = services.Read<DocumentType>();
+
+            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
             return View(documentDto);
         }
 
@@ -147,7 +147,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var document = unitOfWork.Documents.Get((Guid)id);
+            var document = services.Read<Document>(id.Value);
 
             if (document == null)
             {
@@ -161,15 +161,15 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            unitOfWork.Documents.Delete(id);
-            unitOfWork.Save();
+            services.Delete<Document>(id);
+            services.Save();
 
             return RedirectToAction(nameof(Index));
         }
 
         private bool DocumentExists(Guid id)
         {
-            return unitOfWork.Documents.Get(id) != null;
+            return services.Read<Document>(id) != null;
         }
     }
 }
