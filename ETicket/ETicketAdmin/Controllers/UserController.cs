@@ -1,36 +1,42 @@
 ﻿using System;
 using System.Linq;
-using AutoMapper;
-using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
-using ETicketAdmin.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ETicket.Admin.Services;
+using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.Users.Interfaces;
+using ETicket.ApplicationServices.Services.Users;
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class UserController : Controller
     {
-        private readonly IUnitOfWork repository;
-        private readonly IMapper mapper;
+        private readonly IUserService service;
+        IUnitOfWork repository;
 
-        public UserController(IUnitOfWork repository, IMapper mapper)
+        public UserController(IUnitOfWork repository)
         {
             this.repository = repository;
-            this.mapper = mapper;
+            this.service = new UserService(repository);
         }
 
         // GET: User
         public IActionResult Index()
         {
-            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
-            var users = repository.Users.GetAll();
+            try
+            {
+                ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
 
-            return View(users.ToList());
+                return View(service.GetAll().ToList());
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         // GET: User/Details/5
@@ -41,42 +47,53 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var user = repository.Users.Get(id);
-
-            if (user == null)
+            try
             {
-                return NotFound();
-            }
+                var user = service.GetById(id);
 
-            return View(user);
+                if (user == null)
+                {
+
+                    return NotFound();
+                }
+                else
+                {
+                    return View(user);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
-        // GET: User/CreateDocument
-        public IActionResult CreateUserWithDocument(User user)
+        // GET: User/CreateUserWithDocument
+        public IActionResult CreateUserWithDocument(UserDto userDto)
         {
             ViewData["DocumentTypeId"] = new SelectList(repository.DocumentTypes.GetAll(), "Id", "Name");
 
             return View();
         }
 
-        // POST: User/CreateDocument
+        // POST: User/CreateUserWithDocument
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateUserWithDocument(DocumentDto documentDto, User user)
+        public IActionResult CreateUserWithDocument(DocumentDto documentDto, UserDto userDto)
         {
             if (ModelState.IsValid)
             {
-                var document = mapper.Map<Document>(documentDto);
+                try
+                {
+                    service.CreateUserWithDocument(documentDto, userDto);
 
-                document.Id = Guid.NewGuid();
-                repository.Documents.Create(document);
-                repository.Save();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception)
+                {
 
-                user.DocumentId = document.Id;
-                repository.Users.Create(user);
-                repository.Save();
-
-                return RedirectToAction(nameof(Index));
+                    throw;
+                }
             }
 
             ViewData["DocumentTypeId"] = new SelectList(repository.DocumentTypes.GetAll(), "Id", "Name", documentDto.DocumentTypeId);
@@ -101,19 +118,23 @@ namespace ETicket.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = mapper.Map<User>(userDto);
-
-                if (user.PrivilegeId != null)
+                try
                 {
-                    return RedirectToAction(nameof(CreateUserWithDocument), user);
+                    if (userDto.PrivilegeId != null)
+                    {
+                        return RedirectToAction(nameof(CreateUserWithDocument), userDto);
+                    }
+                    else
+                    {
+                        service.CreateUser(userDto);
+
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
-                else
+                catch (Exception)
                 {
-                    user.Id = Guid.NewGuid();
-                    repository.Users.Create(user);
-                    repository.Save();
 
-                    return RedirectToAction(nameof(Index));
+                    throw;
                 }
             }
 
@@ -130,15 +151,10 @@ namespace ETicket.Admin.Controllers
             {
                 return NotFound();
             }
-
-            var user = repository.Users.Get(id);
-
-            if (user == null)
+            else
             {
-                return NotFound();
+                return View();
             }
-
-            return View(user);
         }
 
         // POST: User/SendMessage
@@ -148,17 +164,19 @@ namespace ETicket.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = repository.Users.Get(id);
-                if (user == null)
+                try
                 {
-                    return NotFound();
+                    service.SendMessage(id, message);
+
+                    return RedirectToAction(nameof(Index));
                 }
+                catch (Exception)
+                {
 
-                MailService emailService = new MailService();
-                emailService.SendEmail(user.Email, message);
-
-                return RedirectToAction(nameof(Index));
+                    throw;
+                }
             }
+
             return View(message);
         }
 
@@ -170,16 +188,28 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var user = repository.Users.Get(id);
-            if (user == null)
+            try
             {
-                return NotFound();
+                var user = service.GetById(id);
+
+                if (user == null)
+                {
+
+                    return NotFound();
+                }
+                else
+                {
+                    ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number", user.DocumentId);
+                    ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name", user.PrivilegeId);
+
+                    return View(user);
+                }
             }
+            catch (Exception)
+            {
 
-            ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number", user.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name", user.PrivilegeId);
-
-            return View(user);
+                throw;
+            }
         }
 
         // POST: User/Edit/5
@@ -196,15 +226,13 @@ namespace ETicket.Admin.Controllers
             {
                 try
                 {
-                    var user = mapper.Map<User>(userDto);
-
-                    repository.Users.Update(user);
-                    repository.Save();
+                    service.Update(userDto);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!repository.Users.UserExists(userDto.Id))
+                    if (!service.Exists(userDto.Id))
                     {
+
                         return NotFound();
                     }
                     else
@@ -230,14 +258,25 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var user = repository.Users.Get(id);
-
-            if (user == null)
+            try
             {
-                return NotFound();
-            }
+                var user = service.GetById(id);
 
-            return View(user);
+                if (user == null)
+                {
+
+                    return NotFound();
+                }
+                else
+                {
+                    return View(user);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         // POST: User/Delete/5
@@ -245,10 +284,17 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            repository.Users.Delete(id);
-            repository.Save();
+            try
+            {
+                service.Delete(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

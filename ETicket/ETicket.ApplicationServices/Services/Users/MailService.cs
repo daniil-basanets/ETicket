@@ -1,10 +1,8 @@
-﻿using MailKit.Net.Smtp;
-using Microsoft.AspNetCore.Mvc;
-using MimeKit;
+﻿using MimeKit;
 using System.Threading.Tasks;
+using MailKit.Net.Smtp;
 
-
-namespace ETicket.Admin.Services
+namespace ETicket.ApplicationServices.Services.Users
 {
     public class MailService
     {
