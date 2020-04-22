@@ -1,55 +1,34 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
-using ETicket.Admin.Services;
-using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
-using ETicket.ApplicationServices.DTOs;
+using ETicket.DataAccess.Domain.Interfaces;
+using ETicketAdmin.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ETicket.Admin.Services;
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class UserController : Controller
     {
-        private readonly ETicketDataContext context;
-        private readonly UnitOfWork repository;
+        private readonly IUnitOfWork repository;
         private readonly IMapper mapper;
 
-        public UserController(ETicketDataContext context, IMapper mapper)
+        public UserController(IUnitOfWork repository, IMapper mapper)
         {
-            this.context = context;
-            repository = new UnitOfWork(context);
+            this.repository = repository;
             this.mapper = mapper;
         }
 
         // GET: User
-        public IActionResult Index(string sortOrder)
+        public IActionResult Index()
         {
             ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
-            ViewBag.LastNameSortParm = String.IsNullOrEmpty(sortOrder) ? "LastName_desc" : "";
-            ViewBag.FirstNameSortParm = sortOrder == "FirstName" ? "FirstName_desc" : "FirstName";
-            var eTicketDataContext = repository.Users.GetAll();
-            IOrderedQueryable<User> users;
-
-            switch (sortOrder)
-            {
-                case "LastName_desc":
-                    users = eTicketDataContext.OrderByDescending(s => s.LastName);
-                    break;
-                case "FirstName_desc":
-                    users = eTicketDataContext.OrderByDescending(s => s.FirstName);
-                    break;
-                case "FirstName":
-                    users = eTicketDataContext.OrderBy(s => s.FirstName);
-                    break;
-                default:
-                    users = eTicketDataContext.OrderBy(s => s.LastName);
-                    break;
-            }
+            var users = repository.Users.GetAll();
 
             return View(users.ToList());
         }
@@ -72,6 +51,39 @@ namespace ETicket.Admin.Controllers
             return View(user);
         }
 
+        // GET: User/CreateDocument
+        public IActionResult CreateUserWithDocument(User user)
+        {
+            ViewData["DocumentTypeId"] = new SelectList(repository.DocumentTypes.GetAll(), "Id", "Name");
+
+            return View();
+        }
+
+        // POST: User/CreateDocument
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateUserWithDocument(DocumentDto documentDto, User user)
+        {
+            if (ModelState.IsValid)
+            {
+                var document = mapper.Map<Document>(documentDto);
+
+                document.Id = Guid.NewGuid();
+                repository.Documents.Create(document);
+                repository.Save();
+
+                user.DocumentId = document.Id;
+                repository.Users.Create(user);
+                repository.Save();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["DocumentTypeId"] = new SelectList(repository.DocumentTypes.GetAll(), "Id", "Name", documentDto.DocumentTypeId);
+
+            return View(documentDto);
+        }
+
         // GET: User/Create
         public IActionResult Create()
         {
@@ -91,15 +103,22 @@ namespace ETicket.Admin.Controllers
             {
                 var user = mapper.Map<User>(userDto);
 
-                user.Id = Guid.NewGuid();
-                repository.Users.Create(user);
-                repository.Save();
+                if (user.PrivilegeId != null)
+                {
+                    return RedirectToAction(nameof(CreateUserWithDocument), user);
+                }
+                else
+                {
+                    user.Id = Guid.NewGuid();
+                    repository.Users.Create(user);
+                    repository.Save();
 
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
             }
 
-            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", userDto.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", userDto.PrivilegeId);
+            ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number", userDto.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name", userDto.PrivilegeId);
 
             return View(userDto);
         }
@@ -157,8 +176,8 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", user.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", user.PrivilegeId);
+            ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number", user.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name", user.PrivilegeId);
 
             return View(user);
         }
@@ -197,8 +216,8 @@ namespace ETicket.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", userDto.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", userDto.PrivilegeId);
+            ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number", userDto.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name", userDto.PrivilegeId);
 
             return View(userDto);
         }
@@ -231,6 +250,5 @@ namespace ETicket.Admin.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
     }
 }
