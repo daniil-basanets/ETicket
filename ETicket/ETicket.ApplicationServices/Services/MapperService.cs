@@ -19,7 +19,7 @@ namespace ETicket.ApplicationServices.Services
                 cfg.CreateMap<DocumentTypeDto, DocumentType>();
                 cfg.CreateMap<DocumentDto, Document>();
                 cfg.CreateMap<TicketTypeDto, TicketType>();
-                
+                cfg.CreateMap<UserDto, User>();
             });
 
             var mapper = config.CreateMapper();
