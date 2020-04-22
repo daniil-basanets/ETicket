@@ -18,82 +18,99 @@ $.fn.dataTable.ext.search.push(
 
 $(document).ready(function () {
     $.noConflict();
-    var table = $('#dataTable').DataTable({
-        columnDefs: [
-            { orderable: false, targets: -1 }
-        ],
-        processing: true,
-        serverSide: true,
-        order: [[1, "desc"]],
-        ajax: {
-            url: 'Ticket/GetCurrentPage',
-            datatype: 'json',
-            type: 'POST'
-        },
+    //Variable for count entries
+    var totalRecords = -1; 
+    var pageNumber = 1;
 
-        //Columns data order       
-        columns: [
-            {
-                data: "ticketType",
-                render: function (data, type, row) {
-                    if (data != null) {
-                        return '<a href = "TicketType/Details/' + data.id + '">' + data.typeName + '</a>'
-                    }
+    var table = $('#dataTable')
+        //Read additional fields from server side
+        .on('xhr.dt', function (e, settings, json, xhr) {
+            totalRecords = json.recordsTotal;
+        })
+        .on('page.dt', function () {
+            pageNumber = table.page() + 1;
+        })
+        //DataTable settings
+        .DataTable({
+            columnDefs: [
+                { orderable: false, targets: -1 }
+            ],
+            processing: true,
+            serverSide: true,
+            order: [[1, "desc"]],
+            ajax: {
+                url: 'Ticket/GetCurrentPage',
+                datatype: 'json',
+                type: 'POST',
+                data: function (d) {
+                    d.totalEntries = totalRecords;
+                    d.pageNumber = pageNumber;
                 }
             },
-            {
-                data: "createdUTCDate",
-                render: function (data, type, row) {
-                    if (data != null) {
-                        var date = new Date(Date.parse(data));
-                        return date.toLocaleString();
+
+            //Columns data order       
+            columns: [
+                {
+                    data: "ticketType",
+                    render: function (data, type, row) {
+                        if (data != null) {
+                            return '<a href = "TicketType/Details/' + data.id + '">' + data.typeName + '</a>'
+                        }
                     }
-                }
-            },
-            {
-                data: "activatedUTCDate",
-                defaultContent: "",
-                render: function (data, type, row) {
-                    if (data != null) {
-                        var date = new Date(Date.parse(data));
-                        return date.toLocaleString();
+                },
+                {
+                    data: "createdUTCDate",
+                    render: function (data, type, row) {
+                        if (data != null) {
+                            var date = new Date(Date.parse(data));
+                            return date.toLocaleString();
+                        }
                     }
-                }
-            },
-            {
-                data: "expirationUTCDate",
-                defaultContent: "",
-                render: function (data, type, row) {
-                    if (data != null) {
-                        var date = new Date(Date.parse(data));
-                        return date.toLocaleString();
+                },
+                {
+                    data: "activatedUTCDate",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (data != null) {
+                            var date = new Date(Date.parse(data));
+                            return date.toLocaleString();
+                        }
                     }
-                }
-            },
-            {
-                data: "user",
-                defaultContent: "",
-                render: function (data, type, row) {
-                    if (data != null) {
-                        return '<a href = "User/Details/' + data.id + '">' + data.firstName + ' ' + data.lastName + '</a>'
+                },
+                {
+                    data: "expirationUTCDate",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (data != null) {
+                            var date = new Date(Date.parse(data));
+                            return date.toLocaleString();
+                        }
                     }
+                },
+                {
+                    data: "user",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (data != null) {
+                            return '<a href = "User/Details/' + data.id + '">' + data.firstName + ' ' + data.lastName + '</a>'
+                        }
+                    }
+                },
+                {
+                    data: null,
+                    //Set default buttons (Edit, Delete)
+                    //href = "#" because <a> without href have a special style
+                    defaultContent:
+                        '<a class="btn btn-warning btn-sm" href = "#" id = "editButton">Edit</a>' + ' '
+                        + '<a class="btn btn-info btn-sm" href = "#" id = "detailsButton">Details</a>' + ' '
+                        + '<a class="btn btn-danger btn-sm" href = "#" id = "deleteButton">Delete</a>'
                 }
-            },
-            {
-                data: null,
-                //Set default buttons (Edit, Delete)
-                //href = "#" because <a> without href have a special style
-                defaultContent:
-                    '<a class="btn btn-warning btn-sm" href = "#" id = "editButton">Edit</a>' + ' '
-                    + '<a class="btn btn-info btn-sm" href = "#" id = "detailsButton">Details</a>' + ' '
-                    + '<a class="btn btn-danger btn-sm" href = "#" id = "deleteButton">Delete</a>'
+            ],
+            language: {
+                //Set message for pop-up window
+                processing: "Take data from server. Please wait..."
             }
-        ],
-        language: {
-            //Set message for pop-up window
-            processing: "Take data from server. Please wait..."
-        }
-    });
+        });
 
     //Change event listener for search
     //Search after pressing Enter or defocusing the search input field

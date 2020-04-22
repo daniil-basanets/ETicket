@@ -12,7 +12,8 @@ using ETicket.Admin.Models.DataTables;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicketAdmin.DTOs;
-
+using ETicket.Admin.Services;
+using System.Linq.Expressions;
 
 namespace ETicket.Admin.Controllers
 {
@@ -21,11 +22,13 @@ namespace ETicket.Admin.Controllers
     {
         private readonly IUnitOfWork uow;
         private readonly IMapper mapper;
+        private readonly DataTableServices dataTableServices; 
 
         public TicketController(IUnitOfWork uow, IMapper mapper)
         {
             this.uow = uow;
             this.mapper = mapper;
+            dataTableServices = new DataTableServices();
         }
 
         // GET: Tickets
@@ -36,16 +39,12 @@ namespace ETicket.Admin.Controllers
             return View();
         }
 
+
         [HttpPost]
         public IActionResult GetCurrentPage(DataTableParameters dataTableParameters)
         {
-            var drawStep = int.Parse(Request.Form["draw"]);
-            
-            var countRecords = uow
-                    .Tickets
-                    .GetAll()
-                    .AsNoTracking()
-                    .Count();
+            var drawStep = dataTableParameters.Draw;
+            var countRecords = dataTableParameters.TotalEntries;
 
             IQueryable<Ticket> tickets = uow
                     .Tickets
@@ -54,70 +53,44 @@ namespace ETicket.Admin.Controllers
                     .Include(t => t.TicketType)
                     .Include(t => t.User);
 
-            SortDataTable(ref tickets, dataTableParameters.Order);
-            SearchInDataTable(ref tickets, dataTableParameters.Search.Value);
+            //For single count query
+            if (countRecords == -1)
+            {
+                countRecords = tickets.Count();
+            }
 
-            var countFiltered = tickets.Count();
+            var sortableExpression = new List<Expression<Func<Ticket, string>>> 
+            {
+                (t => t.TicketType.TypeName),
+                (t => t.CreatedUTCDate.ToString()),
+                (t => t.ActivatedUTCDate.ToString()),
+                (t => t.ExpirationUTCDate.ToString()),
+                (t => t.User.LastName)
+            };
+
+            tickets = dataTableServices.GetSortedQuery<Ticket>(tickets, dataTableParameters.Order, sortableExpression);
+
+            var countFiltered = countRecords;
+            var searchString = dataTableParameters.Search.Value;
+
+            Expression<Func<Ticket, bool>> searchableExpression = (t => t.TicketType.TypeName.StartsWith(dataTableParameters.Search.Value)
+                            || t.CreatedUTCDate.ToString().Contains(searchString)
+                            || t.ActivatedUTCDate.ToString().Contains(searchString)
+                            || t.ExpirationUTCDate.ToString().Contains(searchString)
+                            || t.User.FirstName.StartsWith(searchString)
+                            || t.User.LastName.StartsWith(searchString));
+
+            if (!string.IsNullOrEmpty(dataTableParameters.Search.Value))
+            {
+                tickets = dataTableServices.GetSearchedQuery<Ticket>(tickets, searchableExpression);
+                countFiltered = tickets.Count();
+            }
 
             tickets = tickets
-                    .Skip(dataTableParameters.Start)
+                    .Skip((dataTableParameters.PageNumber - 1) * dataTableParameters.Length)
                     .Take(dataTableParameters.Length);
 
-            return GetCurrentPage(tickets, drawStep, countRecords, countFiltered);
-        }
-
-        private void SearchInDataTable(
-            ref IQueryable<Ticket> tickets,
-            string searchString
-        )
-        {
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                tickets = tickets.ApplySearchBy(
-                    t =>
-                    t.TicketType.TypeName.StartsWith(searchString)
-                     || t.CreatedUTCDate.ToString().Contains(searchString)
-                     || t.ActivatedUTCDate.ToString().Contains(searchString)
-                     || t.ExpirationUTCDate.ToString().Contains(searchString)
-                     || t.User.FirstName.StartsWith(searchString)
-                     || t.User.LastName.StartsWith(searchString)
-                     );
-            }
-        }
-
-        private void SortDataTable(
-            ref IQueryable<Ticket> tickets,
-            List<DataOrder> orders
-        )
-        {
-            foreach (var order in orders)
-            {
-                tickets = order.Column switch
-                {
-                    0 => tickets.ApplySortBy(t => t.TicketType.TypeName, order.Dir),
-                    1 => tickets.ApplySortBy(t => t.CreatedUTCDate, order.Dir),
-                    2 => tickets.ApplySortBy(t => t.ActivatedUTCDate, order.Dir),
-                    3 => tickets.ApplySortBy(t => t.ExpirationUTCDate, order.Dir),
-                    4 => tickets.ApplySortBy(t => t.User.LastName, order.Dir),
-                    _ => tickets.ApplySortBy(t => t.CreatedUTCDate, "desc")
-                };
-            }
-        }
-
-        private JsonResult GetCurrentPage(
-            IQueryable<Ticket> tickets,
-            int drawStep,
-            int countRecords,
-            int countFiltered
-        )
-        {
-            return Json(new
-            {
-                draw = ++drawStep,
-                recordsTotal = countRecords,
-                recordsFiltered = countFiltered,
-                data = tickets
-            });
+            return Json(dataTableServices.GetJsonDataTable<Ticket>(tickets, drawStep, countRecords, countFiltered));
         }
 
         // GET: Tickets/Details/5

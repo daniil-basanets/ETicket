@@ -13,5 +13,7 @@ namespace ETicket.Admin.Models.DataTables
         public List<DataOrder> Order { get; set; }
         public Search Search { get; set; }
         public int Start { get; set; }
+        public int PageNumber { get; set; }
+        public int TotalEntries { get; set; }
     }
 }

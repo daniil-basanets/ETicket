@@ -10,7 +10,7 @@ namespace ETicket.Admin.Extensions
     {
         public static IQueryable<T> ApplySortBy<T, TResult>(
             this IQueryable<T> query,
-            Expression<Func<T, TResult>> expression, 
+            Expression<Func<T, TResult>> expression,
             string sortDirection
         )
         {
