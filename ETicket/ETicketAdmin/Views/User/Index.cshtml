@@ -5,14 +5,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link href="~/css/ButtonMoves/moved-data-table-controls.css" rel="stylesheet" />
 <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="~/css/user-style.css" rel="stylesheet" />
 
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Users</h6>
             <div>
-                <div id="buttonCreate">
+                <div id="buttonCreate" class="button_create">
                     <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
                 </div>
             </div>
@@ -169,9 +171,4 @@
 <!-- Page level custom scripts -->
 <script src="/js/data-table-users-filters.js"></script>
 <script src="~/js/button-create-moves/button-create-move.js"></script>
-<!-- My test button create move
-<script src="~/js/button-create-moves/upper-right-corner.js"></script>
-@*<script src="~/js/button-create-moves/entries-down-button-right-corner.js"></script>*@
-<link href="~/css/button-create.css" rel="stylesheet" />
-@*<link href="~/css/ButtonMoves/down-three-item-media.css" rel="stylesheet" />*@
--->
+

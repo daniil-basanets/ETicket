@@ -22,7 +22,10 @@ $(document).ready(function () {
     var table = $('#dataTable').DataTable({
         columnDefs: [
             { orderable: false, targets: -1 }
-        ]
+        ],
+        oLanguage: {
+            sLengthMenu: "_MENU_",
+        }
 
     });
 
