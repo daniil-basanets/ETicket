@@ -1,10 +1,11 @@
 ﻿using MimeKit;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
+using ETicket.ApplicationServices.Services.Users.Interfaces;
 
 namespace ETicket.ApplicationServices.Services.Users
 {
-    public class MailService
+    public class MailService : IMailService
     {
         public void SendEmail(string email, string message)
         {

@@ -17,10 +17,10 @@ namespace ETicket.Admin.Controllers
         private readonly IUserService service;
         IUnitOfWork repository;
 
-        public UserController(IUnitOfWork repository)
+        public UserController(IUnitOfWork repository, IMailService mailService)
         {
             this.repository = repository;
-            this.service = new UserService(repository);
+            service = new UserService(repository, mailService);
         }
 
         // GET: User
@@ -30,7 +30,7 @@ namespace ETicket.Admin.Controllers
             {
                 ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
 
-                return View(service.GetAll().ToList());
+                return View(service.GetAll());
             }
             catch (Exception)
             {
