@@ -47,9 +47,9 @@ namespace ETicket.ApplicationServices.Services.Users
             uow.Save();
         }
 
-        public IQueryable<User> GetAll()
+        public IEnumerable<User> GetAll()
         {
-            return uow.Users.GetAll();
+            return uow.Users.GetAll().ToList();
         }
 
         public User GetById(Guid id)
