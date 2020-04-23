@@ -9,7 +9,7 @@ namespace ETicket.ApplicationServices.Services.Users.Interfaces
 {
     public interface IUserService
     {
-        public IQueryable<User> GetAll();
+        public IEnumerable<User> GetAll();
         public User GetById(Guid id);
 
         public void CreateUser(UserDto user);
