@@ -1,5 +1,4 @@
 using System;
-using AutoMapper;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DocumentTypes;
 using ETicket.ApplicationServices.Services.DocumentTypes.Interfaces;
@@ -55,6 +54,7 @@ namespace ETicket.Admin
             services.AddTransient<ITicketService, TicketService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IDocumentTypesService, DocumentTypesService>();
+            services.AddTransient<ITicketTypeService, TicketTypeService>();
 
             services.AddIdentityCore<IdentityUser>(o =>
             {

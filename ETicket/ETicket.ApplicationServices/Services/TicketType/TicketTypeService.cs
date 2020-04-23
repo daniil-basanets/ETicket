@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 
-namespace ETicket.ApplicationServices.Services
+namespace ETicket.ApplicationServices.Services 
 {
-    public class TicketTypeService
+    public class TicketTypeService : ITicketTypeService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly MapperService mapper;
@@ -26,7 +27,7 @@ namespace ETicket.ApplicationServices.Services
             unitOfWork.Save();
         }
         
-        public IEnumerable GetAll()
+        public IEnumerable<TicketType> GetAll()
         {
             return unitOfWork.TicketTypes.GetAll().ToList();
         }
