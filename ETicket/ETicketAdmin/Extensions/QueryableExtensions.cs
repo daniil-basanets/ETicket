@@ -17,15 +17,7 @@ namespace ETicket.Admin.Extensions
             return (sortDirection == "asc") ? query.OrderBy(expression) : query.OrderByDescending(expression);
         }
 
-        public static IQueryable<T> ApplySearchBy<T>(
-            this IQueryable<T> query,
-            Expression<Func<T, bool>> expression
-        )
-        {
-            return query.Where(expression);
-        }
-
-        public static Expression<Func<T, bool>> ExpressionsCombinerByOr<T>(
+        public static Expression<Func<T, bool>> Combine<T>(
             this IEnumerable<Expression<Func<T, bool>>> expressions)
         {
             Expression<Func<T, bool>> firstFilter = expressions.FirstOrDefault();
@@ -37,7 +29,8 @@ namespace ETicket.Admin.Extensions
 
             var body = firstFilter.Body;
             var param = firstFilter.Parameters.ToArray();
-            foreach (var nextFilter in expressions.Skip(1))
+            var collection = expressions.Skip(1);
+            foreach (var nextFilter in collection)
             {
                 var nextBody = Expression.Invoke(nextFilter, param);
                 body = Expression.OrElse(body, nextBody);

@@ -42,7 +42,7 @@ namespace ETicket.Admin.Services
             Expression<Func<T, bool>> expression
         )
         {
-            return query.ApplySearchBy(expression);
+            return query.Where(expression);
         }
 
         public IQueryable<T> GetSearchedQuery<T>(
@@ -50,7 +50,7 @@ namespace ETicket.Admin.Services
            List<Expression<Func<T, bool>>> expressions
         )
         {
-            var exp = expressions.ExpressionsCombinerByOr();
+            var exp = expressions.Combine();
 
             return query.Where(exp);
         }
