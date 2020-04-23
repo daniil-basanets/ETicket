@@ -2,6 +2,7 @@ using System;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DocumentTypes;
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.ApplicationServices.Services.Transaction;
 using ETicket.ApplicationServices.Services.Users;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
@@ -34,7 +35,9 @@ namespace ETicket.Admin
         {
             services.AddControllersWithViews();
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
-            services.AddTransient<IUnitOfWork, UnitOfWork>(x => new UnitOfWork(x.GetService<ETicketDataContext>()));
+            services.AddTransient<IUnitOfWork, UnitOfWork>(u => new UnitOfWork(u.GetService<ETicketDataContext>()));
+
+            services.AddTransient<ITransactionAppService, TransactionAppService>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ETicketDataContext>()
