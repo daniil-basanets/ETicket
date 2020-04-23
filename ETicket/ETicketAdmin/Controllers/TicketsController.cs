@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Linq;
-using AutoMapper;
-using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.ApplicationServices.Services.Users.Interfaces;
+using ETicket.DataAccess.Domain.Interfaces;
 
 namespace ETicket.Admin.Controllers
 {
@@ -16,20 +15,30 @@ namespace ETicket.Admin.Controllers
     public class TicketController : Controller
     {
         private readonly IUnitOfWork uow;   //TODO change to service (remove this)
-        private readonly IMapper mapper;
         private readonly ITicketService ticketService;
+        private readonly ITicketTypeService ticketTypeService;
+        private readonly IUserService userService;
 
-        public TicketController(IUnitOfWork uow, IMapper mapper, ITicketService ticketService)
+        private void InitViewDataForSelectList(TicketDto ticketDto = null)
+        {
+            ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetAll(), "Id", "TypeName", ticketDto?.Id);
+            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticketDto?.TransactionHistoryId);   //TODO change to service (remove this)
+            ViewData["UserId"] = new SelectList(userService.GetAll(), "Id", "LastName", ticketDto?.UserId);
+        }
+
+        public TicketController(IUnitOfWork uow, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService)
         {
             this.uow = uow;
-            this.mapper = mapper;
-            this.ticketService = ticketService;// new TicketService(uow);
+
+            this.ticketService = ticketService;
+            this.ticketTypeService = ticketTypeService;
+            this.userService = userService;
         }
 
         // GET: Tickets
-        public IActionResult Index(string sortOrder)
+        public IActionResult Index()
         {
-            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName"); //TODO change to service 
+            ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetAll(), "Id", "TypeName"); //TODO change to service 
             var tickets = ticketService.GetAll();
 
             return View(tickets.ToList());
@@ -56,10 +65,7 @@ namespace ETicket.Admin.Controllers
         // GET: Tickets/Create
         public IActionResult Create()
         {
-            //TODO change to service
-            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName");
-            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber");
-            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName");
+            InitViewDataForSelectList();
 
             return View();
         }
@@ -69,35 +75,26 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(TicketDto ticketDto)
         {
-            var ticket = mapper.Map<Ticket>(ticketDto);
+            var ticketType = ticketTypeService.Get(ticketDto.TicketTypeId);  //TODO change to service
 
-            var ticketType = uow.TicketTypes.Get(ticket.TicketTypeId);  //TODO change to service
-
-            if (ticketType.IsPersonal && ticket.UserId == null)
+            if (ticketType.IsPersonal && ticketDto.UserId == null)
             {
                 ModelState.AddModelError("", "User is not specified for personal ticket type");
+                InitViewDataForSelectList();
 
-                //TODO change to service
-                ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName");
-                ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber");
-                ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName");
-
-                return View(ticket);
+                return View(ticketDto);
             }
 
             if (ModelState.IsValid)
             {
-                ticketService.Create(ticket);
+                ticketService.Create(ticketDto);
 
                 return RedirectToAction(nameof(Index));
             }
 
-            //TODO change to service
-            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticket.TicketTypeId);
-            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticket.TransactionHistoryId);
-            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticket.UserId);
+            InitViewDataForSelectList(ticketDto);
 
-            return View(ticket);
+            return View(ticketDto);
         }
 
         // GET: Tickets/Edit/5
@@ -108,19 +105,16 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticket = ticketService.Get((Guid)id);
+            var ticketDto = ticketService.GetDto((Guid)id);
 
-            if (ticket == null)
+            if (ticketDto == null)
             {
                 return NotFound();
             }
 
-            //TODO change to service
-            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticket.TicketTypeId);
-            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticket.TransactionHistoryId);
-            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticket.UserId);
+            InitViewDataForSelectList(ticketDto);
 
-            return View(ticket);
+            return View(ticketDto);
         }
 
         // POST: Tickets/Edit/5
@@ -133,27 +127,21 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticket = mapper.Map<Ticket>(ticketDto);
-            var ticketType = uow.TicketTypes.Get(ticket.TicketTypeId);  //TODO change to service
+            var ticketType = uow.TicketTypes.Get(ticketDto.TicketTypeId);  //TODO change to service
 
-            if (ticketType.IsPersonal && ticket.UserId == null)
+            if (ticketType.IsPersonal && ticketDto.UserId == null)
             {
                 ModelState.AddModelError("", "User is not specified for personal ticket type");
+                InitViewDataForSelectList();
 
-                //TODO change to service
-                ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName");
-                ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber");
-                ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName");
-
-                return View(ticket);
+                return View(ticketDto);
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    
-                    ticketService.Update(ticket);
+                    ticketService.Update(ticketDto);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -170,10 +158,7 @@ namespace ETicket.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            //TODO change to service
-            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticketDto.TicketTypeId);
-            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticketDto.TransactionHistoryId);
-            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticketDto.UserId);
+            InitViewDataForSelectList(ticketDto);
 
             return View(ticketDto);
         }

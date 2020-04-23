@@ -1,20 +1,24 @@
-﻿using System.Collections;
+﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
-using System;
 using ETicket.ApplicationServices.Services.Interfaces;
-using System.Collections.Generic;
+using ETicket.ApplicationServices.DTOs;
 
 namespace ETicket.ApplicationServices.Services
 {
-    public class TicketService: ITicketService
+    public class TicketService : ITicketService
     {
         private readonly IUnitOfWork uow;
+        private readonly MapperService mapper;
+        private readonly ITicketTypeService ticketTypeService;
 
-        public TicketService(IUnitOfWork uow)
+        public TicketService(IUnitOfWork uow, ITicketTypeService ticketTypeService)
         {
             this.uow = uow;
+            this.ticketTypeService = ticketTypeService;
+            mapper = new MapperService();
         }
 
         IEnumerable<Ticket> ITicketService.GetAll()
@@ -27,16 +31,25 @@ namespace ETicket.ApplicationServices.Services
             return uow.Tickets.Get(id);
         }
 
-        public void Create(Ticket ticket)
+        public TicketDto GetDto(Guid id)
         {
+            var ticket = Get(id); ;
+            var ticketDto = mapper.Map<Ticket, TicketDto>(ticket);
+
+            return ticketDto;
+        }
+
+        public void Create(TicketDto ticketDto)
+        {
+            var ticket = mapper.Map<TicketDto, Ticket>(ticketDto);
+
             ticket.Id = Guid.NewGuid();
             ticket.CreatedUTCDate = DateTime.UtcNow;
 
-            //TODO change to service
-           /* if (ticket.TicketType == null)
+            if (ticket.TicketType == null)
             {
                 ticket.TicketType = ticketTypeService.Get(ticket.TicketTypeId);
-            }*/
+            }
 
             if (ticket.ActivatedUTCDate != null)
             {
@@ -47,8 +60,10 @@ namespace ETicket.ApplicationServices.Services
             uow.Save();
         }
 
-        public void Update(Ticket ticket)
+        public void Update(TicketDto ticketDto)
         {
+            var ticket = mapper.Map<TicketDto, Ticket>(ticketDto);
+
             uow.Tickets.Update(ticket);
             uow.Save();
         }

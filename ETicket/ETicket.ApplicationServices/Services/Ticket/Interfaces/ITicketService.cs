@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using ETicket.ApplicationServices.DTOs;
 using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.ApplicationServices.Services.Interfaces
@@ -9,11 +8,14 @@ namespace ETicket.ApplicationServices.Services.Interfaces
     public interface ITicketService
     {
         public IEnumerable<Ticket> GetAll();
+
         public Ticket Get(Guid id);
 
-        public void Create(Ticket ticket);
+        public TicketDto GetDto(Guid id);
 
-        public void Update(Ticket ticket);
+        public void Create(TicketDto ticketDto);
+
+        public void Update(TicketDto ticketDto);
 
         public void Delete(Guid id);
 
