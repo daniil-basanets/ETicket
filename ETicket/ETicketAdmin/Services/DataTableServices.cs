@@ -44,5 +44,15 @@ namespace ETicket.Admin.Services
         {
             return query.ApplySearchBy(expression);
         }
+
+        public IQueryable<T> GetSearchedQuery<T>(
+           IQueryable<T> query,
+           List<Expression<Func<T, bool>>> expressions
+        )
+        {
+            var exp = expressions.ExpressionsCombinerByOr();
+
+            return query.Where(exp);
+        }
     }
 }

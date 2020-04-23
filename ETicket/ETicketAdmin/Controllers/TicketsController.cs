@@ -39,9 +39,15 @@ namespace ETicket.Admin.Controllers
             return View();
         }
 
-
         [HttpPost]
         public IActionResult GetCurrentPage(DataTableParameters dataTableParameters)
+        {
+            return Json(GetPage(dataTableParameters));
+        }
+
+        #region BLL 
+
+        private object GetPage(DataTableParameters dataTableParameters)
         {
             var drawStep = dataTableParameters.Draw;
             var countRecords = dataTableParameters.TotalEntries;
@@ -59,7 +65,7 @@ namespace ETicket.Admin.Controllers
                 countRecords = tickets.Count();
             }
 
-            var sortableExpression = new List<Expression<Func<Ticket, string>>> 
+            var sortableExpression = new List<Expression<Func<Ticket, string>>>
             {
                 (t => t.TicketType.TypeName),
                 (t => t.CreatedUTCDate.ToString()),
@@ -68,17 +74,27 @@ namespace ETicket.Admin.Controllers
                 (t => t.User.LastName)
             };
 
-            tickets = dataTableServices.GetSortedQuery<Ticket>(tickets, dataTableParameters.Order, sortableExpression);
+            tickets = dataTableServices.GetSortedQuery<Ticket>(tickets,
+                    dataTableParameters.Order, sortableExpression);
 
             var countFiltered = countRecords;
             var searchString = dataTableParameters.Search.Value;
 
-            Expression<Func<Ticket, bool>> searchableExpression = (t => t.TicketType.TypeName.StartsWith(dataTableParameters.Search.Value)
-                            || t.CreatedUTCDate.ToString().Contains(searchString)
-                            || t.ActivatedUTCDate.ToString().Contains(searchString)
-                            || t.ExpirationUTCDate.ToString().Contains(searchString)
-                            || t.User.FirstName.StartsWith(searchString)
-                            || t.User.LastName.StartsWith(searchString));
+            //Expression<Func<Ticket, bool>> searchableExpression =
+            //        (t => t.TicketType.TypeName.StartsWith(searchString)
+            //        || t.CreatedUTCDate.ToString().Contains(searchString)
+            //        || t.ActivatedUTCDate.ToString().Contains(searchString)
+            //        || t.ExpirationUTCDate.ToString().Contains(searchString)
+            //        || t.User.FirstName.StartsWith(searchString)
+            //        || t.User.LastName.StartsWith(searchString));
+
+            var searchableExpression = new List<Expression<Func<Ticket, bool>>>() {
+                    (t => t.TicketType.TypeName.StartsWith(searchString)),
+                    (t => t.CreatedUTCDate.ToString().Contains(searchString)),
+                    (t => t.ActivatedUTCDate.ToString().Contains(searchString)),
+                    (t => t.ExpirationUTCDate.ToString().Contains(searchString)),
+                    (t => t.User.FirstName.StartsWith(searchString)),
+                    (t => t.User.LastName.StartsWith(searchString))};
 
             if (!string.IsNullOrEmpty(dataTableParameters.Search.Value))
             {
@@ -90,8 +106,10 @@ namespace ETicket.Admin.Controllers
                     .Skip((dataTableParameters.PageNumber - 1) * dataTableParameters.Length)
                     .Take(dataTableParameters.Length);
 
-            return Json(dataTableServices.GetJsonDataTable<Ticket>(tickets, drawStep, countRecords, countFiltered));
+            return dataTableServices.GetJsonDataTable<Ticket>(tickets, drawStep, countRecords, countFiltered);
         }
+
+        #endregion
 
         // GET: Tickets/Details/5
         public IActionResult Details(Guid? id)

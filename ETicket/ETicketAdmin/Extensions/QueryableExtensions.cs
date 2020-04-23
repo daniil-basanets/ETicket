@@ -24,5 +24,26 @@ namespace ETicket.Admin.Extensions
         {
             return query.Where(expression);
         }
+
+        public static Expression<Func<T, bool>> ExpressionsCombinerByOr<T>(
+            this IEnumerable<Expression<Func<T, bool>>> expressions)
+        {
+            Expression<Func<T, bool>> firstFilter = expressions.FirstOrDefault();
+            if (firstFilter == null)
+            {
+                Expression<Func<T, bool>> alwaysTrue = x => true;
+                return alwaysTrue;
+            }
+
+            var body = firstFilter.Body;
+            var param = firstFilter.Parameters.ToArray();
+            foreach (var nextFilter in expressions.Skip(1))
+            {
+                var nextBody = Expression.Invoke(nextFilter, param);
+                body = Expression.OrElse(body, nextBody);
+            }
+            Expression<Func<T, bool>> result = Expression.Lambda<Func<T, bool>>(body, param);
+            return result;
+        }
     }
 }
