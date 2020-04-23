@@ -8,7 +8,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface ITicketService
     {
-        public IQueryable<Ticket> GetAll();
+        public IEnumerable<Ticket> GetAll();
         public Ticket Get(Guid id);
 
         public void Create(Ticket ticket);
