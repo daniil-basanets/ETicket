@@ -4,6 +4,7 @@ using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using System;
 using ETicket.ApplicationServices.Services.Interfaces;
+using System.Collections.Generic;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -16,9 +17,9 @@ namespace ETicket.ApplicationServices.Services
             this.uow = uow;
         }
 
-        public IQueryable<Ticket> GetAll()
+        IEnumerable<Ticket> ITicketService.GetAll()
         {
-            return uow.Tickets.GetAll();
+            return uow.Tickets.GetAll().ToList();
         }
 
         public Ticket Get(Guid id)
