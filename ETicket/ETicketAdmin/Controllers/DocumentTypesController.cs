@@ -1,27 +1,29 @@
-﻿using ETicket.ApplicationServices.DTOs;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using ETicket.ApplicationServices.Services.DocumentTypes.Interfaces;
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class DocumentTypesController : Controller
     {
-        private readonly DatabaseServices services;
+        private readonly IDocumentTypesService service;
 
-        public DocumentTypesController(IUnitOfWork unitOfWork)
+        public DocumentTypesController(IDocumentTypesService service)
         {
-            services = new DatabaseServices(unitOfWork);
+            this.service = service;
         }
 
         // GET: DocumentTypes
         public IActionResult Index()
         {
-            var documentTypes = services.Read<DocumentType>();
+            var documentTypes = service.GetAll();
 
             return View(documentTypes);
         }
@@ -41,8 +43,7 @@ namespace ETicket.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                services.Create(documentTypeDto);
-                services.Save();
+                service.Create(documentTypeDto);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -58,7 +59,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var documentType = services.Read<DocumentType>(id.Value);
+            var documentType = service.Get(id.Value);
             if (documentType == null)
             {
                 return NotFound();
@@ -83,12 +84,11 @@ namespace ETicket.Admin.Controllers
             {
                 try
                 {
-                    services.Update(documentTypeDto);
-                    services.Save();
+                    service.Update(documentTypeDto);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DocumentTypeExists(documentTypeDto.Id))
+                    if (!service.Exists(documentTypeDto.Id))
                     {
                         return NotFound();
                     }
@@ -112,7 +112,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var documentType = services.Read<DocumentType>(id.Value);
+            var documentType = service.Get(id.Value);
             if (documentType == null)
             {
                 return NotFound();
@@ -126,15 +126,9 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            services.Delete<DocumentType>(id);
-            services.Save();
+            service.Delete(id);
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool DocumentTypeExists(int id)
-        {
-            return services.Read<DocumentType>(id) != null;
         }
     }
 }

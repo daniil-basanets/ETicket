@@ -1,6 +1,8 @@
 using System;
 using AutoMapper;
 using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.DocumentTypes;
+using ETicket.ApplicationServices.Services.DocumentTypes.Interfaces;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
@@ -48,6 +50,7 @@ namespace ETicket.Admin
             services.AddTransient<IValidator<TransactionHistory>, TransactionHistoryValidator>();
 
             services.AddTransient<ITicketService, TicketService>();
+            services.AddTransient<IDocumentTypesService, DocumentTypesService>();
 
             services.AddIdentityCore<IdentityUser>(o =>
             {
