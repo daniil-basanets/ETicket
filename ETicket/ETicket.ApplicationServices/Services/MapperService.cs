@@ -18,6 +18,8 @@ namespace ETicket.ApplicationServices.Services
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<DocumentTypeDto, DocumentType>();
                 cfg.CreateMap<DocumentDto, Document>();
+                cfg.CreateMap<TicketTypeDto, TicketType>();
+                
             });
 
             var mapper = config.CreateMapper();
