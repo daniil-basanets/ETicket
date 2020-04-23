@@ -33,7 +33,6 @@ namespace ETicket.ApplicationServices.Services.Users
             var document = mapper.Map<DocumentDto, Document>(documentDto);
             document.Id = Guid.NewGuid();
             uow.Documents.Create(document);
-            uow.Save();
 
             var user = mapper.Map<UserDto, User>(userDto);
             user.DocumentId = document.Id;
