@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using ETicket.ApplicationServices.DTOs;
@@ -22,7 +23,7 @@ namespace ETicket.ApplicationServices.Services.DocumentTypes
 
         public IEnumerable<DocumentType> GetAll()
         {
-            return unitOfWork.DocumentTypes.GetAll();
+            return unitOfWork.DocumentTypes.GetAll().ToList();
         }
 
         public DocumentType Get(int id)

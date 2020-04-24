@@ -16,7 +16,6 @@ namespace ETicket.Admin.Controllers
         #region Private Members
 
         private readonly IUnitOfWork unitOfWork;
-        private DatabaseServices services;
 
         #endregion
 
