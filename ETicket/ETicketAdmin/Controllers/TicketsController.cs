@@ -22,13 +22,15 @@ namespace ETicket.Admin.Controllers
     {
         private readonly IUnitOfWork uow;
         private readonly IMapper mapper;
-        private readonly DataTableServices dataTableServices; 
+        private readonly TicketService ticketService;
+        private readonly DataTableServices<Ticket> dataTableServices; 
 
         public TicketController(IUnitOfWork uow, IMapper mapper)
         {
             this.uow = uow;
             this.mapper = mapper;
-            dataTableServices = new DataTableServices();
+            ticketService = new TicketService(uow);
+            dataTableServices = new DataTableServices<Ticket>(ticketService);
         }
 
         // GET: Tickets
@@ -42,74 +44,8 @@ namespace ETicket.Admin.Controllers
         [HttpPost]
         public IActionResult GetCurrentPage(DataTableParameters dataTableParameters)
         {
-            return Json(GetPage(dataTableParameters));
+            return Json(dataTableServices.GetDataTablePage(dataTableParameters));
         }
-
-        #region BLL 
-
-        private object GetPage(DataTableParameters dataTableParameters)
-        {
-            var drawStep = dataTableParameters.Draw;
-            var countRecords = dataTableParameters.TotalEntries;
-
-            IQueryable<Ticket> tickets = uow
-                    .Tickets
-                    .GetAll()
-                    .AsNoTracking()
-                    .Include(t => t.TicketType)
-                    .Include(t => t.User);
-
-            //For single count query
-            if (countRecords == -1)
-            {
-                countRecords = tickets.Count();
-            }
-
-            var sortableExpression = new List<Expression<Func<Ticket, string>>>
-            {
-                (t => t.TicketType.TypeName),
-                (t => t.CreatedUTCDate.ToString()),
-                (t => t.ActivatedUTCDate.ToString()),
-                (t => t.ExpirationUTCDate.ToString()),
-                (t => t.User.LastName)
-            };
-
-            tickets = dataTableServices.GetSortedQuery<Ticket>(tickets,
-                    dataTableParameters.Order, sortableExpression);
-
-            var countFiltered = countRecords;
-            var searchString = dataTableParameters.Search.Value;
-
-            //Expression<Func<Ticket, bool>> searchableExpression =
-            //        (t => t.TicketType.TypeName.StartsWith(searchString)
-            //        || t.CreatedUTCDate.ToString().Contains(searchString)
-            //        || t.ActivatedUTCDate.ToString().Contains(searchString)
-            //        || t.ExpirationUTCDate.ToString().Contains(searchString)
-            //        || t.User.FirstName.StartsWith(searchString)
-            //        || t.User.LastName.StartsWith(searchString));
-
-            var searchableExpression = new List<Expression<Func<Ticket, bool>>>() {
-                    (t => t.TicketType.TypeName.StartsWith(searchString)),
-                    (t => t.CreatedUTCDate.ToString().Contains(searchString)),
-                    (t => t.ActivatedUTCDate.ToString().Contains(searchString)),
-                    (t => t.ExpirationUTCDate.ToString().Contains(searchString)),
-                    (t => t.User.FirstName.StartsWith(searchString)),
-                    (t => t.User.LastName.StartsWith(searchString))};
-
-            if (!string.IsNullOrEmpty(dataTableParameters.Search.Value))
-            {
-                tickets = dataTableServices.GetSearchedQuery<Ticket>(tickets, searchableExpression);
-                countFiltered = tickets.Count();
-            }
-
-            tickets = tickets
-                    .Skip((dataTableParameters.PageNumber - 1) * dataTableParameters.Length)
-                    .Take(dataTableParameters.Length);
-
-            return dataTableServices.GetJsonDataTable<Ticket>(tickets, drawStep, countRecords, countFiltered);
-        }
-
-        #endregion
 
         // GET: Tickets/Details/5
         public IActionResult Details(Guid? id)

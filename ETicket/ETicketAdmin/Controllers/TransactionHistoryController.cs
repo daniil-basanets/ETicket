@@ -73,17 +73,17 @@ namespace ETicket.Admin.Controllers
             string searchString
         )
         {
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                eTicketDataContext = eTicketDataContext.ApplySearchBy(
-                    t =>
-                    t.TicketType.TypeName.StartsWith(searchString)
-                     || t.ReferenceNumber.StartsWith(searchString)
-                     || t.Date.ToString().Contains(searchString)
-                     || t.Count.ToString().StartsWith(searchString)
-                     || t.TotalPrice.ToString().StartsWith(searchString)
-                     );
-            }
+            //if (!string.IsNullOrEmpty(searchString))
+            //{
+            //    eTicketDataContext = eTicketDataContext.ApplySearchBy(
+            //        t =>
+            //        t.TicketType.TypeName.StartsWith(searchString)
+            //         || t.ReferenceNumber.StartsWith(searchString)
+            //         || t.Date.ToString().Contains(searchString)
+            //         || t.Count.ToString().StartsWith(searchString)
+            //         || t.TotalPrice.ToString().StartsWith(searchString)
+            //         );
+            //}
         }
 
         private void SortDataTable(

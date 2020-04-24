@@ -74,17 +74,17 @@ namespace ETicket.Admin.Controllers
             string searchString
         )
         {
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                users = users.ApplySearchBy(
-                    t =>
-                    t.FirstName.StartsWith(searchString)
-                     || t.LastName.StartsWith(searchString)
-                     || t.DateOfBirth.ToString().Contains(searchString)
-                     || t.Privilege.Name.StartsWith(searchString)
-                     || t.Document.Number.StartsWith(searchString)
-                     );
-            }
+            //if (!string.IsNullOrEmpty(searchString))
+            //{
+            //    users = users.ApplySearchBy(
+            //        t =>
+            //        t.FirstName.StartsWith(searchString)
+            //         || t.LastName.StartsWith(searchString)
+            //         || t.DateOfBirth.ToString().Contains(searchString)
+            //         || t.Privilege.Name.StartsWith(searchString)
+            //         || t.Document.Number.StartsWith(searchString)
+            //         );
+            //}
         }
 
         private void SortDataTable(
