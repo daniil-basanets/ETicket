@@ -6,7 +6,7 @@ using ETicket.DataAccess.Domain.Interfaces;
 
 namespace ETicket.ApplicationServices.Services.PrivilegeService
 {
-    class PrivilegeService
+    class PrivilegeService: IPrivilegeService
     {
         #region private members
 
