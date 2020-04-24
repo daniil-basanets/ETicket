@@ -70,7 +70,7 @@ namespace ETicket.WebAPI
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ETicket API");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ETicket");
                 c.RoutePrefix = string.Empty;
             });
 
