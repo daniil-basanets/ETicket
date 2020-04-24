@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.ApplicationServices.Services.Users.Interfaces;
 using ETicket.DataAccess.Domain.Interfaces;
 
 namespace ETicket.Admin.Controllers

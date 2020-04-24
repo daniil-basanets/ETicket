@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Linq;
 using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.Users.Interfaces;
-using ETicket.ApplicationServices.Services.Users;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.ApplicationServices.Services;
 
 namespace ETicket.Admin.Controllers
 {

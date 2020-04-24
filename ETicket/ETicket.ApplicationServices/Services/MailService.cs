@@ -1,7 +1,7 @@
 ﻿using MimeKit;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
-using ETicket.ApplicationServices.Services.Users.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
 
 namespace ETicket.ApplicationServices.Services.Users
 {

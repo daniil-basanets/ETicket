@@ -5,7 +5,7 @@ using System.Text;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.DataAccess.Domain.Entities;
 
-namespace ETicket.ApplicationServices.Services.DocumentTypes.Interfaces
+namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface IDocumentTypesService
     {

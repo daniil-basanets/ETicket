@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.Users.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 
-namespace ETicket.ApplicationServices.Services.Users
+namespace ETicket.ApplicationServices.Services
 {
     public class UserService : IUserService
     {

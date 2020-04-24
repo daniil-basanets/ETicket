@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ETicket.ApplicationServices.Services.Users.Interfaces
+namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface IMailService
     {

@@ -2,7 +2,7 @@
 using ETicket.ApplicationServices.DTOs;
 using ETicket.DataAccess.Domain.Entities;
 
-namespace ETicket.ApplicationServices.Services.PrivilegeService
+namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface IPrivilegeService
     {
