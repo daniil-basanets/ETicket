@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
-using ETicket.ApplicationServices.DTOs;
+﻿using ETicket.ApplicationServices.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ETicket.ApplicationServices.Services.PrivilegeService;
 
 namespace ETicket.Admin.Controllers
 {
@@ -13,21 +11,19 @@ namespace ETicket.Admin.Controllers
     {
         #region
 
-        private readonly IUnitOfWork unitOfWork;
-        private readonly IMapper mapper;
+        private readonly IPrivilegeService privilegeService;
 
         #endregion
 
-        public PrivilegesController(IUnitOfWork unitOfWork, IMapper mapper)
+        public PrivilegesController(IPrivilegeService privilegeService)
         {
-            this.unitOfWork = unitOfWork;
-            this.mapper = mapper;
+            this.privilegeService = privilegeService;
         }
 
         // GET: Privileges
         public IActionResult Index()
         {
-            return View(unitOfWork.Privileges.GetAll());
+            return View(privilegeService.GetAll());
         }
 
         // GET: Privileges/Details/5
@@ -38,7 +34,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var privilege = unitOfWork.Privileges.Get((int)id);
+            var privilege = privilegeService.Get((int)id);
 
             if (privilege == null)
             {
@@ -61,12 +57,11 @@ namespace ETicket.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var privilege = mapper.Map<Privilege>(privilegeDto);
+                privilegeService.Create(privilegeDto);
 
-                unitOfWork.Privileges.Create(privilege);
-                unitOfWork.Save();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(privilegeDto);
         }
 
@@ -78,11 +73,13 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var privilege = unitOfWork.Privileges.Get((int)id);
+            var privilege = privilegeService.Get(id.Value);
+
             if (privilege == null)
             {
                 return NotFound();
             }
+
             return View(privilege);
         }
 
@@ -100,14 +97,11 @@ namespace ETicket.Admin.Controllers
             {
                 try
                 {
-                    var privilege = mapper.Map<Privilege>(privilegeDto);
-
-                    unitOfWork.Privileges.Update(privilege);
-                    unitOfWork.Save();
+                    privilegeService.Update(privilegeDto);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PrivilegeExists(privilegeDto.Id))
+                    if (!privilegeService.Exists(privilegeDto.Id))
                     {
                         return NotFound();
                     }
@@ -116,8 +110,10 @@ namespace ETicket.Admin.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(privilegeDto);
         }
 
@@ -129,7 +125,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var privilege = unitOfWork.Privileges.Get((int)id);
+            var privilege = privilegeService.Get(id.Value);
 
             if (privilege == null)
             {
@@ -144,15 +140,14 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            unitOfWork.Privileges.Delete(id);
-            unitOfWork.Save();
+            privilegeService.Delete(id);
 
             return RedirectToAction(nameof(Index));
         }
 
         private bool PrivilegeExists(int id)
         {
-            return unitOfWork.Privileges.Get(id) != null;
+            return privilegeService.Exists(id);
         }
     }
 }

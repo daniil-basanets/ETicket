@@ -52,9 +52,11 @@ namespace ETicket.Admin
 
 
             services.AddTransient<ITicketService, TicketService>();
+            services.AddTransient<IMailService, MailService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IDocumentTypesService, DocumentTypesService>();
             services.AddTransient<ITicketTypeService, TicketTypeService>();
+            
 
             services.AddIdentityCore<IdentityUser>(o =>
             {

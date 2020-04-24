@@ -1,6 +1,7 @@
 ﻿using System;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.DocumentTypes;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -9,32 +10,31 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 //TODO move common to another common project
-//TODO Try to rename projects like ETicket.WebAPI.Admin...
 //TODO (nice ot have) Remove submit use ajax instead
 //TODO add logger for controllers (log4NET)
 //TODO Unit TESTS (coverage: in Services work must be mocked throw UnitOfWork, UOW must return mock instead of real DB data)
-//TODO move Create button from table header
-//TODO (nice ot have) move filter to column header columns
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class DocumentsController : Controller
     {
-        private readonly DatabaseServices services;
+        private readonly DocumentService documentService;
+        private readonly DocumentTypesService documentTypesService;
 
         public DocumentsController(IUnitOfWork unitOfWork)
         {
-            services = new DatabaseServices(unitOfWork);
+            documentService = new DocumentService(unitOfWork);
+            documentTypesService = new DocumentTypesService(unitOfWork);
         }
 
         public IActionResult Index()
         {
-            var documentsTypes = services.Read<DocumentType>();
+            var documentsTypes = documentTypesService.GetAll();
 
             ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
 
-            var documents = services.Read<Document>();
+            var documents = documentService.Read();
 
             return View(documents);
         }
@@ -46,7 +46,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var document = services.Read<Document>(id.Value);
+            var document = documentService.Read(id.Value);
 
             if (document == null)
             {
@@ -58,10 +58,10 @@ namespace ETicket.Admin.Controllers
 
         public IActionResult Create()
         {
-            var documentsTypes = services.Read<DocumentType>();
+            var documentsTypes = documentTypesService.GetAll();
 
             ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
-            
+
             return View();
         }
 
@@ -71,13 +71,13 @@ namespace ETicket.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                services.Create(documentDto);
-                services.Save();
+                documentService.Create(documentDto);
+                documentService.Save();
 
                 return RedirectToAction(nameof(Index));
             }
 
-            var documentsTypes = services.Read<DocumentType>();
+            var documentsTypes = documentTypesService.GetAll();
 
             ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
 
@@ -91,16 +91,17 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var document = services.Read<Document>(id.Value);
+            var document = documentService.Read(id.Value);
 
             if (document == null)
             {
                 return NotFound();
             }
 
-            var documentsTypes = services.Read<DocumentType>();
+            var documentsTypes = documentTypesService.GetAll();
 
             ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", document.DocumentTypeId);
+
             return View(document);
         }
 
@@ -117,8 +118,8 @@ namespace ETicket.Admin.Controllers
             {
                 try
                 {
-                    services.Update(documentDto);
-                    services.Save();
+                    documentService.Update(documentDto);
+                    documentService.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -134,9 +135,10 @@ namespace ETicket.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var documentsTypes = services.Read<DocumentType>();
+            var documentsTypes = documentTypesService.GetAll();
 
             ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
+
             return View(documentDto);
         }
 
@@ -147,7 +149,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var document = services.Read<Document>(id.Value);
+            var document = documentService.Read(id.Value);
 
             if (document == null)
             {
@@ -161,15 +163,15 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            services.Delete<Document>(id);
-            services.Save();
+            documentService.Delete(id);
+            documentService.Save();
 
             return RedirectToAction(nameof(Index));
         }
 
         private bool DocumentExists(Guid id)
         {
-            return services.Read<Document>(id) != null;
+            return documentService.Read(id) != null;
         }
     }
 }

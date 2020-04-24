@@ -12,12 +12,14 @@ namespace ETicket.ApplicationServices.Services.Users
     public class UserService : IUserService
     {
         private readonly IUnitOfWork uow;
+        private readonly IMailService mailService;
         private readonly MapperService mapper;
 
-        public UserService(IUnitOfWork uow)
+        public UserService(IUnitOfWork uow, IMailService mailService)
         {
             this.uow = uow;
             mapper = new MapperService();
+            this.mailService = mailService;
         }
 
         public void CreateUser(UserDto userDto)
@@ -33,7 +35,6 @@ namespace ETicket.ApplicationServices.Services.Users
             var document = mapper.Map<DocumentDto, Document>(documentDto);
             document.Id = Guid.NewGuid();
             uow.Documents.Create(document);
-            uow.Save();
 
             var user = mapper.Map<UserDto, User>(userDto);
             user.DocumentId = document.Id;
@@ -61,8 +62,7 @@ namespace ETicket.ApplicationServices.Services.Users
         {
             var user = GetById(id);
 
-            MailService emailService = new MailService();
-            emailService.SendEmail(user.Email, message);
+            mailService.SendEmail(user.Email, message);
         }
 
         public void Update(UserDto userDto)
