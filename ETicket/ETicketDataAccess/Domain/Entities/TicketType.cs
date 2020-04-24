@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ETicket.DataAccess.Domain.Entities
 {
@@ -9,13 +10,16 @@ namespace ETicket.DataAccess.Domain.Entities
         
         [Required]
         [StringLength(50)]
+        [DisplayName("Type name")]
         public string TypeName { get; set; }
         
         [Required]
         [Range(1, uint.MaxValue)]
+        [DisplayName("Duration(in hours)")]
         public uint DurationHours { get; set; }
         
         [Required]
+        [DisplayName("Peronal")]
         public bool IsPersonal { get; set; }
         
         [Required]
