@@ -9,7 +9,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace ETicket.WebAPI.Models.Identity
 {
-    // TODO: Add GetRefreshToken method
     public class TokenFactory
     {
         public static string GetAccessToken(IdentityUser user)
