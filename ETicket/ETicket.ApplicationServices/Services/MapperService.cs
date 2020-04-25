@@ -22,6 +22,8 @@ namespace ETicket.ApplicationServices.Services
                 cfg.CreateMap<UserDto, User>();
                 cfg.CreateMap<TicketDto, Ticket>();
                 cfg.CreateMap<Ticket, TicketDto>();
+                cfg.CreateMap<CarrierDto, Carrier>();
+                cfg.CreateMap<Carrier, CarrierDto>();
             });
 
             var mapper = config.CreateMapper();
