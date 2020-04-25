@@ -14,12 +14,16 @@ namespace ETicket.Admin.Controllers
     public class UserController : Controller
     {
         private readonly IUserService service;
-        IUnitOfWork repository;
+        private readonly IPrivilegeService PService;
+        private readonly DocumentService DService;
+        private readonly IDocumentTypesService DTService;
 
-        public UserController(IUnitOfWork repository, IMailService mailService)
+        public UserController(IUnitOfWork repository, IPrivilegeService PService, IUserService service, IDocumentTypesService DTService)
         {
-            this.repository = repository;
-            service = new UserService(repository, mailService);
+            this.service = service;
+            this.PService = PService;
+            DService = new DocumentService(repository);
+            this.DTService = DTService;
         }
 
         // GET: User
@@ -27,7 +31,7 @@ namespace ETicket.Admin.Controllers
         {
             try
             {
-                ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
+                ViewData["PrivilegeId"] = new SelectList(PService.GetAll(), "Id", "Name");
 
                 return View(service.GetAll());
             }
@@ -70,7 +74,7 @@ namespace ETicket.Admin.Controllers
         // GET: User/CreateUserWithDocument
         public IActionResult CreateUserWithDocument(UserDto userDto)
         {
-            ViewData["DocumentTypeId"] = new SelectList(repository.DocumentTypes.GetAll(), "Id", "Name");
+            ViewData["DocumentTypeId"] = new SelectList(DTService.GetAll(), "Id", "Name");
 
             return View();
         }
@@ -95,7 +99,7 @@ namespace ETicket.Admin.Controllers
                 }
             }
 
-            ViewData["DocumentTypeId"] = new SelectList(repository.DocumentTypes.GetAll(), "Id", "Name", documentDto.DocumentTypeId);
+            ViewData["DocumentTypeId"] = new SelectList(DTService.GetAll(), "Id", "Name", documentDto.DocumentTypeId);
 
             return View(documentDto);
         }
@@ -104,8 +108,8 @@ namespace ETicket.Admin.Controllers
         public IActionResult Create()
         {
 
-            ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number");
-            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
+            ViewData["DocumentId"] = new SelectList(DService.Read(), "Id", "Number");
+            ViewData["PrivilegeId"] = new SelectList(PService.GetAll(), "Id", "Name");
 
             return View();
         }
@@ -137,8 +141,8 @@ namespace ETicket.Admin.Controllers
                 }
             }
 
-            ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number", userDto.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name", userDto.PrivilegeId);
+            ViewData["DocumentId"] = new SelectList(DService.Read(), "Id", "Number", userDto.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(PService.GetAll(), "Id", "Name", userDto.PrivilegeId);
 
             return View(userDto);
         }
@@ -198,8 +202,8 @@ namespace ETicket.Admin.Controllers
                 }
                 else
                 {
-                    ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number", user.DocumentId);
-                    ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name", user.PrivilegeId);
+                    ViewData["DocumentId"] = new SelectList(DService.Read(), "Id", "Number", user.DocumentId);
+                    ViewData["PrivilegeId"] = new SelectList(PService.GetAll(), "Id", "Name", user.PrivilegeId);
 
                     return View(user);
                 }
@@ -243,8 +247,8 @@ namespace ETicket.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number", userDto.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name", userDto.PrivilegeId);
+            ViewData["DocumentId"] = new SelectList(DService.Read(), "Id", "Number", userDto.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(PService.GetAll(), "Id", "Name", userDto.PrivilegeId);
 
             return View(userDto);
         }
