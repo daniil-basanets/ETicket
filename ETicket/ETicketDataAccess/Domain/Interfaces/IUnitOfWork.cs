@@ -18,6 +18,8 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         UserRepository Users { get; }
 
+        CarrierRepository Carriers { get; }
+
         void Save();
     }
 }
