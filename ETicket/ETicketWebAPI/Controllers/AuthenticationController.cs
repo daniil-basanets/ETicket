@@ -31,7 +31,7 @@ namespace ETicket.WebAPI.Controllers
 
         // Registration users
         [HttpPost("registration")]
-        public async Task<IActionResult> PostRegistration([FromBody] RegisterRequest request)
+        public async Task<IActionResult> PostRegistration([FromBody] AuthenticationRequest request)
         {
             if (ModelState.IsValid)
             {
@@ -62,11 +62,11 @@ namespace ETicket.WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var signInRez = await signInManager.PasswordSignInAsync(request.UserName, request.Password, false, false);
+                var signInRez = await signInManager.PasswordSignInAsync(request.Email, request.Password, false, false);
 
                 if (signInRez.Succeeded)
                 {
-                    user = await userManager.FindByNameAsync(request.UserName);
+                    user = await userManager.FindByNameAsync(request.Email);
 
                     await userManager.RemoveAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
                     var refresh_jwtToken = await userManager.GenerateUserTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
