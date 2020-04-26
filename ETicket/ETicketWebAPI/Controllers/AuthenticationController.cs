@@ -31,7 +31,7 @@ namespace ETicket.WebAPI.Controllers
 
         // Registration users
         [HttpPost("registration")]
-        public async Task<IActionResult> Registration([FromBody] AuthenticationRequest request)
+        public async Task<IActionResult> Registration([FromBody] RegistrationRequest request)
         {
             if (ModelState.IsValid)
             {
