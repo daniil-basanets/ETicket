@@ -16,7 +16,7 @@ namespace ETicket.DataAccess.Domain
         public DbSet<DocumentType> DocumentTypes { get; set; }
         public DbSet<Privilege> Privileges { get; set; }
         public DbSet<Carrier> Carriers { get; set; }
-
+        public DbSet<TicketVerification> TicketVerifications { get; set; }
         #endregion
 
         public ETicketDataContext(DbContextOptions<ETicketDataContext> options) : base(options) { }
