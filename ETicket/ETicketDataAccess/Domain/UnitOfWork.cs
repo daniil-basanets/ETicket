@@ -1,4 +1,5 @@
-﻿using ETicket.DataAccess.Domain.Interfaces;
+﻿using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.DataAccess.Domain.Repositories;
 using System;
 
@@ -18,7 +19,7 @@ namespace ETicket.DataAccess.Domain
         private TransactionHistoryRepository transactionHistoryRepository;
         private UserRepository userRepository;
         private CarrierRepository carrierRepository;
-
+        private PriceListRepository priceListRepository;
         #endregion
 
         public DocumentRepository Documents
@@ -102,6 +103,19 @@ namespace ETicket.DataAccess.Domain
                     carrierRepository = new CarrierRepository(eTicketDataContext);
                 }
                 return carrierRepository;
+            }
+        }
+
+        public PriceListRepository PriceList
+        {
+            get
+            {
+                if(priceListRepository == null)
+                {
+                    priceListRepository = new PriceListRepository(eTicketDataContext);
+                }
+
+                return priceListRepository;
             }
         }
         public void Save()

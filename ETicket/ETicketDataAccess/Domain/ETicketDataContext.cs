@@ -17,6 +17,8 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Privilege> Privileges { get; set; }
         public DbSet<Carrier> Carriers { get; set; }
 
+        public DbSet<PriceList> PriceList { get; set; }
+
         #endregion
 
         public ETicketDataContext(DbContextOptions<ETicketDataContext> options) : base(options) { }
