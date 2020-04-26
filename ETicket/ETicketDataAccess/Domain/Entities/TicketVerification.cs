@@ -12,7 +12,7 @@ namespace ETicket.DataAccess.Domain.Entities
         [Key]
         public Guid Id { get; set; }
 
-        public int TicketId { get; set; }
+        public Guid TicketId { get; set; }
 
         [Required]
         [ForeignKey("TicketId")]
@@ -31,7 +31,7 @@ namespace ETicket.DataAccess.Domain.Entities
         [DisplayName("Station")]
         public Station Station { get; set; }
 
-        public int TransportId { get; set; }
+        public long TransportId { get; set; }
 
         [Required]
         [ForeignKey("TransportId")]
