@@ -18,6 +18,8 @@ namespace ETicket.DataAccess.Domain
         private TransactionHistoryRepository transactionHistoryRepository;
         private UserRepository userRepository;
         private CarrierRepository carrierRepository;
+        private RouteStationRepository routeStationRepository;
+        private AreaRepository areaRepository;
         private TicketVerificationRepository ticketVerificationRepository;
 
         #endregion
@@ -102,9 +104,26 @@ namespace ETicket.DataAccess.Domain
                 {
                     carrierRepository = new CarrierRepository(eTicketDataContext);
                 }
+
                 return carrierRepository;
             }
         }
+
+        public RouteStationRepository RouteStation
+        {
+            get
+            {
+                if (routeStationRepository == null)
+                {
+                    routeStationRepository = new RouteStationRepository(eTicketDataContext);
+                }
+
+                return routeStationRepository;
+            }
+        }
+
+        public AreaRepository Areas => areaRepository ??= new AreaRepository(eTicketDataContext);
+        
 
         public TicketVerificationRepository TicketVerifications
         {
