@@ -3,6 +3,7 @@ using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ETicket.ApplicationServices.Services
 {

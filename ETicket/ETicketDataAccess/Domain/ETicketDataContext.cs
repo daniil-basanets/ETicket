@@ -8,7 +8,6 @@ namespace ETicket.DataAccess.Domain
     public class ETicketDataContext : IdentityDbContext
     {
         #region DbSets
-
         public DbSet<TransactionHistory> TransactionHistory { get; set; }
         public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
@@ -22,9 +21,10 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Station> Stations { get; set; }
         public DbSet<PriceList> PriceList { get; set; }
         public DbSet<Transport> Transports { get; set; }
-                
-        #endregion
         public DbSet<Route> Routes { get; set; }
+
+        #endregion
+
 
         public ETicketDataContext(DbContextOptions<ETicketDataContext> options) : base(options) { }
 
