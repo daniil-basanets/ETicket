@@ -28,6 +28,8 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         TransportRepository Transports { get; }
 
+        TicketAreaRepository TicketAreas { get; }
+
         void Save();
     }
 }

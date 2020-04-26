@@ -21,6 +21,7 @@ namespace ETicket.DataAccess.Domain
         public DbSet<PriceList> PriceList { get; set; }
         public DbSet<Transport> Transports { get; set; }
         public DbSet<Route> Routes { get; set; }
+        public DbSet<TicketArea> TicketAreas { get; set; }
 
         #endregion
 
@@ -83,6 +84,19 @@ namespace ETicket.DataAccess.Domain
                     .HasOne<DocumentType>(s => s.DocumentType)
                     .WithMany()
                     .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TicketArea>()
+                    .HasKey(ta => new { ta.TicketId, ta.AreaId });
+
+            modelBuilder.Entity<TicketArea>()
+                    .HasOne(r => r.Area)
+                    .WithMany(r => r.TicketArea)
+                    .HasForeignKey(rt => rt.AreaId);
+
+            modelBuilder.Entity<TicketArea>()
+                   .HasOne(r => r.Ticket)
+                   .WithMany(r => r.TicketArea)
+                   .HasForeignKey(rt => rt.TicketId);
 
             base.OnModelCreating(modelBuilder);
         }
