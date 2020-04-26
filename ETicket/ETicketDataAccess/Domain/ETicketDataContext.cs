@@ -18,6 +18,7 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Carrier> Carriers { get; set; }
 
         #endregion
+        public DbSet<Route> Routes { get; set; }
 
         public ETicketDataContext(DbContextOptions<ETicketDataContext> options) : base(options) { }
 
