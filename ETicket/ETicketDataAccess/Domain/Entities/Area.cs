@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ETicket.DataAccess.Domain.Entities
@@ -12,5 +14,7 @@ namespace ETicket.DataAccess.Domain.Entities
 
         [MaxLength(250)] 
         public string Description { get; set; }
+
+        public ICollection<TicketArea> TicketArea { get; set; }
     }
 }

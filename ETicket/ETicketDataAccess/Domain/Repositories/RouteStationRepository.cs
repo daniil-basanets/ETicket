@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.DataAccess.Domain.Repositories
 {
-    public class RouteStationRepository : IRepository<RouteStation, int>
+    public class RouteStationRepository : IRepository<RouteStation, RouteStation>
     {
         #region Private members
 
@@ -26,32 +26,16 @@ namespace ETicket.DataAccess.Domain.Repositories
             context.RouteStations.Add(item);
         }
 
-        public void Delete(int id)
+        public void Delete(RouteStation item)
         {
-            throw new NotImplementedException("Do not use this. Use DeleteStationFromRoutes or DeleteRouteFromStations instead");
-        }
-
-        public void DeleteRouteFromStations(int routeId)
-        {
-            var routeStationList = context.RouteStations.Where(m => m.RouteId == routeId);
-
-            if (routeStationList != null)
+            if (item != null)
             {
-                context.RemoveRange(routeStationList);
+                context.RouteStations.Remove(item);
             }
+         
         }
 
-        public void DeleteStationFromRoutes(int stationId)
-        {
-            var routeStationList = context.RouteStations.Where(m => m.RouteId == stationId);
-
-            if (routeStationList != null)
-            {
-                context.RemoveRange(routeStationList);
-            }
-        }
-
-        public RouteStation Get(int id)
+        public RouteStation Get(RouteStation id)
         {
             throw new NotImplementedException();
         }
