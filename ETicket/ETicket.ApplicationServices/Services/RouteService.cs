@@ -28,13 +28,13 @@ namespace ETicket.ApplicationServices.Services
             Save();
         }
 
-        public void Delete(Guid id)
+        public void Delete(int id)
         {
             unitOfWork.Routes.Delete(id);
             Save();
         }
 
-        public bool Exists(Guid id)
+        public bool Exists(int id)
         {
             return unitOfWork.Routes.Get(id) != null;
         }
@@ -44,7 +44,7 @@ namespace ETicket.ApplicationServices.Services
             return unitOfWork.Routes.GetAll();
         }
 
-        public Route Read(Guid id)
+        public Route Read(int id)
         {
             return unitOfWork.Routes.Get(id);
         }

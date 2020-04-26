@@ -9,21 +9,24 @@ namespace ETicket.DataAccess.Domain.Entities
     public class Route
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [MaxLength(20)]
         public string Number { get; set; }
 
-        [ForeignKey("StationId")]
+        [Required]
+        public int FirstStationId { get; set; }
+
+        [ForeignKey("FirstStationId")]
         public Station FirstStation { get; set; }
 
         [Required]
-        public int FirstStationId { get; set; }
-                
+        public int LastStationId { get; set; }
+
+        [ForeignKey("LastStationId")]
         public Station LastStation { get; set; }
 
-        //[Required]
-        public int LastStationId { get; set; }
+        public ICollection<RouteStation> RouteStations { get; set; }
     }
 }

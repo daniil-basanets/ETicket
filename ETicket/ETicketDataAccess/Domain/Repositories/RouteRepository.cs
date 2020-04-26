@@ -8,7 +8,7 @@ using System.Text;
 
 namespace ETicket.DataAccess.Domain.Repositories
 {
-    public class RouteRepository : IRepository<Route, Guid>
+    public class RouteRepository : IRepository<Route, int>
     {
         private readonly ETicketDataContext db;
 
@@ -22,7 +22,7 @@ namespace ETicket.DataAccess.Domain.Repositories
             db.Routes.Add(item);
         }
 
-        public void Delete(Guid id)
+        public void Delete(int id)
         {
             Route route = db.Routes.Find(id);
             if (route != null)
@@ -31,7 +31,7 @@ namespace ETicket.DataAccess.Domain.Repositories
             }
         }
 
-        public Route Get(Guid id)
+        public Route Get(int id)
         {
             return db.Routes.Include(r => r.FirstStation)
                 .Include(r => r.LastStation).FirstOrDefault(r => r.Id == id);

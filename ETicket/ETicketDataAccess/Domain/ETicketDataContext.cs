@@ -1,7 +1,6 @@
 ﻿using ETicket.DataAccess.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 
 namespace ETicket.DataAccess.Domain
 {
@@ -51,6 +50,39 @@ namespace ETicket.DataAccess.Domain
                     .HasOne(i => i.Document)
                     .WithMany()
                     .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<RouteStation>()
+                    .HasKey(rt => new { rt.RouteId, rt.StationId });
+
+            modelBuilder.Entity<RouteStation>()
+                    .HasOne(r => r.Route)
+                    .WithMany(r => r.RouteStations)
+                    .HasForeignKey(rt => rt.RouteId);
+
+            modelBuilder.Entity<RouteStation>()
+                   .HasOne(r => r.Station)
+                   .WithMany(r => r.RouteStations)
+                   .HasForeignKey(rt => rt.StationId);
+
+            modelBuilder.Entity<Route>()
+                    .HasOne<Station>(s => s.LastStation)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Route>()
+                    .HasOne<Station>(s => s.FirstStation)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Ticket>()
+                    .HasOne<TicketType>(s => s.TicketType)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Document>()
+                    .HasOne<DocumentType>(s => s.DocumentType)
+                    .WithMany()
+                    .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
         }

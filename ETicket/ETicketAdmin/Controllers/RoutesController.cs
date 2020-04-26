@@ -32,7 +32,7 @@ namespace ETicket.Admin.Controllers
         }
 
         // GET: Routes/Details/5
-        public IActionResult Details(Guid? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -68,7 +68,7 @@ namespace ETicket.Admin.Controllers
         }
 
         // GET: Routes/Edit/5
-        public IActionResult Edit(Guid? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -87,7 +87,7 @@ namespace ETicket.Admin.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, RouteDto routeDto)
+        public IActionResult Edit(int id, RouteDto routeDto)
         {
             if (id != routeDto.Id)
             {
@@ -119,7 +119,7 @@ namespace ETicket.Admin.Controllers
         }
 
         // GET: Routes/Delete/5
-        public IActionResult Delete(Guid? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
@@ -138,7 +138,7 @@ namespace ETicket.Admin.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid id)
+        public IActionResult DeleteConfirmed(int id)
         {
             routeService.Delete(id);
             routeService.Save();
@@ -146,7 +146,7 @@ namespace ETicket.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RouteExists(Guid id)
+        private bool RouteExists(int id)
         {
             return routeService.Read(id) != null;
         }

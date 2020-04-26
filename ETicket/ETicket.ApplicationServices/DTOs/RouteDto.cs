@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ETicket.ApplicationServices.DTOs
+﻿namespace ETicket.ApplicationServices.DTOs
 {
     public class RouteDto
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         public string Number { get; set; }
 

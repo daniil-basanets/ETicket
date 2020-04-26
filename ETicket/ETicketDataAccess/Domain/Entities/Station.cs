@@ -20,7 +20,12 @@ namespace ETicket.DataAccess.Domain.Entities
         [ForeignKey("AreaId")]
         public Area Area { get; set; }
 
-        [Column(TypeName = "xml")]
-        public Location Location { get; set; }
+        [Required]
+        public double Latitude { get; set; }
+
+        [Required]
+        public double Longitude { get; set; }
+
+        public ICollection<RouteStation> RouteStations { get; set; }
     }
 }
