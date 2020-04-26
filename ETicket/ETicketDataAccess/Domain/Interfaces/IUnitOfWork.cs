@@ -19,6 +19,10 @@ namespace ETicket.DataAccess.Domain.Interfaces
         UserRepository Users { get; }
 
         CarrierRepository Carriers { get; }
+        
+        AreaRepository Areas { get; }
+
+        PriceListRepository PriceList { get; }
 
         RouteRepository Routes { get; }
 
