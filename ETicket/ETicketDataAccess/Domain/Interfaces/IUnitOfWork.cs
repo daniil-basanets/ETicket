@@ -26,6 +26,8 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         RouteRepository Routes { get; }
 
+        TransportRepository Transports { get; }
+
         void Save();
     }
 }

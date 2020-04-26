@@ -22,7 +22,9 @@ namespace ETicket.DataAccess.Domain
         private CarrierRepository carrierRepository;
         private RouteStationRepository routeStationRepository;
         private AreaRepository areaRepository;
+        private StationRepository stationRepository;
         private PriceListRepository priceListRepository;
+        private TransportRepository transportRepository;
 
         #endregion
 
@@ -146,6 +148,31 @@ namespace ETicket.DataAccess.Domain
                 }
 
                 return priceListRepository;
+            }
+        }
+        
+
+        public StationRepository Stations
+        {
+            get
+            {
+                if (stationRepository == null)
+                    stationRepository = new StationRepository(eTicketDataContext);
+
+                return stationRepository;
+            }
+        }
+
+        public TransportRepository Transports
+        {
+            get
+            {
+                if (transportRepository == null)
+                {
+                    transportRepository = new TransportRepository(eTicketDataContext);
+                }
+
+                return transportRepository;
             }
         }
         
