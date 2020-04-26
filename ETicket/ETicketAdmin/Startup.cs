@@ -56,6 +56,7 @@ namespace ETicket.Admin
             services.AddTransient<ITicketService, TicketService>();
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IDocumentService, DocumentService>();
             services.AddTransient<IDocumentTypesService, DocumentTypesService>();
             services.AddTransient<ITicketTypeService, TicketTypeService>();
             services.AddTransient<IPrivilegeService, PrivilegeService>();
