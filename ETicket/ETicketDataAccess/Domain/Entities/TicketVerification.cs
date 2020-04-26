@@ -12,7 +12,6 @@ namespace ETicket.DataAccess.Domain.Entities
         [Key]
         public Guid Id { get; set; }
 
-
         public int TicketId { get; set; }
 
         [Required]
@@ -32,18 +31,14 @@ namespace ETicket.DataAccess.Domain.Entities
         [DisplayName("Station")]
         public Station Station { get; set; }
 
-        //public int ValidatorId { get; set; }
+        public int TransportId { get; set; }
 
-        //[Required]
-        //[ForeignKey("ValidatorId")]
-        //[DisplayName("Validator")]
-        //public Validator Validator { get; set; }
+        [Required]
+        [ForeignKey("TransportId")]
+        [DisplayName("Transport")]
+        public Transport Transport { get; set; }
 
-        //public int TransportId { get; set; }
-
-        //[Required]
-        //[ForeignKey("TransportId")]
-        //[DisplayName("Transport")]
-        //public Transport Transport { get; set; }
+        [Required]
+        public bool IsVerified { get; set; }
     }
 }
