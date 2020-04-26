@@ -21,6 +21,6 @@ namespace ETicket.DataAccess.Domain.Entities
         public Area Area { get; set; }
 
         [Column(TypeName = "xml")]
-        public string Location { get; set; }
+        public Location Location { get; set; }
     }
 }
