@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Repositories;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -22,6 +23,9 @@ namespace ETicket.ApplicationServices.Services
                 cfg.CreateMap<UserDto, User>();
                 cfg.CreateMap<TicketDto, Ticket>();
                 cfg.CreateMap<Ticket, TicketDto>();
+                cfg.CreateMap<CarrierDto, Carrier>();
+                cfg.CreateMap<Carrier, CarrierDto>();
+                cfg.CreateMap<Area, AreaDto>();
             });
 
             var mapper = config.CreateMapper();

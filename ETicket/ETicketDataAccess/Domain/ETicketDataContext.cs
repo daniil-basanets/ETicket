@@ -6,7 +6,8 @@ namespace ETicket.DataAccess.Domain
 {
     public class ETicketDataContext : IdentityDbContext
     {
-        // ToDo Region
+        #region DbSets
+
         public DbSet<TransactionHistory> TransactionHistory { get; set; }
         public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
@@ -14,7 +15,11 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentType> DocumentTypes { get; set; }
         public DbSet<Privilege> Privileges { get; set; }
+        public DbSet<Carrier> Carriers { get; set; }
+        public DbSet<RouteStation> RouteStations { get; set; }
+        public DbSet<Area> Areas { get; set; }
         public DbSet<Station> Stations { get; set; }
+        #endregion
 
         public ETicketDataContext(DbContextOptions<ETicketDataContext> options) : base(options) { }
 
@@ -25,7 +30,7 @@ namespace ETicket.DataAccess.Domain
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //ToAsk - inquire Roman concerning Tabulations
+            //TODO-ToAsk - inquire Roman concerning Tabulations
 
             modelBuilder.Entity<TransactionHistory>()
                     .HasOne<TicketType>(s => s.TicketType)
