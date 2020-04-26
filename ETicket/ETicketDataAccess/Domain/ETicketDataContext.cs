@@ -1,6 +1,7 @@
 ﻿using ETicket.DataAccess.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace ETicket.DataAccess.Domain
 {
@@ -16,6 +17,7 @@ namespace ETicket.DataAccess.Domain
         public DbSet<DocumentType> DocumentTypes { get; set; }
         public DbSet<Privilege> Privileges { get; set; }
         public DbSet<Carrier> Carriers { get; set; }
+        public DbSet<Transport> Transports { get; set; }
 
         #endregion
 

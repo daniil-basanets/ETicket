@@ -11,13 +11,22 @@ namespace ETicket.DataAccess.Domain
         private ETicketDataContext eTicketDataContext;
 
         private DocumentRepository documentRepository;
+
         private DocumentTypeRepository documentTypeRepository;
+
         private PrivilegeRepository privilegeRepository;
+
         private TicketRepository ticketRepository;
+
         private TicketTypeRepository ticketTypeRepository;
+
         private TransactionHistoryRepository transactionHistoryRepository;
+
         private UserRepository userRepository;
+
         private CarrierRepository carrierRepository;
+
+        private TransportRepository transportRepository;
 
         #endregion
 
@@ -104,6 +113,20 @@ namespace ETicket.DataAccess.Domain
                 return carrierRepository;
             }
         }
+
+        public TransportRepository Transports
+        {
+            get
+            {
+                if (transportRepository == null)
+                {
+                    transportRepository = new TransportRepository(eTicketDataContext);
+                }
+
+                return transportRepository;
+            }
+        }
+
         public void Save()
         {
             eTicketDataContext.SaveChanges();
