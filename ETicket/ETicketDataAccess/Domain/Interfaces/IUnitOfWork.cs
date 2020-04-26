@@ -22,6 +22,8 @@ namespace ETicket.DataAccess.Domain.Interfaces
         
         AreaRepository Areas { get; }
 
+        PriceListRepository PriceList { get; }
+
         void Save();
     }
 }

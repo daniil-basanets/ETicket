@@ -1,4 +1,5 @@
-﻿using ETicket.DataAccess.Domain.Interfaces;
+﻿using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.DataAccess.Domain.Repositories;
 using System;
 
@@ -20,6 +21,7 @@ namespace ETicket.DataAccess.Domain
         private CarrierRepository carrierRepository;
         private RouteStationRepository routeStationRepository;
         private AreaRepository areaRepository;
+        private PriceListRepository priceListRepository;
 
         #endregion
 
@@ -122,6 +124,19 @@ namespace ETicket.DataAccess.Domain
         }
 
         public AreaRepository Areas => areaRepository ??= new AreaRepository(eTicketDataContext);
+        
+        public PriceListRepository PriceList
+        {
+            get
+            {
+                if(priceListRepository == null)
+                {
+                    priceListRepository = new PriceListRepository(eTicketDataContext);
+                }
+
+                return priceListRepository;
+            }
+        }
         
         public void Save()
         {
