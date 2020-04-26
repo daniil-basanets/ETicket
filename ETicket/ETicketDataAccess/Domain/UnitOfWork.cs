@@ -17,6 +17,7 @@ namespace ETicket.DataAccess.Domain
         private TicketTypeRepository ticketTypeRepository;
         private TransactionHistoryRepository transactionHistoryRepository;
         private UserRepository userRepository;
+        private RouteStationRepository routeStationRepository;
 
         #endregion
 
@@ -89,6 +90,19 @@ namespace ETicket.DataAccess.Domain
                 if (userRepository == null)
                     userRepository = new UserRepository(eTicketDataContext);
                 return userRepository;
+            }
+        }
+
+        public RouteStationRepository RouteStation
+        {
+            get
+            {
+                if (routeStationRepository == null)
+                {
+                    routeStationRepository = new RouteStationRepository(eTicketDataContext);
+                }
+
+                return routeStationRepository;
             }
         }
 
