@@ -14,6 +14,7 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentType> DocumentTypes { get; set; }
         public DbSet<Privilege> Privileges { get; set; }
+        public DbSet<Station> Stations { get; set; }
 
         public ETicketDataContext(DbContextOptions<ETicketDataContext> options) : base(options) { }
 
