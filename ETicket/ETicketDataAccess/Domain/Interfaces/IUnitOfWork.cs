@@ -30,6 +30,8 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         TicketAreaRepository TicketAreas { get; }
 
+        StationRepository Stations { get; }
+
         void Save();
     }
 }
