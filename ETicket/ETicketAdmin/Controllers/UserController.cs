@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.ApplicationServices.Services;
 
 namespace ETicket.Admin.Controllers
 {
@@ -15,25 +14,25 @@ namespace ETicket.Admin.Controllers
     {
         private readonly IUserService service;
         private readonly IPrivilegeService PService;
-        private readonly DocumentService DService;
+        private readonly IDocumentService DService;
         private readonly IDocumentTypesService DTService;
 
-        public UserController(IUnitOfWork repository, IPrivilegeService PService, IUserService service, IDocumentTypesService DTService)
+        public UserController(IPrivilegeService PService, IUserService service, IDocumentTypesService DTService, IDocumentService DService)
         {
             this.service = service;
             this.PService = PService;
-            DService = new DocumentService(repository);
+            this.DService = DService;
             this.DTService = DTService;
         }
 
-        // GET: User
+        [HttpGet]
         public IActionResult Index()
         {
             try
             {
-                ViewData["PrivilegeId"] = new SelectList(PService.GetAll(), "Id", "Name");
+                ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name");
 
-                return View(service.GetAll());
+                return View(service.GetUsers());
             }
             catch (Exception)
             {
@@ -42,7 +41,7 @@ namespace ETicket.Admin.Controllers
             }
         }
 
-        // GET: User/Details/5
+        [HttpGet]
         public IActionResult Details(Guid id)
         {
             if (id == null)
@@ -52,7 +51,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                var user = service.GetById(id);
+                var user = service.GetUserById(id);
 
                 if (user == null)
                 {
@@ -71,15 +70,14 @@ namespace ETicket.Admin.Controllers
             }
         }
 
-        // GET: User/CreateUserWithDocument
+        [HttpGet]
         public IActionResult CreateUserWithDocument(UserDto userDto)
         {
-            ViewData["DocumentTypeId"] = new SelectList(DTService.GetAll(), "Id", "Name");
+            ViewData["DocumentTypeId"] = new SelectList(DTService.GetDocumentTypes(), "Id", "Name");
 
             return View();
         }
-
-        // POST: User/CreateUserWithDocument
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateUserWithDocument(DocumentDto documentDto, UserDto userDto)
@@ -99,22 +97,21 @@ namespace ETicket.Admin.Controllers
                 }
             }
 
-            ViewData["DocumentTypeId"] = new SelectList(DTService.GetAll(), "Id", "Name", documentDto.DocumentTypeId);
+            ViewData["DocumentTypeId"] = new SelectList(DTService.GetDocumentTypes(), "Id", "Name", documentDto.DocumentTypeId);
 
             return View(documentDto);
         }
 
-        // GET: User/Create
+        [HttpGet]
         public IActionResult Create()
         {
 
-            ViewData["DocumentId"] = new SelectList(DService.Read(), "Id", "Number");
-            ViewData["PrivilegeId"] = new SelectList(PService.GetAll(), "Id", "Name");
+            ViewData["DocumentId"] = new SelectList(DService.GetDocuments(), "Id", "Number");
+            ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name");
 
             return View();
         }
-
-        // POST: User/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(UserDto userDto)
@@ -141,13 +138,13 @@ namespace ETicket.Admin.Controllers
                 }
             }
 
-            ViewData["DocumentId"] = new SelectList(DService.Read(), "Id", "Number", userDto.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(PService.GetAll(), "Id", "Name", userDto.PrivilegeId);
+            ViewData["DocumentId"] = new SelectList(DService.GetDocuments(), "Id", "Number", userDto.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name", userDto.PrivilegeId);
 
             return View(userDto);
         }
 
-        // GET: User/SendMessage/5
+        [HttpGet]
         public IActionResult SendMessage(Guid id)
         {
             if (id == null)
@@ -159,8 +156,7 @@ namespace ETicket.Admin.Controllers
                 return View();
             }
         }
-
-        // POST: User/SendMessage
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SendMessage(Guid id, string message)
@@ -183,7 +179,7 @@ namespace ETicket.Admin.Controllers
             return View(message);
         }
 
-        // GET: User/Edit/5
+        [HttpGet]
         public IActionResult Edit(Guid id)
         {
             if (id == null)
@@ -193,7 +189,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                var user = service.GetById(id);
+                var user = service.GetUserById(id);
 
                 if (user == null)
                 {
@@ -202,8 +198,8 @@ namespace ETicket.Admin.Controllers
                 }
                 else
                 {
-                    ViewData["DocumentId"] = new SelectList(DService.Read(), "Id", "Number", user.DocumentId);
-                    ViewData["PrivilegeId"] = new SelectList(PService.GetAll(), "Id", "Name", user.PrivilegeId);
+                    ViewData["DocumentId"] = new SelectList(DService.GetDocuments(), "Id", "Number", user.DocumentId);
+                    ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name", user.PrivilegeId);
 
                     return View(user);
                 }
@@ -214,8 +210,7 @@ namespace ETicket.Admin.Controllers
                 throw;
             }
         }
-
-        // POST: User/Edit/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, UserDto userDto)
@@ -247,13 +242,13 @@ namespace ETicket.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["DocumentId"] = new SelectList(DService.Read(), "Id", "Number", userDto.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(PService.GetAll(), "Id", "Name", userDto.PrivilegeId);
+            ViewData["DocumentId"] = new SelectList(DService.GetDocuments(), "Id", "Number", userDto.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name", userDto.PrivilegeId);
 
             return View(userDto);
         }
 
-        // GET: User/Delete/5
+        [HttpGet]
         public IActionResult Delete(Guid id)
         {
             if (id == null)
@@ -263,7 +258,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                var user = service.GetById(id);
+                var user = service.GetUserById(id);
 
                 if (user == null)
                 {
@@ -281,8 +276,7 @@ namespace ETicket.Admin.Controllers
                 throw;
             }
         }
-
-        // POST: User/Delete/5
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)

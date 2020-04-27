@@ -20,13 +20,13 @@ namespace ETicket.Admin.Controllers
             this.privilegeService = privilegeService;
         }
 
-        // GET: Privileges
+        [HttpGet]
         public IActionResult Index()
         {
-            return View(privilegeService.GetAll());
+            return View(privilegeService.GetPrivileges());
         }
 
-        // GET: Privileges/Details/5
+        [HttpGet]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -34,7 +34,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var privilege = privilegeService.Get((int)id);
+            var privilege = privilegeService.GetPrivilegeById((int)id);
 
             if (privilege == null)
             {
@@ -44,13 +44,12 @@ namespace ETicket.Admin.Controllers
             return View(privilege);
         }
 
-        // GET: Privileges/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: Privileges/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(PrivilegeDto privilegeDto)
@@ -65,7 +64,7 @@ namespace ETicket.Admin.Controllers
             return View(privilegeDto);
         }
 
-        // GET: Privileges/Edit/5
+        [HttpGet]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -73,7 +72,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var privilege = privilegeService.Get(id.Value);
+            var privilege = privilegeService.GetPrivilegeById(id.Value);
 
             if (privilege == null)
             {
@@ -83,7 +82,6 @@ namespace ETicket.Admin.Controllers
             return View(privilege);
         }
 
-        // POST: Privileges/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, PrivilegeDto privilegeDto)
@@ -117,7 +115,7 @@ namespace ETicket.Admin.Controllers
             return View(privilegeDto);
         }
 
-        // GET: Privileges/Delete/5
+        [HttpGet]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -125,7 +123,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var privilege = privilegeService.Get(id.Value);
+            var privilege = privilegeService.GetPrivilegeById(id.Value);
 
             if (privilege == null)
             {
@@ -135,7 +133,7 @@ namespace ETicket.Admin.Controllers
             return View(privilege);
         }
 
-        // POST: Privileges/Delete/5
+       
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
@@ -143,11 +141,6 @@ namespace ETicket.Admin.Controllers
             privilegeService.Delete(id);
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool PrivilegeExists(int id)
-        {
-            return privilegeService.Exists(id);
         }
     }
 }

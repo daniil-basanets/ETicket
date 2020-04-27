@@ -6,8 +6,8 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface ITransactionAppService
     {
-        IEnumerable<TransactionHistory> Read();
+        IEnumerable<TransactionHistory> GetTransactions();
 
-        TransactionHistory Read(Guid id);
+        TransactionHistory GetTransactionById(Guid id);
     }
 }

@@ -15,24 +15,22 @@ namespace ETicket.Admin.Controllers
         {
             this.service = service;
         }
-
-        // GET: DocumentTypes
+        
+        [HttpGet]
         public IActionResult Index()
         {
-            var documentTypes = service.GetAll();
+            var documentTypes = service.GetDocumentTypes();
 
             return View(documentTypes);
         }
 
-        // GET: DocumentTypes/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: DocumentTypes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(DocumentTypeDto documentTypeDto)
@@ -47,7 +45,7 @@ namespace ETicket.Admin.Controllers
             return View(documentTypeDto);
         }
 
-        // GET: DocumentTypes/Edit/5
+        [HttpGet]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -55,7 +53,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var documentType = service.Get(id.Value);
+            var documentType = service.GetDocumentTypeById(id.Value);
             if (documentType == null)
             {
                 return NotFound();
@@ -63,10 +61,7 @@ namespace ETicket.Admin.Controllers
 
             return View(documentType);
         }
-
-        // POST: DocumentTypes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, DocumentTypeDto documentTypeDto)
@@ -100,7 +95,7 @@ namespace ETicket.Admin.Controllers
             return View(documentTypeDto);
         }
 
-        // GET: DocumentTypes/Delete/5
+        [HttpGet]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -108,7 +103,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var documentType = service.Get(id.Value);
+            var documentType = service.GetDocumentTypeById(id.Value);
             if (documentType == null)
             {
                 return NotFound();
@@ -116,8 +111,7 @@ namespace ETicket.Admin.Controllers
 
             return View(documentType);
         }
-
-        // POST: DocumentTypes/Delete/5
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)

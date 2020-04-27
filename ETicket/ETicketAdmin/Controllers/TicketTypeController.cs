@@ -1,6 +1,5 @@
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,11 +16,13 @@ namespace ETicket.Admin.Controllers
             this.ticketTypeService = ticketTypeService;
         }
         
+        [HttpGet]
         public IActionResult Index()
         {
-            return View(ticketTypeService.GetAll());
+            return View(ticketTypeService.GetTicketType());
         }
         
+        [HttpGet]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -29,7 +30,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticketType = ticketTypeService.Get(id.Value);
+            var ticketType = ticketTypeService.GetTicketTypeById(id.Value);
             
             if (ticketType == null)
             {
@@ -39,6 +40,7 @@ namespace ETicket.Admin.Controllers
             return View(ticketType);
         }
         
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -58,6 +60,7 @@ namespace ETicket.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
         
+        [HttpGet]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -65,7 +68,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticketType = ticketTypeService.Get(id.Value);
+            var ticketType = ticketTypeService.GetTicketTypeById(id.Value);
             
             if (ticketType == null)
             {
@@ -104,6 +107,7 @@ namespace ETicket.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
         
+        [HttpGet]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -111,7 +115,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticketType = ticketTypeService.Get(id.Value);
+            var ticketType = ticketTypeService.GetTicketTypeById(id.Value);
             
             if (ticketType == null)
             {
