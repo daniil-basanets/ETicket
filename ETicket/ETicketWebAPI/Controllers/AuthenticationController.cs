@@ -29,20 +29,24 @@ namespace ETicket.WebAPI.Controllers
             this.context = context;
         }
 
+        // Check if email exists
+        [HttpPost("checkEmail")]
+        public IActionResult CheckEmail([FromBody] RegistrationRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                return StatusCode(400, userManager.FindByEmailAsync(request.Email).Result != null);
+            }
+
+            return StatusCode(400, "Bad request.");
+        }
+
         // Registration users
         [HttpPost("registration")]
         public async Task<IActionResult> Registration([FromBody] RegistrationRequest request)
         {
             if (ModelState.IsValid)
             {
-                bool userExist;
-                if (userManager.FindByEmailAsync(request.Email) != null)
-                {
-                    userExist = true;
-
-                    return StatusCode(400, userExist);
-                }
-                
                 user = new IdentityUser()
                 {
                     UserName = request.Email,
@@ -92,7 +96,7 @@ namespace ETicket.WebAPI.Controllers
 
             return StatusCode(400, "Bad request.");
         }
-        
+
         // Refresh access_jwtToken
         [HttpPost("refreshUserToken")]
         public async Task<IActionResult> RefreshUserToken([FromBody] string RefreshToken)
