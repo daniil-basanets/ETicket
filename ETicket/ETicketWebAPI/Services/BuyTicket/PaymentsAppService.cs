@@ -117,9 +117,7 @@ namespace ETicket.WebAPI.Services.BuyTicket
                 Id = transactionHistoryId,
                 ReferenceNumber = referenceNumber,
                 TotalPrice = totalPrice,
-                Date = DateTime.UtcNow,
-                TicketTypeId = buyTicketRequest.TicketTypeId,
-                Count = buyTicketRequest.Amount
+                Date = DateTime.UtcNow
             };
 
             eTitcketData.TransactionHistory.Create(transaction);
