@@ -100,7 +100,9 @@
                                     </td>
                                     <td>
                                         @if (item.User != null)
+                                        {
                                             @Html.ActionLink(item.User.LastName, "Details", "User", new { id = item.UserId }, null)
+                                        }
                                     </td>
                                     <td>
                                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>

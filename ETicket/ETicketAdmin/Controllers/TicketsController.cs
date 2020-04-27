@@ -20,9 +20,9 @@ namespace ETicket.Admin.Controllers
 
         private void InitViewDataForSelectList(TicketDto ticketDto = null)
         {
-            ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetAll(), "Id", "TypeName", ticketDto?.Id);
+            ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName", ticketDto?.Id);
             ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticketDto?.TransactionHistoryId);   //TODO change to service (remove this)
-            ViewData["UserId"] = new SelectList(userService.GetAll().Select(s => new { s.Id, Name = $"{s.LastName} {s.FirstName}" }), "Id", "Name", ticketDto?.UserId);
+            ViewData["UserId"] = new SelectList(userService.GetUsers().Select(s => new { s.Id, Name = $"{s.LastName} {s.FirstName}" }), "Id", "Name", ticketDto?.UserId);
         }
 
         public TicketController(IUnitOfWork uow, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService)
@@ -34,16 +34,16 @@ namespace ETicket.Admin.Controllers
             this.userService = userService;
         }
 
-        // GET: Tickets
+        [HttpGet]
         public IActionResult Index()
         {
-            ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetAll(), "Id", "TypeName"); //TODO change to service 
-            var tickets = ticketService.GetAll();
+            ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName"); //TODO change to service 
+            var tickets = ticketService.GetTickets();
 
             return View(tickets.ToList());
         }
 
-        // GET: Tickets/Details/5
+        [HttpGet]
         public IActionResult Details(Guid? id)
         {
             if (id == null)
@@ -51,7 +51,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticket = ticketService.Get((Guid)id);
+            var ticket = ticketService.GetTicketById((Guid)id);
 
             if (ticket == null)
             {
@@ -61,20 +61,19 @@ namespace ETicket.Admin.Controllers
             return View(ticket);
         }
 
-        // GET: Tickets/Create
+        [HttpGet]
         public IActionResult Create()
         {
             InitViewDataForSelectList();
 
             return View();
         }
-
-        // POST: Tickets/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(TicketDto ticketDto)
         {
-            var ticketType = ticketTypeService.Get(ticketDto.TicketTypeId);  //TODO change to service
+            var ticketType = ticketTypeService.GetTicketTypeById(ticketDto.TicketTypeId);  //TODO change to service
 
             if (ticketType.IsPersonal && ticketDto.UserId == null)
             {
@@ -96,7 +95,7 @@ namespace ETicket.Admin.Controllers
             return View(ticketDto);
         }
 
-        // GET: Tickets/Edit/5
+        [HttpGet]
         public IActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -115,8 +114,7 @@ namespace ETicket.Admin.Controllers
 
             return View(ticketDto);
         }
-
-        // POST: Tickets/Edit/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, TicketDto ticketDto)
@@ -162,7 +160,7 @@ namespace ETicket.Admin.Controllers
             return View(ticketDto);
         }
 
-        // GET: Tickets/Delete/5
+        [HttpGet]
         public IActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -170,7 +168,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticket = ticketService.Get((Guid)id);
+            var ticket = ticketService.GetTicketById((Guid)id);
 
             if (ticket == null)
             {
@@ -179,8 +177,7 @@ namespace ETicket.Admin.Controllers
 
             return View(ticket);
         }
-
-        // POST: Tickets/Delete/5
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)

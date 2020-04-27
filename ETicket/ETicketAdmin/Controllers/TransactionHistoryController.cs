@@ -25,11 +25,11 @@ namespace ETicket.Admin.Controllers
             this.ticketTypeService = ticketTypeService;
         }
 
-        // GET: TransactionHistories
+        [HttpGet]
         public IActionResult Index()
         {
-            var transactions = transactionAppService.Read();
-            var ticketTypes = ticketTypeService.GetAll()
+            var transactions = transactionAppService.GetTransactions();
+            var ticketTypes = ticketTypeService.GetTicketType()
                     .OrderBy(t => t.TypeName)
                     .Select(t => new { t.Id, t.TypeName });
 
@@ -38,7 +38,7 @@ namespace ETicket.Admin.Controllers
             return View(transactions);
         }
 
-        // GET: TransactionHistories/Details/5
+        [HttpGet]
         public IActionResult Details(Guid? id)
         {
             if (id == null)
@@ -46,7 +46,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var transaction = transactionAppService.Read(id.Value);
+            var transaction = transactionAppService.GetTransactionById(id.Value);
 
             if (transaction == null)
             {

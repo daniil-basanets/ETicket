@@ -2,7 +2,6 @@
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DocumentTypes;
-using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,17 +27,19 @@ namespace ETicket.Admin.Controllers
             documentTypesService = new DocumentTypesService(unitOfWork);
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
-            var documentsTypes = documentTypesService.GetAll();
+            var documentsTypes = documentTypesService.GetDocumentTypes();
 
             ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
 
-            var documents = documentService.Read();
+            var documents = documentService.GetDocuments();
 
             return View(documents);
         }
 
+        [HttpGet]
         public IActionResult Details(Guid? id)
         {
             if (id == null)
@@ -46,7 +47,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var document = documentService.Read(id.Value);
+            var document = documentService.GetDocumentById(id.Value);
 
             if (document == null)
             {
@@ -56,9 +57,10 @@ namespace ETicket.Admin.Controllers
             return View(document);
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
-            var documentsTypes = documentTypesService.GetAll();
+            var documentsTypes = documentTypesService.GetDocumentTypes();
 
             ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
 
@@ -72,18 +74,18 @@ namespace ETicket.Admin.Controllers
             if (ModelState.IsValid)
             {
                 documentService.Create(documentDto);
-                documentService.Save();
 
                 return RedirectToAction(nameof(Index));
             }
 
-            var documentsTypes = documentTypesService.GetAll();
+            var documentsTypes = documentTypesService.GetDocumentTypes();
 
             ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
 
             return View(documentDto);
         }
 
+        [HttpGet]
         public IActionResult Edit(Guid? id)
         {
             if (id == null)
@@ -91,14 +93,14 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var document = documentService.Read(id.Value);
+            var document = documentService.GetDocumentById(id.Value);
 
             if (document == null)
             {
                 return NotFound();
             }
 
-            var documentsTypes = documentTypesService.GetAll();
+            var documentsTypes = documentTypesService.GetDocumentTypes();
 
             ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", document.DocumentTypeId);
 
@@ -119,11 +121,10 @@ namespace ETicket.Admin.Controllers
                 try
                 {
                     documentService.Update(documentDto);
-                    documentService.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DocumentExists(documentDto.Id))
+                    if (!documentService.Exists(documentDto.Id))
                     {
                         return NotFound();
                     }
@@ -135,13 +136,14 @@ namespace ETicket.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var documentsTypes = documentTypesService.GetAll();
+            var documentsTypes = documentTypesService.GetDocumentTypes();
 
             ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
 
             return View(documentDto);
         }
-
+        
+        [HttpGet]
         public IActionResult Delete(Guid? id)
         {
             if (id == null)
@@ -149,7 +151,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var document = documentService.Read(id.Value);
+            var document = documentService.GetDocumentById(id.Value);
 
             if (document == null)
             {
@@ -164,14 +166,8 @@ namespace ETicket.Admin.Controllers
         public IActionResult DeleteConfirmed(Guid id)
         {
             documentService.Delete(id);
-            documentService.Save();
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool DocumentExists(Guid id)
-        {
-            return documentService.Read(id) != null;
         }
     }
 }

@@ -47,19 +47,19 @@ namespace ETicket.ApplicationServices.Services
             uow.Save();
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<User> GetUsers()
         {
             return uow.Users.GetAll().ToList();
         }
 
-        public User GetById(Guid id)
+        public User GetUserById(Guid id)
         {
             return uow.Users.Get(id);
         }
 
         public void SendMessage(Guid id, string message)
         {
-            var user = GetById(id);
+            var user = GetUserById(id);
 
             mailService.SendEmail(user.Email, message);
         }
