@@ -35,6 +35,14 @@ namespace ETicket.WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
+                bool userExist;
+                if (userManager.FindByEmailAsync(request.Email) != null)
+                {
+                    userExist = true;
+
+                    return StatusCode(400, userExist);
+                }
+                
                 user = new IdentityUser()
                 {
                     UserName = request.Email,
