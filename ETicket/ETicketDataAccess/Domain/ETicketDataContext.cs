@@ -38,11 +38,6 @@ namespace ETicket.DataAccess.Domain
         {
             //TODO-ToAsk - inquire Roman concerning Tabulations
 
-            modelBuilder.Entity<TransactionHistory>()
-                    .HasOne<TicketType>(s => s.TicketType)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.NoAction);
-
             modelBuilder.Entity<User>()
                    .HasOne(i => i.Privilege)
                    .WithMany()
