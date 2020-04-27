@@ -63,19 +63,51 @@
                     <thead>
                         <tr>
                             <th>
-                                @Html.DisplayNameFor(model => model.FirstName)
+                                <details>
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.FirstName)
+                                    </summary>
+                                    <form class="user-filter-form">
+                                        <input type="text" class="user-filter-form form-control form-control-sm" id="first-name-input">
+                                    </form>                                
+                                </details>                                
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.LastName)
+                                <details>
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.LastName)
+                                    </summary>
+                                    <form class="user-filter-form">
+                                        <input type="text" class="user-filter-form form-control form-control-sm" id="last-name-input">
+                                    </form>
+                                </details>
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.DateOfBirth)
+                                <details>
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.DateOfBirth)
+                                    </summary>                                    
+                                </details>
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Privilege)
+                                <details>
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.Privilege)
+                                    </summary>
+                                    <form class="user-filter-form">
+                                        @Html.DropDownList("privilege-select", ViewData["PrivilegeId"] as IEnumerable<SelectListItem>, "", new { @class = "user-filter-form custom-select custom-select-sm form-control form-control-sm" })
+                                    </form>
+                                </details>                                
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Document)
+                                <details>
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.Document)
+                                    </summary>
+                                    <form class="user-filter-form">
+                                        <input type="text" class="user-filter-form form-control form-control-sm" id="document-input">
+                                    </form>
+                                </details>                                
                             </th>
                             <th>
                                 <a asp-action="Create" class="btn btn-success btn-sm">Create</a>

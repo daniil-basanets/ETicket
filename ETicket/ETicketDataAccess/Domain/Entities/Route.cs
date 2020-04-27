@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
@@ -13,15 +14,18 @@ namespace ETicket.DataAccess.Domain.Entities
 
         [Required]
         [MaxLength(20)]
+        [DisplayName("Rout Number")]
         public string Number { get; set; }
 
         [Required]
+        [DisplayName("First Station")]
         public int FirstStationId { get; set; }
 
         [ForeignKey("FirstStationId")]
         public Station FirstStation { get; set; }
 
         [Required]
+        [DisplayName("Last Station")]
         public int LastStationId { get; set; }
 
         [ForeignKey("LastStationId")]
