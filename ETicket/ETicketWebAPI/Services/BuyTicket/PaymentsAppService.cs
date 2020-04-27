@@ -81,7 +81,7 @@ namespace ETicket.WebAPI.Services.BuyTicket
             var ticketPrice = eTitcketData.TicketTypes
                 .GetAll()
                 .Where(t => t.Id == buyTicketRequest.TicketTypeId)
-                .Select(t => t.Price)
+                .Select(t => t.Coefficient)
                 .First();
 
             return ticketPrice * buyTicketRequest.Amount * privilegeCoef;
