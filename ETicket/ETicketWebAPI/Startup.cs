@@ -1,3 +1,5 @@
+using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.WebAPI.Models;
@@ -55,6 +57,8 @@ namespace ETicket.WebAPI
             services.AddControllers();
             services.AddSingleton<IMerchant>(merchant);
             services.AddSingleton<IMerchantSettings>(merchantSettings);
+
+            services.AddTransient<ITicketVerificationService, TicketVerificationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
