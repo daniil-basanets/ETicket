@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using ETicket.Admin.Models.RegisteredUsersViewModels;
+using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,70 +16,112 @@ namespace ETicket.Admin.Controllers
     {
         private readonly UserManager<IdentityUser> userManager;
         RoleManager<IdentityRole> roleManager;
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             this.userManager = userManager;
             this.roleManager = roleManager;
         }
+
         public IActionResult Index()
         {
-            return View(userManager.Users.ToList());
+            try
+            {
+                return View(userManager.Users.ToList());
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                throw;
+            }
         }
 
         public async Task<ActionResult> Delete(string id)
         {
-            var user = await userManager.FindByIdAsync(id);
-            if (user != null)
+            try
             {
-                IdentityResult result = await userManager.DeleteAsync(user);
-            }
+                var user = await userManager.FindByIdAsync(id);
 
-            return RedirectToAction("Index");
+                if (user != null)
+                {
+                    IdentityResult result = await userManager.DeleteAsync(user);
+                }
+                else
+                {
+                    log.Warn("User was not found.");
+                    return NotFound();
+                }
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                throw;
+            }  
         }
 
         public async Task<ActionResult> EditRoles(string userId)
         {
-            var user = await userManager.FindByIdAsync(userId);
-
-            if (user != null)
+            try
             {
-                var userRoles = await userManager.GetRolesAsync(user);
-                var allRoles = roleManager.Roles.ToList();
-                ChangeRolesViewModel model = new ChangeRolesViewModel
+                var user = await userManager.FindByIdAsync(userId);
+
+                if (user != null)
                 {
-                    UserId = user.Id,
-                    UserEmail = user.Email,
-                    UserRoles = userRoles,
-                    AllRoles = allRoles
-                };
+                    var userRoles = await userManager.GetRolesAsync(user);
+                    var allRoles = roleManager.Roles.ToList();
+                    ChangeRolesViewModel model = new ChangeRolesViewModel
+                    {
+                        UserId = user.Id,
+                        UserEmail = user.Email,
+                        UserRoles = userRoles,
+                        AllRoles = allRoles
+                    };
 
-                return View(model);
+                    return View(model);
+                }
+
+                log.Warn("User was not found.");
+                return NotFound();
             }
-
-            return NotFound();
+            catch (Exception e)
+            {
+                log.Error(e);
+                throw;
+            }           
         }
 
         [HttpPost]
         public async Task<IActionResult> EditRoles(string userId, List<string> roles)
         {
-            var user = await userManager.FindByIdAsync(userId);
-            if (user != null)
+            try
             {
-                var userRoles = await userManager.GetRolesAsync(user);
-                // were added
-                var addedRoles = roles.Except(userRoles);
-                // were deleted
-                var removedRoles = userRoles.Except(roles);
+                var user = await userManager.FindByIdAsync(userId);
+                if (user != null)
+                {
+                    var userRoles = await userManager.GetRolesAsync(user);
+                    // were added
+                    var addedRoles = roles.Except(userRoles);
+                    // were deleted
+                    var removedRoles = userRoles.Except(roles);
 
-                await userManager.AddToRolesAsync(user, addedRoles);
+                    await userManager.AddToRolesAsync(user, addedRoles);
 
-                await userManager.RemoveFromRolesAsync(user, removedRoles);
+                    await userManager.RemoveFromRolesAsync(user, removedRoles);
 
-                return RedirectToAction("Index");
+                    return RedirectToAction("Index");
+                }
+
+                log.Warn("User was not found.");
+                return NotFound();
             }
-
-            return NotFound();
+            catch (Exception e)
+            {
+                log.Error(e);
+                throw;
+            }
         }
     }
 }

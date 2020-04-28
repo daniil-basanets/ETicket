@@ -1,0 +1,4 @@
+2020-04-28 19:11:08,056 [20] INFO ETicket.Admin.Controllers.UserController - Logger info
+2020-04-28 19:33:11,035 [8] WARN ETicket.Admin.Controllers.AccountController - Wrong email or password
+2020-04-28 19:34:12,882 [4] WARN ETicket.Admin.Controllers.AccountController - Passwords must be at least 4 characters.
+2020-04-28 19:39:33,964 [17] WARN ETicket.Admin.Controllers.AccountController - Wrong email or password

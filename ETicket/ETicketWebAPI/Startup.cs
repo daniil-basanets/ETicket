@@ -1,3 +1,4 @@
+using ETicket.ApplicationServices.Logger;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.WebAPI.Models;
@@ -16,6 +17,7 @@ namespace ETicket.WebAPI
     {
         public Startup(IConfiguration configuration)
         {
+            LoggerService.Initialize();
             Configuration = configuration;
         }
 

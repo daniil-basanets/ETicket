@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
+using log4net;
+using System.Reflection;
 
 namespace ETicket.Admin.Controllers
 {
@@ -16,6 +18,7 @@ namespace ETicket.Admin.Controllers
         private readonly IPrivilegeService PService;
         private readonly IDocumentService DService;
         private readonly IDocumentTypesService DTService;
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public UserController(IPrivilegeService PService, IUserService service, IDocumentTypesService DTService, IDocumentService DService)
         {
@@ -31,12 +34,11 @@ namespace ETicket.Admin.Controllers
             try
             {
                 ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name");
-
                 return View(service.GetUsers());
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                log.Error(e);
                 throw;
             }
         }
@@ -46,6 +48,7 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn("User was not found.");
                 return NotFound();
             }
 
@@ -55,7 +58,7 @@ namespace ETicket.Admin.Controllers
 
                 if (user == null)
                 {
-
+                    log.Warn("User was not found.");
                     return NotFound();
                 }
                 else
@@ -63,9 +66,9 @@ namespace ETicket.Admin.Controllers
                     return View(user);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                log.Error(e);
                 throw;
             }
         }
@@ -73,11 +76,19 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult CreateUserWithDocument(UserDto userDto)
         {
-            ViewData["DocumentTypeId"] = new SelectList(DTService.GetDocumentTypes(), "Id", "Name");
+            try
+            {
+                ViewData["DocumentTypeId"] = new SelectList(DTService.GetDocumentTypes(), "Id", "Name");
 
-            return View();
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                throw;
+            }  
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateUserWithDocument(DocumentDto documentDto, UserDto userDto)
@@ -90,9 +101,9 @@ namespace ETicket.Admin.Controllers
 
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-
+                    log.Error(e);
                     throw;
                 }
             }
@@ -111,7 +122,7 @@ namespace ETicket.Admin.Controllers
 
             return View();
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(UserDto userDto)
@@ -131,9 +142,9 @@ namespace ETicket.Admin.Controllers
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-
+                    log.Error(e);
                     throw;
                 }
             }
@@ -149,6 +160,7 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn("User was not found.");
                 return NotFound();
             }
             else
@@ -156,7 +168,7 @@ namespace ETicket.Admin.Controllers
                 return View();
             }
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SendMessage(Guid id, string message)
@@ -169,9 +181,9 @@ namespace ETicket.Admin.Controllers
 
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-
+                    log.Error(e);
                     throw;
                 }
             }
@@ -184,6 +196,7 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn("User was not found.");
                 return NotFound();
             }
 
@@ -193,7 +206,7 @@ namespace ETicket.Admin.Controllers
 
                 if (user == null)
                 {
-
+                    log.Warn("User was not found.");
                     return NotFound();
                 }
                 else
@@ -204,13 +217,13 @@ namespace ETicket.Admin.Controllers
                     return View(user);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                log.Error(e);
                 throw;
             }
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, UserDto userDto)
@@ -226,17 +239,10 @@ namespace ETicket.Admin.Controllers
                 {
                     service.Update(userDto);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception e)
                 {
-                    if (!service.Exists(userDto.Id))
-                    {
-
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    log.Error(e);
+                    throw;
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -253,6 +259,7 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn("User was not found.");
                 return NotFound();
             }
 
@@ -262,7 +269,7 @@ namespace ETicket.Admin.Controllers
 
                 if (user == null)
                 {
-
+                    log.Warn("User was not found.");
                     return NotFound();
                 }
                 else
@@ -270,13 +277,13 @@ namespace ETicket.Admin.Controllers
                     return View(user);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                log.Error(e);
                 throw;
             }
         }
-        
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
@@ -287,9 +294,9 @@ namespace ETicket.Admin.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                log.Error(e);
                 throw;
             }
         }

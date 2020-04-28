@@ -1,4 +1,5 @@
 using System;
+using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DocumentTypes;
 using ETicket.ApplicationServices.Services.Interfaces;
@@ -25,6 +26,7 @@ namespace ETicket.Admin
     {
         public Startup(IConfiguration configuration)
         {
+            LoggerService.Initialize();
             Configuration = configuration;
         }
 
@@ -58,6 +60,7 @@ namespace ETicket.Admin
             services.AddTransient<IDocumentTypesService, DocumentTypesService>();
             services.AddTransient<ITicketTypeService, TicketTypeService>();
             services.AddTransient<IPrivilegeService, PrivilegeService>();
+            services.AddTransient<IDocumentService, DocumentService>();
 
 
             services.AddIdentityCore<IdentityUser>(o =>
