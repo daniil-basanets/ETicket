@@ -3,44 +3,65 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.DataAccess.Domain.Interfaces;
+using log4net;
+using System.Reflection;
+using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class TicketController : Controller
     {
-        private readonly IUnitOfWork uow;   //TODO change to service (remove this)
+        #region Private members
+
         private readonly ITicketService ticketService;
         private readonly ITicketTypeService ticketTypeService;
         private readonly IUserService userService;
+        private readonly ITransactionAppService transactionService;
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private void InitViewDataForSelectList(TicketDto ticketDto = null)
         {
-            ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName", ticketDto?.Id);
-            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticketDto?.TransactionHistoryId);   //TODO change to service (remove this)
-            ViewData["UserId"] = new SelectList(userService.GetUsers().Select(s => new { s.Id, Name = $"{s.LastName} {s.FirstName}" }), "Id", "Name", ticketDto?.UserId);
+            try
+            {
+                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName", ticketDto?.Id);
+                ViewData["TransactionHistoryId"] = new SelectList(transactionService.GetTransactions(), "Id", "ReferenceNumber", ticketDto?.TransactionHistoryId);
+                ViewData["UserId"] = new SelectList(userService.GetUsers().Select(s => new { s.Id, Name = $"{s.LastName} {s.FirstName}" }), "Id", "Name", ticketDto?.UserId);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                throw;
+            }
         }
 
-        public TicketController(IUnitOfWork uow, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService)
-        {
-            this.uow = uow;
+        #endregion
 
+        public TicketController(ITransactionAppService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService)
+        {
             this.ticketService = ticketService;
             this.ticketTypeService = ticketTypeService;
             this.userService = userService;
+            transactionService = transactionAppService;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName"); //TODO change to service 
-            var tickets = ticketService.GetTickets();
+            try
+            {
+                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName");
+                var tickets = ticketService.GetTickets();
 
-            return View(tickets.ToList());
+                return View(tickets.ToList());
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                throw;
+            }
         }
 
         [HttpGet]
@@ -51,7 +72,16 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticket = ticketService.GetTicketById((Guid)id);
+            Ticket ticket;
+            try
+            {
+                ticket = ticketService.GetTicketById((Guid)id);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                throw;
+            }
 
             if (ticket == null)
             {
@@ -68,12 +98,21 @@ namespace ETicket.Admin.Controllers
 
             return View();
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(TicketDto ticketDto)
         {
-            var ticketType = ticketTypeService.GetTicketTypeById(ticketDto.TicketTypeId);  //TODO change to service
+            TicketType ticketType = null;
+            try
+            {
+                ticketType = ticketTypeService.GetTicketTypeById(ticketDto.TicketTypeId);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                throw;
+            }
 
             if (ticketType.IsPersonal && ticketDto.UserId == null)
             {
@@ -85,7 +124,15 @@ namespace ETicket.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                ticketService.Create(ticketDto);
+                try
+                {
+                    ticketService.Create(ticketDto);
+                }
+                catch (Exception e)
+                {
+                    log.Error(e);
+                    throw;
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -103,7 +150,16 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticketDto = ticketService.GetDto((Guid)id);
+            TicketDto ticketDto;
+            try
+            {
+                ticketDto = ticketService.GetDto((Guid)id);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                throw;
+            }
 
             if (ticketDto == null)
             {
@@ -114,17 +170,27 @@ namespace ETicket.Admin.Controllers
 
             return View(ticketDto);
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, TicketDto ticketDto)
         {
+            TicketType ticketType = null;
+
             if (id != ticketDto.Id)
             {
                 return NotFound();
             }
 
-            var ticketType = uow.TicketTypes.Get(ticketDto.TicketTypeId);  //TODO change to service
+            try
+            {
+                ticketType = ticketTypeService.GetTicketTypeById(ticketDto.TicketTypeId);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                throw;
+            }
 
             if (ticketType.IsPersonal && ticketDto.UserId == null)
             {
@@ -140,16 +206,10 @@ namespace ETicket.Admin.Controllers
                 {
                     ticketService.Update(ticketDto);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception e)
                 {
-                    if (!ticketService.Exists(ticketDto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    log.Error(e);
+                    throw;
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -168,7 +228,16 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticket = ticketService.GetTicketById((Guid)id);
+            Ticket ticket;
+            try
+            {
+                ticket = ticketService.GetTicketById((Guid)id);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                throw;
+            }
 
             if (ticket == null)
             {
@@ -177,12 +246,20 @@ namespace ETicket.Admin.Controllers
 
             return View(ticket);
         }
-        
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            ticketService.Delete(id);
+            try
+            {
+                ticketService.Delete(id);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                throw;
+            }
 
             return RedirectToAction(nameof(Index));
         }
