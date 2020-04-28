@@ -19,7 +19,7 @@ namespace ETicket.WebAPI.Controllers
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly ETicketDataContext context;
-        private IdentityResult identityRez;
+        private IdentityResult identityResult;
         private IdentityUser user;
 
         public AuthenticationController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ETicketDataContext context)
@@ -35,33 +35,34 @@ namespace ETicket.WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                return StatusCode(400, userManager.FindByEmailAsync(request.Email).Result != null);
+                return StatusCode(200, userManager.FindByEmailAsync(request.Email).Result != null);
             }
 
             return StatusCode(400, "Bad request.");
         }
 
-        // Registration users
+        // Registration user
         [HttpPost("registration")]
         public async Task<IActionResult> Registration([FromBody] RegistrationRequest request)
         {
             if (ModelState.IsValid)
             {
+                var userName = $"{request.FirstName} {request.LastName}";
                 user = new IdentityUser()
                 {
-                    UserName = request.Email,
+                    UserName = userName,
                     Email = request.Email
                 };
 
-                identityRez = await userManager.CreateAsync(user, request.Password);
+                identityResult = await userManager.CreateAsync(user, request.Password);
 
-                if (identityRez.Succeeded)
+                if (identityResult.Succeeded)
                 {
-                    return Ok(identityRez);
+                    return Ok(identityResult);
                 }
                 else
                 {
-                    return StatusCode(500, identityRez);
+                    return StatusCode(500, identityResult);
                 }
             }
 
@@ -74,9 +75,9 @@ namespace ETicket.WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var signInRez = await signInManager.PasswordSignInAsync(request.Email, request.Password, false, false);
+                var signInResult = await signInManager.PasswordSignInAsync(request.Email, request.Password, false, false);
 
-                if (signInRez.Succeeded)
+                if (signInResult.Succeeded)
                 {
                     user = await userManager.FindByNameAsync(request.Email);
 
@@ -90,7 +91,7 @@ namespace ETicket.WebAPI.Controllers
                 }
                 else
                 {
-                    return StatusCode(500, "Internal server error.");
+                    return StatusCode(500, signInResult);
                 }
             }
 
