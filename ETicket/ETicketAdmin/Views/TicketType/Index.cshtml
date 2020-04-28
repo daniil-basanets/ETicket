@@ -22,7 +22,7 @@
                                @Html.DisplayNameFor(model=>model.TypeName)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayNameFor(model=>model.Price)
+                                @Html.DisplayNameFor(model=>model.Coefficient)
                             </th>
                             <th class="table-action">
                                 @Html.DisplayNameFor(model=>model.IsPersonal)
@@ -41,7 +41,7 @@
                                 @Html.DisplayNameFor(model=>model.TypeName)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayNameFor(model=>model.Price)
+                                @Html.DisplayNameFor(model=>model.Coefficient)
                             </th>
                             <th class="table-action">
                                 @Html.DisplayNameFor(model=>model.IsPersonal)
@@ -62,8 +62,7 @@
                                     @Html.DisplayFor(modelItem => item.TypeName)
                                 </td>
                                 <td class="table-static">
-                                    @*@item.Price.ToString("c", CultureInfo.CreateSpecificCulture("ua-UA"))*@
-                                    @(item.Price + " ₴")
+                                    @Html.DisplayFor(modelItem => item.Coefficient)
                                 </td>
                                 <td class="table-static">
                                     @(item.IsPersonal ? "Yes" : "No")                          
