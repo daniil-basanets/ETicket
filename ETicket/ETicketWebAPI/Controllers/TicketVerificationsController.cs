@@ -10,6 +10,7 @@ using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.WebAPI.Models.TicketVerification;
+using ETicket.WebAPI.Services.TicketVerifyService;
 
 namespace ETicket.WebAPI.Controllers
 {
@@ -18,10 +19,12 @@ namespace ETicket.WebAPI.Controllers
     public class TicketVerificationsController : ControllerBase
     {
         private readonly ITicketVerificationService verificationService;
+        private readonly ITicketVerifyService verifyService;
 
-        public TicketVerificationsController(ITicketVerificationService service)
+        public TicketVerificationsController(ITicketVerificationService service, ITicketVerifyService verifyService)
         {
             this.verificationService = service;
+            this.verifyService = verifyService;
         }
 
         // GET: api/TicketVerifications
@@ -45,14 +48,12 @@ namespace ETicket.WebAPI.Controllers
             return Ok(ticketVerification);
         }
 
-
-
         [HttpPost]
         [Route("[action]")]
-        public IActionResult VerifyTicket([FromBody] VerifyTicketRequest request)
+        public IActionResult VerifyTicket(VerifyTicketRequest request)
         {
-
-            return Ok(request);
+            
+            return Ok(verifyService.VerifyTicket(request));
         }
     }
 }

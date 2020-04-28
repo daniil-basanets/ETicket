@@ -32,6 +32,10 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         TicketVerificationRepository TicketVerifications { get; }
 
+        StationRepository Stations { get; }
+
+        RouteStationRepository RouteStation { get; }
+
         void Save();
     }
 }
