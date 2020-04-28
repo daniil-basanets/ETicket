@@ -26,7 +26,7 @@ namespace ETicket.Admin.Controllers
 
         public IActionResult Index()
         {
-            var routes = routeService.Read();
+            var routes = routeService.GetRoutes();
 
             return View(routes);
         }
@@ -39,7 +39,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var route = routeService.Read(id.Value);
+            var route = routeService.GetRouteById(id.Value);
 
             if (route == null)
             {
@@ -75,7 +75,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var route = routeService.Read(id.Value);
+            var route = routeService.GetRouteById(id.Value);
 
             if (route == null)
             {
@@ -126,7 +126,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var route = routeService.Read(id.Value);
+            var route = routeService.GetRouteById(id.Value);
             
             if (route == null)
             {
@@ -148,7 +148,7 @@ namespace ETicket.Admin.Controllers
 
         private bool RouteExists(int id)
         {
-            return routeService.Read(id) != null;
+            return routeService.GetRouteById(id) != null;
         }
     }
 }
