@@ -33,7 +33,6 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
-                throw;
             }
         }
 
@@ -60,7 +59,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
-                throw;
+                return BadRequest();
             }
         }
 
@@ -80,7 +79,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
-                throw;
+                return BadRequest();
             }
 
             if (ticket == null)
@@ -111,7 +110,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
-                throw;
+                return BadRequest();
             }
 
             if (ticketType.IsPersonal && ticketDto.UserId == null)
@@ -131,7 +130,7 @@ namespace ETicket.Admin.Controllers
                 catch (Exception e)
                 {
                     log.Error(e);
-                    throw;
+                    return BadRequest();
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -158,7 +157,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
-                throw;
+                return BadRequest();
             }
 
             if (ticketDto == null)
@@ -189,7 +188,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
-                throw;
+                return BadRequest();
             }
 
             if (ticketType.IsPersonal && ticketDto.UserId == null)
@@ -209,7 +208,7 @@ namespace ETicket.Admin.Controllers
                 catch (Exception e)
                 {
                     log.Error(e);
-                    throw;
+                    return BadRequest();
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -236,7 +235,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
-                throw;
+                return BadRequest();
             }
 
             if (ticket == null)
@@ -258,7 +257,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
-                throw;
+                return BadRequest();
             }
 
             return RedirectToAction(nameof(Index));
