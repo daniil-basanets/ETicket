@@ -44,7 +44,7 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Details(Guid id)
+        public IActionResult Details(Guid? id)
         {
             if (id == null)
             {
@@ -54,7 +54,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                var user = service.GetUserById(id);
+                var user = service.GetUserById(id.Value);
 
                 if (user == null)
                 {
@@ -156,7 +156,7 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult SendMessage(Guid id)
+        public IActionResult SendMessage(Guid? id)
         {
             if (id == null)
             {
@@ -192,7 +192,7 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(Guid id)
+        public IActionResult Edit(Guid? id)
         {
             if (id == null)
             {
@@ -202,7 +202,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                var user = service.GetUserById(id);
+                var user = service.GetUserById(id.Value);
 
                 if (user == null)
                 {
@@ -255,7 +255,7 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(Guid id)
+        public IActionResult Delete(Guid? id)
         {
             if (id == null)
             {
@@ -265,7 +265,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                var user = service.GetUserById(id);
+                var user = service.GetUserById(id.Value);
 
                 if (user == null)
                 {
