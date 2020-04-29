@@ -38,7 +38,7 @@ namespace ETicket.WebAPI.Controllers
                 return StatusCode(200, userManager.FindByEmailAsync(request.Email).Result != null);
             }
 
-            return StatusCode(400, "Bad request.");
+            return StatusCode(400, new { ModelState.IsValid });
         }
 
         // Registration user
@@ -57,15 +57,15 @@ namespace ETicket.WebAPI.Controllers
 
                 if (identityResult.Succeeded)
                 {
-                    return Ok(identityResult);
+                    return Ok(new { identityResult.Succeeded });
                 }
                 else
                 {
-                    return StatusCode(500, identityResult);
+                    return StatusCode(500, new { identityResult.Succeeded });
                 }
             }
 
-            return StatusCode(400, "Bad request.");
+            return StatusCode(400, new { ModelState.IsValid });
         }
 
         // Login user
@@ -90,11 +90,11 @@ namespace ETicket.WebAPI.Controllers
                 }
                 else
                 {
-                    return StatusCode(500, signInResult);
+                    return StatusCode(500, new { signInResult.Succeeded });
                 }
             }
 
-            return StatusCode(400, "Bad request.");
+            return StatusCode(400, new { ModelState.IsValid });
         }
 
         // Refresh access_jwtToken
