@@ -74,7 +74,7 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateUserWithDocument(UserDto userDto)
+        public IActionResult CreateUserWithDocument()
         {
             try
             {
