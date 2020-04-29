@@ -35,7 +35,13 @@ namespace ETicket.WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                return StatusCode(200, userManager.FindByEmailAsync(request.Email).Result != null);
+                bool succeeded = false;
+                if (userManager.FindByEmailAsync(request.Email).Result != null)
+                {
+                    succeeded = true;
+                }
+
+                return StatusCode(200, new { succeeded });
             }
 
             return StatusCode(400, new { ModelState.IsValid });
