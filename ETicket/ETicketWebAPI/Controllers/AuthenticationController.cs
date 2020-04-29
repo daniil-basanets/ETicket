@@ -47,10 +47,9 @@ namespace ETicket.WebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userName = $"{request.FirstName} {request.LastName}";
                 user = new IdentityUser()
                 {
-                    UserName = userName,
+                    UserName = request.Email,
                     Email = request.Email
                 };
 
