@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain;
 using ETicket.WebAPI.Models.Identity;
 using ETicket.WebAPI.Models.Identity.Requests;
@@ -22,12 +23,14 @@ namespace ETicket.WebAPI.Controllers
         private readonly ETicketDataContext context;
         private IdentityResult identityResult;
         private IdentityUser user;
+        private readonly IMailService mailService;
 
-        public AuthenticationController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ETicketDataContext context)
+        public AuthenticationController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ETicketDataContext context, IMailService mailService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.context = context;
+            this.mailService = mailService;
         }
 
         // Check if email exists
@@ -135,12 +138,9 @@ namespace ETicket.WebAPI.Controllers
         {
             if (userManager.FindByEmailAsync(email).Result != null)
             {
-                Random rand = new Random();
-                var secretNumber = rand.Next(1000, 9999);
-                string secretString = $"{secretNumber}{GetLetter()}{GetLetter()}";
+                var secretString = SecretString.GetSecretString();
 
-                MailService emailService = new MailService();
-                emailService.SendEmail(email, secretString, "Reset password");
+                mailService.SendEmail(email, secretString, "Reset password");
 
                 return new JsonResult(new { secretString });
             }
@@ -154,22 +154,11 @@ namespace ETicket.WebAPI.Controllers
         public IActionResult ConfirmEmail([FromBody] string email)
         {
 
-            Random rand = new Random();
-            var secretNumber = rand.Next(1000, 9999);
-            string secretString = $"{secretNumber}{GetLetter()}{GetLetter()}";
+            var secretString = SecretString.GetSecretString();
 
-            MailService emailService = new MailService();
-            emailService.SendEmail(email, secretString, "Confirm email");
+            mailService.SendEmail(email, secretString, "Confirm email");
 
             return new JsonResult(new { secretString });
-        }
-
-        private char GetLetter()
-        {
-            string chars = "abcdefghijklmnopqrstuvwxyz";
-            Random rand = new Random();
-            int num = rand.Next(0, chars.Length - 1);
-            return chars[num];
         }
     }
 }

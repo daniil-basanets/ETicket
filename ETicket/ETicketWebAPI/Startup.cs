@@ -1,4 +1,6 @@
 using System;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.ApplicationServices.Services.Users;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.WebAPI.Models;
@@ -88,6 +90,8 @@ namespace ETicket.WebAPI
             services.AddControllers();
             services.AddSingleton<IMerchant>(merchant);
             services.AddSingleton<IMerchantSettings>(merchantSettings);
+
+            services.AddTransient<IMailService, MailService>();
 
 
             services.AddSwaggerGen(c =>
