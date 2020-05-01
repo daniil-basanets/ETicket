@@ -1,4 +1,4 @@
-@using ETicket.DataAccess.Domain.Entities
+﻿@using ETicket.DataAccess.Domain.Entities
 @model IEnumerable<ETicket.DataAccess.Domain.Entities.TicketType>
 
 @{
@@ -19,16 +19,16 @@
                     <thead>
                         <tr>
                             <th>
-                                @Html.DisplayName("Type Name")
+                               @Html.DisplayNameFor(model=>model.TypeName)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayName("Price")
+                                @Html.DisplayNameFor(model=>model.Coefficient)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayName("IsPersonal")
+                                @Html.DisplayNameFor(model=>model.IsPersonal)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayName("DurationHours")
+                                @Html.DisplayNameFor(model=>model.DurationHours)
                             </th>
                             <th>
                                 <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
@@ -38,16 +38,16 @@
                     <tfoot>
                         <tr>
                             <th>
-                                @Html.DisplayName("Type Name")
+                                @Html.DisplayNameFor(model=>model.TypeName)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayName("Price")
+                                @Html.DisplayNameFor(model=>model.Coefficient)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayName("IsPersonal")
+                                @Html.DisplayNameFor(model=>model.IsPersonal)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayName("DurationHours")
+                                @Html.DisplayNameFor(model=>model.DurationHours)
                             </th>
                             <th>
                                 Actions
@@ -62,7 +62,7 @@
                                     @Html.DisplayFor(modelItem => item.TypeName)
                                 </td>
                                 <td class="table-static">
-                                    @item.Price.ToString("c", CultureInfo.CreateSpecificCulture("ua-UA"))
+                                    @Html.DisplayFor(modelItem => item.Coefficient)
                                 </td>
                                 <td class="table-static">
                                     @(item.IsPersonal ? "Yes" : "No")                          

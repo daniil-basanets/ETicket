@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>WinExe</OutputType>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +24,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
     <PackageReference Include="MimeKit" Version="2.6.0" />
   </ItemGroup>
 
@@ -1740,7 +1742,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ETicketDataAccess\ETicket.DataAccess.csproj" />
+    <ProjectReference Include="..\ETicket.ApplicationServices\ETicket.ApplicationServices.csproj" />
     <ProjectReference Include="..\ETicketWebAPI\ETicket.WebAPI.csproj" />
   </ItemGroup>
 

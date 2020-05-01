@@ -81,7 +81,7 @@ namespace ETicket.WebAPI.Services.BuyTicket
             var ticketPrice = eTitcketData.TicketTypes
                 .GetAll()
                 .Where(t => t.Id == buyTicketRequest.TicketTypeId)
-                .Select(t => t.Price)
+                .Select(t => t.Coefficient)
                 .First();
 
             return ticketPrice * buyTicketRequest.Amount * privilegeCoef;
@@ -117,9 +117,7 @@ namespace ETicket.WebAPI.Services.BuyTicket
                 Id = transactionHistoryId,
                 ReferenceNumber = referenceNumber,
                 TotalPrice = totalPrice,
-                Date = DateTime.UtcNow,
-                TicketTypeId = buyTicketRequest.TicketTypeId,
-                Count = buyTicketRequest.Amount
+                Date = DateTime.UtcNow
             };
 
             eTitcketData.TransactionHistory.Create(transaction);
