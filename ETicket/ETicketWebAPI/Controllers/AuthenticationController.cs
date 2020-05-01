@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ETicket.DataAccess.Domain;
 using ETicket.WebAPI.Models.Identity;
 using ETicket.WebAPI.Models.Identity.Requests;
+using ETicket.WebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -127,6 +128,48 @@ namespace ETicket.WebAPI.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpPost("resetPassword")]
+        public IActionResult ResetPassword([FromBody] string email)
+        {
+            if (userManager.FindByEmailAsync(email).Result != null)
+            {
+                Random rand = new Random();
+                var secretNumber = rand.Next(1000, 9999);
+                string secretString = $"{secretNumber}{GetLetter()}{GetLetter()}";
+
+                MailService emailService = new MailService();
+                emailService.SendEmail(email, secretString, "Reset password");
+
+                return new JsonResult(new { secretString });
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost("confirmEmail")]
+        public IActionResult ConfirmEmail([FromBody] string email)
+        {
+
+            Random rand = new Random();
+            var secretNumber = rand.Next(1000, 9999);
+            string secretString = $"{secretNumber}{GetLetter()}{GetLetter()}";
+
+            MailService emailService = new MailService();
+            emailService.SendEmail(email, secretString, "Confirm email");
+
+            return new JsonResult(new { secretString });
+        }
+
+        private char GetLetter()
+        {
+            string chars = "abcdefghijklmnopqrstuvwxyz";
+            Random rand = new Random();
+            int num = rand.Next(0, chars.Length - 1);
+            return chars[num];
         }
     }
 }
