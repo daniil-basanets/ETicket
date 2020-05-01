@@ -60,7 +60,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
-                throw;
+                return BadRequest();
             } 
         }
 
@@ -74,7 +74,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
-                throw;
+                return BadRequest();
             }
         }
 
@@ -110,7 +110,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
-                throw;
+                return BadRequest();
             }   
         }
 
@@ -127,9 +127,8 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
-                throw;
+                return BadRequest();
             }
-        }
 
         [HttpGet]
         public IActionResult AccessDenied()
