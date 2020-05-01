@@ -6,6 +6,6 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface IMailService
     {
-        public void SendEmail(string email, string message);
+        public void SendEmail(string email, string message, string subject);
     }
 }

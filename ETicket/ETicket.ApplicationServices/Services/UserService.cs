@@ -61,7 +61,7 @@ namespace ETicket.ApplicationServices.Services
         {
             var user = GetById(id);
 
-            mailService.SendEmail(user.Email, message);
+            mailService.SendEmail(user.Email, message, "Reminders");
         }
 
         public void Update(UserDto userDto)
