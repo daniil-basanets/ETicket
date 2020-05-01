@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain;
+using ETicket.DataAccess.Domain.Entities;
 using ETicket.WebAPI.Models.Identity;
 using ETicket.WebAPI.Models.Identity.Requests;
 using ETicket.WebAPI.Services;
@@ -133,32 +134,53 @@ namespace ETicket.WebAPI.Controllers
             }
         }
 
-        [HttpPost("resetPassword")]
-        public IActionResult ResetPassword([FromBody] string email)
+        //[HttpPost("resetPassword")]
+        //public IActionResult ResetPassword([FromBody] string email)
+        //{
+        //    if (userManager.FindByEmailAsync(email).Result != null)
+        //    {
+        //        var secretString = SecretString.GetSecretString();
+
+        //        mailService.SendEmail(email, secretString, "Reset password");
+
+        //        return new JsonResult(new { secretString });
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+        //}
+
+        [HttpPost("confirmEmail")]
+        public IActionResult ConfirmEmail([FromBody] string secretCode)
         {
-            if (userManager.FindByEmailAsync(email).Result != null)
+            var code = context.SecretCodes.FirstOrDefault(c => c.Code == secretCode);
+            bool succeeded = false;
+
+            if (code != null)
             {
-                var secretString = SecretString.GetSecretString();
-
-                mailService.SendEmail(email, secretString, "Reset password");
-
-                return new JsonResult(new { secretString });
+                context.SecretCodes.Remove(code);
+                context.SaveChanges();
+                succeeded = true;
+                return Ok(new { succeeded });
             }
             else
             {
-                return NotFound();
+                return StatusCode(400, new { succeeded });
             }
         }
 
-        [HttpPost("confirmEmail")]
-        public IActionResult ConfirmEmail([FromBody] string email)
+        [HttpPost("sendCode")]
+        public void SendSecretCodeToUser([FromBody] string email)
         {
-
             var secretString = SecretString.GetSecretString();
 
-            mailService.SendEmail(email, secretString, "Confirm email");
+            mailService.SendEmail(email, secretString, "Your personal code");
 
-            return new JsonResult(new { secretString });
+            var code = new SecretCode() { Code = secretString };
+
+            context.SecretCodes.Add(code);
+            context.SaveChanges();
         }
     }
 }
