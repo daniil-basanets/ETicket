@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="ETicketMobile.Views.Tickets.TicketsView">
+
+    <!--<ListView.Behaviors>
+        <prism:EventToCommandBehavior
+                        EventName="ItemTapped"
+                        Command="{Binding NavigateHelperView}"
+                        CommandParameter="{Binding Source={x:Reference ShopsList}, Path=SelectedItem}"/>
+    </ListView.Behaviors>-->
+
+    <StackLayout Margin="10">
+        <ListView 
+            ItemsSource="{Binding Tickets}"
+            SelectedItem="{Binding TicketSelected, Mode=TwoWay}"
+            SeparatorVisibility="None"
+            Margin="30, 10, 30, 10"
+            RowHeight="160">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Frame
+                            HorizontalOptions="FillAndExpand"
+                            BackgroundColor="White"
+                            CornerRadius="10"
+                            Margin="5"
+                            Padding="0">
+                            <StackLayout>
+                                <Label
+                                    Text="{Binding Name}"
+                                    Margin="10"
+                                    HorizontalOptions="Center"/>
+                                <Label
+                                     Text="Duration Hours:"
+                                     HorizontalOptions="Center"/>
+                                <Label
+                                     Text="{Binding DurationHours}"
+                                     FontAttributes="Bold"
+                                     TextColor="Green"
+                                     HorizontalOptions="Center"/>
+                                <Label
+                                    Text="Price:"
+                                    HorizontalOptions="Center"/>
+                                <Label
+                                    Text="{Binding Price}"
+                                    FontAttributes="Bold"
+                                    TextColor="Green"
+                                    HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Button 
+            Text="Choose"
+            Command="{Binding ChooseTicket}"
+            HorizontalOptions="EndAndExpand"
+            CornerRadius="10"/>
+    </StackLayout>
+
+</ContentPage>

@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="ETicketMobile.Views.Tickets.BuyTicketView">
+
+    <ContentPage.Content>
+        <StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Button
+                Text="-"
+                Command="{Binding RemoveTicket}" />
+
+                <Label
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="CenterAndExpand"
+                Text="{Binding Amount}" />
+
+                <Button
+                Text="+"
+                Command="{Binding AddTicket}"/>
+            </StackLayout>
+            <StackLayout>
+                <Button
+                    HorizontalOptions="EndAndExpand"
+                    Text="Buy"
+                    Command="{Binding BuyTicket}"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>
