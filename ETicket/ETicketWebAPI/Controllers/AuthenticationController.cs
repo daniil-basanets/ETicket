@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
@@ -25,13 +26,15 @@ namespace ETicket.WebAPI.Controllers
         private IdentityResult identityResult;
         private IdentityUser user;
         private readonly IMailService mailService;
+        private readonly IUserService ETUserService;
 
-        public AuthenticationController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ETicketDataContext context, IMailService mailService)
+        public AuthenticationController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ETicketDataContext context, IMailService mailService, IUserService ETUserService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.context = context;
             this.mailService = mailService;
+            this.ETUserService = ETUserService;
         }
 
         // Check if email exists
@@ -68,6 +71,16 @@ namespace ETicket.WebAPI.Controllers
 
                 if (identityResult.Succeeded)
                 {
+                    UserDto userDto = new UserDto
+                    {
+                        FirstName = request.FirstName,
+                        LastName = request.LastName,
+                        Phone = request.Phone,
+                        Email = request.Email,
+                        DateOfBirth = request.DateOfBirth
+                    };
+                    ETUserService.CreateUser(userDto);
+
                     return Ok(new { identityResult.Succeeded });
                 }
                 else
@@ -152,15 +165,15 @@ namespace ETicket.WebAPI.Controllers
         //}
 
         [HttpPost("confirmEmail")]
-        public IActionResult ConfirmEmail([FromBody] string secretCode)
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest request)
         {
-            var code = context.SecretCodes.FirstOrDefault(c => c.Code == secretCode);
+            var code = await context.SecretCodes.FirstOrDefaultAsync(c => c.Code == request.AuthenticationCode && c.Email == request.Email);
             bool succeeded = false;
 
             if (code != null)
             {
-                context.SecretCodes.Remove(code);
-                context.SaveChanges();
+                context.SecretCodes.RemoveRange(context.SecretCodes.Where(x => x.Email == request.Email));
+                await context.SaveChangesAsync();
                 succeeded = true;
                 return Ok(new { succeeded });
             }
@@ -173,14 +186,17 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost("sendCode")]
         public void SendSecretCodeToUser([FromBody] string email)
         {
-            var secretString = SecretString.GetSecretString();
+            if (context.SecretCodes.Count(x => x.Email == email) < 3)
+            {
+                var secretString = SecretString.GetSecretString();
 
-            mailService.SendEmail(email, secretString, "Your personal code");
+                mailService.SendEmail(email, secretString, "Your personal code");
 
-            var code = new SecretCode() { Code = secretString };
+                var code = new SecretCode() { Code = secretString, Email = email };
 
-            context.SecretCodes.Add(code);
-            context.SaveChanges();
+                context.SecretCodes.Add(code);
+                context.SaveChanges();
+            }
         }
     }
 }
