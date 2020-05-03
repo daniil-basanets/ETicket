@@ -14,4 +14,8 @@
     <ProjectReference Include="..\ETicketDataAccess\ETicket.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

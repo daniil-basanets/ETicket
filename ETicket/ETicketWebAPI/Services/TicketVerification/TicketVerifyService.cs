@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ETicket.WebAPI.Services.TicketVerifyService
+namespace ETicket.WebAPI.Services.TicketsService
 {
     public class TicketVerifyService : ITicketVerifyService
     {
@@ -18,6 +18,8 @@ namespace ETicket.WebAPI.Services.TicketVerifyService
         private static string transportNotFoundError = "Transport was not found";
         private static string stationNotFoundError = "Station was not found";
         private static string ticketNotActivatedError = "Ticket not activated";
+        private static string ticketExpired = "Ticket expired";
+        private static string ticketDoesNotContainZone = "Ticket does not contain the zone";
         private static string unknownError = "Something went wrong";
 
         #endregion
@@ -29,9 +31,9 @@ namespace ETicket.WebAPI.Services.TicketVerifyService
         }
 
         //TODO Separate into two methods Verify and Activate 
-        public VerifyTicketResponse VerifyTicket(VerifyTicketRequest request)
+        public VerifyTicketResponse VerifyTicket(Guid ticketId, VerifyTicketInfo request)
         {
-            var ticket = GetTicket(request.TicketId);
+            var ticket = GetTicket(ticketId);
 
             if (ticket == null)
             {
@@ -39,7 +41,7 @@ namespace ETicket.WebAPI.Services.TicketVerifyService
             }
             if (ticket.ActivatedUTCDate == null)
             {
-                return new VerifyTicketResponse { ErrorMessage = ticketNotActivatedError };
+                ActivateTicket(ticket);
             }
 
             var transport = GetTransport(request.TransportId);
@@ -57,27 +59,38 @@ namespace ETicket.WebAPI.Services.TicketVerifyService
                 return new VerifyTicketResponse { ErrorMessage = stationNotFoundError };
             }
 
-            //Compare ticket area with train station
+
             //Check for expired ticket
-            if (ticket.TicketArea.Any(t => t.AreaId == station.Area.Id)
-                && ticket.ExpirationUTCDate > DateTime.UtcNow)
+            if(ticket.ExpirationUTCDate < DateTime.UtcNow)
             {
-                return new VerifyTicketResponse { IsValid = true };
+                SaveTicketVerification(ticket.Id, transport.Id, station.Id, false);
+                return new VerifyTicketResponse { ErrorMessage = ticketExpired };
+            }
+            //Compare ticket areas with train station
+            if (!ticket.TicketArea.Any(t => t.AreaId == station.Area.Id))
+            {
+                SaveTicketVerification(ticket.Id, transport.Id, station.Id, false);
+                return new VerifyTicketResponse { ErrorMessage = ticketDoesNotContainZone };
             }
 
-            return new VerifyTicketResponse { ErrorMessage = unknownError};
+            SaveTicketVerification(ticket.Id, transport.Id, station.Id, true);
+            return new VerifyTicketResponse { IsValid = true };
         }
 
-        private void SaveTicketVerification(
-            Guid ticketId,
-            long transportId,
-            int stationId,
-            bool isVerified
-        )
+        private void ActivateTicket(Ticket ticket)
         {
-            var ticketVerification = new TicketVerification()
+            ticket.ActivatedUTCDate = DateTime.UtcNow;
+            ticket.ExpirationUTCDate = DateTime.UtcNow.AddHours(ticket.TicketType.DurationHours);
+            unitOfWork.Tickets.Update(ticket);
+            unitOfWork.Save();
+        }
+
+        private void SaveTicketVerification(Guid ticketId, long transportId, int stationId, bool isVerified)
+        {
+            var ticketVerification = new TicketVerification
             {
                 Id = Guid.NewGuid(),
+                VerificationUTCDate = DateTime.UtcNow,
                 TicketId = ticketId,
                 TransportId = transportId,
                 StationId = stationId,
@@ -85,6 +98,7 @@ namespace ETicket.WebAPI.Services.TicketVerifyService
             };
 
             unitOfWork.TicketVerifications.Create(ticketVerification);
+            unitOfWork.Save();
         }
 
         private Ticket GetTicket(Guid ticketId)
@@ -101,11 +115,7 @@ namespace ETicket.WebAPI.Services.TicketVerifyService
             return unitOfWork.Transports.Get(transportId);
         }
 
-        private Station GetNearestStationOnRoute(
-            int routeId,
-            float latitude,
-            float longitude
-        )
+        private Station GetNearestStationOnRoute(int routeId, float latitude, float longitude)
         {
             return unitOfWork
                     .RouteStation

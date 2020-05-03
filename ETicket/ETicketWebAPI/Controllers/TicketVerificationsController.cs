@@ -10,50 +10,40 @@ using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.WebAPI.Models.TicketVerification;
-using ETicket.WebAPI.Services.TicketVerifyService;
+using ETicket.WebAPI.Services.TicketsService;
 
 namespace ETicket.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/tickets")]
     [ApiController]
     public class TicketVerificationsController : ControllerBase
     {
         private readonly ITicketVerificationService verificationService;
-        private readonly ITicketVerifyService verifyService;
+        private readonly ITicketVerifyService ticketService;
 
         public TicketVerificationsController(ITicketVerificationService service, ITicketVerifyService verifyService)
         {
             this.verificationService = service;
-            this.verifyService = verifyService;
+            this.ticketService = verifyService;
         }
 
-        // GET: api/TicketVerifications
-        [HttpGet]
-        public IActionResult GetTicketVerifications()
+        [HttpGet("{ticketid}/verifications/lastitems")]
+        public IActionResult GetLastTicketVerification(Guid ticketId, [FromQuery]int count = 1)
         {
-            return Ok(verificationService.GetAll());
-        }
-
-        // GET: api/TicketVerifications/5
-        [HttpGet("{id}")]
-        public IActionResult GetTicketVerification(Guid id)
-        {
-            var ticketVerification = verificationService.Get(id);
-
-            if (ticketVerification == null)
-            {
-                return NotFound();
-            }
+            var ticketVerification = verificationService
+                    .GetAll()
+                    .Where(t => t.TicketId == ticketId)
+                    .OrderByDescending(t => t.VerificationUTCDate)
+                    .Take(count);
 
             return Ok(ticketVerification);
         }
 
         [HttpPost]
-        [Route("[action]")]
-        public IActionResult VerifyTicket(VerifyTicketRequest request)
-        {
-            
-            return Ok(verifyService.VerifyTicket(request));
+        [Route("{ticketid}/verifications")]
+        public IActionResult VerifyTicket(Guid ticketId, [FromBody]VerifyTicketInfo request)
+        {            
+            return Ok(ticketService.VerifyTicket(ticketId, request));
         }
     }
 }

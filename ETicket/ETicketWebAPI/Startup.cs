@@ -4,7 +4,7 @@ using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.WebAPI.Models;
 using ETicket.WebAPI.Models.Interfaces;
-using ETicket.WebAPI.Services.TicketVerifyService;
+using ETicket.WebAPI.Services.TicketsService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -60,7 +60,7 @@ namespace ETicket.WebAPI
             services.AddSingleton<IMerchantSettings>(merchantSettings);
 
             services.AddTransient<ITicketVerificationService, TicketVerificationService>();
-            services.AddTransient<ITicketVerifyService, TicketVerifyService>();
+            services.AddTransient<Services.TicketsService.ITicketVerifyService, Services.TicketsService.TicketVerifyService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

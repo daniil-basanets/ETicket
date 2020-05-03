@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace ETicket.WebAPI.Models.TicketVerification
 {
-    public class VerifyTicketRequest
+    public class VerifyTicketInfo
     {
-        public Guid TicketId { get; set; }
         public long TransportId { get; set; }
         public float Longitude { get; set; }
         public float Latitude { get; set; }

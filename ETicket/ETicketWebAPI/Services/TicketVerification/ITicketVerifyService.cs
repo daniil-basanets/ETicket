@@ -1,9 +1,10 @@
 ﻿using ETicket.WebAPI.Models.TicketVerification;
+using System;
 
-namespace ETicket.WebAPI.Services.TicketVerifyService
+namespace ETicket.WebAPI.Services.TicketsService
 {
     public interface ITicketVerifyService
     {
-        VerifyTicketResponse VerifyTicket(VerifyTicketRequest request);
+        VerifyTicketResponse VerifyTicket(Guid ticketId, VerifyTicketInfo request);
     }
 }
