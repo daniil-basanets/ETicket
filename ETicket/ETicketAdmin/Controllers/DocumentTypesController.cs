@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
+using log4net;
+using System.Reflection;
+using System;
 
 namespace ETicket.Admin.Controllers
 {
@@ -10,6 +13,7 @@ namespace ETicket.Admin.Controllers
     public class DocumentTypesController : Controller
     {
         private readonly IDocumentTypesService service;
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public DocumentTypesController(IDocumentTypesService service)
         {
@@ -19,9 +23,18 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var documentTypes = service.GetDocumentTypes();
+            try
+            {
+                var documentTypes = service.GetDocumentTypes();
 
-            return View(documentTypes);
+                return View(documentTypes);
+            }
+            catch(Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -37,9 +50,18 @@ namespace ETicket.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                service.Create(documentTypeDto);
+                try
+                {
+                    service.Create(documentTypeDto);
 
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
+                catch(Exception e)
+                {
+                    log.Error(e);
+
+                    return BadRequest();
+                }
             }
 
             return View(documentTypeDto);
@@ -52,14 +74,23 @@ namespace ETicket.Admin.Controllers
             {
                 return NotFound();
             }
-
-            var documentType = service.GetDocumentTypeById(id.Value);
-            if (documentType == null)
+            try
             {
-                return NotFound();
-            }
+                var documentType = service.GetDocumentTypeById(id.Value);
 
-            return View(documentType);
+                if (documentType == null)
+                {
+                    return NotFound();
+                }
+
+                return View(documentType);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
         
         [HttpPost]
@@ -77,16 +108,11 @@ namespace ETicket.Admin.Controllers
                 {
                     service.Update(documentTypeDto);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception e)
                 {
-                    if (!service.Exists(documentTypeDto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    log.Error(e);
+
+                    return BadRequest();
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -102,23 +128,40 @@ namespace ETicket.Admin.Controllers
             {
                 return NotFound();
             }
-
-            var documentType = service.GetDocumentTypeById(id.Value);
-            if (documentType == null)
+            try
             {
-                return NotFound();
-            }
+                var documentType = service.GetDocumentTypeById(id.Value);
+                if (documentType == null)
+                {
+                    return NotFound();
+                }
 
-            return View(documentType);
+                return View(documentType);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
         
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            service.Delete(id);
+            try
+            {
+                service.Delete(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
     }
 }
