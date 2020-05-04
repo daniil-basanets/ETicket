@@ -26,7 +26,7 @@ namespace ETicket.ApplicationServices.Services
                 cfg.CreateMap<CarrierDto, Carrier>();
                 cfg.CreateMap<Carrier, CarrierDto>();
                 cfg.CreateMap<Area, AreaDto>();
-                cfg.CreateMap<Station, StationDto>();
+                cfg.CreateMap<StationDto, Station>();
             });
 
             var mapper = config.CreateMapper();
