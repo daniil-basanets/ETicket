@@ -13,9 +13,14 @@ namespace ETicket.Admin.Controllers
 {
     public class AccountController : Controller
     {
+
+        #region Private members
+
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+        #endregion
 
         public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
@@ -37,12 +42,13 @@ namespace ETicket.Admin.Controllers
                 if (ModelState.IsValid)
                 {
                     IdentityUser user = new IdentityUser { Email = model.Email, UserName = model.Email };
-
                     var result = await userManager.CreateAsync(user, model.Password);
+
                     if (result.Succeeded)
                     {
                         //await userManager.AddToRoleAsync(user, "SuperUser");// какая роль при регистрации?
                         await signInManager.SignInAsync(user, false);
+
                         return RedirectToAction("Login", "Account");
                     }
                     else
@@ -60,6 +66,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             } 
         }
@@ -74,6 +81,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
         }
@@ -87,6 +95,7 @@ namespace ETicket.Admin.Controllers
                 if (ModelState.IsValid)
                 {
                     var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                    
                     if (result.Succeeded)
                     {
                         if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
@@ -110,6 +119,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }   
         }
@@ -127,8 +137,10 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
+        }
 
         [HttpGet]
         public IActionResult AccessDenied()

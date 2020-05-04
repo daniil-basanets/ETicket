@@ -59,6 +59,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
         }
@@ -68,10 +69,13 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(TicketController.Details) + " id is null");
+
                 return NotFound();
             }
 
             Ticket ticket;
+
             try
             {
                 ticket = ticketService.GetTicketById((Guid)id);
@@ -79,11 +83,14 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
 
             if (ticket == null)
             {
+                log.Warn(nameof(TicketController.Details) + " ticket is null");
+
                 return NotFound();
             }
 
@@ -102,43 +109,37 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(TicketDto ticketDto)
         {
-            TicketType ticketType = null;
             try
             {
+                TicketType ticketType = null;
+
                 ticketType = ticketTypeService.GetTicketTypeById(ticketDto.TicketTypeId);
+
+                if (ticketType.IsPersonal && ticketDto.UserId == null)
+                {
+                    ModelState.AddModelError("", "User is not specified for personal ticket type");
+                    InitViewDataForSelectList();
+
+                    return View(ticketDto);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    ticketService.Create(ticketDto);
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                InitViewDataForSelectList(ticketDto);
+
+                return View(ticketDto);
             }
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
-
-            if (ticketType.IsPersonal && ticketDto.UserId == null)
-            {
-                ModelState.AddModelError("", "User is not specified for personal ticket type");
-                InitViewDataForSelectList();
-
-                return View(ticketDto);
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    ticketService.Create(ticketDto);
-                }
-                catch (Exception e)
-                {
-                    log.Error(e);
-                    return BadRequest();
-                }
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            InitViewDataForSelectList(ticketDto);
-
-            return View(ticketDto);
         }
 
         [HttpGet]
@@ -146,10 +147,13 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(TicketController.Edit) + " id is null");
+
                 return NotFound();
             }
 
             TicketDto ticketDto;
+
             try
             {
                 ticketDto = ticketService.GetDto((Guid)id);
@@ -157,11 +161,14 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
 
             if (ticketDto == null)
             {
+                log.Warn(nameof(TicketController.Edit) + " ticketDto is null");
+
                 return NotFound();
             }
 
@@ -178,45 +185,39 @@ namespace ETicket.Admin.Controllers
 
             if (id != ticketDto.Id)
             {
+                log.Warn(nameof(TicketController.Edit) + " id is not equal to ticketDto.Id");
+
                 return NotFound();
             }
 
             try
             {
-                ticketType = ticketTypeService.GetTicketTypeById(ticketDto.TicketTypeId);
+                ticketType = ticketTypeService.GetTicketTypeById(ticketDto.TicketTypeId);           
+
+                if (ticketType.IsPersonal && ticketDto.UserId == null)
+                {
+                    ModelState.AddModelError("", "User is not specified for personal ticket type");
+                    InitViewDataForSelectList();
+
+                    return View(ticketDto);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    ticketService.Update(ticketDto);
+                
+                    return RedirectToAction(nameof(Index));
+                }
+
+                InitViewDataForSelectList(ticketDto);
+
+                return View(ticketDto);
             }
             catch (Exception e)
             {
                 log.Error(e);
                 return BadRequest();
             }
-
-            if (ticketType.IsPersonal && ticketDto.UserId == null)
-            {
-                ModelState.AddModelError("", "User is not specified for personal ticket type");
-                InitViewDataForSelectList();
-
-                return View(ticketDto);
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    ticketService.Update(ticketDto);
-                }
-                catch (Exception e)
-                {
-                    log.Error(e);
-                    return BadRequest();
-                }
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            InitViewDataForSelectList(ticketDto);
-
-            return View(ticketDto);
         }
 
         [HttpGet]
@@ -224,10 +225,13 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(TicketController.Delete) + " id is null");
+
                 return NotFound();
             }
 
             Ticket ticket;
+
             try
             {
                 ticket = ticketService.GetTicketById((Guid)id);
@@ -235,11 +239,14 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
 
             if (ticket == null)
             {
+                log.Warn(nameof(TicketController.Delete) + " ticket is null");
+
                 return NotFound();
             }
 
@@ -257,6 +264,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
 

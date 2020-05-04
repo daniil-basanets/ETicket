@@ -14,9 +14,14 @@ namespace ETicket.Admin.Controllers
     [Authorize(Roles = "SuperUser")]
     public class AdminController : Controller
     {
+        #region Private members
+
         private readonly UserManager<IdentityUser> userManager;
-        RoleManager<IdentityRole> roleManager;
+        private RoleManager<IdentityRole> roleManager;
+
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+        #endregion
 
         public AdminController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
@@ -33,6 +38,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
         }
@@ -49,7 +55,8 @@ namespace ETicket.Admin.Controllers
                 }
                 else
                 {
-                    log.Warn("User was not found.");
+                    log.Warn(nameof(AdminController.Delete) + " user is null");
+
                     return NotFound();
                 }
 
@@ -58,6 +65,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }  
         }
@@ -83,12 +91,14 @@ namespace ETicket.Admin.Controllers
                     return View(model);
                 }
 
-                log.Warn("User was not found.");
+                log.Warn(nameof(AdminController.EditRoles) + " user is null");
+
                 return NotFound();
             }
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }           
         }
@@ -99,6 +109,7 @@ namespace ETicket.Admin.Controllers
             try
             {
                 var user = await userManager.FindByIdAsync(userId);
+
                 if (user != null)
                 {
                     var userRoles = await userManager.GetRolesAsync(user);
@@ -114,12 +125,14 @@ namespace ETicket.Admin.Controllers
                     return RedirectToAction("Index");
                 }
 
-                log.Warn("User was not found.");
+                log.Warn(nameof(AdminController.EditRoles) + " user is null");
+
                 return NotFound();
             }
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
         }

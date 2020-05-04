@@ -12,12 +12,12 @@ namespace ETicket.Admin.Controllers
     [Authorize(Roles = "Admin, SuperUser")]
     public class DocumentTypesController : Controller
     {
-        private readonly IDocumentTypesService service;
+        private readonly IDocumentTypesService documentTypeService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public DocumentTypesController(IDocumentTypesService service)
+        public DocumentTypesController(IDocumentTypesService documentTypeService)
         {
-            this.service = service;
+            this.documentTypeService = documentTypeService;
         }
         
         [HttpGet]
@@ -25,7 +25,7 @@ namespace ETicket.Admin.Controllers
         {
             try
             {
-                var documentTypes = service.GetDocumentTypes();
+                var documentTypes = documentTypeService.GetDocumentTypes();
 
                 return View(documentTypes);
             }
@@ -52,7 +52,7 @@ namespace ETicket.Admin.Controllers
             {
                 try
                 {
-                    service.Create(documentTypeDto);
+                    documentTypeService.Create(documentTypeDto);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -72,14 +72,18 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(DocumentTypesController.Edit) + " id is null");
+
                 return NotFound();
             }
             try
             {
-                var documentType = service.GetDocumentTypeById(id.Value);
+                var documentType = documentTypeService.GetDocumentTypeById(id.Value);
 
                 if (documentType == null)
                 {
+                    log.Warn(nameof(DocumentTypesController.Edit) + " documentType is null");
+
                     return NotFound();
                 }
 
@@ -99,6 +103,8 @@ namespace ETicket.Admin.Controllers
         {
             if (id != documentTypeDto.Id)
             {
+                log.Warn(nameof(DocumentTypesController.Edit) + " id is not equal to documentTypeDto.Id");
+
                 return NotFound();
             }
 
@@ -106,7 +112,7 @@ namespace ETicket.Admin.Controllers
             {
                 try
                 {
-                    service.Update(documentTypeDto);
+                    documentTypeService.Update(documentTypeDto);
                 }
                 catch (Exception e)
                 {
@@ -126,13 +132,19 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(DocumentTypesController.Delete) + " id is null");
+
                 return NotFound();
             }
+
             try
             {
-                var documentType = service.GetDocumentTypeById(id.Value);
+                var documentType = documentTypeService.GetDocumentTypeById(id.Value);
+
                 if (documentType == null)
                 {
+                    log.Warn(nameof(DocumentTypesController.Delete) + " documentType is null");
+
                     return NotFound();
                 }
 
@@ -152,7 +164,7 @@ namespace ETicket.Admin.Controllers
         {
             try
             {
-                service.Delete(id);
+                documentTypeService.Delete(id);
 
                 return RedirectToAction(nameof(Index));
             }

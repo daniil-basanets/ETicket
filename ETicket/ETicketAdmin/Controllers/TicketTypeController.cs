@@ -27,8 +27,6 @@ namespace ETicket.Admin.Controllers
             {
                 var ticketTypes = ticketTypeService.GetTicketType();
                 
-                logger.Info("Get Ticket types");
-
                 return View(ticketTypes);
             }
             catch (Exception exception)
@@ -44,8 +42,8 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
-                logger.Error("Id was not passed");
-                
+                logger.Warn(nameof(TicketTypeController.Details) + " id is null");
+
                 return NotFound();
             }
 
@@ -53,9 +51,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                ticketType = ticketTypeService.GetTicketTypeById(id.Value);
-                
-                logger.Info("Get ticket type");
+                ticketType = ticketTypeService.GetTicketTypeById(id.Value);                
             }
             catch (Exception exception)
             {
@@ -66,7 +62,7 @@ namespace ETicket.Admin.Controllers
 
             if (ticketType == null)
             {
-                logger.Error($"Not found ticket type with id:{id.Value}");
+                logger.Warn(nameof(TicketTypeController.Details) + " ticketType is null");
                 
                 return NotFound();
             }
@@ -85,17 +81,13 @@ namespace ETicket.Admin.Controllers
         public IActionResult Create(TicketTypeDto ticketTypeDto)
         {
             if (!ModelState.IsValid)
-            {
-                logger.Warn("Model is not valid");
-                
+            {                
                 return View(ticketTypeDto);
             }
 
             try
             {
-                ticketTypeService.Create(ticketTypeDto);
-                
-                logger.Info("New ticket type created");
+                ticketTypeService.Create(ticketTypeDto);                
             }
             catch (Exception exception)
             {
@@ -112,8 +104,8 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
-                logger.Error("Id was not passed");
-                
+                logger.Warn(nameof(TicketTypeController.Edit) + " id is null");
+
                 return NotFound();
             }
 
@@ -122,7 +114,6 @@ namespace ETicket.Admin.Controllers
             try
             {
                 ticketType = ticketTypeService.GetTicketTypeById(id.Value);
-                logger.Info("Get ticket type");
             }
             catch (Exception exception)
             {
@@ -133,8 +124,8 @@ namespace ETicket.Admin.Controllers
 
             if (ticketType == null)
             {
-                logger.Error($"Not found ticket type with id:{id.Value}");
-                
+                logger.Warn(nameof(TicketTypeController.Edit) + " ticketType is null");
+
                 return NotFound();
             }
             
@@ -147,8 +138,8 @@ namespace ETicket.Admin.Controllers
         {
             if (id != ticketTypeDto.Id)
             {
-                logger.Error($"Not found ticket type with id:{id}");
-                
+                logger.Warn(nameof(TicketTypeController.Edit) + " id is not equal to ticketTypeDto.Id");
+
                 return NotFound();
             }
 
@@ -157,8 +148,6 @@ namespace ETicket.Admin.Controllers
                 try
                 {
                     ticketTypeService.Update(ticketTypeDto);
-                    
-                    logger.Info("Ticket type updated");
                 }
                 catch (Exception exception)
                 {
@@ -176,7 +165,8 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
-                logger.Warn("Id was not passed");
+                logger.Warn(nameof(TicketTypeController.Delete) + " id is null");
+
                 return NotFound();
             }
 
@@ -191,12 +181,12 @@ namespace ETicket.Admin.Controllers
                 logger.Error(exception);
 
                 return BadRequest();
-            }
-            
+            }            
             
             if (ticketType == null)
             {
-                logger.Error($"Not found ticket type with id:{id}");
+                logger.Warn(nameof(TicketTypeController.Delete) + " ticketType is null");
+
                 return NotFound();
             }
 
@@ -217,6 +207,7 @@ namespace ETicket.Admin.Controllers
 
                 return BadRequest();
             }
+
             return RedirectToAction(nameof(Index));
         }
     }

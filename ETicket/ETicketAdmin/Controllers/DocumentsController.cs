@@ -1,42 +1,45 @@
 ﻿using System;
+using System.Reflection;
 using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services;
-using ETicket.ApplicationServices.Services.DocumentTypes;
-using ETicket.DataAccess.Domain.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
+using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-
-//TODO move common to another common project
-//TODO (nice ot have) Remove submit use ajax instead
-//TODO add logger for controllers (log4NET)
-//TODO Unit TESTS (coverage: in Services work must be mocked throw UnitOfWork, UOW must return mock instead of real DB data)
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class DocumentsController : Controller
     {
-        private readonly DocumentService documentService;
-        private readonly DocumentTypesService documentTypesService;
+        private readonly IDocumentService documentService;
+        private readonly IDocumentTypesService documentTypesService;
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public DocumentsController(IUnitOfWork unitOfWork)
+        public DocumentsController(IDocumentService documentService, IDocumentTypesService documentTypesService)
         {
-            documentService = new DocumentService(unitOfWork);
-            documentTypesService = new DocumentTypesService(unitOfWork);
+            this.documentService = documentService;
+            this.documentTypesService = documentTypesService;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
-            var documentsTypes = documentTypesService.GetDocumentTypes();
+            try
+            {
+                var documentsTypes = documentTypesService.GetDocumentTypes();
+                ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
+                var documents = documentService.GetDocuments();                
 
-            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
+                return View(documents);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            var documents = documentService.GetDocuments();
-
-            return View(documents);
+                return BadRequest();
+            }
+            
         }
 
         [HttpGet]
@@ -44,45 +47,78 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(DocumentsController.Details) + " id is null");
+
                 return NotFound();
             }
 
-            var document = documentService.GetDocumentById(id.Value);
-
-            if (document == null)
+            try
             {
-                return NotFound();
-            }
+                var document = documentService.GetDocumentById(id.Value);
 
-            return View(document);
+                if (document == null)
+                {
+                    log.Warn(nameof(DocumentsController.Details) + " document is null");
+
+                    return NotFound();
+                }
+
+                return View(document);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+            
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-            var documentsTypes = documentTypesService.GetDocumentTypes();
+            try
+            {
+                var documentsTypes = documentTypesService.GetDocumentTypes();
 
-            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
+                ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
 
-            return View();
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+            
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(DocumentDto documentDto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                documentService.Create(documentDto);
+                if (ModelState.IsValid)
+                {      
+                    documentService.Create(documentDto);
 
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var documentsTypes = documentTypesService.GetDocumentTypes();
+
+                ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
+
+                return View(documentDto);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            var documentsTypes = documentTypesService.GetDocumentTypes();
-
-            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
-
-            return View(documentDto);
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -90,21 +126,34 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(DocumentsController.Edit) + " id is null");
+
                 return NotFound();
             }
 
-            var document = documentService.GetDocumentById(id.Value);
-
-            if (document == null)
+            try
             {
-                return NotFound();
+                var document = documentService.GetDocumentById(id.Value);
+
+                if (document == null)
+                {
+                    log.Warn(nameof(DocumentsController.Edit) + " document is null");
+
+                    return NotFound();
+                }
+
+                var documentsTypes = documentTypesService.GetDocumentTypes();
+
+                ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", document.DocumentTypeId);
+
+                return View(document);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            var documentsTypes = documentTypesService.GetDocumentTypes();
-
-            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", document.DocumentTypeId);
-
-            return View(document);
+                return BadRequest();
+            }         
         }
 
         [HttpPost]
@@ -113,34 +162,32 @@ namespace ETicket.Admin.Controllers
         {
             if (id != documentDto.Id)
             {
+                log.Warn(nameof(DocumentsController.Edit) + " id isn't equal to documentDto.Id");
+
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
                     documentService.Update(documentDto);
+
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!documentService.Exists(documentDto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+
+                var documentsTypes = documentTypesService.GetDocumentTypes();
+
+                ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
+
+                return View(documentDto);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            var documentsTypes = documentTypesService.GetDocumentTypes();
-
-            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
-
-            return View(documentDto);
+                return BadRequest();
+            }
         }
         
         [HttpGet]
@@ -148,26 +195,49 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(DocumentsController.Delete) + " id is null");
+
                 return NotFound();
             }
 
-            var document = documentService.GetDocumentById(id.Value);
-
-            if (document == null)
+            try
             {
-                return NotFound();
-            }
+                var document = documentService.GetDocumentById(id.Value);
 
-            return View(document);
+                if (document == null)
+                {
+                    log.Warn(nameof(DocumentsController.Delete) + " document is null");
+
+                    return NotFound();
+                }
+
+                return View(document);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            documentService.Delete(id);
+            try
+            {
+                documentService.Delete(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+            
         }
     }
 }

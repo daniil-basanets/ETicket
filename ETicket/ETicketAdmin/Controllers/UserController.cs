@@ -14,18 +14,22 @@ namespace ETicket.Admin.Controllers
     [Authorize(Roles = "Admin, SuperUser")]
     public class UserController : Controller
     {
-        private readonly IUserService service;
-        private readonly IPrivilegeService PService;
-        private readonly IDocumentService DService;
-        private readonly IDocumentTypesService DTService;
+        #region Private members
+
+        private readonly IUserService userService;
+        private readonly IPrivilegeService privilegeService;
+        private readonly IDocumentService documentService;
+        private readonly IDocumentTypesService documentTypeService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public UserController(IPrivilegeService PService, IUserService service, IDocumentTypesService DTService, IDocumentService DService)
+        #endregion
+
+        public UserController(IPrivilegeService PService, IUserService UService, IDocumentTypesService DTService, IDocumentService DService)
         {
-            this.service = service;
-            this.PService = PService;
-            this.DService = DService;
-            this.DTService = DTService;
+            userService = UService;
+            privilegeService = PService;
+            documentService = DService;
+            documentTypeService = DTService;
         }
 
         [HttpGet]
@@ -33,12 +37,14 @@ namespace ETicket.Admin.Controllers
         {
             try
             {
-                ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name");
-                return View(service.GetUsers());
+                ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name");
+
+                return View(userService.GetUsers());
             }
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
         }
@@ -48,27 +54,28 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
-                log.Warn("User was not found.");
+                log.Warn(nameof(UserController.Details) + " id is null");
+
                 return NotFound();
             }
 
             try
             {
-                var user = service.GetUserById(id.Value);
+                var user = userService.GetUserById(id.Value);
 
                 if (user == null)
                 {
-                    log.Warn("User was not found.");
+                    log.Warn(nameof(UserController.Details) + " user is null");
+
                     return NotFound();
                 }
-                else
-                {
-                    return View(user);
-                }
+
+                return View(user);
             }
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
         }
@@ -78,58 +85,69 @@ namespace ETicket.Admin.Controllers
         {
             try
             {
-                ViewData["DocumentTypeId"] = new SelectList(DTService.GetDocumentTypes(), "Id", "Name");
+                ViewData["DocumentTypeId"] = new SelectList(documentTypeService.GetDocumentTypes(), "Id", "Name");
 
                 return View();
             }
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
-            }  
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateUserWithDocument(DocumentDto documentDto, UserDto userDto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    service.CreateUserWithDocument(documentDto, userDto);
+                    userService.CreateUserWithDocument(documentDto, userDto);
 
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception e)
-                {
-                    log.Error(e);
-                    return BadRequest();
-                }
+
+                ViewData["DocumentTypeId"] = new SelectList(documentTypeService.GetDocumentTypes(), "Id", "Name", documentDto.DocumentTypeId);
+
+                return View(documentDto);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            ViewData["DocumentTypeId"] = new SelectList(DTService.GetDocumentTypes(), "Id", "Name", documentDto.DocumentTypeId);
-
-            return View(documentDto);
+                return BadRequest();
+            }
         }
 
         [HttpGet]
         public IActionResult Create()
         {
+            try
+            {
+                ViewData["DocumentId"] = new SelectList(documentService.GetDocuments(), "Id", "Number");
+                ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name");
 
-            ViewData["DocumentId"] = new SelectList(DService.GetDocuments(), "Id", "Number");
-            ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name");
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return View();
+                return BadRequest();
+            }
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(UserDto userDto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
                     if (userDto.PrivilegeId != null)
                     {
@@ -137,22 +155,23 @@ namespace ETicket.Admin.Controllers
                     }
                     else
                     {
-                        service.CreateUser(userDto);
+                        userService.CreateUser(userDto);
 
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                catch (Exception e)
-                {
-                    log.Error(e);
-                    return BadRequest();
-                }
+
+                ViewData["DocumentId"] = new SelectList(documentService.GetDocuments(), "Id", "Number", userDto.DocumentId);
+                ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name", userDto.PrivilegeId);
+
+                return View(userDto);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            ViewData["DocumentId"] = new SelectList(DService.GetDocuments(), "Id", "Number", userDto.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name", userDto.PrivilegeId);
-
-            return View(userDto);
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -160,35 +179,35 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
-                log.Warn("User was not found.");
+                log.Warn(nameof(UserController.Create) + " id is null");
+
                 return NotFound();
             }
-            else
-            {
-                return View();
-            }
+
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SendMessage(Guid id, string message)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    service.SendMessage(id, message);
+                    userService.SendMessage(id, message);
 
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception e)
-                {
-                    log.Error(e);
-                    return BadRequest();
-                }
-            }
 
-            return View(message);
+                return View(message);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -196,23 +215,25 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
-                log.Warn("User was not found.");
+                log.Warn(nameof(UserController.Edit) + " id is null");
+
                 return NotFound();
             }
 
             try
             {
-                var user = service.GetUserById(id.Value);
+                var user = userService.GetUserById(id.Value);
 
                 if (user == null)
                 {
-                    log.Warn("User was not found.");
+                    log.Warn(nameof(UserController.Edit) + " user is null");
+
                     return NotFound();
                 }
                 else
                 {
-                    ViewData["DocumentId"] = new SelectList(DService.GetDocuments(), "Id", "Number", user.DocumentId);
-                    ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name", user.PrivilegeId);
+                    ViewData["DocumentId"] = new SelectList(documentService.GetDocuments(), "Id", "Number", user.DocumentId);
+                    ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name", user.PrivilegeId);
 
                     return View(user);
                 }
@@ -220,6 +241,7 @@ namespace ETicket.Admin.Controllers
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
         }
@@ -230,28 +252,31 @@ namespace ETicket.Admin.Controllers
         {
             if (id != userDto.Id)
             {
+                log.Warn(nameof(UserController.Edit) + " id is not equal to userDto.Id");
+
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    service.Update(userDto);
-                }
-                catch (Exception e)
-                {
-                    log.Error(e);
-                    throw;
+                    userService.Update(userDto);
+
+                    return RedirectToAction(nameof(Index));
                 }
 
-                return RedirectToAction(nameof(Index));
+                ViewData["DocumentId"] = new SelectList(documentService.GetDocuments(), "Id", "Number", userDto.DocumentId);
+                ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name", userDto.PrivilegeId);
+
+                return View(userDto);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            ViewData["DocumentId"] = new SelectList(DService.GetDocuments(), "Id", "Number", userDto.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name", userDto.PrivilegeId);
-
-            return View(userDto);
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -259,27 +284,28 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
-                log.Warn("User was not found.");
+                log.Warn(nameof(UserController.Edit) + " id is null");
+
                 return NotFound();
             }
 
             try
             {
-                var user = service.GetUserById(id.Value);
+                var user = userService.GetUserById(id.Value);
 
                 if (user == null)
                 {
-                    log.Warn("User was not found.");
+                    log.Warn(nameof(UserController.Edit) + " user is null");
+
                     return NotFound();
                 }
-                else
-                {
-                    return View(user);
-                }
+
+                return View(user);
             }
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
         }
@@ -290,13 +316,14 @@ namespace ETicket.Admin.Controllers
         {
             try
             {
-                service.Delete(id);
+                userService.Delete(id);
 
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception e)
             {
                 log.Error(e);
+
                 return BadRequest();
             }
         }
