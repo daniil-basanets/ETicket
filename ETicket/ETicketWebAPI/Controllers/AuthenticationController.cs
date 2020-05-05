@@ -147,22 +147,32 @@ namespace ETicket.WebAPI.Controllers
             }
         }
 
-        //[HttpPost("resetPassword")]
-        //public IActionResult ResetPassword([FromBody] string email)
-        //{
-        //    if (userManager.FindByEmailAsync(email).Result != null)
-        //    {
-        //        var secretString = SecretString.GetSecretString();
+        [HttpPost("resetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var code = await context.SecretCodes.FirstOrDefaultAsync(c => c.Code == request.ResetPasswordCode && c.Email == request.Email);
+            bool succeeded = false;
 
-        //        mailService.SendEmail(email, secretString, "Reset password");
+            var user = await userManager.FindByEmailAsync(request.Email);
 
-        //        return new JsonResult(new { secretString });
-        //    }
-        //    else
-        //    {
-        //        return NotFound();
-        //    }
-        //}
+            if (code != null && user != null)
+            {
+                context.SecretCodes.RemoveRange(context.SecretCodes.Where(x => x.Email == request.Email));
+                await context.SaveChangesAsync();
+
+                var resetPassToken = await userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await userManager.ResetPasswordAsync(user, resetPassToken, request.NewPassword);
+
+                if (result.Succeeded)
+                {
+                    return Ok(new { result.Succeeded });
+                }
+
+                return StatusCode(500, new { result.Succeeded });
+            }
+
+            return NotFound(succeeded);
+        }
 
         [HttpPost("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest request)
@@ -177,10 +187,8 @@ namespace ETicket.WebAPI.Controllers
                 succeeded = true;
                 return Ok(new { succeeded });
             }
-            else
-            {
-                return StatusCode(400, new { succeeded });
-            }
+
+            return StatusCode(400, new { succeeded });
         }
 
         [HttpPost("sendCode")]
