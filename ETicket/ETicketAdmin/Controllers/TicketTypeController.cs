@@ -5,6 +5,7 @@ using ETicket.ApplicationServices.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using log4net;
+using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.Admin.Controllers
 {
