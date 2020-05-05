@@ -15,7 +15,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="DocumentTypeId" class="control-label"></label>
+                <label asp-for="DocumentTypeId" class="control-label">@Html.DisplayNameFor(model => model.DocumentTypeId)</label>
                 <select asp-for="DocumentTypeId" class="form-control" asp-items="ViewBag.DocumentTypeId"></select>
                 <span asp-validation-for="DocumentTypeId" class="text-danger"></span>
             </div>
