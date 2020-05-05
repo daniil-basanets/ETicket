@@ -22,6 +22,7 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Transport> Transports { get; set; }
         public DbSet<Route> Routes { get; set; }
         public DbSet<TicketArea> TicketAreas { get; set; }
+        public DbSet<SecretCode> SecretCodes { get; set; }
 
         public DbSet<TicketVerification> TicketVerifications { get; set; }
         #endregion
