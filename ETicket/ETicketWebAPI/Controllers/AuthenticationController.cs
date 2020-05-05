@@ -112,10 +112,8 @@ namespace ETicket.WebAPI.Controllers
 
                     return new JsonResult(new { access_jwtToken, refresh_jwtToken });
                 }
-                else
-                {
-                    return StatusCode(500, new { signInResult.Succeeded });
-                }
+
+                return StatusCode(500, new { signInResult.Succeeded });
             }
 
             return StatusCode(400, new { ModelState.IsValid });
@@ -141,10 +139,8 @@ namespace ETicket.WebAPI.Controllers
 
                 return new JsonResult(new { access_jwtToken, refresh_jwtToken });
             }
-            else
-            {
-                return NotFound();
-            }
+
+            return NotFound();
         }
 
         [HttpPost("resetPassword")]
