@@ -35,7 +35,6 @@ namespace ETicket.ApplicationServices.Services.Transaction
             return unitOfWork
                     .TransactionHistory
                     .GetAll()
-                    .Include(t => t.TicketType)
                     .FirstOrDefault(t=> t.Id == id);
         }
     }
