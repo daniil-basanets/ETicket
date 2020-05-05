@@ -13,13 +13,13 @@ namespace ETicket.WebAPI.Validation
             RuleFor(u => u.FirstName)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("{PropertyName} is empty")
-                .Length(2, 50)
+                .Length(2, 25)
                 .Must(BeAValidName).WithMessage("{PropertyName} Contains invalid characters");
             
             RuleFor(u => u.LastName)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("{PropertyName} is empty")
-                .Length(2, 50)
+                .Length(2, 25)
                 .Must(BeAValidName).WithMessage("{PropertyName} Contains invalid characters");
 
             RuleFor(u => u.DateOfBirth)

@@ -11,7 +11,8 @@ namespace ETicketAdmin.Mapping
             CreateMap<DocumentTypeDto, DocumentType>(); 
             CreateMap<DocumentDto, Document>(); 
             CreateMap<TicketTypeDto, TicketType>(); 
-            CreateMap<UserDto, User>(); 
+            CreateMap<UserDto, User>();
+            CreateMap<User, UserDto>();
             CreateMap<TicketDto, Ticket>(); 
             CreateMap<Ticket, TicketDto>();
         }

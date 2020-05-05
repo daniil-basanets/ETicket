@@ -57,6 +57,14 @@ namespace ETicket.ApplicationServices.Services
             return uow.Users.Get(id);
         }
 
+        public UserDto GetUserDtoById(Guid id)
+        {
+            var user = uow.Users.Get(id);
+            var userDto = mapper.Map<User, UserDto>(user);
+
+            return userDto;
+        }
+
         public void SendMessage(Guid id, string message)
         {
             var user = GetUserById(id);

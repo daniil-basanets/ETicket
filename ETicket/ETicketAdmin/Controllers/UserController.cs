@@ -222,9 +222,9 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                var user = userService.GetUserById(id.Value);
+                var userDto = userService.GetUserDtoById(id.Value);
 
-                if (user == null)
+                if (userDto == null)
                 {
                     log.Warn(nameof(UserController.Edit) + " user is null");
 
@@ -232,10 +232,10 @@ namespace ETicket.Admin.Controllers
                 }
                 else
                 {
-                    ViewData["DocumentId"] = new SelectList(documentService.GetDocuments(), "Id", "Number", user.DocumentId);
-                    ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name", user.PrivilegeId);
+                    ViewData["DocumentId"] = new SelectList(documentService.GetDocuments(), "Id", "Number", userDto.DocumentId);
+                    ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name", userDto.PrivilegeId);
 
-                    return View(user);
+                    return View(userDto);
                 }
             }
             catch (Exception e)
