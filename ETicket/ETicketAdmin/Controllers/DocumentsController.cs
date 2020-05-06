@@ -38,8 +38,7 @@ namespace ETicket.Admin.Controllers
                 log.Error(e);
 
                 return BadRequest();
-            }
-            
+            }            
         }
 
         [HttpGet]
@@ -70,8 +69,7 @@ namespace ETicket.Admin.Controllers
                 log.Error(e);
 
                 return BadRequest();
-            }
-            
+            }            
         }
 
         [HttpGet]
@@ -90,8 +88,7 @@ namespace ETicket.Admin.Controllers
                 log.Error(e);
 
                 return BadRequest();
-            }
-            
+            }            
         }
 
         [HttpPost]
@@ -236,8 +233,7 @@ namespace ETicket.Admin.Controllers
                 log.Error(e);
 
                 return BadRequest();
-            }
-            
+            }            
         }
     }
 }

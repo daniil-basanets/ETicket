@@ -2,6 +2,9 @@
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
+using log4net;
+using System.Reflection;
+using System;
 
 namespace ETicket.WebAPI.Controllers
 {
@@ -10,6 +13,8 @@ namespace ETicket.WebAPI.Controllers
     public class RoutesController : ControllerBase
     {
         IRouteService routeService;
+
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public RoutesController(IRouteService iRouteService)
         {
@@ -25,60 +30,96 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet("{id}")]
         public IActionResult GetRoute(int id)
         {
-            var route = routeService.GetRouteById(id);
-
-            if (route == null)
+            try
             {
-                return NotFound();
-            }
+                var route = routeService.GetRouteById(id);
 
-            return new ObjectResult(route);
+                if (route == null)
+                {
+                    return NotFound();
+                }
+
+                return new ObjectResult(route);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }           
         }
 
         [HttpPut("{id}")]
         public IActionResult PutRoute(int id, RouteDto routeDto)
         {
-            if (id != routeDto.Id | routeDto == null)
+            try
             {
+                if (id != routeDto.Id | routeDto == null)
+                {
+                    return BadRequest();
+                }
+
+                if (!routeService.Exists(id))
+                {
+                    return NotFound();
+                }
+
+                routeService.Update(routeDto);
+
+                return Ok(routeDto);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
                 return BadRequest();
-            }
-
-            if (!routeService.Exists(id))
-            {
-                return NotFound();
-            }
-
-            routeService.Update(routeDto);
-
-            return Ok(routeDto);
+            }            
         }
 
         [HttpPost]
         public IActionResult PostRoute(RouteDto routeDto)
         {
-            if (routeDto == null)
+            try
             {
-                return BadRequest();
+                if (routeDto == null)
+                {
+                    return BadRequest();
+                }
+
+                routeService.Create(routeDto);
+
+                return Ok(routeDto);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            routeService.Create(routeDto);
-
-            return Ok(routeDto);
+                return BadRequest();
+            }            
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteRoute(int id)
         {
-            var route = routeService.GetRouteById(id);
-
-            if (route == null)
+            try
             {
-                return NotFound();
+                var route = routeService.GetRouteById(id);
+
+                if (route == null)
+                {
+                    return NotFound();
+                }
+
+                routeService.Delete(id);
+
+                return Ok(route);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            routeService.Delete(id);
-
-            return Ok(route);
+                return BadRequest();
+            }            
         }
     }
 }
