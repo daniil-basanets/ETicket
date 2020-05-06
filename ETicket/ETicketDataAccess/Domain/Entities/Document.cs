@@ -14,6 +14,7 @@ namespace ETicket.DataAccess.Domain.Entities
         public Guid Id { get; set; }
 
         [Required]
+        [DisplayName("Document Type")]
         public int DocumentTypeId { get; set; }
 
         [ForeignKey("DocumentTypeId")]

@@ -12,6 +12,7 @@ namespace ETicket.WebAPI.Controllers
     [Route("api/[controller]")]
     public class DocumentsController : ControllerBase
     {
+
         IDocumentService documentService;
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);

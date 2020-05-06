@@ -1,7 +1,10 @@
+using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.WebAPI.Models;
 using ETicket.WebAPI.Models.Interfaces;
+using log4net;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -9,14 +12,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
 
 namespace ETicket.WebAPI
 {
     public class Startup
     {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public Startup(IConfiguration configuration)
         {
-            LoggerService.Initialize();
+            //LoggerService.Initialize();
             Configuration = configuration;
         }
 
