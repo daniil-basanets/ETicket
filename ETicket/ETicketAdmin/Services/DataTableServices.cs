@@ -18,11 +18,11 @@ namespace ETicket.Admin.Services
             this.service = service;
         }
 
-        public object GetDataTablePage(DataTableParameters dataTableParameters)
+        public object GetDataTablePage(DataTablePagingInfo pagingInfo)
         {
             var data = service.GetAll();
-            var drawStep = dataTableParameters.Draw;
-            var countRecords = dataTableParameters.TotalEntries;
+            var drawStep = pagingInfo.DrawCounter;
+            var countRecords = pagingInfo.TotalEntries;
 
             //For single count query
             if (countRecords == -1)
@@ -30,53 +30,47 @@ namespace ETicket.Admin.Services
                 countRecords = data.Count();
             }
 
-            data = GetSortedQuery(data,
-                    dataTableParameters.Order, service.GetSortExpression());
+            data = GetSortedQuery(data, pagingInfo.SortingColumnNumber
+                , pagingInfo.SortingColumnDirection, service.GetSortExpression());
 
             var countFiltered = countRecords;
-            var searchString = dataTableParameters.Search.Value;
+            string searchString = pagingInfo.SearchValue;
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                data = GetSearchedQuery(data, service.GetSearchExpression(searchString));
+                data = GetSearchedQuery(data, service.GetSearchExpressions(searchString));
                 countFiltered = data.Count();
             }
 
             data = data
-                    .Skip((dataTableParameters.PageNumber - 1) * dataTableParameters.Length)
-                    .Take(dataTableParameters.Length);
+                    .Skip((pagingInfo.PageNumber - 1) * pagingInfo.PageSize)
+                    .Take(pagingInfo.PageSize);
 
             return GetJsonDataTable(data, drawStep, countRecords, countFiltered);
         }
 
-        private object GetJsonDataTable(IQueryable<T> data, int drawStep
-            , int countRecords, int countFiltered)
+        private object GetJsonDataTable(IQueryable<T> data, int drawCounter, int countRecords, int countFiltered)
         {
             return new
             {
-                draw = ++drawStep,
+                draw = ++drawCounter,
                 recordsTotal = countRecords,
                 recordsFiltered = countFiltered,
                 data = data
             };
         }
 
-        private IQueryable<T> GetSortedQuery(IQueryable<T> query
-            , List<DataOrder> orders, List<Expression<Func<T, string>>> expressions)
+        private IQueryable<T> GetSortedQuery(IQueryable<T> query, int columnNumber, string columnDirection, IList<Expression<Func<T, string>>> expressions)
         {
-            var order = orders.First();
-            return query.ApplySortBy(expressions[order.Column], order.Dir);
+            return query.ApplySortBy(expressions[columnNumber], columnDirection);
         }
 
-        private IQueryable<T> GetSearchedQuery(IQueryable<T> query
-            , Expression<Func<T, bool>> expression)
+        private IQueryable<T> GetSearchedQuery(IQueryable<T> query, Expression<Func<T, bool>> expression)
         {
             return query.Where(expression);
         }
 
-        private IQueryable<T> GetSearchedQuery(IQueryable<T> query
-            , List<Expression<Func<T, bool>>> expressions
-        )
+        private IQueryable<T> GetSearchedQuery(IQueryable<T> query, IList<Expression<Func<T, bool>>> expressions)
         {
             var exp = expressions.Combine();
 

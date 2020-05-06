@@ -21,7 +21,7 @@ $(document).ready(function () {
     //Variable for count entries
     var totalRecords = -1; 
     var pageNumber = 1;
-
+    //jQuery.ajaxSettings.traditional = false;
     var table = $('#dataTable')
         //Read additional fields from server side
         .on('xhr.dt', function (e, settings, json, xhr) {
@@ -32,6 +32,7 @@ $(document).ready(function () {
         })
         //DataTable settings
         .DataTable({
+            //cache: false,
             columnDefs: [
                 { orderable: false, targets: -1 }
             ],
@@ -40,11 +41,26 @@ $(document).ready(function () {
             order: [[1, "desc"]],
             ajax: {
                 url: 'Ticket/GetCurrentPage',
-                datatype: 'json',
-                type: 'POST',
-                data: function (d) {
-                    d.totalEntries = totalRecords;
-                    d.pageNumber = pageNumber;
+                //To send an array correctly by query string
+                traditional: true,
+                type: 'GET',
+                data: function (d) {                    
+                    var pagingData = {};
+                    pagingData.DrawCounter = d.draw;
+
+                    pagingData.PageSize = d.length;
+                    pagingData.TotalEntries = totalRecords;
+                    pagingData.PageNumber = pageNumber;
+
+                    pagingData.SortingColumnNumber = d.order[0]["column"];
+                    pagingData.SortingColumnDirection = d.order[0]["dir"];
+                    //Take only the first column sorting, while multi column sorting is enabled
+                    //pagingData.SortingColumnNumbers[0] = ;  
+                    //pagingData.SortingColumnDirections[0] = ;
+                    //alert(d.search["value"]);
+                    pagingData.SearchValue = d.search["value"];
+
+                    return pagingData;
                 }
             },
 

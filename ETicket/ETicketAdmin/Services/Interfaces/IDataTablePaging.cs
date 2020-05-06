@@ -9,8 +9,8 @@ namespace ETicket.Admin.Services.Interfaces
 {
     public interface IDataTablePaging<T>
     {
-        List<Expression<Func<T, string>>> GetSortExpression();
-        List<Expression<Func<T, bool>>> GetSearchExpression(string searchValue);
+        IList<Expression<Func<T, string>>> GetSortExpression();
+        IList<Expression<Func<T, bool>>> GetSearchExpressions(string searchValue);
         IQueryable<T> GetAll();
     }
 }

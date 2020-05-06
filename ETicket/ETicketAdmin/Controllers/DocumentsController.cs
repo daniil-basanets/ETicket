@@ -41,70 +41,70 @@ namespace ETicket.Admin.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult GetCurrentPage(DataTableParameters dataTableParameters)
-        {
-            var drawStep = int.Parse(Request.Form["draw"]);
+        //[HttpPost]
+        //public IActionResult GetCurrentPage(DataTableParameters dataTableParameters)
+        //{
+        //    var drawStep = int.Parse(Request.Form["draw"]);
 
-            var countRecords = unitOfWork
-                    .Documents
-                    .GetAll()
-                    .AsNoTracking()
-                    .Count();
+        //    var countRecords = unitOfWork
+        //            .Documents
+        //            .GetAll()
+        //            .AsNoTracking()
+        //            .Count();
 
-            IQueryable<Document> documents = unitOfWork
-                    .Documents
-                    .GetAll()
-                    .AsNoTracking()
-                    .Include(t => t.DocumentType);
+        //    IQueryable<Document> documents = unitOfWork
+        //            .Documents
+        //            .GetAll()
+        //            .AsNoTracking()
+        //            .Include(t => t.DocumentType);
 
-            SortDataTable(ref documents, dataTableParameters.Order);
-            SearchInDataTable(ref documents, dataTableParameters.Search.Value);
+        //    SortDataTable(ref documents, dataTableParameters.Order);
+        //    SearchInDataTable(ref documents, dataTableParameters.Search.Value);
 
-            var countFiltered = documents.Count();
+        //    var countFiltered = documents.Count();
 
-            documents = documents
-                    .Skip(dataTableParameters.Start)
-                    .Take(dataTableParameters.Length);
+        //    documents = documents
+        //            .Skip(dataTableParameters.Start)
+        //            .Take(dataTableParameters.PageSize);
 
-            return GetCurrentPage(documents, drawStep, countRecords, countFiltered);
-        }
+        //    return GetCurrentPage(documents, drawStep, countRecords, countFiltered);
+        //}
 
-        private void SearchInDataTable(
-            ref IQueryable<Document> users,
-            string searchString
-        )
-        {
-            //if (!string.IsNullOrEmpty(searchString))
-            //{
-            //    users = users.ApplySearchBy(
-            //        t =>
-            //        t.DocumentType.Name.StartsWith(searchString)
-            //         || t.Number.StartsWith(searchString)
-            //         || t.ExpirationDate.ToString().StartsWith(searchString)
-            //         || "Yes".StartsWith(searchString) ? t.IsValid == true : false
-            //         || "No".StartsWith(searchString) ? t.IsValid == false : false
-            //         );
-            //}
-        }
+        //private void SearchInDataTable(
+        //    ref IQueryable<Document> users,
+        //    string searchString
+        //)
+        //{
+        //    //if (!string.IsNullOrEmpty(searchString))
+        //    //{
+        //    //    users = users.ApplySearchBy(
+        //    //        t =>
+        //    //        t.DocumentType.Name.StartsWith(searchString)
+        //    //         || t.Number.StartsWith(searchString)
+        //    //         || t.ExpirationDate.ToString().StartsWith(searchString)
+        //    //         || "Yes".StartsWith(searchString) ? t.IsValid == true : false
+        //    //         || "No".StartsWith(searchString) ? t.IsValid == false : false
+        //    //         );
+        //    //}
+        //}
 
-        private void SortDataTable(
-            ref IQueryable<Document> documents,
-            List<DataOrder> orders
-        )
-        {
-            foreach (var order in orders)
-            {
-                documents = order.Column switch
-                {
-                    0 => documents.ApplySortBy(t => t.DocumentType.Name, order.Dir),
-                    1 => documents.ApplySortBy(t => t.Number, order.Dir),
-                    2 => documents.ApplySortBy(t => t.ExpirationDate, order.Dir),
-                    3 => documents.ApplySortBy(t => t.IsValid, order.Dir),
-                    _ => documents.ApplySortBy(t => t.ExpirationDate, "desc")
-                };
-            }
-        }
+        //private void SortDataTable(
+        //    ref IQueryable<Document> documents,
+        //    List<SortingOrder> orders
+        //)
+        //{
+        //    foreach (var order in orders)
+        //    {
+        //        documents = order.ColumnNumber switch
+        //        {
+        //            0 => documents.ApplySortBy(t => t.DocumentType.Name, order.Direction),
+        //            1 => documents.ApplySortBy(t => t.Number, order.Direction),
+        //            2 => documents.ApplySortBy(t => t.ExpirationDate, order.Direction),
+        //            3 => documents.ApplySortBy(t => t.IsValid, order.Direction),
+        //            _ => documents.ApplySortBy(t => t.ExpirationDate, "desc")
+        //        };
+        //    }
+        //}
 
         private JsonResult GetCurrentPage(
             IQueryable<Document> documents,

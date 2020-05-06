@@ -39,72 +39,72 @@ namespace ETicket.Admin.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult GetCurrentPage(DataTableParameters dataTableParameters)
-        {
-            var drawStep = int.Parse(Request.Form["draw"]);
+        //[HttpPost]
+        //public IActionResult GetCurrentPage(DataTableParameters dataTableParameters)
+        //{
+        //    var drawStep = int.Parse(Request.Form["draw"]);
 
-            var countRecords = repository
-                    .Users
-                    .GetAll()
-                    .AsNoTracking()
-                    .Count();
+        //    var countRecords = repository
+        //            .Users
+        //            .GetAll()
+        //            .AsNoTracking()
+        //            .Count();
 
-            IQueryable<User> users = repository
-                    .Users
-                    .GetAll()
-                    .AsNoTracking()
-                    .Include(t => t.Privilege)
-                    .Include(t => t.Document);
+        //    IQueryable<User> users = repository
+        //            .Users
+        //            .GetAll()
+        //            .AsNoTracking()
+        //            .Include(t => t.Privilege)
+        //            .Include(t => t.Document);
 
-            SortDataTable(ref users, dataTableParameters.Order);
-            SearchInDataTable(ref users, dataTableParameters.Search.Value);
+        //    SortDataTable(ref users, dataTableParameters.Order);
+        //    SearchInDataTable(ref users, dataTableParameters.Search.Value);
 
-            var countFiltered = users.Count();
+        //    var countFiltered = users.Count();
 
-            users = users
-                    .Skip(dataTableParameters.Start)
-                    .Take(dataTableParameters.Length);
+        //    users = users
+        //            .Skip(dataTableParameters.Start)
+        //            .Take(dataTableParameters.PageSize);
 
-            return GetCurrentPage(users, drawStep, countRecords, countFiltered);
-        }
+        //    return GetCurrentPage(users, drawStep, countRecords, countFiltered);
+        //}
 
-        private void SearchInDataTable(
-            ref IQueryable<User> users,
-            string searchString
-        )
-        {
-            //if (!string.IsNullOrEmpty(searchString))
-            //{
-            //    users = users.ApplySearchBy(
-            //        t =>
-            //        t.FirstName.StartsWith(searchString)
-            //         || t.LastName.StartsWith(searchString)
-            //         || t.DateOfBirth.ToString().Contains(searchString)
-            //         || t.Privilege.Name.StartsWith(searchString)
-            //         || t.Document.Number.StartsWith(searchString)
-            //         );
-            //}
-        }
+        //private void SearchInDataTable(
+        //    ref IQueryable<User> users,
+        //    string searchString
+        //)
+        //{
+        //    //if (!string.IsNullOrEmpty(searchString))
+        //    //{
+        //    //    users = users.ApplySearchBy(
+        //    //        t =>
+        //    //        t.FirstName.StartsWith(searchString)
+        //    //         || t.LastName.StartsWith(searchString)
+        //    //         || t.DateOfBirth.ToString().Contains(searchString)
+        //    //         || t.Privilege.Name.StartsWith(searchString)
+        //    //         || t.Document.Number.StartsWith(searchString)
+        //    //         );
+        //    //}
+        //}
 
-        private void SortDataTable(
-            ref IQueryable<User> users,
-            List<DataOrder> orders
-        )
-        {
-            foreach (var order in orders)
-            {
-                users = order.Column switch
-                {
-                    0 => users.ApplySortBy(t => t.FirstName, order.Dir),
-                    1 => users.ApplySortBy(t => t.LastName, order.Dir),
-                    2 => users.ApplySortBy(t => t.DateOfBirth, order.Dir),
-                    3 => users.ApplySortBy(t => t.Privilege.Name, order.Dir),
-                    4 => users.ApplySortBy(t => t.Document.Number, order.Dir),
-                    _ => users.ApplySortBy(t => t.FirstName, "asc")
-                };
-            }
-        }
+        //private void SortDataTable(
+        //    ref IQueryable<User> users,
+        //    List<SortingOrder> orders
+        //)
+        //{
+        //    foreach (var order in orders)
+        //    {
+        //        users = order.ColumnNumber switch
+        //        {
+        //            0 => users.ApplySortBy(t => t.FirstName, order.Direction),
+        //            1 => users.ApplySortBy(t => t.LastName, order.Direction),
+        //            2 => users.ApplySortBy(t => t.DateOfBirth, order.Direction),
+        //            3 => users.ApplySortBy(t => t.Privilege.Name, order.Direction),
+        //            4 => users.ApplySortBy(t => t.Document.Number, order.Direction),
+        //            _ => users.ApplySortBy(t => t.FirstName, "asc")
+        //        };
+        //    }
+        //}
 
         private JsonResult GetCurrentPage(
             IQueryable<User> users,

@@ -29,7 +29,7 @@ namespace ETicket.Admin.Services
                     .Include(t => t.User);
         }
 
-        public List<Expression<Func<Ticket, bool>>> GetSearchExpression(string searchValue)
+        public IList<Expression<Func<Ticket, bool>>> GetSearchExpressions(string searchValue)
         {
             return new List<Expression<Func<Ticket, bool>>>
                 {
@@ -42,7 +42,8 @@ namespace ETicket.Admin.Services
                 };
         }
 
-        public List<Expression<Func<Ticket, string>>> GetSortExpression()
+
+        public IList<Expression<Func<Ticket, string>>> GetSortExpression()
         {
             return new List<Expression<Func<Ticket, string>>>
                 {

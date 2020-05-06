@@ -39,70 +39,70 @@ namespace ETicket.Admin.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult GetCurrentPage(DataTableParameters dataTableParameters)
-        {
-            var drawStep = int.Parse(Request.Form["draw"]);
+        //[HttpPost]
+        //public IActionResult GetCurrentPage(DataTableParameters dataTableParameters)
+        //{
+        //    var drawStep = int.Parse(Request.Form["draw"]);
 
-            var countRecords = unitOfWork
-                    .TransactionHistory
-                    .GetAll()
-                    .AsNoTracking()
-                    .Count();
+        //    var countRecords = unitOfWork
+        //            .TransactionHistory
+        //            .GetAll()
+        //            .AsNoTracking()
+        //            .Count();
 
-            IQueryable<TransactionHistory> eTicketDataContext = unitOfWork
-                   .TransactionHistory
-                   .GetAll()
-                   .AsNoTracking()
-                   .Include(t => t.TicketType);
+        //    IQueryable<TransactionHistory> eTicketDataContext = unitOfWork
+        //           .TransactionHistory
+        //           .GetAll()
+        //           .AsNoTracking()
+        //           .Include(t => t.TicketType);
 
-            SortDataTable(ref eTicketDataContext, dataTableParameters.Order);
-            SearchInDataTable(ref eTicketDataContext, dataTableParameters.Search.Value);
+        //    SortDataTable(ref eTicketDataContext, dataTableParameters.Order);
+        //    SearchInDataTable(ref eTicketDataContext, dataTableParameters.Search.Value);
 
-            var countFiltered = eTicketDataContext.Count();
+        //    var countFiltered = eTicketDataContext.Count();
 
-            eTicketDataContext = eTicketDataContext
-                    .Skip(dataTableParameters.Start)
-                    .Take(dataTableParameters.Length);
+        //    eTicketDataContext = eTicketDataContext
+        //            .Skip(dataTableParameters.Start)
+        //            .Take(dataTableParameters.PageSize);
 
-            return GetCurrentPage(eTicketDataContext, drawStep, countRecords, countFiltered);
-        }
+        //    return GetCurrentPage(eTicketDataContext, drawStep, countRecords, countFiltered);
+        //}
 
-        private void SearchInDataTable(
-            ref IQueryable<TransactionHistory> eTicketDataContext,
-            string searchString
-        )
-        {
-            //if (!string.IsNullOrEmpty(searchString))
-            //{
-            //    eTicketDataContext = eTicketDataContext.ApplySearchBy(
-            //        t =>
-            //        t.TicketType.TypeName.StartsWith(searchString)
-            //         || t.ReferenceNumber.StartsWith(searchString)
-            //         || t.Date.ToString().Contains(searchString)
-            //         || t.Count.ToString().StartsWith(searchString)
-            //         || t.TotalPrice.ToString().StartsWith(searchString)
-            //         );
-            //}
-        }
+        //private void SearchInDataTable(
+        //    ref IQueryable<TransactionHistory> eTicketDataContext,
+        //    string searchString
+        //)
+        //{
+        //    //if (!string.IsNullOrEmpty(searchString))
+        //    //{
+        //    //    eTicketDataContext = eTicketDataContext.ApplySearchBy(
+        //    //        t =>
+        //    //        t.TicketType.TypeName.StartsWith(searchString)
+        //    //         || t.ReferenceNumber.StartsWith(searchString)
+        //    //         || t.Date.ToString().Contains(searchString)
+        //    //         || t.Count.ToString().StartsWith(searchString)
+        //    //         || t.TotalPrice.ToString().StartsWith(searchString)
+        //    //         );
+        //    //}
+        //}
 
-        private void SortDataTable(
-            ref IQueryable<TransactionHistory> eTicketDataContext,
-            List<DataOrder> orders
-        )
-        {
-            foreach (var order in orders)
-            {
-                eTicketDataContext = order.Column switch
-                {
-                    0 => eTicketDataContext.ApplySortBy(t => t.TotalPrice, order.Dir),
-                    1 => eTicketDataContext.ApplySortBy(t => t.Date, order.Dir),
-                    2 => eTicketDataContext.ApplySortBy(t => t.TicketType, order.Dir),
-                    3 => eTicketDataContext.ApplySortBy(t => t.Count, order.Dir),
-                    _ => eTicketDataContext.ApplySortBy(t => t.Date, "desc")
-                };
-            }
-        }
+        //private void SortDataTable(
+        //    ref IQueryable<TransactionHistory> eTicketDataContext,
+        //    List<SortingOrder> orders
+        //)
+        //{
+        //    foreach (var order in orders)
+        //    {
+        //        eTicketDataContext = order.ColumnNumber switch
+        //        {
+        //            0 => eTicketDataContext.ApplySortBy(t => t.TotalPrice, order.Direction),
+        //            1 => eTicketDataContext.ApplySortBy(t => t.Date, order.Direction),
+        //            2 => eTicketDataContext.ApplySortBy(t => t.TicketType, order.Direction),
+        //            3 => eTicketDataContext.ApplySortBy(t => t.Count, order.Direction),
+        //            _ => eTicketDataContext.ApplySortBy(t => t.Date, "desc")
+        //        };
+        //    }
+        //}
 
         private JsonResult GetCurrentPage(
             IQueryable<TransactionHistory> transactionHistory,

@@ -14,6 +14,7 @@ using ETicket.DataAccess.Domain.Interfaces;
 using ETicketAdmin.DTOs;
 using ETicket.Admin.Services;
 using System.Linq.Expressions;
+using Newtonsoft.Json;
 
 namespace ETicket.Admin.Controllers
 {
@@ -41,8 +42,8 @@ namespace ETicket.Admin.Controllers
             return View();
         }
 
-        [HttpPost]
-        public IActionResult GetCurrentPage(DataTableParameters dataTableParameters)
+        [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo dataTableParameters)
         {
             return Json(dataTableServices.GetDataTablePage(dataTableParameters));
         }
