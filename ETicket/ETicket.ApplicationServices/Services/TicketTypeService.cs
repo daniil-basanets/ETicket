@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
@@ -49,11 +48,6 @@ namespace ETicket.ApplicationServices.Services
         {
             unitOfWork.TicketTypes.Delete(id);
             unitOfWork.Save();
-        }
-        
-        public bool Exists(int id)
-        {
-            return unitOfWork.TicketTypes.Get(id) != null;
         }
     }
 }

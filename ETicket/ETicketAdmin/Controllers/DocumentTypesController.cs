@@ -3,25 +3,38 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
+using log4net;
+using System.Reflection;
+using System;
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class DocumentTypesController : Controller
     {
-        private readonly IDocumentTypesService service;
+        private readonly IDocumentTypesService documentTypeService;
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public DocumentTypesController(IDocumentTypesService service)
+        public DocumentTypesController(IDocumentTypesService documentTypeService)
         {
-            this.service = service;
+            this.documentTypeService = documentTypeService;
         }
         
         [HttpGet]
         public IActionResult Index()
         {
-            var documentTypes = service.GetDocumentTypes();
+            try
+            {
+                var documentTypes = documentTypeService.GetDocumentTypes();
 
-            return View(documentTypes);
+                return View(documentTypes);
+            }
+            catch(Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -37,9 +50,18 @@ namespace ETicket.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                service.Create(documentTypeDto);
+                try
+                {
+                    documentTypeService.Create(documentTypeDto);
 
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
+                catch(Exception e)
+                {
+                    log.Error(e);
+
+                    return BadRequest();
+                }
             }
 
             return View(documentTypeDto);
@@ -50,16 +72,29 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(DocumentTypesController.Edit) + " id is null");
+
                 return NotFound();
             }
-
-            var documentType = service.GetDocumentTypeById(id.Value);
-            if (documentType == null)
+            try
             {
-                return NotFound();
-            }
+                var documentType = documentTypeService.GetDocumentTypeById(id.Value);
 
-            return View(documentType);
+                if (documentType == null)
+                {
+                    log.Warn(nameof(DocumentTypesController.Edit) + " documentType is null");
+
+                    return NotFound();
+                }
+
+                return View(documentType);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
         
         [HttpPost]
@@ -68,6 +103,8 @@ namespace ETicket.Admin.Controllers
         {
             if (id != documentTypeDto.Id)
             {
+                log.Warn(nameof(DocumentTypesController.Edit) + " id is not equal to documentTypeDto.Id");
+
                 return NotFound();
             }
 
@@ -75,18 +112,13 @@ namespace ETicket.Admin.Controllers
             {
                 try
                 {
-                    service.Update(documentTypeDto);
+                    documentTypeService.Update(documentTypeDto);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception e)
                 {
-                    if (!service.Exists(documentTypeDto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    log.Error(e);
+
+                    return BadRequest();
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -100,25 +132,48 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(DocumentTypesController.Delete) + " id is null");
+
                 return NotFound();
             }
 
-            var documentType = service.GetDocumentTypeById(id.Value);
-            if (documentType == null)
+            try
             {
-                return NotFound();
-            }
+                var documentType = documentTypeService.GetDocumentTypeById(id.Value);
 
-            return View(documentType);
+                if (documentType == null)
+                {
+                    log.Warn(nameof(DocumentTypesController.Delete) + " documentType is null");
+
+                    return NotFound();
+                }
+
+                return View(documentType);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
         
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            service.Delete(id);
+            try
+            {
+                documentTypeService.Delete(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
     }
 }

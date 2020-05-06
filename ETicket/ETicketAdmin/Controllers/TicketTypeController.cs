@@ -1,8 +1,11 @@
+using System;
+using System.Reflection;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using log4net;
 
 namespace ETicket.Admin.Controllers
 {
@@ -10,6 +13,7 @@ namespace ETicket.Admin.Controllers
     public class TicketTypeController : Controller
     {
         private readonly ITicketTypeService ticketTypeService;
+        private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public TicketTypeController(ITicketTypeService ticketTypeService)
         {
@@ -19,7 +23,18 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View(ticketTypeService.GetTicketType());
+            try
+            {
+                var ticketTypes = ticketTypeService.GetTicketType();
+                
+                return View(ticketTypes);
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception);
+
+                return BadRequest();
+            }
         }
         
         [HttpGet]
@@ -27,13 +42,28 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                logger.Warn(nameof(TicketTypeController.Details) + " id is null");
+
                 return NotFound();
             }
 
-            var ticketType = ticketTypeService.GetTicketTypeById(id.Value);
-            
+            TicketType ticketType;
+
+            try
+            {
+                ticketType = ticketTypeService.GetTicketTypeById(id.Value);                
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception);
+                
+                return BadRequest();
+            }
+
             if (ticketType == null)
             {
+                logger.Warn(nameof(TicketTypeController.Details) + " ticketType is null");
+                
                 return NotFound();
             }
 
@@ -51,12 +81,21 @@ namespace ETicket.Admin.Controllers
         public IActionResult Create(TicketTypeDto ticketTypeDto)
         {
             if (!ModelState.IsValid)
-            {
+            {                
                 return View(ticketTypeDto);
             }
 
-            ticketTypeService.Create(ticketTypeDto);
+            try
+            {
+                ticketTypeService.Create(ticketTypeDto);                
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception);
 
+                return BadRequest();
+            }
+            
             return RedirectToAction(nameof(Index));
         }
         
@@ -65,13 +104,28 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                logger.Warn(nameof(TicketTypeController.Edit) + " id is null");
+
                 return NotFound();
             }
 
-            var ticketType = ticketTypeService.GetTicketTypeById(id.Value);
-            
+            TicketType ticketType;
+
+            try
+            {
+                ticketType = ticketTypeService.GetTicketTypeById(id.Value);
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception);
+
+                return BadRequest();
+            }
+
             if (ticketType == null)
             {
+                logger.Warn(nameof(TicketTypeController.Edit) + " ticketType is null");
+
                 return NotFound();
             }
             
@@ -84,26 +138,25 @@ namespace ETicket.Admin.Controllers
         {
             if (id != ticketTypeDto.Id)
             {
+                logger.Warn(nameof(TicketTypeController.Edit) + " id is not equal to ticketTypeDto.Id");
+
                 return NotFound();
             }
 
-            if (!ModelState.IsValid) return View(ticketTypeDto);
-            try
+            if (ModelState.IsValid)
             {
-                ticketTypeService.Update(ticketTypeDto);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ticketTypeService.Exists(ticketTypeDto.Id))
+                try
                 {
-                    return NotFound();
+                    ticketTypeService.Update(ticketTypeDto);
                 }
-                else
+                catch (Exception exception)
                 {
-                    throw;
+                    logger.Error(exception);
+
+                    return BadRequest();
                 }
             }
-                
+            
             return RedirectToAction(nameof(Index));
         }
         
@@ -112,13 +165,28 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                logger.Warn(nameof(TicketTypeController.Delete) + " id is null");
+
                 return NotFound();
             }
 
-            var ticketType = ticketTypeService.GetTicketTypeById(id.Value);
+            TicketType ticketType;
+
+            try
+            {
+                ticketType = ticketTypeService.GetTicketTypeById(id.Value);
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception);
+
+                return BadRequest();
+            }            
             
             if (ticketType == null)
             {
+                logger.Warn(nameof(TicketTypeController.Delete) + " ticketType is null");
+
                 return NotFound();
             }
 
@@ -129,8 +197,17 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            ticketTypeService.Delete(id);
-            
+            try
+            {
+                ticketTypeService.Delete(id);
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception);
+
+                return BadRequest();
+            }
+
             return RedirectToAction(nameof(Index));
         }
     }

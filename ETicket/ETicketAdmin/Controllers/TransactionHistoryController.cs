@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using ETicket.ApplicationServices.Services.Interfaces;
+using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -15,11 +17,11 @@ namespace ETicket.Admin.Controllers
         private readonly ITransactionAppService transactionAppService;
         private readonly ITicketTypeService ticketTypeService;
 
+        private readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         #endregion
 
-        public TransactionHistoryController(
-            ITransactionAppService transactionAppService,
-            ITicketTypeService ticketTypeService)
+        public TransactionHistoryController(ITransactionAppService transactionAppService, ITicketTypeService ticketTypeService)
         {
             this.transactionAppService = transactionAppService;
             this.ticketTypeService = ticketTypeService;
@@ -28,14 +30,23 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var transactions = transactionAppService.GetTransactions();
-            var ticketTypes = ticketTypeService.GetTicketType()
-                    .OrderBy(t => t.TypeName)
-                    .Select(t => new { t.Id, t.TypeName });
+            try
+            {
+                var transactions = transactionAppService.GetTransactions();
+                var ticketTypes = ticketTypeService.GetTicketType()
+                        .OrderBy(t => t.TypeName)
+                        .Select(t => new { t.Id, t.TypeName });
 
-            ViewData["TicketTypeId"] = new SelectList(ticketTypes, "Id", "TypeName");
+                ViewData["TicketTypeId"] = new SelectList(ticketTypes, "Id", "TypeName");
 
-            return View(transactions);
+                return View(transactions);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -43,17 +54,30 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(TransactionHistoryController.Details) + " id is null");
+
                 return NotFound();
             }
 
-            var transaction = transactionAppService.GetTransactionById(id.Value);
-
-            if (transaction == null)
+            try
             {
-                return NotFound();
-            }
+                var transaction = transactionAppService.GetTransactionById(id.Value);
 
-            return View(transaction);
+                if (transaction == null)
+                {
+                    log.Warn(nameof(TransactionHistoryController.Details) + " transaction is null");
+
+                    return NotFound();
+                }
+
+                return View(transaction);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }            
         }
     }
 }

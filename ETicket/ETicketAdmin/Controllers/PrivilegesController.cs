@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.Services.Interfaces;
+using log4net;
+using System.Reflection;
+using System;
 
 namespace ETicket.Admin.Controllers
 {
@@ -12,6 +15,8 @@ namespace ETicket.Admin.Controllers
         #region
 
         private readonly IPrivilegeService privilegeService;
+
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 
@@ -31,17 +36,30 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(PrivilegesController.Details) + " id is null");
+
                 return NotFound();
             }
 
-            var privilege = privilegeService.GetPrivilegeById((int)id);
-
-            if (privilege == null)
+            try
             {
-                return NotFound();
-            }
+                var privilege = privilegeService.GetPrivilegeById((int)id);
 
-            return View(privilege);
+                if (privilege == null)
+                {
+                    log.Warn(nameof(PrivilegesController.Details) + " privilege is null");
+
+                    return NotFound();
+                }
+
+                return View(privilege);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }            
         }
 
         [HttpGet]
@@ -54,14 +72,24 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(PrivilegeDto privilegeDto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                privilegeService.Create(privilegeDto);
+                if (ModelState.IsValid)
+                {
+                    privilegeService.Create(privilegeDto);
 
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(privilegeDto);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return View(privilegeDto);
+                return BadRequest();
+            }
+            
         }
 
         [HttpGet]
@@ -69,17 +97,28 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(PrivilegesController.Edit) + " id is null");
+
                 return NotFound();
             }
 
-            var privilege = privilegeService.GetPrivilegeById(id.Value);
-
-            if (privilege == null)
+            try
             {
-                return NotFound();
-            }
+                var privilege = privilegeService.GetPrivilegeById(id.Value);
 
-            return View(privilege);
+                if (privilege == null)
+                {
+                    return NotFound();
+                }
+
+                return View(privilege);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         [HttpPost]
@@ -88,6 +127,8 @@ namespace ETicket.Admin.Controllers
         {
             if (id != privilegeDto.Id)
             {
+                log.Warn(nameof(PrivilegesController.Edit) + " id is not equal to privilegeDto.Id");
+
                 return NotFound();
             }
 
@@ -97,16 +138,11 @@ namespace ETicket.Admin.Controllers
                 {
                     privilegeService.Update(privilegeDto);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception e)
                 {
-                    if (!privilegeService.Exists(privilegeDto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    log.Error(e);
+
+                    return BadRequest();
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -120,27 +156,48 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(PrivilegesController.Edit) + " id is null");
+
                 return NotFound();
             }
 
-            var privilege = privilegeService.GetPrivilegeById(id.Value);
-
-            if (privilege == null)
+            try
             {
-                return NotFound();
+                var privilege = privilegeService.GetPrivilegeById(id.Value);
+
+                if (privilege == null)
+                {
+                    log.Warn(nameof(PrivilegesController.Edit) + " privilege is null");
+
+                    return NotFound();
+                }
+
+                return View(privilege);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return View(privilege);
+                return BadRequest();
+            }            
         }
-
        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            privilegeService.Delete(id);
+            try
+            {
+                privilegeService.Delete(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }            
         }
     }
 }

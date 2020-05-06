@@ -6,23 +6,30 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
+using log4net;
+using System.Reflection;
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class UserController : Controller
     {
-        private readonly IUserService service;
-        private readonly IPrivilegeService PService;
-        private readonly IDocumentService DService;
-        private readonly IDocumentTypesService DTService;
+        #region Private members
 
-        public UserController(IPrivilegeService PService, IUserService service, IDocumentTypesService DTService, IDocumentService DService)
+        private readonly IUserService userService;
+        private readonly IPrivilegeService privilegeService;
+        private readonly IDocumentService documentService;
+        private readonly IDocumentTypesService documentTypeService;
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+        #endregion
+
+        public UserController(IPrivilegeService PService, IUserService UService, IDocumentTypesService DTService, IDocumentService DService)
         {
-            this.service = service;
-            this.PService = PService;
-            this.DService = DService;
-            this.DTService = DTService;
+            userService = UService;
+            privilegeService = PService;
+            documentService = DService;
+            documentTypeService = DTService;
         }
 
         [HttpGet]
@@ -30,95 +37,117 @@ namespace ETicket.Admin.Controllers
         {
             try
             {
-                ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name");
+                ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name");
 
-                return View(service.GetUsers());
+                return View(userService.GetUsers());
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                log.Error(e);
 
-                throw;
+                return BadRequest();
             }
         }
 
         [HttpGet]
-        public IActionResult Details(Guid id)
+        public IActionResult Details(Guid? id)
         {
             if (id == null)
             {
+                log.Warn(nameof(UserController.Details) + " id is null");
+
                 return NotFound();
             }
 
             try
             {
-                var user = service.GetUserById(id);
+                var user = userService.GetUserById(id.Value);
 
                 if (user == null)
                 {
+                    log.Warn(nameof(UserController.Details) + " user is null");
 
                     return NotFound();
                 }
-                else
-                {
-                    return View(user);
-                }
-            }
-            catch (Exception)
-            {
 
-                throw;
+                return View(user);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
             }
         }
 
         [HttpGet]
-        public IActionResult CreateUserWithDocument(UserDto userDto)
+        public IActionResult CreateUserWithDocument()
         {
-            ViewData["DocumentTypeId"] = new SelectList(DTService.GetDocumentTypes(), "Id", "Name");
+            try
+            {
+                ViewData["DocumentTypeId"] = new SelectList(documentTypeService.GetDocumentTypes(), "Id", "Name");
 
-            return View();
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CreateUserWithDocument(DocumentDto documentDto, UserDto userDto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    service.CreateUserWithDocument(documentDto, userDto);
+                    userService.CreateUserWithDocument(documentDto, userDto);
 
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception)
-                {
 
-                    throw;
-                }
+                ViewData["DocumentTypeId"] = new SelectList(documentTypeService.GetDocumentTypes(), "Id", "Name", documentDto.DocumentTypeId);
+
+                return View(documentDto);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            ViewData["DocumentTypeId"] = new SelectList(DTService.GetDocumentTypes(), "Id", "Name", documentDto.DocumentTypeId);
-
-            return View(documentDto);
+                return BadRequest();
+            }
         }
 
         [HttpGet]
         public IActionResult Create()
         {
+            try
+            {
+                ViewData["DocumentId"] = new SelectList(documentService.GetDocuments(), "Id", "Number");
+                ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name");
 
-            ViewData["DocumentId"] = new SelectList(DService.GetDocuments(), "Id", "Number");
-            ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name");
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return View();
+                return BadRequest();
+            }
+
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(UserDto userDto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
                     if (userDto.PrivilegeId != null)
                     {
@@ -126,171 +155,176 @@ namespace ETicket.Admin.Controllers
                     }
                     else
                     {
-                        service.CreateUser(userDto);
+                        userService.CreateUser(userDto);
 
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                catch (Exception)
-                {
 
-                    throw;
-                }
+                ViewData["DocumentId"] = new SelectList(documentService.GetDocuments(), "Id", "Number", userDto.DocumentId);
+                ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name", userDto.PrivilegeId);
+
+                return View(userDto);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            ViewData["DocumentId"] = new SelectList(DService.GetDocuments(), "Id", "Number", userDto.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name", userDto.PrivilegeId);
-
-            return View(userDto);
+                return BadRequest();
+            }
         }
 
         [HttpGet]
-        public IActionResult SendMessage(Guid id)
+        public IActionResult SendMessage(Guid? id)
         {
             if (id == null)
             {
+                log.Warn(nameof(UserController.Create) + " id is null");
+
                 return NotFound();
             }
-            else
-            {
-                return View();
-            }
+
+            return View();
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SendMessage(Guid id, string message)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    service.SendMessage(id, message);
+                    userService.SendMessage(id, message);
 
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception)
-                {
 
-                    throw;
-                }
+                return View(message);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return View(message);
+                return BadRequest();
+            }
         }
 
         [HttpGet]
-        public IActionResult Edit(Guid id)
+        public IActionResult Edit(Guid? id)
         {
             if (id == null)
             {
+                log.Warn(nameof(UserController.Edit) + " id is null");
+
                 return NotFound();
             }
 
             try
             {
-                var user = service.GetUserById(id);
+                var user = userService.GetUserById(id.Value);
 
                 if (user == null)
                 {
+                    log.Warn(nameof(UserController.Edit) + " user is null");
 
                     return NotFound();
                 }
                 else
                 {
-                    ViewData["DocumentId"] = new SelectList(DService.GetDocuments(), "Id", "Number", user.DocumentId);
-                    ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name", user.PrivilegeId);
+                    ViewData["DocumentId"] = new SelectList(documentService.GetDocuments(), "Id", "Number", user.DocumentId);
+                    ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name", user.PrivilegeId);
 
                     return View(user);
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                log.Error(e);
 
-                throw;
+                return BadRequest();
             }
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, UserDto userDto)
         {
             if (id != userDto.Id)
             {
-                return NotFound();
-            }
+                log.Warn(nameof(UserController.Edit) + " id is not equal to userDto.Id");
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    service.Update(userDto);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!service.Exists(userDto.Id))
-                    {
-
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            ViewData["DocumentId"] = new SelectList(DService.GetDocuments(), "Id", "Number", userDto.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(PService.GetPrivileges(), "Id", "Name", userDto.PrivilegeId);
-
-            return View(userDto);
-        }
-
-        [HttpGet]
-        public IActionResult Delete(Guid id)
-        {
-            if (id == null)
-            {
                 return NotFound();
             }
 
             try
             {
-                var user = service.GetUserById(id);
+                if (ModelState.IsValid)
+                {
+                    userService.Update(userDto);
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ViewData["DocumentId"] = new SelectList(documentService.GetDocuments(), "Id", "Number", userDto.DocumentId);
+                ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name", userDto.PrivilegeId);
+
+                return View(userDto);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult Delete(Guid? id)
+        {
+            if (id == null)
+            {
+                log.Warn(nameof(UserController.Edit) + " id is null");
+
+                return NotFound();
+            }
+
+            try
+            {
+                var user = userService.GetUserById(id.Value);
 
                 if (user == null)
                 {
+                    log.Warn(nameof(UserController.Edit) + " user is null");
 
                     return NotFound();
                 }
-                else
-                {
-                    return View(user);
-                }
-            }
-            catch (Exception)
-            {
 
-                throw;
+                return View(user);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
             }
         }
-        
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
             try
             {
-                service.Delete(id);
+                userService.Delete(id);
 
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                log.Error(e);
 
-                throw;
+                return BadRequest();
             }
         }
     }

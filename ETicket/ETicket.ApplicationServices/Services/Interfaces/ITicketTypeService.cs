@@ -15,7 +15,5 @@ namespace ETicket.ApplicationServices.Services.Interfaces
         public void Update(TicketTypeDto documentTypeDto);
 
         public void Delete(int id);
-
-        public bool Exists(int id);
     }
 }
