@@ -27,14 +27,22 @@ namespace ETicket.ApplicationServices.Services
 
         #endregion
                 
-        public IEnumerable<Area> GetAll()
+        public IEnumerable<Area> GetAreas()
         {
             return unitOfWork.Areas.GetAll().ToList();
         }
 
-        public Area Get(int id)
+        public Area GetAreaById(int id)
         {
             return unitOfWork.Areas.Get(id);
+        }
+
+        public AreaDto GetAreaDtoById(int id)
+        {
+            var area = unitOfWork.Areas.Get(id);
+            var areaDto = mapper.Map<Area, AreaDto>(area);
+
+            return areaDto;
         }
 
         public void Create(AreaDto areaDto)
@@ -57,11 +65,6 @@ namespace ETicket.ApplicationServices.Services
         {
             unitOfWork.Areas.Delete(id);
             unitOfWork.Save();
-        }
-
-        public bool Exists(int id)
-        {
-            return unitOfWork.Areas.Get(id) != null;
         }
     }
 }

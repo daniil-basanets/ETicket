@@ -6,16 +6,16 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface IAreaService
     {
-        public IEnumerable<Area> GetAll();
+        public IEnumerable<Area> GetAreas();
         
-        public Area Get(int id);
+        public Area GetAreaById(int id);
+        
+        public AreaDto GetAreaDtoById(int id);
 
         public void Create(AreaDto areaDto);
 
         public void Update(AreaDto areaDto);
 
         public void Delete(int id);
-
-        public bool Exists(int id);
     }
 }

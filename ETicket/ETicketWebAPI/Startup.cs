@@ -1,3 +1,5 @@
+using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.WebAPI.Models;
@@ -42,6 +44,7 @@ namespace ETicket.WebAPI
 
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
             services.AddTransient<IUnitOfWork, UnitOfWork>(e => new UnitOfWork(e.GetService<ETicketDataContext>()));
+            services.AddTransient<IAreaService, AreaService>();
             
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ETicketDataContext>();
             services.AddIdentityCore<IdentityUser>(o =>
