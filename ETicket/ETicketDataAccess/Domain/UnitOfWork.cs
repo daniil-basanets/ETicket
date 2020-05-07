@@ -27,6 +27,7 @@ namespace ETicket.DataAccess.Domain
         private TransportRepository transportRepository;
         private TicketAreaRepository ticketAreaRepository;
         private TicketVerificationRepository ticketVerificationRepository;
+        private SecretCodeRepository secretCodeRepository;
 
         #endregion
 
@@ -153,7 +154,6 @@ namespace ETicket.DataAccess.Domain
             }
         }
         
-
         public StationRepository Stations
         {
             get
@@ -191,7 +191,6 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-
         public TicketVerificationRepository TicketVerifications
         {
             get
@@ -201,6 +200,17 @@ namespace ETicket.DataAccess.Domain
                     ticketVerificationRepository = new TicketVerificationRepository(eTicketDataContext);
                 }
                 return ticketVerificationRepository;
+            }
+        }
+
+        public SecretCodeRepository SecretCodes
+        {
+            get
+            {
+                if (secretCodeRepository == null)
+                    secretCodeRepository = new SecretCodeRepository(eTicketDataContext);
+
+                return secretCodeRepository;
             }
         }
 

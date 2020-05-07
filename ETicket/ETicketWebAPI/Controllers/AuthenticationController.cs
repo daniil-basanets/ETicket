@@ -27,14 +27,16 @@ namespace ETicket.WebAPI.Controllers
         private IdentityUser user;
         private readonly IMailService mailService;
         private readonly IUserService ETUserService;
+        private readonly ISecretCodeService codeService;
 
-        public AuthenticationController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ETicketDataContext context, IMailService mailService, IUserService ETUserService)
+        public AuthenticationController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ETicketDataContext context, IMailService mailService, IUserService ETUserService, ISecretCodeService codeService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.context = context;
             this.mailService = mailService;
             this.ETUserService = ETUserService;
+            this.codeService = codeService;
         }
 
         // Check if email exists
@@ -146,15 +148,14 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost("resetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
-            var code = await context.SecretCodes.FirstOrDefaultAsync(c => c.Code == request.ResetPasswordCode && c.Email == request.Email);
+            var code = codeService.Get(request.ResetPasswordCode, request.Email).Result;
             bool succeeded = false;
 
             var user = await userManager.FindByEmailAsync(request.Email);
 
             if (code != null && user != null)
             {
-                context.SecretCodes.RemoveRange(context.SecretCodes.Where(x => x.Email == request.Email));
-                await context.SaveChangesAsync();
+                codeService.RemoveRange(request.Email);
 
                 var resetPassToken = await userManager.GeneratePasswordResetTokenAsync(user);
                 var result = await userManager.ResetPasswordAsync(user, resetPassToken, request.NewPassword);
@@ -173,13 +174,13 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest request)
         {
-            var code = await context.SecretCodes.FirstOrDefaultAsync(c => c.Code == request.AuthenticationCode && c.Email == request.Email);
+            var code = await codeService.Get(request.AuthenticationCode, request.Email);
             bool succeeded = false;
 
             if (code != null)
             {
-                context.SecretCodes.RemoveRange(context.SecretCodes.Where(x => x.Email == request.Email));
-                await context.SaveChangesAsync();
+                codeService.RemoveRange(request.Email);
+
                 succeeded = true;
                 return Ok(new { succeeded });
             }
@@ -190,7 +191,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost("sendCode")]
         public void SendSecretCodeToUser([FromBody] string email)
         {
-            if (context.SecretCodes.Count(x => x.Email == email) < 3)
+            if (codeService.Count(email) < 3)
             {
                 var secretString = SecretString.GetSecretString();
 
@@ -198,8 +199,7 @@ namespace ETicket.WebAPI.Controllers
 
                 var code = new SecretCode() { Code = secretString, Email = email };
 
-                context.SecretCodes.Add(code);
-                context.SaveChanges();
+                codeService.Add(code);
             }
         }
     }
