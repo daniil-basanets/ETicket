@@ -11,9 +11,9 @@ namespace ETicket.Admin.Models.DataTables
         //Returning the same DrawCounter will break the request
         public int DrawCounter { get; set; }
 
-        //Arrays for possible multi-column sorting
-        public int SortingColumnNumber { get; set; }
-        public string SortingColumnDirection { get; set; }
+        //For sorting
+        public int SortColumnNumber { get; set; }
+        public string SortColumnDirection { get; set; }
 
         //For paging
         public int PageNumber { get; set; }
@@ -22,5 +22,9 @@ namespace ETicket.Admin.Models.DataTables
 
         //For a global search on all columns
         public string SearchValue { get; set; }
+
+        //Arrays for filtering
+        public int[] FilterColumnNumbers { get; set; }
+        public string[] FilterValues { get; set; }
     }
 }

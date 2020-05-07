@@ -30,15 +30,17 @@ namespace ETicket.Admin.Services
                 countRecords = data.Count();
             }
 
-            data = GetSortedQuery(data, pagingInfo.SortingColumnNumber
-                , pagingInfo.SortingColumnDirection, service.GetSortExpression());
+            data = GetSortedQuery(data, pagingInfo.SortColumnNumber
+                , pagingInfo.SortColumnDirection, service.GetSortExpressions());
 
             var countFiltered = countRecords;
-            string searchString = pagingInfo.SearchValue;
 
-            if (!string.IsNullOrEmpty(searchString))
+            var whereExpression = MakeWhereExpression(pagingInfo.SearchValue
+                    , pagingInfo.FilterColumnNumbers, pagingInfo.FilterValues);
+
+            if(whereExpression != null)
             {
-                data = GetSearchedQuery(data, service.GetSearchExpressions(searchString));
+                data = GetSearchedQuery(data, whereExpression);
                 countFiltered = data.Count();
             }
 
@@ -47,6 +49,35 @@ namespace ETicket.Admin.Services
                     .Take(pagingInfo.PageSize);
 
             return GetJsonDataTable(data, drawStep, countRecords, countFiltered);
+        }
+
+        private Expression<Func<T, bool>> MakeWhereExpression(string globalSearchString, int[] filterColumnNumbers, string[] filterValues)
+        {
+            Expression<Func<T, bool>> expression = null;
+
+            if (!string.IsNullOrEmpty(globalSearchString))
+            {
+                expression = service
+                        .GetSearchExpressions(globalSearchString)
+                        .CombineByOrElse();
+            }
+            if (filterColumnNumbers != null && filterColumnNumbers.Length != 0)
+            {
+                var filterExpression = service
+                        .GetFilterExpressions(filterColumnNumbers, filterValues)
+                        .CombineByAndAlso();
+
+                if (expression != null)
+                {                    
+                    expression = expression.AndAlso(filterExpression);
+                }
+                else
+                {
+                    expression = filterExpression;
+                }
+            }
+
+            return expression;
         }
 
         private object GetJsonDataTable(IQueryable<T> data, int drawCounter, int countRecords, int countFiltered)
@@ -68,13 +99,6 @@ namespace ETicket.Admin.Services
         private IQueryable<T> GetSearchedQuery(IQueryable<T> query, Expression<Func<T, bool>> expression)
         {
             return query.Where(expression);
-        }
-
-        private IQueryable<T> GetSearchedQuery(IQueryable<T> query, IList<Expression<Func<T, bool>>> expressions)
-        {
-            var exp = expressions.Combine();
-
-            return query.Where(exp);
         }
     }
 }

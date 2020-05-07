@@ -1,27 +1,35 @@
-﻿// Call the dataTables jQuery plugin
-$.fn.dataTable.ext.search.push(
-    function (settings, data, dataIndex) {
-        var ticketTypeInput = ($('#ticket-type-select option:selected').text());
-        var userNameInput = ($('#user-name-input').val());
-        var ticketType = String(data[0]);
-        var userN = String(data[4]); 
+﻿
+const columnCount = 5;
+var filters = [
+    { columnNumber: 0, inputId: "#ticket-type-select option:selected", isCheckBox: true},
+    { columnNumber: 4, inputId: "#user-name-input", isCheckBox: false }
+];
 
-        if (((ticketTypeInput && ticketType.includes(ticketTypeInput)) || !ticketTypeInput) &&
+function getFilterMapColumnValue() {
+    var result = new Map();
+    var value;
 
-            ((userNameInput && userN.includes(userNameInput)) || !userNameInput)) {
-            return true;
+    for (var i = 0; i < filters.length; i++) {
+        if (filters[i].isCheckBox) {
+            value = $(filters[i].inputId).text();
         }
-
-        return false;
+        else {
+            value = $(filters[i].inputId).val();
+        }
+        if (value) {
+            result.set(filters[i].columnNumber, value);
+        }
     }
-);
+
+    return result;
+}
 
 $(document).ready(function () {
     $.noConflict();
     //Variable for count entries
     var totalRecords = -1; 
     var pageNumber = 1;
-    //jQuery.ajaxSettings.traditional = false;
+
     var table = $('#dataTable')
         //Read additional fields from server side
         .on('xhr.dt', function (e, settings, json, xhr) {
@@ -44,7 +52,7 @@ $(document).ready(function () {
                 //To send an array correctly by query string
                 traditional: true,
                 type: 'GET',
-                data: function (d) {                    
+                data: function (d) { 
                     var pagingData = {};
                     pagingData.DrawCounter = d.draw;
 
@@ -52,13 +60,14 @@ $(document).ready(function () {
                     pagingData.TotalEntries = totalRecords;
                     pagingData.PageNumber = pageNumber;
 
-                    pagingData.SortingColumnNumber = d.order[0]["column"];
-                    pagingData.SortingColumnDirection = d.order[0]["dir"];
-                    //Take only the first column sorting, while multi column sorting is enabled
-                    //pagingData.SortingColumnNumbers[0] = ;  
-                    //pagingData.SortingColumnDirections[0] = ;
-                    //alert(d.search["value"]);
+                    pagingData.SortColumnNumber = d.order[0]["column"];
+                    pagingData.SortColumnDirection = d.order[0]["dir"];
+                    
                     pagingData.SearchValue = d.search["value"];
+
+                    var mapFilters = getFilterMapColumnValue();
+                    pagingData.FilterColumnNumbers = Array.from(mapFilters.keys());
+                    pagingData.FilterValues = Array.from(mapFilters.values());
 
                     return pagingData;
                 }
@@ -152,13 +161,15 @@ $(document).ready(function () {
         location.href = "/Ticket/Delete/" + data.id;
     })
 
-    $('#user-name-input').keyup(function () {
-        table.draw();
-    });
+    $("#user-name-input").unbind()
+        .bind("change", function (e) {
+            table.draw();
+        });
 
     $('#ticket-type-select').change(function () {
         table.draw();
     });
+
     //Delete container from loyout only for Index
     $('.container').removeClass('container');
 

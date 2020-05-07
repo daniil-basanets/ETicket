@@ -17,26 +17,71 @@ namespace ETicket.Admin.Extensions
             return (sortDirection == "asc") ? query.OrderBy(expression) : query.OrderByDescending(expression);
         }
 
-        public static Expression<Func<T, bool>> Combine<T>(
-            this IEnumerable<Expression<Func<T, bool>>> expressions)
+        public static Expression<Func<T, bool>> CombineByOrElse<T>(this IEnumerable<Expression<Func<T, bool>>> expressions)
         {
-            Expression<Func<T, bool>> firstFilter = expressions.FirstOrDefault();
-            if (firstFilter == null)
+            Expression<Func<T, bool>> result = expressions.FirstOrDefault();
+
+            for (int i = 1; i < expressions.Count(); i++)
             {
-                Expression<Func<T, bool>> alwaysTrue = x => true;
-                return alwaysTrue;
+                result = result.OrElse(expressions.ElementAt(i));
             }
 
-            var body = firstFilter.Body;
-            var param = firstFilter.Parameters.ToArray();
-            var collection = expressions.Skip(1);
-            foreach (var nextFilter in collection)
-            {
-                var nextBody = Expression.Invoke(nextFilter, param);
-                body = Expression.OrElse(body, nextBody);
-            }
-            Expression<Func<T, bool>> result = Expression.Lambda<Func<T, bool>>(body, param);
             return result;
+        }
+
+        public static Expression<Func<T, bool>> CombineByAndAlso<T>(this IEnumerable<Expression<Func<T, bool>>> expressions)
+        {
+            Expression<Func<T, bool>> result = expressions.FirstOrDefault();
+
+            for (int i = 1; i < expressions.Count(); i++)
+            {
+                result = result.AndAlso(expressions.ElementAt(i));
+            }
+
+            return result;
+        }
+
+        public static Expression<Func<T, bool>> AndAlso<T>(this Expression<Func<T, bool>> firstExpression, Expression<Func<T, bool>> secondExpression)
+        {
+            var visitor = new ParameterUpdateVisitor(secondExpression.Parameters.First(), firstExpression.Parameters.First());
+
+            secondExpression = visitor.Visit(secondExpression) as Expression<Func<T, bool>>;
+
+            var binExp = Expression.AndAlso(firstExpression.Body, secondExpression.Body);
+          
+            return Expression.Lambda<Func<T, bool>>(binExp, secondExpression.Parameters);
+        }
+
+        public static Expression<Func<T, bool>> OrElse<T>(this Expression<Func<T, bool>> firstExpression, Expression<Func<T, bool>> secondExpression)
+        {
+            var visitor = new ParameterUpdateVisitor(secondExpression.Parameters.First(), firstExpression.Parameters.First());
+
+            secondExpression = visitor.Visit(secondExpression) as Expression<Func<T, bool>>;
+
+            var binExp = Expression.OrElse(firstExpression.Body, secondExpression.Body);
+          
+            return Expression.Lambda<Func<T, bool>>(binExp, secondExpression.Parameters);
+        }
+
+
+        class ParameterUpdateVisitor : ExpressionVisitor
+        {
+            private ParameterExpression oldParameter;
+            private ParameterExpression newParameter;
+
+            public ParameterUpdateVisitor(ParameterExpression oldParameter, ParameterExpression newParameter)
+            {
+                this.oldParameter = oldParameter;
+                this.newParameter = newParameter;
+            }
+
+            protected override Expression VisitParameter(ParameterExpression node)
+            {
+                if (object.ReferenceEquals(node, oldParameter))
+                    return newParameter;
+
+                return base.VisitParameter(node);
+            }
         }
     }
 }

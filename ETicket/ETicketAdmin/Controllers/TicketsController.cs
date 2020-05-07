@@ -43,9 +43,9 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo dataTableParameters)
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
         {
-            return Json(dataTableServices.GetDataTablePage(dataTableParameters));
+            return Json(dataTableServices.GetDataTablePage(pagingInfo));
         }
 
         // GET: Tickets/Details/5
