@@ -34,11 +34,11 @@ namespace ETicket.Admin.Services
                     .Include(t => t.User);
         }
 
-        public Expression<Func<Ticket, bool>> GetSearchExpression(int columnNumber, string searchValue)
+        public Expression<Func<Ticket, bool>> GetSingleFilterExpression(int columnNumber, string searchValue)
         {
             return columnNumber switch
             {
-                0 => (t => t.TicketType.TypeName.StartsWith(searchValue)),
+                0 => (t => t.TicketType.TypeName == searchValue),
                 1 => (t => t.CreatedUTCDate.ToString().Contains(searchValue)),
                 2 => (t => t.ActivatedUTCDate.ToString().Contains(searchValue)),
                 3 => (t => t.ExpirationUTCDate.ToString().Contains(searchValue)),
@@ -66,7 +66,7 @@ namespace ETicket.Admin.Services
 
             for (int i = 0; i < columnNumbers.Length; i++)
             {
-                result.Add(GetSearchExpression(columnNumbers[i], filterValues[i]));
+                result.Add(GetSingleFilterExpression(columnNumbers[i], filterValues[i]));
             }
 
             return result;
