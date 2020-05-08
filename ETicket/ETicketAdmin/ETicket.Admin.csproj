@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>WinExe</OutputType>
+    <SignAssembly>false</SignAssembly>
+    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
   <ItemGroup>
@@ -1740,7 +1742,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ETicketDataAccess\ETicket.DataAccess.csproj" />
+    <ProjectReference Include="..\ETicket.ApplicationServices\ETicket.ApplicationServices.csproj" />
     <ProjectReference Include="..\ETicketWebAPI\ETicket.WebAPI.csproj" />
   </ItemGroup>
 
