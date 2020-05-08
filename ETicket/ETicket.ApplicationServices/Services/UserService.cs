@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.Users.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 
-namespace ETicket.ApplicationServices.Services.Users
+namespace ETicket.ApplicationServices.Services
 {
     public class UserService : IUserService
     {
@@ -48,19 +47,19 @@ namespace ETicket.ApplicationServices.Services.Users
             uow.Save();
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<User> GetUsers()
         {
             return uow.Users.GetAll().ToList();
         }
 
-        public User GetById(Guid id)
+        public User GetUserById(Guid id)
         {
             return uow.Users.Get(id);
         }
 
         public void SendMessage(Guid id, string message)
         {
-            var user = GetById(id);
+            var user = GetUserById(id);
 
             mailService.SendEmail(user.Email, message);
         }

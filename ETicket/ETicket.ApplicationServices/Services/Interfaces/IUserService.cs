@@ -5,12 +5,12 @@ using System.Text;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.DataAccess.Domain.Entities;
 
-namespace ETicket.ApplicationServices.Services.Users.Interfaces
+namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface IUserService
     {
-        public IEnumerable<User> GetAll();
-        public User GetById(Guid id);
+        public IEnumerable<User> GetUsers();
+        public User GetUserById(Guid id);
 
         public void CreateUser(UserDto user);
 

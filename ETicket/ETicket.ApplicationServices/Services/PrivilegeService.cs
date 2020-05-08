@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 
-namespace ETicket.ApplicationServices.Services.PrivilegeService
+namespace ETicket.ApplicationServices.Services
 {
-    class PrivilegeService
+    public class PrivilegeService: IPrivilegeService
     {
         #region private members
 
@@ -21,12 +22,11 @@ namespace ETicket.ApplicationServices.Services.PrivilegeService
             this.uow = uow;
             mapper = new MapperService();
         }
-
-        IEnumerable<Privilege>GetAll()
+        public IEnumerable<Privilege>GetPrivileges()
         {
             return uow.Privileges.GetAll().ToList();
         }
-        public Privilege Get(int id)
+        public Privilege GetPrivilegeById(int id)
         {
             return uow.Privileges.Get(id);
         }

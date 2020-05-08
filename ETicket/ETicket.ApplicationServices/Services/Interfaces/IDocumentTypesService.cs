@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.DataAccess.Domain.Entities;
 
-namespace ETicket.ApplicationServices.Services.DocumentTypes.Interfaces
+namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface IDocumentTypesService
     {
-        public IEnumerable<DocumentType> GetAll();
-        public DocumentType Get(int id);
+        public IEnumerable<DocumentType> GetDocumentTypes();
+        public DocumentType GetDocumentTypeById(int id);
 
         public void Create(DocumentTypeDto documentTypeDto);
 
