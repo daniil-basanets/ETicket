@@ -57,6 +57,11 @@ namespace ETicket.ApplicationServices.Services
             return uow.Users.Get(id);
         }
 
+        public User GetByEmail(string email)
+        {
+            return uow.Users.GetByEmail(email);
+        }
+
         public void SendMessage(Guid id, string message)
         {
             var user = GetUserById(id);
