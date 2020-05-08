@@ -148,15 +148,11 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost("resetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
-            var code = codeService.Get(request.ResetPasswordCode, request.Email).Result;
+            var user = await userManager.FindByEmailAsync(request.Email);
             bool succeeded = false;
 
-            var user = await userManager.FindByEmailAsync(request.Email);
-
-            if (code != null && user != null)
+            if (user != null)
             {
-                codeService.RemoveRange(request.Email);
-
                 var resetPassToken = await userManager.GeneratePasswordResetTokenAsync(user);
                 var result = await userManager.ResetPasswordAsync(user, resetPassToken, request.NewPassword);
 
@@ -171,10 +167,10 @@ namespace ETicket.WebAPI.Controllers
             return NotFound(succeeded);
         }
 
-        [HttpPost("confirmEmail")]
-        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest request)
+        [HttpPost("checkCode")]
+        public async Task<IActionResult> CheckCode([FromBody] CheckCodeRequest request)
         {
-            var code = await codeService.Get(request.AuthenticationCode, request.Email);
+            var code = await codeService.Get(request.Code, request.Email);
             bool succeeded = false;
 
             if (code != null)

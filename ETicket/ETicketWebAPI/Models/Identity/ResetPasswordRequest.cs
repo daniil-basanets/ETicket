@@ -8,7 +8,6 @@ namespace ETicket.WebAPI.Models.Identity
     public class ResetPasswordRequest
     {
         public string Email { get; set; }
-        public string ResetPasswordCode { get; set; }
         public string NewPassword { get; set; }
     }
 }

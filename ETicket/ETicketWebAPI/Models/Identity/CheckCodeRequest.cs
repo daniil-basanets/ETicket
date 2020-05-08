@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace ETicket.WebAPI.Models.Identity
 {
-    public class ConfirmEmailRequest
+    public class CheckCodeRequest
     {
         public string Email { get; set; }
-        public string AuthenticationCode { get; set; }
+        public string Code { get; set; }
     }
 }
