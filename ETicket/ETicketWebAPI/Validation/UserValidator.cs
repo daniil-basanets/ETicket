@@ -46,10 +46,9 @@ namespace ETicket.WebAPI.Validation
 
         private bool BeAValidAge(DateTime date)
         {
-            var currentYear = DateTime.Now.Year;
-            var dobYear = date.Year;
-
-            return dobYear <= currentYear && dobYear > (currentYear - 120);
+            var result = DateTime.Compare(date.Date, DateTime.UtcNow.Date);
+    
+            return (result < 0) && date.Date.Year > (DateTime.UtcNow.Year - 120);
         }
 
         private bool BeAValidPhoneNumber(string phoneNumber)
