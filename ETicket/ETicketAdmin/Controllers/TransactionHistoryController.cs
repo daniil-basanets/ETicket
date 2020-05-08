@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Linq;
-using ETicket.ApplicationServices.Services;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
+using System.Reflection;
+using ETicket.ApplicationServices.Services.Interfaces;
+using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.Admin.Controllers
 {
@@ -15,53 +14,70 @@ namespace ETicket.Admin.Controllers
     {
         #region Private Members
 
-        private readonly IUnitOfWork unitOfWork;
-        private DatabaseServices services;
+        private readonly ITransactionAppService transactionAppService;
+        private readonly ITicketTypeService ticketTypeService;
+
+        private readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 
-        public TransactionHistoryController(IUnitOfWork unitOfWork)
+        public TransactionHistoryController(ITransactionAppService transactionAppService, ITicketTypeService ticketTypeService)
         {
-            this.unitOfWork = unitOfWork;
-            //services =new IntegratedServices(unitOfWork, )
+            this.transactionAppService = transactionAppService;
+            this.ticketTypeService = ticketTypeService;
         }
 
-        // GET: TransactionHistories
+        [HttpGet]
         public IActionResult Index()
         {
-            var ticketTypes = unitOfWork.TicketTypes.GetAll();
-            ViewData["TicketTypeId"] = new SelectList(ticketTypes, "Id", "TypeName");
+            try
+            {
+                var transactions = transactionAppService.GetTransactions();
+                var ticketTypes = ticketTypeService.GetTicketType()
+                        .OrderBy(t => t.TypeName)
+                        .Select(t => new { t.Id, t.TypeName });
 
-            IQueryable<TransactionHistory> eTicketDataContext = unitOfWork
-                    .TransactionHistory
-                    .GetAll()
-                    .AsNoTracking()
-                    .Include(t => t.TicketType);
+                ViewData["TicketTypeId"] = new SelectList(ticketTypes, "Id", "TypeName");
 
-            return View(eTicketDataContext);
+                return View(transactions);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
-        // GET: TransactionHistories/Details/5
+        [HttpGet]
         public IActionResult Details(Guid? id)
         {
             if (id == null)
             {
+                log.Warn(nameof(TransactionHistoryController.Details) + " id is null");
+
                 return NotFound();
             }
 
-            var transactionHistory = unitOfWork
-                    .TransactionHistory
-                    .GetAll()
-                    .AsNoTracking()
-                    .Include(t => t.TicketType)
-                    .FirstOrDefault(m => m.Id == id);
-
-            if (transactionHistory == null)
+            try
             {
-                return NotFound();
-            }
+                var transaction = transactionAppService.GetTransactionById(id.Value);
 
-            return View(transactionHistory);
+                if (transaction == null)
+                {
+                    log.Warn(nameof(TransactionHistoryController.Details) + " transaction is null");
+
+                    return NotFound();
+                }
+
+                return View(transaction);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }            
         }
     }
 }
