@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com"
+    xmlns:bindingconverters="clr-namespace:ETicketMobile.UserInterface.BindingConverters;assembly=ETicketMobile.UserInterface"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="ETicketMobile.Views.Registration.ConfirmEmailView">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <ContentPage.Content>
+        <StackLayout Margin="30">
+            <Label
+                Text="Enter activation code"
+                Margin="0, 10, 0, 10"
+                HorizontalOptions="CenterAndExpand"/>
+            <Label
+                IsVisible="{Binding ConfirmEmailWarning, Converter={StaticResource StringToBooleanConverter}}"
+                Text="{Binding ConfirmEmailWarning}"
+                TextColor="Red"/>
+            <Entry
+                x:Name="ConfirmEmailEntry"
+                Placeholder="Activation Code"
+                Keyboard="Text"/>
+            <StackLayout
+                HorizontalOptions="Center"
+                Orientation="Horizontal"
+                Margin="0, 10, 0, 10">
+                <Label
+                    Text="You can send activation code"
+                    HorizontalTextAlignment="Center"/>
+                <Label
+                    Text="again."
+                    TextColor="Blue"
+                    HorizontalTextAlignment="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding SendActivationCode}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </StackLayout>
+            <StackLayout 
+                Orientation="Horizontal"
+                HorizontalOptions="Center"
+                Margin="0, 10, 0, 10"
+                IsVisible="{Binding TimerActivated}">
+                <Label 
+                    Text="Next time you can call it in" />
+                <Label
+                    Text="{Binding ActivationCodeTimer}"
+                    TextColor="Blue"/>
+            </StackLayout>
+            <Button
+                Text="Confirm"
+                Command="{Binding NavigateToSignInView}"
+                CommandParameter="{Binding Source={x:Reference ConfirmEmailEntry}, Path=Text}"
+                CornerRadius="10"/>
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>
