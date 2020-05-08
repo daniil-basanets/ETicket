@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6R62fVbZG6cb50dEJZDMle-TGT28drV4"></script>
 <h1>Details</h1>
 
 <div>
@@ -31,8 +31,8 @@
         </dd>
         <dt class="col-sm-2">Map</dt>
         <dd class="col-sm-10">
-            <input type="button" value="Click to Display Map" onclick="initMap(@Model.Latitude,@Model.Longitude)" />
-            <div id="GeoLocation" style="width:100%;height:400px;"></div> 
+            <button class="btn btn-google btn-block fab fa-google fa-fw" style="width:180px" onclick="initMap(@Model.Latitude,@Model.Longitude)">oogle Map</button>
+            <div id="GeoLocation" style="width:100%;height:400px; display: none"></div>
         </dd>
     </dl>
 </div>
@@ -47,19 +47,20 @@
           // The location of Uluru
           var uluru = {lat: z, lng: y};
           // The map, centered at Uluru
-          
           var x = document.getElementById("GeoLocation");
           
           if (x.style.display === "none") {
               x.style.display = "block";
               var map = new google.maps.Map(
-                            document.getElementById('GeoLocation'), {zoom: 12, center: uluru});
-                        // The marker, positioned at Uluru
-               var marker = new google.maps.Marker({position: uluru, map: map});
+                                          document.getElementById('GeoLocation'), {zoom: 12, center: uluru});
+                                      // The marker, positioned at Uluru
+                             var marker = new google.maps.Marker({position: uluru, map: map});
             } else {
               x.style.display = "none";
+              var map = new google.maps.Map(
+                                          document.getElementById('GeoLocation'), {zoom: 12, center: uluru});
+                                      // The marker, positioned at Uluru
+                             var marker = new google.maps.Marker({position: uluru, map: map});
             }
-          
-          
         }
-    </script>  
+</script>  
