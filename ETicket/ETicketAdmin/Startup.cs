@@ -1,4 +1,5 @@
 using System;
+using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DocumentTypes;
@@ -45,13 +46,13 @@ namespace ETicket.Admin
                 .AddEntityFrameworkStores<ETicketDataContext>()
                 .AddDefaultTokenProviders();
             services.AddControllersWithViews().AddFluentValidation();
-            services.AddTransient<IValidator<TicketType>, TicketTypeValidator>();
-            services.AddTransient<IValidator<Ticket>, TicketValidator>();
-            services.AddTransient<IValidator<User>, UserValidator>();
-            services.AddTransient<IValidator<Document>, DocumentValidator>();
-            services.AddTransient<IValidator<DocumentType>, DocumentTypeValidator>();
-            services.AddTransient<IValidator<Privilege>, PrivilegeValidator>();
-            services.AddTransient<IValidator<TransactionHistory>, TransactionHistoryValidator>();
+            services.AddTransient<IValidator<TicketTypeDto>, TicketTypeValidator>();
+            services.AddTransient<IValidator<TicketDto>, TicketValidator>();
+            services.AddTransient<IValidator<UserDto>, UserValidator>();
+            services.AddTransient<IValidator<DocumentDto>, DocumentValidator>();
+            services.AddTransient<IValidator<DocumentTypeDto>, DocumentTypeValidator>();
+            services.AddTransient<IValidator<PrivilegeDto>, PrivilegeValidator>();
+            services.AddTransient<IValidator<TransactionHistoryDto>, TransactionHistoryValidator>();
 
 
             services.AddTransient<ITicketService, TicketService>();
@@ -61,6 +62,7 @@ namespace ETicket.Admin
             services.AddTransient<ITicketTypeService, TicketTypeService>();
             services.AddTransient<IPrivilegeService, PrivilegeService>();
             services.AddTransient<IDocumentService, DocumentService>();
+            services.AddTransient<ITicketVerificationService, TicketVerificationService>();
 
 
             services.AddIdentityCore<IdentityUser>(o =>

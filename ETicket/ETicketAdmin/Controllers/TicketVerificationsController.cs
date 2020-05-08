@@ -12,50 +12,70 @@ using System.Text.Json;
 using ETicket.ApplicationServices.DTOs;
 using Newtonsoft.Json;
 using ETicket.Admin.Models;
+using ETicket.ApplicationServices.Services.Interfaces;
+using log4net;
+using System.Reflection;
 
 namespace ETicket.Admin.Controllers
 {
     public class TicketVerificationsController : Controller
     {
-        private readonly HttpClient httpClient;
+        #region Private members
 
-        public TicketVerificationsController()
+        private readonly ITicketVerificationService ticketVerificationService;
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+        #endregion
+
+        public TicketVerificationsController(ITicketVerificationService service)
         {
-            httpClient = new HttpClient();
+            this.ticketVerificationService = service;
         }
 
         // GET: TicketVerifications
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var request = TicketVerificationEndpoints.Get;
-            var response = await httpClient.GetAsync(request);
-            var jsonResponse = await response.Content.ReadAsStringAsync();
+            try
+            {
+                return View(ticketVerificationService.GetTicketVerifications());
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            var ticketVerifications = JsonConvert.DeserializeObject<IEnumerable<TicketVerification>>(jsonResponse);
-
-            return View(ticketVerifications);
+                return BadRequest();
+            }
         }
 
         // GET: TicketVerifications/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public IActionResult Details(Guid? id)
         {
             if (id == null)
             {
+                log.Warn(nameof(TicketVerificationsController.Details) + " id is null");
+
                 return NotFound();
             }
 
-            var request = TicketVerificationEndpoints.Get + "/" + id.Value.ToString();
-            //var content = new StringContent(id.Value.ToString());
-            var response = await httpClient.GetAsync(request);
-            var jsonResponse = await response.Content.ReadAsStringAsync();
-
-            var ticketVerification = JsonConvert.DeserializeObject<TicketVerification>(jsonResponse);
-            if (ticketVerification == null)
+            try
             {
-                return NotFound();
-            }
+                var ticketVerification = ticketVerificationService.GetTicketVerificationById(id.Value);
 
-            return View(ticketVerification);
+                if (ticketVerification == null)
+                {
+                    log.Warn(nameof(TicketVerificationsController.Details) + " user is null");
+
+                    return NotFound();
+                }
+
+                return View(ticketVerification);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
     }
 }

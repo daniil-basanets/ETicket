@@ -1,4 +1,6 @@
 using ETicket.ApplicationServices.Logger;
+using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.WebAPI.Models;

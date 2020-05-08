@@ -8,9 +8,9 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface ITicketVerificationService
     {
-        public IEnumerable<TicketVerification> GetAll();
+        public IEnumerable<TicketVerification> GetTicketVerifications();
 
-        public TicketVerification Get(Guid id);
+        public TicketVerification GetTicketVerificationById(Guid id);
 
         public void Create(TicketVerificationDto ticketVerificationDtoDto);
     }

@@ -21,7 +21,7 @@ namespace ETicket.ApplicationServices.Services
             mapper = new MapperService();
         }
 
-        public IEnumerable<TicketVerification> GetAll()
+        public IEnumerable<TicketVerification> GetTicketVerifications()
         {
             return unitOfWork.TicketVerifications
                     .GetAll()
@@ -30,7 +30,7 @@ namespace ETicket.ApplicationServices.Services
                     .Include(x => x.Transport);
         }
 
-        public TicketVerification Get(Guid id)
+        public TicketVerification GetTicketVerificationById(Guid id)
         {
             return unitOfWork.TicketVerifications.Get(id);
         }

@@ -31,7 +31,7 @@ namespace ETicket.WebAPI.Controllers
         public IActionResult GetLastTicketVerification(Guid ticketId, [FromQuery]int count = 1)
         {
             var ticketVerification = verificationService
-                    .GetAll()
+                    .GetTicketVerifications()
                     .Where(t => t.TicketId == ticketId)
                     .OrderByDescending(t => t.VerificationUTCDate)
                     .Take(count);
