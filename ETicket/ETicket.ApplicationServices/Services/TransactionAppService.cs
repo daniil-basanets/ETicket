@@ -21,19 +21,21 @@ namespace ETicket.ApplicationServices.Services.Transaction
             this.unitOfWork = unitOfWork;
         }
 
-        public IEnumerable<TransactionHistory> Read()
+        public IEnumerable<TransactionHistory> GetTransactions()
         {
             return unitOfWork
                     .TransactionHistory
                     .GetAll()
-                    .ToArray();
+                    .Include(t => t.TicketType)
+                    .ToList();
         }
 
-        public TransactionHistory Read(Guid id)
+        public TransactionHistory GetTransactionById(Guid id)
         {
             return unitOfWork
                     .TransactionHistory
                     .GetAll()
+                    .Include(t => t.TicketType)
                     .FirstOrDefault(t=> t.Id == id);
         }
     }

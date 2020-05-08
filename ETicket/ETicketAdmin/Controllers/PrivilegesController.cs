@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.Services.Interfaces;
+using log4net;
+using System.Reflection;
+using System;
 
 namespace ETicket.Admin.Controllers
 {
@@ -13,6 +16,8 @@ namespace ETicket.Admin.Controllers
 
         private readonly IPrivilegeService privilegeService;
 
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         #endregion
 
         public PrivilegesController(IPrivilegeService privilegeService)
@@ -20,76 +25,110 @@ namespace ETicket.Admin.Controllers
             this.privilegeService = privilegeService;
         }
 
-        // GET: Privileges
+        [HttpGet]
         public IActionResult Index()
         {
-            return View(privilegeService.GetAll());
+            return View(privilegeService.GetPrivileges());
         }
 
-        // GET: Privileges/Details/5
+        [HttpGet]
         public IActionResult Details(int? id)
         {
             if (id == null)
             {
+                log.Warn(nameof(PrivilegesController.Details) + " id is null");
+
                 return NotFound();
             }
 
-            var privilege = privilegeService.Get((int)id);
-
-            if (privilege == null)
+            try
             {
-                return NotFound();
-            }
+                var privilege = privilegeService.GetPrivilegeById((int)id);
 
-            return View(privilege);
+                if (privilege == null)
+                {
+                    log.Warn(nameof(PrivilegesController.Details) + " privilege is null");
+
+                    return NotFound();
+                }
+
+                return View(privilege);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }            
         }
 
-        // GET: Privileges/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
-
-        // POST: Privileges/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(PrivilegeDto privilegeDto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                privilegeService.Create(privilegeDto);
+                if (ModelState.IsValid)
+                {
+                    privilegeService.Create(privilegeDto);
 
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(privilegeDto);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return View(privilegeDto);
+                return BadRequest();
+            }
+            
         }
 
-        // GET: Privileges/Edit/5
+        [HttpGet]
         public IActionResult Edit(int? id)
         {
             if (id == null)
             {
+                log.Warn(nameof(PrivilegesController.Edit) + " id is null");
+
                 return NotFound();
             }
 
-            var privilege = privilegeService.Get(id.Value);
-
-            if (privilege == null)
+            try
             {
-                return NotFound();
-            }
+                var privilege = privilegeService.GetPrivilegeById(id.Value);
 
-            return View(privilege);
+                if (privilege == null)
+                {
+                    return NotFound();
+                }
+
+                return View(privilege);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
-        // POST: Privileges/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, PrivilegeDto privilegeDto)
         {
             if (id != privilegeDto.Id)
             {
+                log.Warn(nameof(PrivilegesController.Edit) + " id is not equal to privilegeDto.Id");
+
                 return NotFound();
             }
 
@@ -99,16 +138,11 @@ namespace ETicket.Admin.Controllers
                 {
                     privilegeService.Update(privilegeDto);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception e)
                 {
-                    if (!privilegeService.Exists(privilegeDto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    log.Error(e);
+
+                    return BadRequest();
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -117,37 +151,53 @@ namespace ETicket.Admin.Controllers
             return View(privilegeDto);
         }
 
-        // GET: Privileges/Delete/5
+        [HttpGet]
         public IActionResult Delete(int? id)
         {
             if (id == null)
             {
+                log.Warn(nameof(PrivilegesController.Edit) + " id is null");
+
                 return NotFound();
             }
 
-            var privilege = privilegeService.Get(id.Value);
-
-            if (privilege == null)
+            try
             {
-                return NotFound();
+                var privilege = privilegeService.GetPrivilegeById(id.Value);
+
+                if (privilege == null)
+                {
+                    log.Warn(nameof(PrivilegesController.Edit) + " privilege is null");
+
+                    return NotFound();
+                }
+
+                return View(privilege);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return View(privilege);
+                return BadRequest();
+            }            
         }
-
-        // POST: Privileges/Delete/5
+       
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            privilegeService.Delete(id);
+            try
+            {
+                privilegeService.Delete(id);
 
-            return RedirectToAction(nameof(Index));
-        }
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-        private bool PrivilegeExists(int id)
-        {
-            return privilegeService.Exists(id);
+                return BadRequest();
+            }            
         }
     }
 }

@@ -3,7 +3,6 @@ using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using ETicket.ApplicationServices.Services.Interfaces;
 
@@ -17,48 +16,42 @@ namespace ETicket.ApplicationServices.Services
         public DocumentService(IUnitOfWork uow)
         {
             unitOfWork = uow;
-
             mapper = new MapperService();
         }
 
-        public void Create(DocumentDto document)
+        public void Create(DocumentDto documentDto)
         {
-            var documentService = mapper.Map<DocumentDto, Document>(document);
-            unitOfWork.Documents.Create(documentService);
-            Save();
+            var document = mapper.Map<DocumentDto, Document>(documentDto);
+            unitOfWork.Documents.Create(document);
+            unitOfWork.Save();
         }
 
-        public IQueryable<Document> Read()
+        public IEnumerable<Document> GetDocuments()
         {
-            return unitOfWork.Documents.GetAll();
+            return unitOfWork.Documents.GetAll().ToList();
         }
 
-        public Document Read(Guid id)
+        public Document GetDocumentById(Guid id)
         {
             return unitOfWork.Documents.Get(id);
         }
 
-        public void Update(DocumentDto document)
+        public void Update(DocumentDto documentDto)
         {
-            var documentSerice = mapper.Map<DocumentDto, Document>(document);
-            unitOfWork.Documents.Update(documentSerice);
-            Save();
+            var document = mapper.Map<DocumentDto, Document>(documentDto);
+            unitOfWork.Documents.Update(document);
+            unitOfWork.Save();
         }
 
         public void Delete(Guid id)
         {
             unitOfWork.Documents.Delete(id);
-            Save();
+            unitOfWork.Save();
         }
 
         public bool Exists(Guid id)
         {
             return unitOfWork.Documents.Get(id) != null;
-        }
-
-        public void Save()
-        {
-            unitOfWork.Save();
         }
     }
 }
