@@ -3,66 +3,101 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.ApplicationServices.Services.Users.Interfaces;
-using ETicket.DataAccess.Domain.Interfaces;
+using log4net;
+using System.Reflection;
+using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class TicketController : Controller
     {
-        private readonly IUnitOfWork uow;   //TODO change to service (remove this)
+        #region Private members
+
         private readonly ITicketService ticketService;
         private readonly ITicketTypeService ticketTypeService;
         private readonly IUserService userService;
+        private readonly ITransactionAppService transactionService;
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private void InitViewDataForSelectList(TicketDto ticketDto = null)
         {
-            ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetAll(), "Id", "TypeName", ticketDto?.Id);
-            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticketDto?.TransactionHistoryId);   //TODO change to service (remove this)
-            ViewData["UserId"] = new SelectList(userService.GetAll().Select(s => new { s.Id, Name = $"{s.LastName} {s.FirstName}" }), "Id", "Name", ticketDto?.UserId);
+            try
+            {
+                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName", ticketDto?.Id);
+                ViewData["TransactionHistoryId"] = new SelectList(transactionService.GetTransactions(), "Id", "ReferenceNumber", ticketDto?.TransactionHistoryId);
+                ViewData["UserId"] = new SelectList(userService.GetUsers().Select(s => new { s.Id, Name = $"{s.LastName} {s.FirstName}" }), "Id", "Name", ticketDto?.UserId);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+            }
         }
 
-        public TicketController(IUnitOfWork uow, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService)
-        {
-            this.uow = uow;
+        #endregion
 
+        public TicketController(ITransactionAppService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService)
+        {
             this.ticketService = ticketService;
             this.ticketTypeService = ticketTypeService;
             this.userService = userService;
+            transactionService = transactionAppService;
         }
 
-        // GET: Tickets
+        [HttpGet]
         public IActionResult Index()
         {
-            ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetAll(), "Id", "TypeName"); //TODO change to service 
-            var tickets = ticketService.GetAll();
+            try
+            {
+                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName");
+                var tickets = ticketService.GetTickets();
 
-            return View(tickets.ToList());
+                return View(tickets.ToList());
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
-        // GET: Tickets/Details/5
+        [HttpGet]
         public IActionResult Details(Guid? id)
         {
             if (id == null)
             {
+                log.Warn(nameof(TicketController.Details) + " id is null");
+
                 return NotFound();
             }
 
-            var ticket = ticketService.Get((Guid)id);
+            Ticket ticket;
+
+            try
+            {
+                ticket = ticketService.GetTicketById((Guid)id);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
 
             if (ticket == null)
             {
+                log.Warn(nameof(TicketController.Details) + " ticket is null");
+
                 return NotFound();
             }
 
             return View(ticket);
         }
 
-        // GET: Tickets/Create
+        [HttpGet]
         public IActionResult Create()
         {
             InitViewDataForSelectList();
@@ -70,45 +105,70 @@ namespace ETicket.Admin.Controllers
             return View();
         }
 
-        // POST: Tickets/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(TicketDto ticketDto)
         {
-            var ticketType = ticketTypeService.Get(ticketDto.TicketTypeId);  //TODO change to service
-
-            if (ticketType.IsPersonal && ticketDto.UserId == null)
+            try
             {
-                ModelState.AddModelError("", "User is not specified for personal ticket type");
-                InitViewDataForSelectList();
+                TicketType ticketType = null;
+
+                ticketType = ticketTypeService.GetTicketTypeById(ticketDto.TicketTypeId);
+
+                if (ticketType.IsPersonal && ticketDto.UserId == null)
+                {
+                    ModelState.AddModelError("", "User is not specified for personal ticket type");
+                    InitViewDataForSelectList();
+
+                    return View(ticketDto);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    ticketService.Create(ticketDto);
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                InitViewDataForSelectList(ticketDto);
 
                 return View(ticketDto);
             }
-
-            if (ModelState.IsValid)
+            catch (Exception e)
             {
-                ticketService.Create(ticketDto);
+                log.Error(e);
 
-                return RedirectToAction(nameof(Index));
+                return BadRequest();
             }
-
-            InitViewDataForSelectList(ticketDto);
-
-            return View(ticketDto);
         }
 
-        // GET: Tickets/Edit/5
+        [HttpGet]
         public IActionResult Edit(Guid? id)
         {
             if (id == null)
             {
+                log.Warn(nameof(TicketController.Edit) + " id is null");
+
                 return NotFound();
             }
 
-            var ticketDto = ticketService.GetDto((Guid)id);
+            TicketDto ticketDto;
+
+            try
+            {
+                ticketDto = ticketService.GetDto((Guid)id);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
 
             if (ticketDto == null)
             {
+                log.Warn(nameof(TicketController.Edit) + " ticketDto is null");
+
                 return NotFound();
             }
 
@@ -117,76 +177,96 @@ namespace ETicket.Admin.Controllers
             return View(ticketDto);
         }
 
-        // POST: Tickets/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, TicketDto ticketDto)
         {
+            TicketType ticketType = null;
+
             if (id != ticketDto.Id)
             {
+                log.Warn(nameof(TicketController.Edit) + " id is not equal to ticketDto.Id");
+
                 return NotFound();
             }
 
-            var ticketType = uow.TicketTypes.Get(ticketDto.TicketTypeId);  //TODO change to service
-
-            if (ticketType.IsPersonal && ticketDto.UserId == null)
+            try
             {
-                ModelState.AddModelError("", "User is not specified for personal ticket type");
-                InitViewDataForSelectList();
+                ticketType = ticketTypeService.GetTicketTypeById(ticketDto.TicketTypeId);           
+
+                if (ticketType.IsPersonal && ticketDto.UserId == null)
+                {
+                    ModelState.AddModelError("", "User is not specified for personal ticket type");
+                    InitViewDataForSelectList();
+
+                    return View(ticketDto);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    ticketService.Update(ticketDto);
+                
+                    return RedirectToAction(nameof(Index));
+                }
+
+                InitViewDataForSelectList(ticketDto);
 
                 return View(ticketDto);
             }
-
-            if (ModelState.IsValid)
+            catch (Exception e)
             {
-                try
-                {
-                    ticketService.Update(ticketDto);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ticketService.Exists(ticketDto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-
-                return RedirectToAction(nameof(Index));
+                log.Error(e);
+                return BadRequest();
             }
-
-            InitViewDataForSelectList(ticketDto);
-
-            return View(ticketDto);
         }
 
-        // GET: Tickets/Delete/5
+        [HttpGet]
         public IActionResult Delete(Guid? id)
         {
             if (id == null)
             {
+                log.Warn(nameof(TicketController.Delete) + " id is null");
+
                 return NotFound();
             }
 
-            var ticket = ticketService.Get((Guid)id);
+            Ticket ticket;
+
+            try
+            {
+                ticket = ticketService.GetTicketById((Guid)id);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
 
             if (ticket == null)
             {
+                log.Warn(nameof(TicketController.Delete) + " ticket is null");
+
                 return NotFound();
             }
 
             return View(ticket);
         }
 
-        // POST: Tickets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            ticketService.Delete(id);
+            try
+            {
+                ticketService.Delete(id);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
 
             return RedirectToAction(nameof(Index));
         }
