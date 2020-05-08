@@ -1,82 +1,47 @@
 ﻿using System;
 using System.Linq;
-using AutoMapper;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
-using ETicketAdmin.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.ApplicationServices.Services.Users.Interfaces;
+using ETicket.DataAccess.Domain.Interfaces;
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class TicketController : Controller
     {
-        private readonly IUnitOfWork uow;
-        private readonly IMapper mapper;
+        private readonly IUnitOfWork uow;   //TODO change to service (remove this)
+        private readonly ITicketService ticketService;
+        private readonly ITicketTypeService ticketTypeService;
+        private readonly IUserService userService;
 
-        public TicketController(IUnitOfWork uow, IMapper mapper)
+        private void InitViewDataForSelectList(TicketDto ticketDto = null)
+        {
+            ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetAll(), "Id", "TypeName", ticketDto?.Id);
+            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticketDto?.TransactionHistoryId);   //TODO change to service (remove this)
+            ViewData["UserId"] = new SelectList(userService.GetAll().Select(s => new { s.Id, Name = $"{s.LastName} {s.FirstName}" }), "Id", "Name", ticketDto?.UserId);
+        }
+
+        public TicketController(IUnitOfWork uow, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService)
         {
             this.uow = uow;
-            this.mapper = mapper;
+
+            this.ticketService = ticketService;
+            this.ticketTypeService = ticketTypeService;
+            this.userService = userService;
         }
 
         // GET: Tickets
-        public IActionResult Index(string sortOrder)
+        public IActionResult Index()
         {
-            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName");
-            ViewData["TicketTypeSortParm"] = sortOrder == "ticket_type" ? "ticket_type_desc" : "ticket_type";
-            ViewData["CreatedSortParm"] = String.IsNullOrEmpty(sortOrder) ? "created_date" : "";
-            ViewData["ActivatedSortParm"] = sortOrder == "activated_date" ? "activated_date_desc" : "activated_date";
-            ViewData["ExpirationSortParm"] = sortOrder == "expiration_date" ? "expiration_date_desc" : "expiration_date";
-            ViewData["UserSortParm"] = sortOrder == "user" ? "user_desc" : "user";
-            ViewData["TransactionSortParm"] = sortOrder == "transaction" ? "transaction_desc" : "transaction";
+            ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetAll(), "Id", "TypeName"); //TODO change to service 
+            var tickets = ticketService.GetAll();
 
-            IQueryable<Ticket> eTicketDataContext = uow.Tickets.GetAll();
-
-            switch (sortOrder)
-            {
-                case "created_date":
-                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.CreatedUTCDate);
-                    break;
-                case "ticket_type":
-                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.TicketType);
-                    break;
-                case "ticket_type_desc":
-                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.TicketType);
-                    break;
-                case "activated_date":
-                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.ActivatedUTCDate);
-                    break;
-                case "activated_date_desc":
-                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.ActivatedUTCDate);
-                    break;
-                case "expiration_date":
-                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.ExpirationUTCDate);
-                    break;
-                case "expiration_date_desc":
-                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.ExpirationUTCDate);
-                    break;
-                case "user":
-                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.UserId);
-                    break;
-                case "user_desc":
-                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.User);
-                    break;
-                case "transaction":
-                    eTicketDataContext = eTicketDataContext.OrderBy(s => s.TransactionHistoryId);
-                    break;
-                case "transaction_desc":
-                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.TransactionHistoryId);
-                    break;
-                default:
-                    eTicketDataContext = eTicketDataContext.OrderByDescending(s => s.CreatedUTCDate);
-                    break;
-            }
-
-            return View(eTicketDataContext.ToList());
+            return View(tickets.ToList());
         }
 
         // GET: Tickets/Details/5
@@ -87,7 +52,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticket = uow.Tickets.Get((Guid)id);
+            var ticket = ticketService.Get((Guid)id);
 
             if (ticket == null)
             {
@@ -100,9 +65,7 @@ namespace ETicket.Admin.Controllers
         // GET: Tickets/Create
         public IActionResult Create()
         {
-            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName");
-            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber");
-            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName");
+            InitViewDataForSelectList();
 
             return View();
         }
@@ -112,39 +75,26 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(TicketDto ticketDto)
         {
-            var ticket = mapper.Map<Ticket>(ticketDto);
+            var ticketType = ticketTypeService.Get(ticketDto.TicketTypeId);  //TODO change to service
 
-            ticket.CreatedUTCDate = DateTime.UtcNow;
-            ticket.TicketType = uow.TicketTypes.Get(ticket.TicketTypeId);
-
-            if (ticket.TicketType.IsPersonal && ticket.UserId == null)
+            if (ticketType.IsPersonal && ticketDto.UserId == null)
             {
                 ModelState.AddModelError("", "User is not specified for personal ticket type");
-                ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName");
-                ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber");
-                ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName");
+                InitViewDataForSelectList();
 
-                return View(ticket);
+                return View(ticketDto);
             }
 
             if (ModelState.IsValid)
             {
-                ticket.Id = Guid.NewGuid();
-                if (ticket.ActivatedUTCDate != null)
-                {
-                    ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(ticket.TicketType.DurationHours);
-                }
-                uow.Tickets.Create(ticket);
-                uow.Save();
+                ticketService.Create(ticketDto);
 
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticket.TicketTypeId);
-            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticket.TransactionHistoryId);
-            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticket.UserId);
+            InitViewDataForSelectList(ticketDto);
 
-            return View(ticket);
+            return View(ticketDto);
         }
 
         // GET: Tickets/Edit/5
@@ -155,18 +105,16 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticket = uow.Tickets.Get((Guid)id);
+            var ticketDto = ticketService.GetDto((Guid)id);
 
-            if (ticket == null)
+            if (ticketDto == null)
             {
                 return NotFound();
             }
 
-            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticket.TicketTypeId);
-            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticket.TransactionHistoryId);
-            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticket.UserId);
+            InitViewDataForSelectList(ticketDto);
 
-            return View(ticket);
+            return View(ticketDto);
         }
 
         // POST: Tickets/Edit/5
@@ -179,18 +127,25 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
+            var ticketType = uow.TicketTypes.Get(ticketDto.TicketTypeId);  //TODO change to service
+
+            if (ticketType.IsPersonal && ticketDto.UserId == null)
+            {
+                ModelState.AddModelError("", "User is not specified for personal ticket type");
+                InitViewDataForSelectList();
+
+                return View(ticketDto);
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var ticket = mapper.Map<Ticket>(ticketDto);
-
-                    uow.Tickets.Update(ticket);
-                    uow.Save();
+                    ticketService.Update(ticketDto);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TicketExists(ticketDto.Id))
+                    if (!ticketService.Exists(ticketDto.Id))
                     {
                         return NotFound();
                     }
@@ -203,9 +158,7 @@ namespace ETicket.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TicketTypeId"] = new SelectList(uow.TicketTypes.GetAll(), "Id", "TypeName", ticketDto.TicketTypeId);
-            ViewData["TransactionHistoryId"] = new SelectList(uow.TransactionHistory.GetAll(), "Id", "ReferenceNumber", ticketDto.TransactionHistoryId);
-            ViewData["UserId"] = new SelectList(uow.Users.GetAll(), "Id", "FirstName", ticketDto.UserId);
+            InitViewDataForSelectList(ticketDto);
 
             return View(ticketDto);
         }
@@ -218,7 +171,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticket = uow.Tickets.Get((Guid)id);
+            var ticket = ticketService.Get((Guid)id);
 
             if (ticket == null)
             {
@@ -233,15 +186,9 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            uow.Tickets.Delete(id);
-            uow.Save();
+            ticketService.Delete(id);
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TicketExists(Guid id)
-        {
-            return uow.Tickets.Get(id) != null;
         }
     }
 }

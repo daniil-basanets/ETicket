@@ -1,4 +1,4 @@
-@using ETicket.DataAccess.Domain.Entities
+﻿@using ETicket.DataAccess.Domain.Entities
 @model IEnumerable<ETicket.DataAccess.Domain.Entities.TicketType>
 
 @{
@@ -62,7 +62,8 @@
                                     @Html.DisplayFor(modelItem => item.TypeName)
                                 </td>
                                 <td class="table-static">
-                                    @item.Price.ToString("c", CultureInfo.CreateSpecificCulture("ua-UA"))
+                                    @*@item.Price.ToString("c", CultureInfo.CreateSpecificCulture("ua-UA"))*@
+                                    @(item.Price + " ₴")
                                 </td>
                                 <td class="table-static">
                                     @(item.IsPersonal ? "Yes" : "No")                          

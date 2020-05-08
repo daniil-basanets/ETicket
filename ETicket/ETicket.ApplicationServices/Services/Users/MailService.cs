@@ -1,12 +1,11 @@
-﻿using MailKit.Net.Smtp;
-using Microsoft.AspNetCore.Mvc;
-using MimeKit;
+﻿using MimeKit;
 using System.Threading.Tasks;
+using MailKit.Net.Smtp;
+using ETicket.ApplicationServices.Services.Users.Interfaces;
 
-
-namespace ETicket.Admin.Services
+namespace ETicket.ApplicationServices.Services.Users
 {
-    public class MailService
+    public class MailService : IMailService
     {
         public void SendEmail(string email, string message)
         {
