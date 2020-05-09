@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,16 @@ using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Services.Users.Interfaces;
 using ETicket.DataAccess.Domain.Interfaces;
 
+using AutoMapper;
+using ETicket.Admin.Extensions;
+using ETicket.Admin.Models.DataTables;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
+using ETicketAdmin.DTOs;
+using ETicket.Admin.Services;
+using System.Linq.Expressions;
+using Newtonsoft.Json;
+
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
@@ -18,6 +29,7 @@ namespace ETicket.Admin.Controllers
         private readonly ITicketService ticketService;
         private readonly ITicketTypeService ticketTypeService;
         private readonly IUserService userService;
+        private readonly DataTableServices<Ticket> dataTableServices;
 
         private void InitViewDataForSelectList(TicketDto ticketDto = null)
         {
@@ -33,6 +45,13 @@ namespace ETicket.Admin.Controllers
             this.ticketService = ticketService;
             this.ticketTypeService = ticketTypeService;
             this.userService = userService;
+            dataTableServices = new DataTableServices<Ticket>(ticketService);
+        }
+
+        [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
+        {
+            return Json(dataTableServices.GetDataTablePage(pagingInfo));
         }
 
         // GET: Tickets

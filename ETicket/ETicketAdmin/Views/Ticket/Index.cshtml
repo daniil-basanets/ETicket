@@ -26,9 +26,7 @@
                         <tr>
                             <th>User name:</th>
                             <th>
-                                <form class="ticket-filter-form">
-                                    <input type="text" class="ticket-filter-form form-control form-control-sm" id="user-name-input">
-                                </form>
+                                <input type="text" class="ticket-filter-form form-control form-control-sm" id="user-name-input">
                             </th>
                         </tr>
                         <tr>
@@ -90,8 +88,10 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            @foreach (var item in Model)
+                            @if (Model != null)
                             {
+                                foreach (var item in Model)
+                                {
                                 <tr>
                                     <td>
                                         @Html.ActionLink(item.TicketType.TypeName, "Details", "TicketType", new { id = item.TicketTypeId }, null)
@@ -117,6 +117,7 @@
                                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
                                     </td>
                                 </tr>
+                                }
                             }
                         </tbody>
                     </table>

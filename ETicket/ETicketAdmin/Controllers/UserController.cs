@@ -1,42 +1,58 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.Users.Interfaces;
-using ETicket.ApplicationServices.Services.Users;
+
+using AutoMapper;
+using ETicket.Admin.Extensions;
+using ETicket.Admin.Models.DataTables;
+using ETicket.Admin.Services;
+using ETicket.DataAccess.Domain;
+using ETicket.DataAccess.Domain.Entities;
+using ETicketAdmin.DTOs;
+
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class UserController : Controller
     {
-        private readonly IUserService service;
-        IUnitOfWork repository;
+        private readonly ETicketDataContext context;
+        private readonly UnitOfWork repository;
+        private readonly IMapper mapper;
 
-        public UserController(IUnitOfWork repository, IMailService mailService)
+        public UserController(ETicketDataContext context, IMapper mapper)
         {
-            this.repository = repository;
-            service = new UserService(repository, mailService);
+            this.context = context;
+            repository = new UnitOfWork(context);
+            this.mapper = mapper;
         }
 
         // GET: User
-        public IActionResult Index()
+        public IActionResult Index(string sortOrder)
         {
-            try
-            {
-                ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
+            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name");
 
-                return View(service.GetAll());
-            }
-            catch (Exception)
+            return View();
+        }
+        
+        private JsonResult GetCurrentPage(
+            IQueryable<User> users,
+            int drawStep,
+            int countRecords,
+            int countFiltered
+        )
+        {
+            return Json(new
             {
-
-                throw;
-            }
+                draw = ++drawStep,
+                recordsTotal = countRecords,
+                recordsFiltered = countFiltered,
+                data = users
+            });
         }
 
         // GET: User/Details/5
@@ -47,58 +63,14 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            try
+            var user = repository.Users.Get(id);
+
+            if (user == null)
             {
-                var user = service.GetById(id);
-
-                if (user == null)
-                {
-
-                    return NotFound();
-                }
-                else
-                {
-                    return View(user);
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        // GET: User/CreateUserWithDocument
-        public IActionResult CreateUserWithDocument(UserDto userDto)
-        {
-            ViewData["DocumentTypeId"] = new SelectList(repository.DocumentTypes.GetAll(), "Id", "Name");
-
-            return View();
-        }
-
-        // POST: User/CreateUserWithDocument
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult CreateUserWithDocument(DocumentDto documentDto, UserDto userDto)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    service.CreateUserWithDocument(documentDto, userDto);
-
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
+                return NotFound();
             }
 
-            ViewData["DocumentTypeId"] = new SelectList(repository.DocumentTypes.GetAll(), "Id", "Name", documentDto.DocumentTypeId);
-
-            return View(documentDto);
+            return View(user);
         }
 
         // GET: User/Create
@@ -118,28 +90,17 @@ namespace ETicket.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
-                {
-                    if (userDto.PrivilegeId != null)
-                    {
-                        return RedirectToAction(nameof(CreateUserWithDocument), userDto);
-                    }
-                    else
-                    {
-                        service.CreateUser(userDto);
+                var user = mapper.Map<User>(userDto);
 
-                        return RedirectToAction(nameof(Index));
-                    }
-                }
-                catch (Exception)
-                {
+                user.Id = Guid.NewGuid();
+                repository.Users.Create(user);
+                repository.Save();
 
-                    throw;
-                }
+                return RedirectToAction(nameof(Index));
             }
 
-            ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number", userDto.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name", userDto.PrivilegeId);
+            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", userDto.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", userDto.PrivilegeId);
 
             return View(userDto);
         }
@@ -151,10 +112,15 @@ namespace ETicket.Admin.Controllers
             {
                 return NotFound();
             }
-            else
+
+            var user = repository.Users.Get(id);
+
+            if (user == null)
             {
-                return View();
+                return NotFound();
             }
+
+            return View(user);
         }
 
         // POST: User/SendMessage
@@ -164,19 +130,17 @@ namespace ETicket.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                try
+                var user = repository.Users.Get(id);
+                if (user == null)
                 {
-                    service.SendMessage(id, message);
-
-                    return RedirectToAction(nameof(Index));
+                    return NotFound();
                 }
-                catch (Exception)
-                {
 
-                    throw;
-                }
+                MailService emailService = new MailService();
+                emailService.SendEmail(user.Email, message);
+
+                return RedirectToAction(nameof(Index));
             }
-
             return View(message);
         }
 
@@ -188,28 +152,16 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            try
+            var user = repository.Users.Get(id);
+            if (user == null)
             {
-                var user = service.GetById(id);
-
-                if (user == null)
-                {
-
-                    return NotFound();
-                }
-                else
-                {
-                    ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number", user.DocumentId);
-                    ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name", user.PrivilegeId);
-
-                    return View(user);
-                }
+                return NotFound();
             }
-            catch (Exception)
-            {
 
-                throw;
-            }
+            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", user.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", user.PrivilegeId);
+
+            return View(user);
         }
 
         // POST: User/Edit/5
@@ -226,13 +178,15 @@ namespace ETicket.Admin.Controllers
             {
                 try
                 {
-                    service.Update(userDto);
+                    var user = mapper.Map<User>(userDto);
+
+                    repository.Users.Update(user);
+                    repository.Save();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!service.Exists(userDto.Id))
+                    if (!repository.Users.UserExists(userDto.Id))
                     {
-
                         return NotFound();
                     }
                     else
@@ -244,8 +198,8 @@ namespace ETicket.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["DocumentId"] = new SelectList(repository.Documents.GetAll(), "Id", "Number", userDto.DocumentId);
-            ViewData["PrivilegeId"] = new SelectList(repository.Privileges.GetAll(), "Id", "Name", userDto.PrivilegeId);
+            ViewData["DocumentId"] = new SelectList(context.Documents, "Id", "Number", userDto.DocumentId);
+            ViewData["PrivilegeId"] = new SelectList(context.Privileges, "Id", "Name", userDto.PrivilegeId);
 
             return View(userDto);
         }
@@ -258,25 +212,14 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            try
+            var user = repository.Users.Get(id);
+
+            if (user == null)
             {
-                var user = service.GetById(id);
-
-                if (user == null)
-                {
-
-                    return NotFound();
-                }
-                else
-                {
-                    return View(user);
-                }
+                return NotFound();
             }
-            catch (Exception)
-            {
 
-                throw;
-            }
+            return View(user);
         }
 
         // POST: User/Delete/5
@@ -284,17 +227,11 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            try
-            {
-                service.Delete(id);
+            repository.Users.Delete(id);
+            repository.Save();
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            return RedirectToAction(nameof(Index));
         }
+
     }
 }

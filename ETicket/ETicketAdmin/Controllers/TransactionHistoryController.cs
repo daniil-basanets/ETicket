@@ -1,12 +1,14 @@
-﻿using System;
-using System.Linq;
-using ETicket.ApplicationServices.Services;
+﻿using ETicket.Admin.Extensions;
+using ETicket.Admin.Models.DataTables;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ETicket.Admin.Controllers
 {
@@ -16,29 +18,41 @@ namespace ETicket.Admin.Controllers
         #region Private Members
 
         private readonly IUnitOfWork unitOfWork;
-        private DatabaseServices services;
 
         #endregion
 
         public TransactionHistoryController(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
-            //services =new IntegratedServices(unitOfWork, )
         }
 
         // GET: TransactionHistories
         public IActionResult Index()
         {
-            var ticketTypes = unitOfWork.TicketTypes.GetAll();
+            var ticketTypes = unitOfWork
+                    .TicketTypes
+                    .GetAll()
+                    .AsNoTracking();
+
             ViewData["TicketTypeId"] = new SelectList(ticketTypes, "Id", "TypeName");
 
-            IQueryable<TransactionHistory> eTicketDataContext = unitOfWork
-                    .TransactionHistory
-                    .GetAll()
-                    .AsNoTracking()
-                    .Include(t => t.TicketType);
+            return View();
+        }
 
-            return View(eTicketDataContext);
+        private JsonResult GetCurrentPage(
+            IQueryable<TransactionHistory> transactionHistory,
+            int drawStep,
+            int countRecords,
+            int countFiltered
+        )
+        {
+            return Json(new
+            {
+                draw = ++drawStep,
+                recordsTotal = countRecords,
+                recordsFiltered = countFiltered,
+                data = transactionHistory
+            });
         }
 
         // GET: TransactionHistories/Details/5
