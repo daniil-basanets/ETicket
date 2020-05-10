@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace ETicket.Admin.Extensions
+namespace ETicket.ApplicationServices.Extensions
 {
     public static class QueryableExtensions
     {

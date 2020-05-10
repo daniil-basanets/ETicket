@@ -1,8 +1,6 @@
-﻿
-const columnCount = 5;
-var filters = [
-    { columnNumber: 0, inputId: "#ticket-type-select option:selected", isCheckBox: true},
-    { columnNumber: 4, inputId: "#user-name-input", isCheckBox: false }
+﻿var filters = [
+    { columnName: "ticketType", inputId: "#ticket-type-select option:selected", isCheckBox: true },
+    { columnName: "user", inputId: "#user-name-input", isCheckBox: false }
 ];
 
 function getFilterMapColumnValue() {
@@ -17,7 +15,7 @@ function getFilterMapColumnValue() {
             value = $(filters[i].inputId).val();
         }
         if (value) {
-            result.set(filters[i].columnNumber, value);
+            result.set(filters[i].columnName, value);
         }
     }
 
@@ -60,13 +58,13 @@ $(document).ready(function () {
                     pagingData.TotalEntries = totalRecords;
                     pagingData.PageNumber = pageNumber;
 
-                    pagingData.SortColumnNumber = d.order[0]["column"];
+                    pagingData.SortColumnName = d.columns[d.order[0]["column"]]["name"];
                     pagingData.SortColumnDirection = d.order[0]["dir"];
                     
                     pagingData.SearchValue = d.search["value"];
 
                     var mapFilters = getFilterMapColumnValue();
-                    pagingData.FilterColumnNumbers = Array.from(mapFilters.keys());
+                    pagingData.FilterColumnNames = Array.from(mapFilters.keys());
                     pagingData.FilterValues = Array.from(mapFilters.values());
 
                     return pagingData;
@@ -76,6 +74,7 @@ $(document).ready(function () {
             //Columns data order       
             columns: [
                 {
+                    name: "ticketType",
                     data: "ticketType",
                     render: function (data, type, row) {
                         if (data != null) {
@@ -84,6 +83,7 @@ $(document).ready(function () {
                     }
                 },
                 {
+                    name: "createdUTCDate",
                     data: "createdUTCDate",
                     render: function (data, type, row) {
                         if (data != null) {
@@ -93,6 +93,7 @@ $(document).ready(function () {
                     }
                 },
                 {
+                    name: "activatedUTCDate",
                     data: "activatedUTCDate",
                     defaultContent: "",
                     render: function (data, type, row) {
@@ -103,6 +104,7 @@ $(document).ready(function () {
                     }
                 },
                 {
+                    name: "expirationUTCDate",
                     data: "expirationUTCDate",
                     defaultContent: "",
                     render: function (data, type, row) {
@@ -113,6 +115,7 @@ $(document).ready(function () {
                     }
                 },
                 {
+                    name: "user",
                     data: "user",
                     defaultContent: "",
                     render: function (data, type, row) {
@@ -134,6 +137,9 @@ $(document).ready(function () {
             language: {
                 //Set message for pop-up window
                 processing: "Take data from server. Please wait..."
+            },
+            oLanguage: {
+                sLengthMenu: "_MENU_",
             }
         });
 

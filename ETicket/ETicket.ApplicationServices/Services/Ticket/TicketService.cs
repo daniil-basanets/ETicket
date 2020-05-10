@@ -91,20 +91,20 @@ namespace ETicket.ApplicationServices.Services
                     .Include(t => t.User);
         }
 
-        public Expression<Func<Ticket, bool>> GetSingleFilterExpression(int columnNumber, string searchValue)
+        public Expression<Func<Ticket, bool>> GetSingleFilterExpression(string columnName, string filterValue)
         {
-            return columnNumber switch
+            return columnName switch
             {
-                0 => (t => t.TicketType.TypeName == searchValue),
-                1 => (t => t.CreatedUTCDate.ToString().Contains(searchValue)),
-                2 => (t => t.ActivatedUTCDate.ToString().Contains(searchValue)),
-                3 => (t => t.ExpirationUTCDate.ToString().Contains(searchValue)),
-                4 => (t => t.User.FirstName.StartsWith(searchValue) || t.User.LastName.StartsWith(searchValue)),
+                "ticketType" => (t => t.TicketType.TypeName == filterValue),
+                "createdUTCDate" => (t => t.CreatedUTCDate.ToString().Contains(filterValue)),
+                "activatedUTCDate" => (t => t.ActivatedUTCDate.ToString().Contains(filterValue)),
+                "expirationUTCDate" => (t => t.ExpirationUTCDate.ToString().Contains(filterValue)),
+                "user" => (t => t.User.FirstName.StartsWith(filterValue) || t.User.LastName.StartsWith(filterValue)),
                 _ => (t => true)
             };
         }
 
-        public IList<Expression<Func<Ticket, bool>>> GetSearchExpressions(string searchValue)
+        public IList<Expression<Func<Ticket, bool>>> GetGlobalSearchExpressions(string searchValue)
         {
             return new List<Expression<Func<Ticket, bool>>>
             {
@@ -117,27 +117,27 @@ namespace ETicket.ApplicationServices.Services
             };
         }
 
-        public IList<Expression<Func<Ticket, bool>>> GetFilterExpressions(int[] columnNumbers, string[] filterValues)
+        public IList<Expression<Func<Ticket, bool>>> GetFilterExpressions(string[] columnNames, string[] filterValues)
         {
             var result = new List<Expression<Func<Ticket, bool>>>();
 
-            for (int i = 0; i < columnNumbers.Length; i++)
+            for (int i = 0; i < columnNames.Length; i++)
             {
-                result.Add(GetSingleFilterExpression(columnNumbers[i], filterValues[i]));
+                result.Add(GetSingleFilterExpression(columnNames[i], filterValues[i]));
             }
 
             return result;
         }
 
-        public IList<Expression<Func<Ticket, string>>> GetSortExpressions()
+        public IDictionary<string, Expression<Func<Ticket, string>>> GetSortExpressions()
         {
-            return new List<Expression<Func<Ticket, string>>>
+            return new Dictionary<string, Expression<Func<Ticket, string>>>
             {
-                (t => t.TicketType.TypeName),
-                (t => t.CreatedUTCDate.ToString()),
-                (t => t.ActivatedUTCDate.ToString()),
-                (t => t.ExpirationUTCDate.ToString()),
-                (t => t.User.LastName)
+                { "ticketType", (t => t.TicketType.TypeName) },
+                { "createdUTCDate", (t => t.CreatedUTCDate.ToString()) },
+                { "activatedUTCDate", (t => t.ActivatedUTCDate.ToString()) },
+                { "expirationUTCDate", (t => t.ExpirationUTCDate.ToString()) },
+                { "user", (t => t.User.LastName) }
             };
         }
     }

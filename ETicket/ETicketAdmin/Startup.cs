@@ -1,11 +1,10 @@
 using System;
-using ETicket.Admin.Services.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.DocumentTypes;
 using ETicket.ApplicationServices.Services.DocumentTypes.Interfaces;
-using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Services.Transaction;
 using ETicket.ApplicationServices.Services.Users;
 using ETicket.ApplicationServices.Services.Users.Interfaces;

@@ -1,4 +1,4 @@
-﻿using ETicket.Admin.Extensions;
+﻿using ETicket.ApplicationServices.Extensions;
 using ETicket.Admin.Models.DataTables;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;

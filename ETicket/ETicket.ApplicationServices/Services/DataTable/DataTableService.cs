@@ -1,6 +1,5 @@
-﻿using ETicket.Admin.Extensions;
+﻿using ETicket.ApplicationServices.Extensions;
 using ETicket.Admin.Models.DataTables;
-using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -29,13 +28,13 @@ namespace ETicket.ApplicationServices.Services.DataTable
                 countRecords = data.Count();
             }
 
-            data = GetSortedQuery(data, pagingInfo.SortColumnNumber
+            data = GetSortedQuery(data, pagingInfo.SortColumnName
                 , pagingInfo.SortColumnDirection, service.GetSortExpressions());
 
             var countFiltered = countRecords;
 
             var whereExpression = MakeWhereExpression(pagingInfo.SearchValue
-                    , pagingInfo.FilterColumnNumbers, pagingInfo.FilterValues);
+                    , pagingInfo.FilterColumnNames, pagingInfo.FilterValues);
 
             if(whereExpression != null)
             {
@@ -50,20 +49,20 @@ namespace ETicket.ApplicationServices.Services.DataTable
             return GetJsonDataTable(data, drawStep, countRecords, countFiltered);
         }
 
-        private Expression<Func<T, bool>> MakeWhereExpression(string globalSearchString, int[] filterColumnNumbers, string[] filterValues)
+        private Expression<Func<T, bool>> MakeWhereExpression(string globalSearchString, string[] filterColumnNames, string[] filterValues)
         {
             Expression<Func<T, bool>> expression = null;
 
             if (!string.IsNullOrEmpty(globalSearchString))
             {
                 expression = service
-                        .GetSearchExpressions(globalSearchString)
+                        .GetGlobalSearchExpressions(globalSearchString)
                         .CombineByOrElse();
             }
-            if (filterColumnNumbers != null && filterColumnNumbers.Length != 0)
+            if (filterColumnNames != null && filterColumnNames.Length != 0)
             {
                 var filterExpression = service
-                        .GetFilterExpressions(filterColumnNumbers, filterValues)
+                        .GetFilterExpressions(filterColumnNames, filterValues)
                         .CombineByAndAlso();
 
                 if (expression != null)
@@ -90,9 +89,9 @@ namespace ETicket.ApplicationServices.Services.DataTable
             };
         }
 
-        private IQueryable<T> GetSortedQuery(IQueryable<T> query, int columnNumber, string columnDirection, IList<Expression<Func<T, string>>> expressions)
+        private IQueryable<T> GetSortedQuery(IQueryable<T> query, string columnName, string columnDirection, IDictionary<string, Expression<Func<T, string>>> expressions)
         {
-            return query.ApplySortBy(expressions[columnNumber], columnDirection);
+            return query.ApplySortBy(expressions[columnName], columnDirection);
         }
 
         private IQueryable<T> GetSearchedQuery(IQueryable<T> query, Expression<Func<T, bool>> expression)

@@ -12,7 +12,7 @@ namespace ETicket.Admin.Models.DataTables
         public int DrawCounter { get; set; }
 
         //For sorting
-        public int SortColumnNumber { get; set; }
+        public string SortColumnName { get; set; }
         public string SortColumnDirection { get; set; }
 
         //For paging
@@ -24,7 +24,7 @@ namespace ETicket.Admin.Models.DataTables
         public string SearchValue { get; set; }
 
         //Arrays for filtering
-        public int[] FilterColumnNumbers { get; set; }
+        public string[] FilterColumnNames { get; set; }
         public string[] FilterValues { get; set; }
     }
 }

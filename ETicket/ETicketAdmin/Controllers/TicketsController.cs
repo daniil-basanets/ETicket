@@ -54,9 +54,8 @@ namespace ETicket.Admin.Controllers
         public IActionResult Index()
         {
             ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetAll(), "Id", "TypeName"); //TODO change to service 
-            //var tickets = ticketService.GetAll();
 
-            return View(/*tickets.ToList()*/);
+            return View();
         }
 
         // GET: Tickets/Details/5
