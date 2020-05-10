@@ -1,5 +1,5 @@
 using System;
-using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DocumentTypes;
 using ETicket.ApplicationServices.Services.Interfaces;
@@ -26,6 +26,7 @@ namespace ETicket.Admin
     {
         public Startup(IConfiguration configuration)
         {
+            LoggerService.Initialize();
             Configuration = configuration;
         }
 
