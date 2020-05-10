@@ -1,13 +1,13 @@
 ﻿using ETicket.Admin.Extensions;
 using ETicket.Admin.Models.DataTables;
-using ETicket.Admin.Services.Interfaces;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace ETicket.Admin.Services
+namespace ETicket.ApplicationServices.Services.DataTable
 {
     public class DataTableService<T> : IDataTableService
     {

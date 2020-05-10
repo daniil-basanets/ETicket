@@ -11,9 +11,10 @@ using ETicket.ApplicationServices.Services.Users.Interfaces;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.Admin.Models.DataTables;
 using ETicket.DataAccess.Domain.Entities;
-using ETicket.Admin.Services;
+using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
-using ETicket.Admin.Services.Interfaces;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.ApplicationServices.Services.DataTable;
 
 namespace ETicket.Admin.Controllers
 {

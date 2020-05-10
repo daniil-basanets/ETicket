@@ -5,7 +5,7 @@ using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
-using ETicket.Admin.Services.Interfaces;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 

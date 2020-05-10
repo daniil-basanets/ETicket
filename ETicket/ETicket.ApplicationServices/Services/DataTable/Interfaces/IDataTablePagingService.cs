@@ -5,7 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace ETicket.Admin.Services.Interfaces
+namespace ETicket.ApplicationServices.Services.DataTable.Interfaces
 {
     public interface IDataTablePagingService<T>
     {

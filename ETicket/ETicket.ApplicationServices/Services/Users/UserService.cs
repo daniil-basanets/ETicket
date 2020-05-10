@@ -6,10 +6,12 @@ using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Users.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using System.Linq.Expressions;
 
 namespace ETicket.ApplicationServices.Services.Users
 {
-    public class UserService : IUserService
+    public class UserService : IUserService, IDataTablePagingService<User>
     {
         private readonly IUnitOfWork uow;
         private readonly IMailService mailService;
@@ -75,6 +77,26 @@ namespace ETicket.ApplicationServices.Services.Users
         public bool Exists(Guid id)
         {
             return uow.Users.UserExists(id);
+        }
+
+        public IList<Expression<Func<User, string>>> GetSortExpressions()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<Expression<Func<User, bool>>> GetFilterExpressions(int[] columnNumbers, string[] filterValues)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<Expression<Func<User, bool>>> GetSearchExpressions(string searchValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        IQueryable<User> IDataTablePagingService<User>.GetAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }
