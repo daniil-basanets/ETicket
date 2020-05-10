@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,13 +6,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 using AutoMapper;
-using ETicket.Admin.Extensions;
-using ETicket.Admin.Models.DataTables;
-using ETicket.Admin.Services;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
-using ETicketAdmin.DTOs;
-
+using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.Users;
 
 namespace ETicket.Admin.Controllers
 {

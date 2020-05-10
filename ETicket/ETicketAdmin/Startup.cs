@@ -1,6 +1,8 @@
 using System;
+using ETicket.Admin.Services.Interfaces;
 using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.DocumentTypes;
 using ETicket.ApplicationServices.Services.DocumentTypes.Interfaces;
 using ETicket.ApplicationServices.Services.Interfaces;
@@ -59,6 +61,9 @@ namespace ETicket.Admin
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IDocumentTypesService, DocumentTypesService>();
             services.AddTransient<ITicketTypeService, TicketTypeService>();
+
+            services.AddTransient<IDataTablePagingService<Ticket>, TicketService>();
+
             
 
             services.AddIdentityCore<IdentityUser>(o =>

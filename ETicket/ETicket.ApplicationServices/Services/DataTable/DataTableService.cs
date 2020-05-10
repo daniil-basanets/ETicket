@@ -1,19 +1,18 @@
 ﻿using ETicket.Admin.Extensions;
 using ETicket.Admin.Models.DataTables;
 using ETicket.Admin.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace ETicket.Admin.Services
 {
-    public class DataTableServices<T>
+    public class DataTableService<T> : IDataTableService
     {
-        private readonly IDataTablePaging<T> service;
-        public DataTableServices(IDataTablePaging<T> service)
+        private readonly IDataTablePagingService<T> service;
+        public DataTableService(IDataTablePagingService<T> service)
         {
             this.service = service;
         }

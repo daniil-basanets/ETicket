@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ETicket.Admin.Services.Interfaces
 {
-    public interface IDataTablePaging<T>
+    public interface IDataTablePagingService<T>
     {
         IList<Expression<Func<T, string>>> GetSortExpressions();
         IList<Expression<Func<T, bool>>> GetFilterExpressions(int[] columnNumbers, string[] filterValues);

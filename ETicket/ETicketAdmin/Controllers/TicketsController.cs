@@ -1,24 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Services.Users.Interfaces;
 using ETicket.DataAccess.Domain.Interfaces;
-
-using AutoMapper;
-using ETicket.Admin.Extensions;
 using ETicket.Admin.Models.DataTables;
 using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
-using ETicketAdmin.DTOs;
 using ETicket.Admin.Services;
-using System.Linq.Expressions;
-using Newtonsoft.Json;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.Admin.Services.Interfaces;
 
 namespace ETicket.Admin.Controllers
 {
@@ -29,7 +24,7 @@ namespace ETicket.Admin.Controllers
         private readonly ITicketService ticketService;
         private readonly ITicketTypeService ticketTypeService;
         private readonly IUserService userService;
-        private readonly DataTableServices<Ticket> dataTableServices;
+        private readonly IDataTableService dataTableService;
 
         private void InitViewDataForSelectList(TicketDto ticketDto = null)
         {
@@ -38,29 +33,29 @@ namespace ETicket.Admin.Controllers
             ViewData["UserId"] = new SelectList(userService.GetAll().Select(s => new { s.Id, Name = $"{s.LastName} {s.FirstName}" }), "Id", "Name", ticketDto?.UserId);
         }
 
-        public TicketController(IUnitOfWork uow, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService)
+        public TicketController(IUnitOfWork uow, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService, IDataTablePagingService<Ticket> dataTablePaging)
         {
             this.uow = uow;
 
             this.ticketService = ticketService;
             this.ticketTypeService = ticketTypeService;
             this.userService = userService;
-            dataTableServices = new DataTableServices<Ticket>(ticketService);
+            dataTableService = new DataTableService<Ticket>(dataTablePaging);
         }
 
         [HttpGet]
         public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
         {
-            return Json(dataTableServices.GetDataTablePage(pagingInfo));
+            return Json(dataTableService.GetDataTablePage(pagingInfo));
         }
 
         // GET: Tickets
         public IActionResult Index()
         {
             ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetAll(), "Id", "TypeName"); //TODO change to service 
-            var tickets = ticketService.GetAll();
+            //var tickets = ticketService.GetAll();
 
-            return View(tickets.ToList());
+            return View(/*tickets.ToList()*/);
         }
 
         // GET: Tickets/Details/5
