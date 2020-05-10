@@ -8,7 +8,7 @@ using System;
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
-    public class CarriersController : Controller
+    public class CarrierController : Controller
     {
         #region Private members
 
@@ -17,7 +17,7 @@ namespace ETicket.Admin.Controllers
 
         #endregion
 
-        public CarriersController(ICarrierService carrierService)
+        public CarrierController(ICarrierService carrierService)
         {
             this.carrierService = carrierService;
         }
@@ -44,7 +44,7 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
-                log.Warn(nameof(Details) + " id is null"););
+                log.Warn(nameof(Details) + " id is null");
 
                 return NotFound();
             }
@@ -107,34 +107,7 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                log.Warn(nameof(Edit) + " id is null"););
-
-                return NotFound();
-            }
-
-            CarrierDto carrierDto;
-
-            try
-            {
-                carrierDto = carrierService.GetDto((int)id);
-            }
-            catch (Exception e)
-            {
-                log.Error(e);
-
-                return BadRequest();
-            }
-
-            if (carrierDto == null)
-            {
-                log.Warn(nameof(Edit) + " carrierDto is null");
-
-                return NotFound();
-            }
-
-            return View(carrierDto);
+            return Details(id);
         }
 
         // POST: Carriers/Edit/5
@@ -172,34 +145,7 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(int? id)
         {
-            if (id == null)
-            {
-                log.Warn(nameof(Details) + " id is null"););
-
-                return NotFound();
-            }
-
-            CarrierDto carrierDto;
-
-            try
-            {
-                carrierDto = carrierService.GetDto((int)id);
-            }
-            catch (Exception e)
-            {
-                log.Error(e);
-
-                return BadRequest();
-            }
-
-            if (carrierDto == null)
-            {
-                log.Warn(nameof(Details) + " carrierDto is null");
-
-                return NotFound();
-            }
-
-            return View(carrierDto);
+            return Details(id);
         }
 
         // POST: Carriers/Delete/5
