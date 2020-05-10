@@ -62,8 +62,9 @@ namespace ETicket.Admin
             services.AddTransient<ITicketTypeService, TicketTypeService>();
 
             services.AddTransient<IDataTablePagingService<Ticket>, TicketService>();
+            services.AddTransient<IDataTablePagingService<User>, UserService>();
 
-            
+
 
             services.AddIdentityCore<IdentityUser>(o =>
             {

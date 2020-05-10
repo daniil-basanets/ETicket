@@ -10,6 +10,9 @@ using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Users;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.ApplicationServices.Services.DataTable;
+using ETicket.Admin.Models.DataTables;
 
 namespace ETicket.Admin.Controllers
 {
@@ -19,12 +22,15 @@ namespace ETicket.Admin.Controllers
         private readonly ETicketDataContext context;
         private readonly UnitOfWork repository;
         private readonly IMapper mapper;
+        private readonly IDataTableService dataTableService;
 
-        public UserController(ETicketDataContext context, IMapper mapper)
+        public UserController(ETicketDataContext context, IDataTablePagingService<User> dataTablePaging/*, IMapper mapper*/)
         {
             this.context = context;
             repository = new UnitOfWork(context);
-            this.mapper = mapper;
+            dataTableService = new DataTableService<User>(dataTablePaging);
+
+            //this.mapper = mapper;
         }
 
         // GET: User
@@ -34,21 +40,11 @@ namespace ETicket.Admin.Controllers
 
             return View();
         }
-        
-        private JsonResult GetCurrentPage(
-            IQueryable<User> users,
-            int drawStep,
-            int countRecords,
-            int countFiltered
-        )
+
+        [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
         {
-            return Json(new
-            {
-                draw = ++drawStep,
-                recordsTotal = countRecords,
-                recordsFiltered = countFiltered,
-                data = users
-            });
+            return Json(dataTableService.GetDataTablePage(pagingInfo));
         }
 
         // GET: User/Details/5

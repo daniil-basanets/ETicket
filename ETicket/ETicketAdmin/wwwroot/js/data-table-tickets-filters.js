@@ -36,21 +36,10 @@ $(document).ready(function () {
             totalRecords = json.recordsTotal;
         })
         .on('page.dt', function () {
-            //if (isNewSearch == true) {
-            //    pageNumber = 1;
-            //    table.page(1);
-            //    isNewSearch = false;
-            //}
-            //else {
-            //    pageNumber = table.page() + 1;
-            //}
-
             pageNumber = table.page() + 1;
-
         })
         //DataTable settings
         .DataTable({
-            //cache: false,
             columnDefs: [
                 { orderable: false, targets: -1 }
             ],

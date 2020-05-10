@@ -28,35 +28,25 @@
                         <tr>
                             <th>First name:</th>
                             <th>
-                                <form class="user-filter-form">
-                                    <input type="text" class="user-filter-form form-control form-control-sm" id="first-name-input">
-                                </form>
+                                <input type="text" class="user-filter-form form-control form-control-sm" id="first-name-input">
                             </th>
                         </tr>
                         <tr>
                             <th>Last name:</th>
                             <th>
-                                <form class="user-filter-form">
-                                    <input type="text" class="user-filter-form form-control form-control-sm" id="last-name-input">
-                                </form>
+                                <input type="text" class="user-filter-form form-control form-control-sm" id="last-name-input">
                             </th>
                         </tr>
                         <tr>
                             <th>Privilege:</th>
                             <th>
-                                <form class="user-filter-form">
-
-                                    @Html.DropDownList("privilege-select", ViewData["PrivilegeId"] as IEnumerable<SelectListItem>, "", new { @class = "user-filter-form custom-select custom-select-sm form-control form-control-sm" })
-
-                                </form>
+                                @Html.DropDownList("privilege-select", ViewData["PrivilegeId"] as IEnumerable<SelectListItem>, "", new { @class = "user-filter-form custom-select custom-select-sm form-control form-control-sm" })
                             </th>
                         </tr>
                         <tr>
                             <th>Document:</th>
                             <th>
-                                <form class="user-filter-form">
-                                    <input type="text" class="user-filter-form form-control form-control-sm" id="document-input">
-                                </form>
+                                <input type="text" class="user-filter-form form-control form-control-sm" id="document-input">
                             </th>
                         </tr>
                     </table>
@@ -111,49 +101,52 @@
                         </tr>
                     </tfoot>
                     <tbody>
-                        @foreach (var item in Model)
+                        @if (Model != null)
                         {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FirstName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.LastName)
-                                </td>
-                                <td>
-                                    @item.DateOfBirth.ToString("yyyy-MM-dd")
-                                </td>
-                                <td>
-                                    @if (item.Privilege == null)
-                                    {
-                                        @Html.DisplayFor(modelItem => item.Privilege.Name)
-                                    }
-                                    else
-                                    {
-                                        @Html.ActionLink(item.Privilege.Name, "Details", "Privileges", new { id = item.PrivilegeId }, null)
-                                    }
-                                           
-                                </td>
-                                <td>
-                                    @if (item.Document == null)
-                                    {
-                                        @Html.DisplayFor(modelItem => item.Document.Number)
-                                    }
-                                    else
-                                    {
-                                        @Html.ActionLink(item.Document.Number, "Details", "Documents", new { id = item.DocumentId }, null)
-                                    }
-                                </td>
-                                <td>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                                    @if (item.Email != null)
-                                    {
-                                        <a asp-action="SendMessage" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Notify</a>
-                                    }
-                                </td>
-                            </tr>
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.FirstName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.LastName)
+                                    </td>
+                                    <td>
+                                        @item.DateOfBirth.ToString("yyyy-MM-dd")
+                                    </td>
+                                    <td>
+                                        @if (item.Privilege == null)
+                                        {
+                                            @Html.DisplayFor(modelItem => item.Privilege.Name)
+                                        }
+                                        else
+                                        {
+                                            @Html.ActionLink(item.Privilege.Name, "Details", "Privileges", new { id = item.PrivilegeId }, null)
+                                        }
+
+                                    </td>
+                                    <td>
+                                        @if (item.Document == null)
+                                        {
+                                            @Html.DisplayFor(modelItem => item.Document.Number)
+                                        }
+                                        else
+                                        {
+                                            @Html.ActionLink(item.Document.Number, "Details", "Documents", new { id = item.DocumentId }, null)
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                                        @if (item.Email != null)
+                                        {
+                                            <a asp-action="SendMessage" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Notify</a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>
