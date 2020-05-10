@@ -1,4 +1,5 @@
 using System;
+using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DocumentTypes;
