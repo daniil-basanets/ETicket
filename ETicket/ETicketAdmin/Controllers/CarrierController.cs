@@ -1,15 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using log4net;
+using System;
 
 namespace ETicket.Admin.Controllers
 {
+    [Authorize(Roles = "Admin, SuperUser")]
     public class CarriersController : Controller
     {
         #region Private members
 
         private readonly ICarrierService carrierService;
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 
@@ -22,7 +26,16 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View(carrierService.GetAll());
+            try
+            {
+                return View(carrierService.GetAll());
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         // GET: Carriers/Details/5
@@ -31,17 +44,32 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(Details) + " id is null"););
+
                 return NotFound();
             }
 
-            var carrier = carrierService.GetDto((int)id);
+            CarrierDto carrierDto;
 
-            if (carrier == null)
+            try
             {
+                carrierDto = carrierService.GetDto((int)id);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+
+            if (carrierDto == null)
+            {
+                log.Warn(nameof(Details) + " carrierDto is null");
+
                 return NotFound();
             }
 
-            return View(carrier);
+            return View(carrierDto);
         }
 
         // GET: Carriers/Create
@@ -56,13 +84,23 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(CarrierDto carrierDto)
         {
-            if (ModelState.IsValid)
+            try
             {
-                carrierService.Create(carrierDto);
+                if (ModelState.IsValid)
+                {
+                    carrierService.Create(carrierDto);
 
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(carrierDto);
             }
-            return View(carrierDto);
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         // GET: Carriers/Edit/5
@@ -71,17 +109,32 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(Edit) + " id is null"););
+
                 return NotFound();
             }
 
-            var carrier = carrierService.GetDto((int)id);
+            CarrierDto carrierDto;
 
-            if (carrier == null)
+            try
             {
+                carrierDto = carrierService.GetDto((int)id);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+
+            if (carrierDto == null)
+            {
+                log.Warn(nameof(Edit) + " carrierDto is null");
+
                 return NotFound();
             }
 
-            return View(carrier);
+            return View(carrierDto);
         }
 
         // POST: Carriers/Edit/5
@@ -91,31 +144,28 @@ namespace ETicket.Admin.Controllers
         {
             if (id != carrierDto.Id)
             {
+                log.Warn(nameof(Edit) + " id is not equal to carrierDto.Id");
+
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
                     carrierService.Update(carrierDto);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!carrierService.Exists(carrierDto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+
+                    return RedirectToAction(nameof(Index));
                 }
 
-                return RedirectToAction(nameof(Index));
+                return View(carrierDto);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return View(carrierDto);
+                return BadRequest();
+            }
         }
 
         // GET: Carriers/Delete/5
@@ -124,17 +174,32 @@ namespace ETicket.Admin.Controllers
         {
             if (id == null)
             {
+                log.Warn(nameof(Details) + " id is null"););
+
                 return NotFound();
             }
 
-            var carrier = carrierService.GetDto((int)id);
+            CarrierDto carrierDto;
 
-            if (carrier == null)
+            try
             {
+                carrierDto = carrierService.GetDto((int)id);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+
+            if (carrierDto == null)
+            {
+                log.Warn(nameof(Details) + " carrierDto is null");
+
                 return NotFound();
             }
 
-            return View(carrier);
+            return View(carrierDto);
         }
 
         // POST: Carriers/Delete/5
@@ -142,7 +207,16 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            carrierService.Delete(id);
+            try
+            {
+                carrierService.Delete(id);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
 
             return RedirectToAction(nameof(Index));
         }
