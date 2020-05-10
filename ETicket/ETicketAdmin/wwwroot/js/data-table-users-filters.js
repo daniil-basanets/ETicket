@@ -23,6 +23,7 @@ function getFilterMapColumnValue() {
 
     return result;
 }
+
 var isNewSearch = false;
 
 $(document).ready(function () {

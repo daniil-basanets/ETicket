@@ -38,9 +38,7 @@
                                         @Html.DisplayNameFor(model => model.Number)
                                     </summary>
                                     <div class="filters">
-                                        <form class="document-filter-form">
-                                            <input type="text" class="document-filter-form form-control form-control-sm" id="document-number-input">
-                                        </form>
+                                        <input type="text" class="document-filter-form form-control form-control-sm" id="document-number-input">
                                     </div>
                                 </details>
                             </th>                       
@@ -75,27 +73,30 @@
                         </tr>
                     </tfoot>
                     <tbody>
-                        @foreach (var item in Model)
+                        @if (Model != null)
                         {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.DocumentType.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Number)
-                                </td>
-                                <td>
-                                    @(item.ExpirationDate.HasValue ? item.ExpirationDate.Value.ToString("yyyy-MM-dd") : "")
-                                </td>
-                                <td>
-                                    @(item.IsValid ? "Yes" : "No")
-                                </td>
-                                <td>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                                </td>
-                            </tr>
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DocumentType.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Number)
+                                    </td>
+                                    <td>
+                                        @(item.ExpirationDate.HasValue ? item.ExpirationDate.Value.ToString("yyyy-MM-dd") : "")
+                                    </td>
+                                    <td>
+                                        @(item.IsValid ? "Yes" : "No")
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                                    </td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>

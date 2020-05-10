@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
 using AutoMapper;
+using ETicket.Admin.Models.DataTables;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.DataTable;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -24,11 +27,14 @@ namespace ETicket.Admin.Controllers
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
+        private readonly IDataTableService dataTableService;
 
-        public DocumentsController(IUnitOfWork unitOfWork, IMapper mapper)
+        public DocumentsController(IUnitOfWork unitOfWork/*, IMapper mapper*/, IDataTablePagingService<Document> dataTablePaging)
         {
             this.unitOfWork = unitOfWork;
-            this.mapper = mapper;
+            //this.mapper = mapper;
+
+            dataTableService = new DataTableService<Document>(dataTablePaging);
         }
 
         public IActionResult Index()
@@ -38,20 +44,10 @@ namespace ETicket.Admin.Controllers
             return View();
         }
 
-        private JsonResult GetCurrentPage(
-            IQueryable<Document> documents,
-            int drawStep,
-            int countRecords,
-            int countFiltered
-        )
+        [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
         {
-            return Json(new
-            {
-                draw = ++drawStep,
-                recordsTotal = countRecords,
-                recordsFiltered = countFiltered,
-                data = documents
-            });
+            return Json(dataTableService.GetDataTablePage(pagingInfo));
         }
 
         public IActionResult Details(Guid? id)
