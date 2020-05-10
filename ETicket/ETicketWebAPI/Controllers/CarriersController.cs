@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.ApplicationServices.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using log4net;
 using ETicket.ApplicationServices.DTOs;
-using System;
-using Microsoft.AspNetCore.Http;
+using ETicket.ApplicationServices.Services.Interfaces;
 
 namespace ETicket.WebAPI.Controllers
 {
@@ -116,7 +114,6 @@ namespace ETicket.WebAPI.Controllers
 
                 return BadRequest();
             }
-            // return CreatedAtAction("GetCarrier", new { id = carrier.Id }, carrier);
         }
 
     }
