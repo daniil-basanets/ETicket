@@ -21,7 +21,7 @@ namespace ETicket.ApplicationServices.Services
             mapper = new MapperService();
         }
 
-        IEnumerable<Ticket> ITicketService.GetAll()
+        public IEnumerable<Ticket> GetAll()
         {
             return uow.Tickets.GetAll().ToList();
         }
@@ -29,6 +29,11 @@ namespace ETicket.ApplicationServices.Services
         public Ticket Get(Guid id)
         {
             return uow.Tickets.Get(id);
+        }
+
+        public IQueryable<Ticket> Get()
+        {
+            return uow.Tickets.GetAll();
         }
 
         public TicketDto GetDto(Guid id)
@@ -77,6 +82,24 @@ namespace ETicket.ApplicationServices.Services
         public bool Exists(Guid id)
         {
             return uow.Tickets.Get(id) != null;
+        }
+
+        public void Activate(Guid ticketId, Guid userId)
+        {
+            var ticket = uow.Tickets.GetAll().Where(t => t.Id == ticketId).Where(t => t.UserId == userId).FirstOrDefault();
+
+
+            if (ticket == null)
+            {
+                var e = new ApplicationException(nameof(Activate) + " ticket with id = " + ticketId + ", userId = " + userId + " does not exists");
+                e.Data.Add("ticketId", ticketId);
+                e.Data.Add("userId", userId);
+
+                throw e;
+            }
+
+            ticket.ActivatedUTCDate = DateTime.UtcNow;
+            ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(ticket.TicketType.DurationHours);
         }
     }
 }
