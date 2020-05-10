@@ -21,6 +21,7 @@ function getFilterMapColumnValue() {
 
     return result;
 }
+var isNewSearch = false;
 
 $(document).ready(function () {
     $.noConflict();
@@ -28,13 +29,24 @@ $(document).ready(function () {
     var totalRecords = -1; 
     var pageNumber = 1;
 
+
     var table = $('#dataTable')
         //Read additional fields from server side
         .on('xhr.dt', function (e, settings, json, xhr) {
             totalRecords = json.recordsTotal;
         })
         .on('page.dt', function () {
+            //if (isNewSearch == true) {
+            //    pageNumber = 1;
+            //    table.page(1);
+            //    isNewSearch = false;
+            //}
+            //else {
+            //    pageNumber = table.page() + 1;
+            //}
+
             pageNumber = table.page() + 1;
+
         })
         //DataTable settings
         .DataTable({
@@ -56,6 +68,12 @@ $(document).ready(function () {
 
                     pagingData.PageSize = d.length;
                     pagingData.TotalEntries = totalRecords;
+
+                    if (isNewSearch) {
+                        pageNumber = 1;
+                        d.page = 1;
+                    }
+                    
                     pagingData.PageNumber = pageNumber;
 
                     pagingData.SortColumnName = d.columns[d.order[0]["column"]]["name"];
@@ -66,7 +84,8 @@ $(document).ready(function () {
                     var mapFilters = getFilterMapColumnValue();
                     pagingData.FilterColumnNames = Array.from(mapFilters.keys());
                     pagingData.FilterValues = Array.from(mapFilters.values());
-
+                    //this.page(0);
+                    isNewSearch = false;
                     return pagingData;
                 }
             },
@@ -148,8 +167,22 @@ $(document).ready(function () {
     $("#dataTable_filter input").unbind()
         .bind("change", function (e) {
             var searchValue = $(this).val();
+            isNewSearch = true;
             table.search(searchValue).draw();
         });
+
+    $("#user-name-input").unbind()
+        .bind("change", function (e) {
+            isNewSearch = true;
+            table.draw();
+        });
+
+    $('#ticket-type-select').change(function () {
+        isNewSearch = true;
+        table.draw();
+    });
+
+
 
     //Event listener for Edit button 
     $("#dataTable tbody").on('click', '#editButton', function () {
@@ -166,15 +199,6 @@ $(document).ready(function () {
         var data = table.row($(this).parents('tr')).data();
         location.href = "/Ticket/Delete/" + data.id;
     })
-
-    $("#user-name-input").unbind()
-        .bind("change", function (e) {
-            table.draw();
-        });
-
-    $('#ticket-type-select').change(function () {
-        table.draw();
-    });
 
     //Delete container from loyout only for Index
     $('.container').removeClass('container');
