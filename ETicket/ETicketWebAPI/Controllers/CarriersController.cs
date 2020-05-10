@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
@@ -45,46 +44,68 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<CarrierDto> GetCarrier(int id)
         {
-            var carrier = carrierService.GetDto(id);
-
-            if (carrier == null)
+            try
             {
-                return NotFound();
-            }
+                var carrier = carrierService.GetDto(id);
 
-            return carrier;
+                if (carrier == null)
+                {
+                    log.Warn(nameof(GetCarrier) + " carrier is null");
+
+                    return NotFound();
+                }
+
+                return carrier;
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         // PUT: api/Carriers/5
         [HttpPut("{id}")]
         public IActionResult UpdateCarrier(int id, CarrierDto carrierDto)
         {
-            if (id != carrierDto.Id)
-            {
-                return BadRequest();
-            }
-
             try
             {
+                if (id != carrierDto.Id)
+                {
+                    log.Warn(nameof(UpdateCarrier) + " id is not equal to carrierDto.Id");
+
+                    return BadRequest();
+                }
+
                 carrierService.Update(carrierDto);
+
+                return NoContent();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception e)
             {
+                log.Error(e);
 
-                throw;
+                return BadRequest();
             }
-
-            return NoContent();
         }
 
         // POST: api/Carriers
         [HttpPost]
         public ActionResult<Carrier> CreateCarrier(CarrierDto carrierDto)
         {
-            carrierService.Create(carrierDto);
+            try
+            {
+                carrierService.Create(carrierDto);
 
-            return CreatedAtAction("GetCarrier", carrierDto);
+                return Created(nameof(GetCarrier), carrierDto);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
 
+                return BadRequest();
+            }
             // return CreatedAtAction("GetCarrier", new { id = carrier.Id }, carrier);
         }
 
