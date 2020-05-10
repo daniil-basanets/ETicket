@@ -5,6 +5,7 @@ using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using ETicket.ApplicationServices.DTOs;
 using System;
+using Microsoft.AspNetCore.Http;
 
 namespace ETicket.WebAPI.Controllers
 {
@@ -26,7 +27,9 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/Carriers
         [HttpGet]
-        public ActionResult<IEnumerable<Carrier>> GetAll()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult GetAll()
         {
             try
             {
@@ -42,7 +45,10 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/Carriers/5
         [HttpGet("{id}")]
-        public ActionResult<CarrierDto> GetCarrier(int id)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetCarrier(int id)
         {
             try
             {
@@ -55,7 +61,7 @@ namespace ETicket.WebAPI.Controllers
                     return NotFound();
                 }
 
-                return carrier;
+                return Ok(carrier);
             }
             catch (Exception e)
             {
@@ -67,6 +73,8 @@ namespace ETicket.WebAPI.Controllers
 
         // PUT: api/Carriers/5
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult UpdateCarrier(int id, CarrierDto carrierDto)
         {
             try
@@ -92,7 +100,9 @@ namespace ETicket.WebAPI.Controllers
 
         // POST: api/Carriers
         [HttpPost]
-        public ActionResult<Carrier> CreateCarrier(CarrierDto carrierDto)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult CreateCarrier(CarrierDto carrierDto)
         {
             try
             {
