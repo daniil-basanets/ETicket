@@ -55,15 +55,14 @@ namespace ETicket.ApplicationServices.Services
             unitOfWork.Save();
         }
 
-        public IDictionary<string, Expression<Func<Document, string>>> GetSortExpressions()
+        public IDictionary<string, Expression<Func<Document, object>>> GetSortExpressions()
         {
-            return new Dictionary<string, Expression<Func<Document, string>>>
+            return new Dictionary<string, Expression<Func<Document, object>>>
             {
                 { "documentType", (t => t.DocumentType.Name) },
                 { "number", (t => t.Number) },
-                { "expirationDate", (t => t.ExpirationDate.ToString()) },
-                //t.IsValid.ToString() doesn`t work
-                { "isValid", (t => t.IsValid ? "true" : "false") }          
+                { "expirationDate", (t => t.ExpirationDate) },
+                { "isValid", (t => t.IsValid) }          
             };
         }
 

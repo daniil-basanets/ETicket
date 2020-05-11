@@ -129,14 +129,14 @@ namespace ETicket.ApplicationServices.Services
             return result;
         }
 
-        public IDictionary<string, Expression<Func<Ticket, string>>> GetSortExpressions()
+        public IDictionary<string, Expression<Func<Ticket, object>>> GetSortExpressions()
         {
-            return new Dictionary<string, Expression<Func<Ticket, string>>>
+            return new Dictionary<string, Expression<Func<Ticket, object>>>
             {
                 { "ticketType", (t => t.TicketType.TypeName) },
-                { "createdUTCDate", (t => t.CreatedUTCDate.ToString()) },
-                { "activatedUTCDate", (t => t.ActivatedUTCDate.ToString()) },
-                { "expirationUTCDate", (t => t.ExpirationUTCDate.ToString()) },
+                { "createdUTCDate", (t => t.CreatedUTCDate) },
+                { "activatedUTCDate", (t => t.ActivatedUTCDate) },
+                { "expirationUTCDate", (t => t.ExpirationUTCDate) },
                 { "user", (t => t.User.LastName) }
             };
         }

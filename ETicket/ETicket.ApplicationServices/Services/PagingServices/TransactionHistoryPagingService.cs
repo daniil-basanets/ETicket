@@ -61,14 +61,14 @@ namespace ETicket.ApplicationServices.Services.PagingServices
             };
         }
 
-        public IDictionary<string, Expression<Func<TransactionHistory, string>>> GetSortExpressions()
+        public IDictionary<string, Expression<Func<TransactionHistory, object>>> GetSortExpressions()
         {
-            return new Dictionary<string, Expression<Func<TransactionHistory, string>>>
+            return new Dictionary<string, Expression<Func<TransactionHistory, object>>>
             {
-                { "totalPrice", (t => t.TotalPrice.ToString()) },
-                { "date", (t => t.Date.ToString()) },
+                { "totalPrice", (t => t.TotalPrice) },
+                { "date", (t => t.Date) },
                 { "ticketType", (t => t.TicketType.TypeName) },
-                { "count", (t => t.Count.ToString()) }
+                { "count", (t => t.Count) }
             };
         }
     }

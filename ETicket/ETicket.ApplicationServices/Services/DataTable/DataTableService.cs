@@ -28,8 +28,10 @@ namespace ETicket.ApplicationServices.Services.DataTable
                 countRecords = data.Count();
             }
 
+            var sortExpression = service.GetSortExpressions()[pagingInfo.SortColumnName];
+
             data = GetSortedQuery(data, pagingInfo.SortColumnName
-                , pagingInfo.SortColumnDirection, service.GetSortExpressions());
+                , pagingInfo.SortColumnDirection, sortExpression);
 
             var countFiltered = countRecords;
 
@@ -89,9 +91,9 @@ namespace ETicket.ApplicationServices.Services.DataTable
             };
         }
 
-        private IQueryable<T> GetSortedQuery(IQueryable<T> query, string columnName, string columnDirection, IDictionary<string, Expression<Func<T, string>>> expressions)
+        private IQueryable<T> GetSortedQuery(IQueryable<T> query, string columnName, string columnDirection, Expression<Func<T, object>> expression)
         {
-            return query.ApplySortBy(expressions[columnName], columnDirection);
+            return query.ApplySortBy(expression, columnDirection);
         }
 
         private IQueryable<T> GetSearchedQuery(IQueryable<T> query, Expression<Func<T, bool>> expression)

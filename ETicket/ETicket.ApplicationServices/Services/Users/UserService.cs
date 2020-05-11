@@ -80,13 +80,13 @@ namespace ETicket.ApplicationServices.Services.Users
             return uow.Users.UserExists(id);
         }
 
-        public IDictionary<string, Expression<Func<User, string>>> GetSortExpressions()
+        public IDictionary<string, Expression<Func<User, object>>> GetSortExpressions()
         {
-            return new Dictionary<string, Expression<Func<User, string>>>
+            return new Dictionary<string, Expression<Func<User, object>>>
             {
                 { "firstName", (t => t.FirstName) },
                 { "lastName", (t => t.LastName) },
-                { "dateOfBirth", (t => t.DateOfBirth.ToString()) },
+                { "dateOfBirth", (t => t.DateOfBirth) },
                 { "privilege", (t => t.Privilege.Name) },
                 { "document", (t => t.Document.Number) }
             };
