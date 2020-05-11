@@ -21,27 +21,19 @@
                         <tr>
                             <th>Total price:</th>
                             <th>
-                                <form class="trans-filter-form">
-                                    <input type="text" class="trans-filter-form form-control form-control-sm" id="total-price-input">
-                                </form>
+                                <input type="text" class="trans-filter-form form-control form-control-sm" id="total-price-input">
                             </th>
                         </tr>
                         <tr>
                             <th>Count:</th>
                             <th>
-                                <form class="trans-filter-form">
-                                    <input type="text" class="trans-filter-form form-control form-control-sm" id="count-input">
-                                </form>
+                                <input type="text" class="trans-filter-form form-control form-control-sm" id="count-input">
                             </th>
                         </tr>
                         <tr>
                             <th>Ticket type:</th>
                             <th>
-                                <form class="trans-filter-form">
-
-                                    @Html.DropDownList("type-select", ViewData["TicketTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "trans-filter-form custom-select custom-select-sm form-control form-control-sm" })
-
-                                </form>
+                                @Html.DropDownList("type-select", ViewData["TicketTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "trans-filter-form custom-select custom-select-sm form-control form-control-sm" })
                             </th>
                         </tr>
                     </table>

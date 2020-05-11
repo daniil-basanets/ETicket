@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.ApplicationServices.Services.DataTable;
 
 namespace ETicket.Admin.Controllers
 {
@@ -18,12 +20,14 @@ namespace ETicket.Admin.Controllers
         #region Private Members
 
         private readonly IUnitOfWork unitOfWork;
+        private readonly IDataTableService dataTableService;
 
         #endregion
 
-        public TransactionHistoryController(IUnitOfWork unitOfWork)
+        public TransactionHistoryController(IUnitOfWork unitOfWork, IDataTablePagingService<TransactionHistory> dataTablePaging)
         {
             this.unitOfWork = unitOfWork;
+            dataTableService = new DataTableService<TransactionHistory>(dataTablePaging);
         }
 
         // GET: TransactionHistories
@@ -39,20 +43,10 @@ namespace ETicket.Admin.Controllers
             return View();
         }
 
-        private JsonResult GetCurrentPage(
-            IQueryable<TransactionHistory> transactionHistory,
-            int drawStep,
-            int countRecords,
-            int countFiltered
-        )
+        [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
         {
-            return Json(new
-            {
-                draw = ++drawStep,
-                recordsTotal = countRecords,
-                recordsFiltered = countFiltered,
-                data = transactionHistory
-            });
+            return Json(dataTableService.GetDataTablePage(pagingInfo));
         }
 
         // GET: TransactionHistories/Details/5

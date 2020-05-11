@@ -13,7 +13,6 @@ using ETicket.Admin.Models.DataTables;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
-using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.DataTable;
 
 namespace ETicket.Admin.Controllers

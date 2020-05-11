@@ -76,7 +76,7 @@ $(document).ready(function () {
                     var mapFilters = getFilterMapColumnValue();
                     pagingData.FilterColumnNames = Array.from(mapFilters.keys());
                     pagingData.FilterValues = Array.from(mapFilters.values());
-                    //this.page(0);
+
                     isNewSearch = false;
                     return pagingData;
                 }

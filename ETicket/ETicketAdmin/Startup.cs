@@ -22,6 +22,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ETicket.ApplicationServices.Services.PagingServices;
 
 namespace ETicket.Admin
 {
@@ -61,11 +62,12 @@ namespace ETicket.Admin
             services.AddTransient<IDocumentTypesService, DocumentTypesService>();
             services.AddTransient<ITicketTypeService, TicketTypeService>();
 
-            services.AddTransient<IDataTablePagingService<Ticket>, TicketService>();
-            services.AddTransient<IDataTablePagingService<User>, UserService>();
-            services.AddTransient<IDataTablePagingService<Document>, DocumentService>();
+            //services.AddTransient<IDataTablePagingService<Ticket>, TicketService>();
+            //services.AddTransient<IDataTablePagingService<User>, UserService>();
+            //services.AddTransient<IDataTablePagingService<Document>, DocumentService>();
+            services.AddTransient<IDataTablePagingService<TransactionHistory>, TransactionHistoryPagingService>();
 
-            
+
 
             services.AddIdentityCore<IdentityUser>(o =>
             {
