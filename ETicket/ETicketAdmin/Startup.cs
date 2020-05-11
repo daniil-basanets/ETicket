@@ -62,9 +62,9 @@ namespace ETicket.Admin
             services.AddTransient<IDocumentTypesService, DocumentTypesService>();
             services.AddTransient<ITicketTypeService, TicketTypeService>();
 
-            services.AddTransient<IDataTablePagingService<Ticket>, TicketService>();
-            services.AddTransient<IDataTablePagingService<User>, UserService>();
-            services.AddTransient<IDataTablePagingService<Document>, DocumentService>();
+            services.AddTransient<IDataTablePagingService<Ticket>, TicketPagingService>();
+            services.AddTransient<IDataTablePagingService<User>, UserPagingService>();
+            services.AddTransient<IDataTablePagingService<Document>, DocumentPagingService>();
             services.AddTransient<IDataTablePagingService<TransactionHistory>, TransactionHistoryPagingService>();
 
 
