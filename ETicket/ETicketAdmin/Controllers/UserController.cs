@@ -22,13 +22,14 @@ namespace ETicket.Admin.Controllers
         private readonly ETicketDataContext context;
         private readonly UnitOfWork repository;
         private readonly IMapper mapper;
-        private readonly IDataTableService dataTableService;
+        private readonly IDataTableService<User> dataTableService;
 
-        public UserController(ETicketDataContext context, IDataTablePagingService<User> dataTablePaging/*, IMapper mapper*/)
+        public UserController(ETicketDataContext context, IDataTableService<User> dataTableService/*, IMapper mapper*/)
         {
             this.context = context;
             repository = new UnitOfWork(context);
-            dataTableService = new DataTableService<User>(dataTablePaging);
+            this.dataTableService = dataTableService;
+            //dataTableService = new DataTableService<User>(dataTablePaging);
 
             //this.mapper = mapper;
         }

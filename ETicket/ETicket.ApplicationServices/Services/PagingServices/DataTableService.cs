@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace ETicket.ApplicationServices.Services.DataTable
 {
-    public class DataTableService<T> : IDataTableService
+    public class DataTableService<T> : IDataTableService<T>
     {
         private readonly IDataTablePagingService<T> service;
         public DataTableService(IDataTablePagingService<T> service)

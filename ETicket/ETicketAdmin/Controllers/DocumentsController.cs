@@ -27,14 +27,14 @@ namespace ETicket.Admin.Controllers
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
-        private readonly IDataTableService dataTableService;
+        private readonly IDataTableService<Document> dataTableService;
 
-        public DocumentsController(IUnitOfWork unitOfWork/*, IMapper mapper*/, IDataTablePagingService<Document> dataTablePaging)
+        public DocumentsController(IUnitOfWork unitOfWork, IDataTableService<Document> dataTableService/*, IMapper mapper*/)
         {
             this.unitOfWork = unitOfWork;
             //this.mapper = mapper;
 
-            dataTableService = new DataTableService<Document>(dataTablePaging);
+            this.dataTableService = dataTableService;
         }
 
         public IActionResult Index()

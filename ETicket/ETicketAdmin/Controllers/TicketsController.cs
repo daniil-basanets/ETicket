@@ -24,7 +24,7 @@ namespace ETicket.Admin.Controllers
         private readonly ITicketService ticketService;
         private readonly ITicketTypeService ticketTypeService;
         private readonly IUserService userService;
-        private readonly IDataTableService dataTableService;
+        private readonly IDataTableService<Ticket> dataTableService;
 
         private void InitViewDataForSelectList(TicketDto ticketDto = null)
         {
@@ -33,14 +33,14 @@ namespace ETicket.Admin.Controllers
             ViewData["UserId"] = new SelectList(userService.GetAll().Select(s => new { s.Id, Name = $"{s.LastName} {s.FirstName}" }), "Id", "Name", ticketDto?.UserId);
         }
 
-        public TicketController(IUnitOfWork uow, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService, IDataTablePagingService<Ticket> dataTablePaging)
+        public TicketController(IUnitOfWork uow, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService, IDataTableService<Ticket> dataTableService)
         {
             this.uow = uow;
 
             this.ticketService = ticketService;
             this.ticketTypeService = ticketTypeService;
             this.userService = userService;
-            dataTableService = new DataTableService<Ticket>(dataTablePaging);
+            this.dataTableService = dataTableService;
         }
 
         [HttpGet]

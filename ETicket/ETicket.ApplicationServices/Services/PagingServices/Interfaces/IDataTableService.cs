@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ETicket.ApplicationServices.Services.DataTable.Interfaces
 {
-    public interface IDataTableService
+    public interface IDataTableService<T>
     {
         object GetDataTablePage(DataTablePagingInfo pagingInfo);
     }

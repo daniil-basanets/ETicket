@@ -20,14 +20,14 @@ namespace ETicket.Admin.Controllers
         #region Private Members
 
         private readonly IUnitOfWork unitOfWork;
-        private readonly IDataTableService dataTableService;
+        private readonly IDataTableService<TransactionHistory> dataTableService;
 
         #endregion
 
-        public TransactionHistoryController(IUnitOfWork unitOfWork, IDataTablePagingService<TransactionHistory> dataTablePaging)
+        public TransactionHistoryController(IUnitOfWork unitOfWork, IDataTableService<TransactionHistory> dataTableService)
         {
             this.unitOfWork = unitOfWork;
-            dataTableService = new DataTableService<TransactionHistory>(dataTablePaging);
+            this.dataTableService = dataTableService;
         }
 
         // GET: TransactionHistories
