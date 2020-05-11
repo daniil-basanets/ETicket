@@ -1,7 +1,6 @@
-using AutoMapper;
+using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
-using ETicketAdmin.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,18 +10,16 @@ namespace ETicket.Admin.Controllers
     [Authorize(Roles = "Admin, SuperUser")]
     public class TicketTypeController : Controller
     {
-        private readonly IUnitOfWork unitOfWork;
-        private readonly IMapper mapper;
+        private readonly ITicketTypeService ticketTypeService;
 
-        public TicketTypeController(IUnitOfWork unitOfWork, IMapper mapper)
+        public TicketTypeController(ITicketTypeService ticketTypeService)
         {
-            this.unitOfWork = unitOfWork;
-            this.mapper = mapper;
+            this.ticketTypeService = ticketTypeService;
         }
         
         public IActionResult Index()
         {
-            return View(unitOfWork.TicketTypes.GetAll());
+            return View(ticketTypeService.GetAll());
         }
         
         public IActionResult Details(int? id)
@@ -32,7 +29,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticketType = unitOfWork.TicketTypes.Get((int)id);
+            var ticketType = ticketTypeService.Get(id.Value);
             
             if (ticketType == null)
             {
@@ -56,11 +53,8 @@ namespace ETicket.Admin.Controllers
                 return View(ticketTypeDto);
             }
 
-            var ticketType = mapper.Map<TicketType>(ticketTypeDto);
+            ticketTypeService.Create(ticketTypeDto);
 
-            unitOfWork.TicketTypes.Create(ticketType);
-            unitOfWork.Save();
-            
             return RedirectToAction(nameof(Index));
         }
         
@@ -71,7 +65,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticketType = unitOfWork.TicketTypes.Get((int)id);
+            var ticketType = ticketTypeService.Get(id.Value);
             
             if (ticketType == null)
             {
@@ -93,14 +87,11 @@ namespace ETicket.Admin.Controllers
             if (!ModelState.IsValid) return View(ticketTypeDto);
             try
             {
-                var ticketType = mapper.Map<TicketType>(ticketTypeDto);
-
-                unitOfWork.TicketTypes.Update(ticketType);
-                unitOfWork.Save();
+                ticketTypeService.Update(ticketTypeDto);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TicketTypeExists(ticketTypeDto.Id))
+                if (!ticketTypeService.Exists(ticketTypeDto.Id))
                 {
                     return NotFound();
                 }
@@ -111,7 +102,6 @@ namespace ETicket.Admin.Controllers
             }
                 
             return RedirectToAction(nameof(Index));
-
         }
         
         public IActionResult Delete(int? id)
@@ -121,7 +111,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var ticketType = unitOfWork.TicketTypes.Get((int)id);
+            var ticketType = ticketTypeService.Get(id.Value);
             
             if (ticketType == null)
             {
@@ -135,16 +125,9 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            unitOfWork.TicketTypes.Delete(id);
-            unitOfWork.Save();
+            ticketTypeService.Delete(id);
             
             return RedirectToAction(nameof(Index));
-        }
-        
-        
-        private bool TicketTypeExists(int id)
-        {
-            return unitOfWork.TicketTypes.Get(id) != null;
         }
     }
 }

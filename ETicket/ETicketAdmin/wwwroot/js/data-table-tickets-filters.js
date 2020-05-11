@@ -21,7 +21,10 @@ $(document).ready(function () {
     var table = $('#dataTable').DataTable({
         columnDefs: [
             { orderable: false, targets: -1 }
-        ]
+        ],
+        oLanguage: {
+            sLengthMenu: "_MENU_",
+        }
 
     });
 
@@ -34,5 +37,4 @@ $(document).ready(function () {
     });
     //Delete container from loyout only for Index
     $('.container').removeClass('container');
-
 });

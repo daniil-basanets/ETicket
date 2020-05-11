@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using ETicket.ApplicationServices.Services;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -15,12 +16,14 @@ namespace ETicket.Admin.Controllers
         #region Private Members
 
         private readonly IUnitOfWork unitOfWork;
+        private DatabaseServices services;
 
         #endregion
 
         public TransactionHistoryController(IUnitOfWork unitOfWork)
         {
             this.unitOfWork = unitOfWork;
+            //services =new IntegratedServices(unitOfWork, )
         }
 
         // GET: TransactionHistories

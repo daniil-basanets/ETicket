@@ -1,5 +1,12 @@
 using System;
-using AutoMapper;
+using ETicket.ApplicationServices.Logger;
+using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.DocumentTypes;
+using ETicket.ApplicationServices.Services.DocumentTypes.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.ApplicationServices.Services.Transaction;
+using ETicket.ApplicationServices.Services.Users;
+using ETicket.ApplicationServices.Services.Users.Interfaces;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
@@ -21,6 +28,7 @@ namespace ETicket.Admin
     {
         public Startup(IConfiguration configuration)
         {
+            LoggerService.Initialize();
             Configuration = configuration;
         }
 
@@ -45,7 +53,13 @@ namespace ETicket.Admin
             services.AddTransient<IValidator<Privilege>, PrivilegeValidator>();
             services.AddTransient<IValidator<TransactionHistory>, TransactionHistoryValidator>();
 
-            services.AddAutoMapper(typeof(Startup));
+
+            services.AddTransient<ITicketService, TicketService>();
+            services.AddTransient<IMailService, MailService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IDocumentTypesService, DocumentTypesService>();
+            services.AddTransient<ITicketTypeService, TicketTypeService>();
+            
 
             services.AddIdentityCore<IdentityUser>(o =>
             {

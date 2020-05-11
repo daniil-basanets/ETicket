@@ -1,4 +1,4 @@
-@using ETicket.DataAccess.Domain.Entities
+﻿@using ETicket.DataAccess.Domain.Entities
 @model IEnumerable<ETicket.DataAccess.Domain.Entities.TicketType>
 
 @{
@@ -6,12 +6,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link href="~/css/ButtonMoves/moved-data-table-controls.css" rel="stylesheet" />
 <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Ticket types</h6>
+            <div>
+                <div id="buttonCreate" class="button_create">
+                    <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -19,35 +25,35 @@
                     <thead>
                         <tr>
                             <th>
-                                @Html.DisplayName("Type Name")
+                               @Html.DisplayNameFor(model=>model.TypeName)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayName("Price")
+                                @Html.DisplayNameFor(model=>model.Price)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayName("IsPersonal")
+                                @Html.DisplayNameFor(model=>model.IsPersonal)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayName("DurationHours")
+                                @Html.DisplayNameFor(model=>model.DurationHours)
                             </th>
                             <th>
-                                <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                                Actions
                             </th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
                             <th>
-                                @Html.DisplayName("Type Name")
+                                @Html.DisplayNameFor(model=>model.TypeName)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayName("Price")
+                                @Html.DisplayNameFor(model=>model.Price)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayName("IsPersonal")
+                                @Html.DisplayNameFor(model=>model.IsPersonal)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayName("DurationHours")
+                                @Html.DisplayNameFor(model=>model.DurationHours)
                             </th>
                             <th>
                                 Actions
@@ -62,10 +68,10 @@
                                     @Html.DisplayFor(modelItem => item.TypeName)
                                 </td>
                                 <td class="table-static">
-                                    @item.Price.ToString("c", CultureInfo.CreateSpecificCulture("ua-UA"))
+                                    @(item.Price + " ₴")
                                 </td>
                                 <td class="table-static">
-                                    @(item.IsPersonal ? "Yes" : "No")                          
+                                    @(item.IsPersonal ? "Yes" : "No")
                                 </td>
                                 <td class="table-static">
                                     @Html.DisplayFor(modelItem => item.DurationHours)
@@ -92,4 +98,5 @@
 
 <!-- Page level custom scripts -->
 <script src="/js/datatables-starter.js"></script>
+<script src="~/js/button-create-moves/button-create-move.js"></script>
 
