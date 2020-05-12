@@ -52,10 +52,5 @@ namespace ETicket.ApplicationServices.Services.DocumentTypes
             unitOfWork.DocumentTypes.Delete(id);
             unitOfWork.Save();
         }
-
-        public bool Exists(int id)
-        {
-            return unitOfWork.DocumentTypes.Get(id) != null;
-        }
     }
 }

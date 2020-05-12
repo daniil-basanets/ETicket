@@ -73,10 +73,5 @@ namespace ETicket.ApplicationServices.Services
             uow.Tickets.Delete(id);
             uow.Save();
         }
-
-        public bool Exists(Guid id)
-        {
-            return uow.Tickets.Get(id) != null;
-        }
     }
 }

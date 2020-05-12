@@ -50,10 +50,5 @@ namespace ETicket.ApplicationServices.Services
             uow.Privileges.Delete(id);
             uow.Save();
         }
-
-        public bool Exists(int id)
-        {
-            return uow.Privileges.Get(id) != null;
-        }
     }
 }
