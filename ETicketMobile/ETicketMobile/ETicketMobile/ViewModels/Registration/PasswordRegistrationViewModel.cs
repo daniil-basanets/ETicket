@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Input;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
 using Prism.Navigation;
 using Xamarin.Forms;
@@ -83,35 +84,35 @@ namespace ETicketMobile.ViewModels.Registration
         {
             if (string.IsNullOrEmpty(password))
             {
-                PasswordWarning = ErrorMessage.PasswordEmpty;
+                PasswordWarning = AppResource.PasswordEmpty;
 
                 return false;
             }
 
             if (!IsPasswordShort(password))
             {
-                PasswordWarning = ErrorMessage.PasswordShort;
+                PasswordWarning = AppResource.PasswordShort;
 
                 return false;
             }
 
             if (!IsPasswordLong(password))
             {
-                PasswordWarning = ErrorMessage.PasswordLong;
+                PasswordWarning = AppResource.PasswordLong;
 
                 return false;
             }
 
             if (IsPasswordWeak(password))
             {
-                PasswordWarning = ErrorMessage.PasswordStrong;
+                PasswordWarning = AppResource.PasswordStrong;
 
                 return false;
             }
 
             if (!PasswordsMatched(password))
             {
-                ConfirmPasswordWarning = ErrorMessage.PasswordsMatch;
+                ConfirmPasswordWarning = AppResource.PasswordsMatch;
 
                 return false;
             }

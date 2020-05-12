@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ETicketMobile.Data.Domain.Entities;
+using ETicketMobile.Data.Entities;
 using ETicketMobile.WebAccess.DTO;
 
 namespace ETicketMobile.Business.Mapping

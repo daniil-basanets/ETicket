@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Model.Tickets;
-using ETicketMobile.Data.Domain.Entities;
-using ETicketMobile.DataAccess.Domain.LocalAPI.Interfaces;
+using ETicketMobile.Data.Entities;
+using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.Views.Tickets;
 using ETicketMobile.WebAccess;
 using ETicketMobile.WebAccess.DTO;
@@ -32,8 +31,6 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private string accessToken;
 
-        private Ticket ticketTapped;
-
         private ICommand chooseTicket;
 
         #endregion
@@ -46,31 +43,13 @@ namespace ETicketMobile.ViewModels.Tickets
             set => SetProperty(ref tickets, value);
         }
 
-        public Ticket TicketSelected
-        {
-            get => ticketTapped;
-            set
-            {
-                ticketTapped = value;
-
-                if (ticketTapped == null)
-                    return;
-
-                ChooseTicket.Execute(ticketTapped);
-
-                TicketSelected = null;
-            }
-        }
-
         public ICommand ChooseTicket => chooseTicket
-            ?? (chooseTicket = new Command(OnChooseTicket));
+            ?? (chooseTicket = new Command<Ticket>(OnChooseTicket));
 
         #endregion
 
-        public TicketsViewModel(
-            INavigationService navigationService,
-            ILocalApi localApi
-        ) : base(navigationService)
+        public TicketsViewModel(INavigationService navigationService, ILocalApi localApi)
+            : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
@@ -81,12 +60,15 @@ namespace ETicketMobile.ViewModels.Tickets
             httpClient = new HttpClientService();
         }
 
-        public override async void OnNavigatedTo(INavigationParameters navigationParameters)
+        public async override void OnAppearing()
         {
-            this.navigationParameters = navigationParameters;
-
             accessToken = await GetAccessToken();
             Tickets = await GetTickets();
+        }
+
+        public override void OnNavigatedTo(INavigationParameters navigationParameters)
+        {
+            this.navigationParameters = navigationParameters;
         }
 
         private async Task<string> GetAccessToken()
@@ -128,12 +110,12 @@ namespace ETicketMobile.ViewModels.Tickets
             return token.AcessJwtToken;
         }
 
-        private void OnChooseTicket(object obj)
+        private void OnChooseTicket(Ticket ticket)
         {
-            var navigationParameters = new NavigationParameters
-            {
-                { "ticket", TicketSelected }
-            };
+            navigationParameters.Add("ticketId", ticket.Id);
+            navigationParameters.Add("durationHours", ticket.DurationHours);
+            navigationParameters.Add("name", ticket.Name);
+            navigationParameters.Add("coefficient", ticket.Coefficient);
 
             navigationService.NavigateAsync(nameof(AreasView), navigationParameters);
         }

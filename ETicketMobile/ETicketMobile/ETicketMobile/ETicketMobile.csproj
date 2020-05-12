@@ -8,6 +8,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="sqlite-net-pcl" Version="1.6.292" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+    <PackageReference Include="Xamarin.Auth" Version="1.7.0" />
+    <PackageReference Include="Xamarin.Auth.XamarinForms" Version="1.7.0" />
     <PackageReference Include="Xamarin.Essentials" Version="1.5.3.1" />
     <PackageReference Include="Xamarin.Forms" Version="4.6.0.726" />
     <PackageReference Include="Prism.DryIoc.Forms" Version="7.2.0.1422" />
@@ -24,9 +26,26 @@
     <Reference Include="Mono.Android">
       <HintPath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v9.0\Mono.Android.dll</HintPath>
     </Reference>
+    <Reference Include="Telerik.XamarinForms.Common">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Portable\Telerik.XamarinForms.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.DataControls">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Portable\Telerik.XamarinForms.DataControls.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Input">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Portable\Telerik.XamarinForms.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.XamarinForms.Primitives">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Portable\Telerik.XamarinForms.Primitives.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Resources\AppResource.Designer.cs">
+      <DependentUpon>AppResource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
     <Compile Update="Views\ForgotPassword\ForgotPasswordView.xaml.cs">
       <DependentUpon>ForgotPasswordView.xaml</DependentUpon>
     </Compile>
@@ -35,6 +54,9 @@
     </Compile>
     <Compile Update="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Payment\LiqPayView.xaml.cs">
+      <DependentUpon>LiqPayView.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Registration\BirthdayRegistrationView.xaml.cs">
       <DependentUpon>BirthdayRegistrationView.xaml</DependentUpon>
@@ -51,13 +73,38 @@
     <Compile Update="Views\Tickets\TicketsView.xaml.cs">
       <DependentUpon>TicketsView.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\UserAccount\UserAccountView.xaml.cs">
+      <DependentUpon>UserAccountView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\UserAccount\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="Resources\AppResource.resx">
+      <LastGenOutput>AppResource.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\ForgotPassword\ConfirmForgotPasswordView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\ForgotPassword\CreateNewPasswordView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Settings\LocalizationView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\UserAccount\UserAccountView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\UserAccount\MainMenuView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Payment\LiqPayView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Payment\ReceiptView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Registration\BirthdayRegistrationView.xaml">
@@ -91,6 +138,12 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Tickets\TicketsView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\UserAccount\SettingsView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\UserAccount\UserTransactionsView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>
