@@ -66,7 +66,7 @@ namespace ETicket.ApplicationServices.Services
         {
             var user = GetUserById(id);
 
-            mailService.SendEmail(user.Email, message);
+            mailService.SendEmail(user.Email, message, "Reminders");
         }
 
         public void Update(UserDto userDto)
@@ -74,11 +74,6 @@ namespace ETicket.ApplicationServices.Services
             var user = mapper.Map<UserDto, User>(userDto);
             uow.Users.Update(user);
             uow.Save();
-        }
-
-        public bool Exists(Guid id)
-        {
-            return uow.Users.UserExists(id);
         }
     }
 }
