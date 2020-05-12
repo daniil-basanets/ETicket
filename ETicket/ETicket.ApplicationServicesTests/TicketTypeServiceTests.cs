@@ -66,28 +66,24 @@ namespace ETicket.ApplicationServicesTests
             unitOfWork.Setup(m => m.TicketTypes).Returns(ticketTypeRepository.Object);
             
             ticketTypeService = new TicketTypeService(unitOfWork.Object);
-            ticketTypeService.Delete(1);
+            ticketTypeService.Delete(It.IsAny<int>());
             
             ticketTypeRepository.Verify(m=>m.Delete(It.IsAny<int>()));
-            
         }
 
         [Fact]
         public void DeleteTest()
         {
-            var fakeTicketType = new List<TicketType>
-            {
-                new TicketType {Id = 1, TypeName = "Test1", Price = 2.3M, DurationHours = 12, IsPersonal = true},
-                new TicketType {Id = 2, TypeName = "Test2", Price = 2.4M, DurationHours = 13, IsPersonal = false}
-            }.AsQueryable();
-            
             ticketTypeRepository.Setup(m => m.GetAll()).Returns(fakeTicketTypes);
             unitOfWork.Setup(m => m.TicketTypes).Returns(ticketTypeRepository.Object);
             
             ticketTypeService = new TicketTypeService(unitOfWork.Object);
-            ticketTypeService.Delete(1);
+            ticketTypeService.GetAll();
+            ticketTypeService.Delete(fakeTicketTypes.First().Id);
+
+            var temp = ticketTypeService.GetAll();
             
-            Assert.Null(fakeTicketType.First());
+            Assert.Equal(1,ticketTypeService.GetAll().Count());
         }
 
         [Fact]
