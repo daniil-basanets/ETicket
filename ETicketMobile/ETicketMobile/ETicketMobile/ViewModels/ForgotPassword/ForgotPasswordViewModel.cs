@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Android.Util;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
@@ -70,21 +71,21 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         {
             if (string.IsNullOrEmpty(email))
             {
-                EmailWarning = ErrorMessage.EmailCorrect;
+                EmailWarning = AppResource.EmailCorrect;
 
                 return false;
             }
 
             if (!IsEmailValid(email))
             {
-                EmailWarning = ErrorMessage.EmailInvalid;
+                EmailWarning = AppResource.EmailInvalid;
 
                 return false;
             }
 
             if (!IsEmailConstainsCorrectLong(email))
             {
-                EmailWarning = ErrorMessage.EmailCorrectLong;
+                EmailWarning = AppResource.EmailCorrectLong;
 
                 return false;
             }
@@ -93,7 +94,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
             if (!isUserExists)
             {
-                EmailWarning = ErrorMessage.EmailWrong;
+                EmailWarning = AppResource.EmailWrong;
 
                 return false;
             }
@@ -106,8 +107,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             var signUpRequestDto = new ForgotPasswordRequestDto { Email = email };
 
             var isUserExists = await httpClient.PostAsync<ForgotPasswordRequestDto, ForgotPasswordResponseDto>(
-                TicketsEndpoint.CheckUserExsists, 
-                signUpRequestDto);
+                    TicketsEndpoint.CheckEmail, 
+                    signUpRequestDto);
 
             return isUserExists.Succeeded;
         }

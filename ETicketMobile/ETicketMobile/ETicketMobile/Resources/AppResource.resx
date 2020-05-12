@@ -1,0 +1,428 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivationCode" xml:space="preserve">
+    <value>Activation Code</value>
+    <comment>ConfirmForgotPasswordView</comment>
+  </data>
+  <data name="ActivationCodeAgain1" xml:space="preserve">
+    <value>You can send activation code</value>
+    <comment>ConfirmForgotPasswordView</comment>
+  </data>
+  <data name="ActivationCodeAgain2" xml:space="preserve">
+    <value>again.</value>
+    <comment>ConfirmForgotPasswordView</comment>
+  </data>
+  <data name="ActivationCodeTimerText" xml:space="preserve">
+    <value>Next time you can call it in</value>
+    <comment>ConfirmForgotPasswordView</comment>
+  </data>
+  <data name="AlreadySignUp" xml:space="preserve">
+    <value>Already have an account?</value>
+    <comment>EmailRegistrationView</comment>
+  </data>
+  <data name="Area" xml:space="preserve">
+    <value>Area:</value>
+    <comment>AreasView</comment>
+  </data>
+  <data name="BuyButton" xml:space="preserve">
+    <value>Buy</value>
+    <comment>AreasView</comment>
+  </data>
+  <data name="BuyTicket" xml:space="preserve">
+    <value>Buy Ticket</value>
+    <comment>ChooseActionViewModel</comment>
+  </data>
+  <data name="CardExpiration" xml:space="preserve">
+    <value>Enter card expiration</value>
+    <comment>LiqPayView</comment>
+  </data>
+  <data name="CardNumber" xml:space="preserve">
+    <value>Card number</value>
+    <comment>LiqPayView</comment>
+  </data>
+  <data name="CardNumberCorrect" xml:space="preserve">
+    <value>Specify the correct card numbers</value>
+    <comment>LiqPayView</comment>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>Change</value>
+    <comment>CreateNewPasswordView</comment>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Change Password</value>
+    <comment>CreateNewPasswordView</comment>
+  </data>
+  <data name="Choose" xml:space="preserve">
+    <value>Choose</value>
+    <comment>TicketsView</comment>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Confirm</value>
+    <comment>ConfirmForgotPasswordView</comment>
+  </data>
+  <data name="ConfirmEmailEmpty" xml:space="preserve">
+    <value>Enter activation code</value>
+    <comment>ConfirmEmailViewModel, ConfirmForgotPasswordViewModel</comment>
+  </data>
+  <data name="ConfirmEmailForRecovery" xml:space="preserve">
+    <value>Enter your email address and we will send you the code for recovery access to your account</value>
+    <comment>ForgotPasswordView</comment>
+  </data>
+  <data name="ConfirmEmailWrong" xml:space="preserve">
+    <value>Wrong activation code</value>
+    <comment>ConfirmEmailViewModel, ConfirmForgotPasswordViewModel</comment>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirm Password</value>
+    <comment>CreateNewPasswordView</comment>
+  </data>
+  <data name="CountTicketsWrong" xml:space="preserve">
+    <value>You didn't choose ticket</value>
+    <comment>AreasViewModel</comment>
+  </data>
+  <data name="CreateNewPassword" xml:space="preserve">
+    <value>Create new password</value>
+    <comment>CreateNewPasswordView</comment>
+  </data>
+  <data name="CreateNewUser" xml:space="preserve">
+    <value>Create new user</value>
+    <comment>NameRegistrationView</comment>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+    <comment>ReceiptView</comment>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Description:</value>
+    <comment>ReceiptView, AreasView</comment>
+  </data>
+  <data name="DescriptionPayment" xml:space="preserve">
+    <value>Description payment</value>
+    <comment>LiqPayView</comment>
+  </data>
+  <data name="Duration" xml:space="preserve">
+    <value>Duration:</value>
+    <comment>ReceiptView</comment>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+    <comment>ForgotPasswordView, LoginView</comment>
+  </data>
+  <data name="EmailCorrect" xml:space="preserve">
+    <value>Are you sure you entered your email correctly?</value>
+    <comment>ForgotPasswordViewModel, EmailRegistrationViewModel</comment>
+  </data>
+  <data name="EmailCorrectLong" xml:space="preserve">
+    <value>Sorry, your username must be fewer than 50 characters long.</value>
+    <comment>ForgotPasswordViewModel, , EmailRegistrationViewModel</comment>
+  </data>
+  <data name="EmailEmpty" xml:space="preserve">
+    <value>Enter an email</value>
+    <comment>LoginViewModel</comment>
+  </data>
+  <data name="EmailHint" xml:space="preserve">
+    <value>You can use letters, numbers &amp; periods</value>
+    <comment>EmailRegistrationView</comment>
+  </data>
+  <data name="EmailInvalid" xml:space="preserve">
+    <value>Choose an email address</value>
+    <comment>ForgotPasswordViewModel, LoginViewModel, EmailRegistrationViewModel</comment>
+  </data>
+  <data name="EmailTaken" xml:space="preserve">
+    <value>That username is taken. Try another.</value>
+    <comment>EmailRegistrationViewModel</comment>
+  </data>
+  <data name="EmailWarning" xml:space="preserve">
+    <value>User doesn't exists</value>
+    <comment>LoginViewModel</comment>
+  </data>
+  <data name="EmailWrong" xml:space="preserve">
+    <value>User with that username doesn't exists.</value>
+    <comment>ForgotPasswordViewModel</comment>
+  </data>
+  <data name="EnterBirthday" xml:space="preserve">
+    <value>Enter your date of birth</value>
+    <comment>BirthdayRegistrationView</comment>
+  </data>
+  <data name="EnterEmail" xml:space="preserve">
+    <value>Enter your email</value>
+    <comment>EmailRegistrationView</comment>
+  </data>
+  <data name="EnterName" xml:space="preserve">
+    <value>Enter your name. You can change it in any time.</value>
+    <comment>NameRegistrationView</comment>
+  </data>
+  <data name="EnterPhone" xml:space="preserve">
+    <value>Enter your phone</value>
+    <comment>PhoneRegistrationView</comment>
+  </data>
+  <data name="Expiration" xml:space="preserve">
+    <value>Expiration</value>
+    <comment>LiqPayView</comment>
+  </data>
+  <data name="ExpirationDateCorrect" xml:space="preserve">
+    <value>Specify expiration code</value>
+    <comment>LIqPayView</comment>
+  </data>
+  <data name="ExpirationYear" xml:space="preserve">
+    <value>MM/YY</value>
+    <comment>LIqPayView</comment>
+  </data>
+  <data name="FirstNameEmpty" xml:space="preserve">
+    <value>Enter first name</value>
+    <comment>NameRegistrationViewModel</comment>
+  </data>
+  <data name="FirstNameHint" xml:space="preserve">
+    <value>First name</value>
+    <comment>NameRegistrationView</comment>
+  </data>
+  <data name="FirstNameValid" xml:space="preserve">
+    <value>Are you sure you entered your first name correctly?</value>
+    <comment>NameRegistrationViewModel</comment>
+  </data>
+  <data name="ForgotPassword" xml:space="preserve">
+    <value>Forgot your password?</value>
+    <comment>LoginView</comment>
+  </data>
+  <data name="GeneratePassword" xml:space="preserve">
+    <value>Generate password</value>
+    <comment>PasswordRegistrationView</comment>
+  </data>
+  <data name="GeneratePasswordHint" xml:space="preserve">
+    <value>We will remember your data for sign in, and you dont need anymore to fill it again</value>
+    <comment>PasswordRegistrationView</comment>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Info</value>
+    <comment>SettingsViewModel</comment>
+  </data>
+  <data name="LastNameEmpty" xml:space="preserve">
+    <value>Enter last name</value>
+    <comment>NameRegistrationViewModel</comment>
+  </data>
+  <data name="LastNameHint" xml:space="preserve">
+    <value>Last name</value>
+    <comment>NameRegistrationView</comment>
+  </data>
+  <data name="LastNameValid" xml:space="preserve">
+    <value>Are you sure you entered your last name correctly?</value>
+    <comment>NameRegistrationViewModel</comment>
+  </data>
+  <data name="Localization" xml:space="preserve">
+    <value>Localizations</value>
+    <comment>SettingsViewModel</comment>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Next</value>
+    <comment>ForgotPasswordView</comment>
+  </data>
+  <data name="Number" xml:space="preserve">
+    <value>Number:</value>
+    <comment>UserTransactionsView</comment>
+  </data>
+  <data name="PasswordEmpty" xml:space="preserve">
+    <value>Enter a password</value>
+    <comment>CreateNewPasswordViewModel, PasswordRegistrationViewModel, LoginViewModel</comment>
+  </data>
+  <data name="PasswordLong" xml:space="preserve">
+    <value>Use 100 characters or fewer for your password</value>
+    <comment>CreateNewPasswordViewModel, PasswordRegistrationViewModel</comment>
+  </data>
+  <data name="PasswordPlaceHolderDefault" xml:space="preserve">
+    <value>Password</value>
+    <comment>LoginViewModel</comment>
+  </data>
+  <data name="PasswordPlaceHolderWrong" xml:space="preserve">
+    <value>or wrong password</value>
+    <comment>LoginViewModel</comment>
+  </data>
+  <data name="PasswordShort" xml:space="preserve">
+    <value>Use 8 characters or more for your password</value>
+    <comment>CreateNewPasswordViewModel, PasswordRegistrationViewModel</comment>
+  </data>
+  <data name="PasswordsMatch" xml:space="preserve">
+    <value>Please, make sure your passwords match</value>
+    <comment>CreateNewPasswordViewModel, PasswordRegistrationViewModel</comment>
+  </data>
+  <data name="PasswordStandartFormat" xml:space="preserve">
+    <value>Use 8 or more characters with a mix of letters, numbers &amp; symbols</value>
+    <comment>CreateNewPasswordView</comment>
+  </data>
+  <data name="PasswordStrong" xml:space="preserve">
+    <value>Please, choose a stronger password. Try a mix of letters, numbers, symbols.</value>
+    <comment>CreateNewPasswordViewModel, PasswordRegistrationViewModel</comment>
+  </data>
+  <data name="PayAccept" xml:space="preserve">
+    <value>By pressing the button «Pay» you accept</value>
+    <comment>LIqPayView</comment>
+  </data>
+  <data name="PayButton" xml:space="preserve">
+    <value>Pay</value>
+    <comment>LIqPayView</comment>
+  </data>
+  <data name="Phone" xml:space="preserve">
+    <value>Phone</value>
+    <comment>PhoneRegistrationView</comment>
+  </data>
+  <data name="PhoneFormat" xml:space="preserve">
+    <value>Phone number must be in format +380 (XX)-XXX-XX-XX</value>
+    <comment>PhoneRegistrationViewModel</comment>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Price:</value>
+    <comment>ReceiptView</comment>
+  </data>
+  <data name="RegistrationHint" xml:space="preserve">
+    <value>Don't have an account?</value>
+    <comment>LoginView</comment>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+    <comment>MainMenuView</comment>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Sign in</value>
+    <comment>LoginView</comment>
+  </data>
+  <data name="SignUp" xml:space="preserve">
+    <value>Sign up.</value>
+    <comment>LoginView</comment>
+  </data>
+  <data name="Terms" xml:space="preserve">
+    <value>Terms and conditions</value>
+    <comment>LIqPayView</comment>
+  </data>
+  <data name="Tickets" xml:space="preserve">
+    <value>Tickets</value>
+    <comment>MainMenuView</comment>
+  </data>
+  <data name="TransactionDate" xml:space="preserve">
+    <value>Date:</value>
+    <comment>UserTransactionsView</comment>
+  </data>
+  <data name="TransactionHistory" xml:space="preserve">
+    <value>Transactions History</value>
+    <comment>ChooseActionViewModel</comment>
+  </data>
+  <data name="WrongSignIn" xml:space="preserve">
+    <value>Can't you sign in?</value>
+    <comment>ForgotPasswordView</comment>
+  </data>
+</root>

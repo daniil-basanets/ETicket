@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <prism:PrismApplication xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:prism="clr-namespace:Prism.DryIoc;assembly=Prism.DryIoc.Forms"
-             x:Class="ETicketMobile.App">
+             xmlns:prism="clr-namespace:Prism.DryIoc;assembly=Prism.DryIoc.Forms" 
+                        xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+                        x:Class="ETicketMobile.App">
 	<Application.Resources>
 
         <Style TargetType="Button">
@@ -20,5 +21,132 @@
                 Value="Black"/>
         </Style>
 
-	</Application.Resources>
+        <Color x:Key="MediumBlueColor">#2699FB</Color>
+        <Color x:Key="LightBlueColor">#BCE0FD</Color>
+        <Color x:Key="LightColor">#FFFFFF</Color>
+        <Color x:Key="DarkTextColor">#FF444444</Color>
+
+        <Style 
+                x:Key="TitleLabelStyle"
+                TargetType="Label">
+            <Setter 
+                    Property="TextColor"
+                    Value="{x:StaticResource MediumBlueColor}" />
+            <Setter 
+                    Property="FontSize"
+                    Value="20" />
+            <Setter 
+                    Property="FontAttributes"
+                    Value="Bold" />
+            <Setter 
+                    Property="HorizontalTextAlignment"
+                    Value="Center" />
+            <Setter 
+                    Property="Margin"
+                    Value="0, 30" />
+        </Style>
+
+        <Style 
+                x:Key="NormalLabelStyle"
+                TargetType="Label">
+            <Setter 
+                    Property="TextColor"
+                    Value="{x:StaticResource MediumBlueColor}" />
+            <Setter 
+                    Property="FontSize"
+                    Value="12" />
+            <Setter 
+                    Property="VerticalTextAlignment"
+                    Value="Center" />
+            <Setter 
+                    Property="HorizontalTextAlignment"
+                    Value="Center" />
+        </Style>
+
+        <Style 
+                x:Key="LoginEntryStyle"
+                TargetType="telerikInput:RadEntry">
+            <Setter 
+                    Property="TextColor"
+                    Value="{x:StaticResource DarkTextColor}" />
+            <Setter 
+                    Property="WatermarkTextColor"
+                    Value="{x:StaticResource LightBlueColor}" />
+            <Setter 
+                    Property="FontSize"
+                    Value="14" />
+            <Setter 
+                    Property="HeightRequest"
+                    Value="48" />
+            <Setter 
+                    Property="Margin"
+                    Value="0,0,0,16" />
+            <Setter Property="BorderStyle">
+                <Setter.Value>
+                    <telerikInput:BorderStyle 
+                            BorderColor="{x:StaticResource LightBlueColor}"
+                            BorderThickness="1" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style 
+                x:Key="ActionButtonStyle"
+                TargetType="telerikInput:RadButton">
+            <Setter 
+                    Property="TextColor"
+                    Value="{x:StaticResource LightColor}" />
+            <Setter 
+                    Property="BackgroundColor"
+                    Value="{x:StaticResource MediumBlueColor}" />
+            <Setter 
+                    Property="FontSize"
+                    Value="14" />
+            <Setter 
+                    Property="FontAttributes"
+                    Value="Bold" />
+            <Setter 
+                    Property="VerticalContentAlignment"
+                    Value="Center" />
+            <Setter 
+                    Property="HorizontalContentAlignment"
+                    Value="Center" />
+            <Setter 
+                    Property="HeightRequest"
+                    Value="48" />
+            <Setter Property="Margin">
+                <Setter.Value>
+                    <OnPlatform x:TypeArguments="Thickness">
+                        <On 
+                                Platform="UWP"
+                                Value="0, 0, 0, 16" />
+                    </OnPlatform>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style 
+                x:Key="SecondaryActionButtonStyle"
+                TargetType="telerikInput:RadButton">
+            <Setter 
+                    Property="TextColor"
+                    Value="{x:StaticResource MediumBlueColor}" />
+            <Setter 
+                    Property="BackgroundColor"
+                    Value="Transparent" />
+            <Setter 
+                    Property="FontSize"
+                    Value="12" />
+            <Setter 
+                    Property="FontAttributes"
+                    Value="Bold" />
+            <Setter 
+                    Property="VerticalContentAlignment"
+                    Value="Center" />
+            <Setter 
+                    Property="HorizontalContentAlignment"
+                    Value="Center" />
+        </Style>
+
+    </Application.Resources>
 </prism:PrismApplication>
