@@ -50,10 +50,5 @@ namespace ETicket.ApplicationServices.Services
             unitOfWork.TicketTypes.Delete(id);
             unitOfWork.Save();
         }
-        
-        public bool Exists(int id)
-        {
-            return unitOfWork.TicketTypes.Get(id) != null;
-        }
     }
 }
