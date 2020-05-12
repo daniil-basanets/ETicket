@@ -15,27 +15,27 @@ namespace ETicket.DataAccess.Domain.Repositories
             this.context = context;
         }
         
-        public IQueryable<TicketType> GetAll()
+        public virtual IQueryable<TicketType> GetAll()
         {
             return context.TicketTypes;
         }
 
-        public TicketType Get(int id)
+        public virtual TicketType Get(int id)
         {
             return context.TicketTypes.Find(id);
         }
 
-        public void Create(TicketType ticketType)
+        public virtual void Create(TicketType ticketType)
         {
             context.TicketTypes.Add(ticketType);
         }
 
-        public void Update(TicketType ticketType)
+        public virtual void Update(TicketType ticketType)
         {
             context.Entry(ticketType).State = EntityState.Modified;
         }
 
-        public void Delete(int id)
+        public virtual void Delete(int id)
         {
             var ticketType = context.TicketTypes.Find(id);
             
