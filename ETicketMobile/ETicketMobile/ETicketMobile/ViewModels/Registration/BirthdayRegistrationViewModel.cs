@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using ETicketMobile.DataAccess.Domain.LocalAPI.Interfaces;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
@@ -24,8 +23,6 @@ namespace ETicketMobile.ViewModels.Registration
         private INavigationParameters navigationParameters;
 
         private ICommand navigateToConfirmEmailView;
-
-        private readonly ILocalApi localApi;
 
         private readonly HttpClientService httpClient;
 
@@ -60,19 +57,17 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public BirthdayRegistrationViewModel(
-            INavigationService navigationService,
-            ILocalApi localApi
-        ) : base(navigationService)
+        public BirthdayRegistrationViewModel(INavigationService navigationService) 
+            : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            this.localApi = localApi
-                ?? throw new ArgumentNullException(nameof(localApi));
-
             httpClient = new HttpClientService();
+        }
 
+        public override void OnAppearing()
+        {
             FillProperties();
         }
 
@@ -94,7 +89,7 @@ namespace ETicketMobile.ViewModels.Registration
             var email = navigationParameters.GetValue<string>("email");
             RequestActivationCode(email);
 
-            navigationParameters.Add("birth", birthday);
+            navigationParameters.Add("birth", birthday.Date);
             await navigationService.NavigateAsync(nameof(ConfirmEmailView), navigationParameters);
         }
 

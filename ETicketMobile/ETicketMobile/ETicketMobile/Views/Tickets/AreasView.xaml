@@ -3,8 +3,17 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:prism="http://prismlibrary.com"
+    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Tickets.AreasView">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ContentPage.Content>
         <StackLayout Margin="10">
@@ -37,26 +46,19 @@
                                         Margin="10, 0, 0, 0">
                                         <CheckBox IsChecked="{Binding Selected}"/>
                                         <Label 
-                                            Text="Choose"
+                                            Text="{local:Translate Choose}"
                                             VerticalTextAlignment="Center"/>
                                     </StackLayout>
                                     <StackLayout Grid.Column="1">
-                                        <Label
-                                            Text="Area:"
-                                            HorizontalOptions="Center"/>
-                                        <Label
-                                            Text="{Binding Name}"
-                                            HorizontalOptions="Center"/>
+                                        <Label Text="{local:Translate Area}"/>
+                                        <Label Text="{Binding Name}"/>
                                     </StackLayout>
                                     <StackLayout Grid.Column="2">
-                                        <Label
-                                            Text="Description:"
-                                            HorizontalOptions="Center"/>
+                                        <Label Text="{local:Translate Description}"/>
                                         <Label
                                             Text="{Binding Description}"
                                             FontAttributes="Bold"
-                                            TextColor="Green"
-                                            HorizontalOptions="Center"/>
+                                            TextColor="Green"/>
                                     </StackLayout>
                                 </Grid>
                             </Frame>
@@ -68,7 +70,7 @@
             <Button 
                 Command="{Binding Buy}"
                 HorizontalOptions="EndAndExpand"
-                Text="Buy"/>
+                Text="{local:Translate BuyButton}"/>
         </StackLayout>
     </ContentPage.Content>
 

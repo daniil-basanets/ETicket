@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 using Android.Util;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
@@ -68,7 +69,7 @@ namespace ETicketMobile.ViewModels.Registration
         {
             var signUpRequestDto = new SignUpRequestDto { Email = email };
 
-            var isUserExists = httpClient.PostAsync<SignUpRequestDto, SignUpResponseDto>(TicketsEndpoint.CheckUserExsists, signUpRequestDto).Result;
+            var isUserExists = httpClient.PostAsync<SignUpRequestDto, SignUpResponseDto>(TicketsEndpoint.CheckEmail, signUpRequestDto).Result;
 
             return isUserExists.Succeeded;
         }
@@ -79,21 +80,21 @@ namespace ETicketMobile.ViewModels.Registration
         {
             if (IsEmailEmpty(email))
             {
-                EmailWarning = ErrorMessage.EmailCorrect;
+                EmailWarning = AppResource.EmailCorrect;
 
                 return false;
             }
 
             if (!IsEmailValid(email))
             {
-                EmailWarning = ErrorMessage.EmailInvalid;
+                EmailWarning = AppResource.EmailInvalid;
 
                 return false;
             }
 
             if (!IsEmailConstainsCorrectLong(email))
             {
-                EmailWarning = ErrorMessage.EmailCorrectLong;
+                EmailWarning = AppResource.EmailCorrectLong;
 
                 return false;
             }
@@ -107,7 +108,7 @@ namespace ETicketMobile.ViewModels.Registration
 
             if (isUserExists)
             {
-                EmailWarning = ErrorMessage.EmailTaken;
+                EmailWarning = AppResource.EmailTaken;
 
                 return true;
             }
