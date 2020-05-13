@@ -8,8 +8,7 @@ namespace ETicket.ApplicationServices.Mapping
     {
         public PrivilegeMapperProfile()
         {
-            CreateMap<PrivilegeDto, Privilege>();
-            CreateMap<Privilege, PrivilegeDto>();
+            CreateMap<PrivilegeDto, Privilege>().ReverseMap();
         }
     }
 }

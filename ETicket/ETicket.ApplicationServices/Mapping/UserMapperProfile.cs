@@ -8,8 +8,7 @@ namespace ETicket.ApplicationServices.Mapping
     {
         public UserMapperProfile()
         {
-            CreateMap<UserDto, User>();
-            CreateMap<User, UserDto>();
+            CreateMap<UserDto, User>().ReverseMap();
         }
     }
 }

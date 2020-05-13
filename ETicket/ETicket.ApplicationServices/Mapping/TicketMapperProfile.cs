@@ -8,10 +8,8 @@ namespace ETicket.ApplicationServices.Mapping
     {
         public TicketMapperProfile()
         {
-            CreateMap<TicketDto, Ticket>();
-            CreateMap<Ticket, TicketDto>();
-            CreateMap<TicketTypeDto, TicketType>();
-            CreateMap<TicketType, TicketTypeDto>();
+            CreateMap<TicketDto, Ticket>().ReverseMap();
+            CreateMap<TicketTypeDto, TicketType>().ReverseMap();
         }
     }
 }
