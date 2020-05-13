@@ -2,7 +2,11 @@
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
-using ETicketMobile.Views.Login;
+using ETicketMobile.Business.Mapping;
+using ETicketMobile.Data.Entities;
+using ETicketMobile.DataAccess.LocalAPI.Interfaces;
+using ETicketMobile.Resources;
+using ETicketMobile.Views.UserActions;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
@@ -17,6 +21,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
+
+        private readonly ILocalApi localApi;
         
         private readonly HttpClientService httpClient;
 
@@ -29,6 +35,9 @@ namespace ETicketMobile.ViewModels.Registration
 
         private bool timerActivated;
         private int activationCodeTimer;
+
+        private string email;
+        private string password;
 
         #endregion
 
@@ -60,24 +69,23 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public ConfirmEmailViewModel(INavigationService navigationService)
+        public ConfirmEmailViewModel(INavigationService navigationService, ILocalApi localApi) 
             : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
+            this.localApi = localApi
+                ?? throw new ArgumentNullException(nameof(localApi));
+
             httpClient = new HttpClientService();
+        }
 
+        public override void OnAppearing()
+        {
             Init();
-
             InitActivationCodeTimer();
         }
-
-        public override void OnNavigatedTo(INavigationParameters navigationParameters)
-        {
-            this.navigationParameters = navigationParameters;
-        }
-
         private void Init()
         {
             TimerActivated = false;
@@ -91,6 +99,14 @@ namespace ETicketMobile.ViewModels.Registration
             ActivationCodeTimer = 0;
         }
 
+        public override void OnNavigatedTo(INavigationParameters navigationParameters)
+        {
+            this.navigationParameters = navigationParameters;
+
+            email = navigationParameters.GetValue<string>("email");
+            password = navigationParameters.GetValue<string>("password");
+        }
+
         private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
             ActivationCodeTimer--;
@@ -101,7 +117,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         private void OnSendActivationCode()
         {
-            if (ActivationCodeTimer > 0)
+            if (ActivationCodeTimer != 0)
                 return;
 
             var email = navigationParameters.GetValue<string>("email");
@@ -126,8 +142,28 @@ namespace ETicketMobile.ViewModels.Registration
 
             var userCreated = await ConfirmAndCreateUser(code);
 
-            if (userCreated)
-                await navigationService.NavigateAsync(nameof(LoginView));
+            if (!userCreated)
+                return;
+
+            var token = await GetTokenAsync();
+
+            await localApi.AddAsync(token);
+            await navigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
+        }
+        private async Task<Token> GetTokenAsync()
+        {
+            var userSignIn = new UserSignInRequestDto
+            {
+                Email = email,
+                Password = password
+            };
+
+            var tokenDto = await httpClient.PostAsync<UserSignInRequestDto, TokenDto>(
+                TicketsEndpoint.Login, userSignIn);
+
+            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
+
+            return token;
         }
 
         private async Task<bool> ConfirmAndCreateUser(string code)
@@ -135,7 +171,7 @@ namespace ETicketMobile.ViewModels.Registration
             var confirmEmailIsSucceeded = await ConfirmEmail(code);
             if (!confirmEmailIsSucceeded)
             {
-                ConfirmEmailWarning = "Wrong activation code";
+                ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
 
                 return false;
             }
@@ -151,7 +187,7 @@ namespace ETicketMobile.ViewModels.Registration
         {
             if (string.IsNullOrEmpty(code))
             {
-                ConfirmEmailWarning = "Enter activation code";
+                ConfirmEmailWarning = AppResource.ConfirmEmailEmpty;
 
                 return false;
             }
@@ -181,8 +217,8 @@ namespace ETicketMobile.ViewModels.Registration
         {
             return new UserSignUpRequestDto
             {
-                Email = navigationParameters.GetValue<string>("email"),
-                Password = navigationParameters.GetValue<string>("password"),
+                Email = email,
+                Password = password,
                 Phone = navigationParameters.GetValue<string>("phone"),
                 FirstName = navigationParameters.GetValue<string>("firstName"),
                 LastName = navigationParameters.GetValue<string>("lastName"),

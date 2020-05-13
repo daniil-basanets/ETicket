@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using System.Windows.Input;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
@@ -27,25 +27,17 @@ namespace ETicketMobile.ViewModels.Registration
 
         private string phoneWarning;
 
-        private string phoneNumber;
-
         #endregion
 
         #region Properties
 
         public ICommand NavigateToNameRegistrationView => navigateToNameRegistrationView
-            ?? (navigateToNameRegistrationView = new Command(OnNavigateToNameRegistrationView));
+            ?? (navigateToNameRegistrationView = new Command<string>(OnNavigateToNameRegistrationView));
 
         public string PhoneWarning
         {
             get => phoneWarning;
             set => SetProperty(ref phoneWarning, value);
-        }
-
-        public string PhoneNumber
-        {
-            get => phoneNumber;
-            set => SetProperty(ref phoneNumber, value);
         }
 
         #endregion
@@ -57,13 +49,6 @@ namespace ETicketMobile.ViewModels.Registration
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
             httpClient = new HttpClientService();
-
-            Init();
-        }
-
-        private void Init()
-        {
-            PhoneNumber = "+380 ";
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -71,14 +56,14 @@ namespace ETicketMobile.ViewModels.Registration
             this.navigationParameters = navigationParameters;
         }
 
-        private void OnNavigateToNameRegistrationView(object obj)
+        private void OnNavigateToNameRegistrationView(string phone)
         {
-            var phone = GetPhoneNumber();
+            var phoneNumber = GetPhoneNumber(phone);
 
-            if (!IsValid(phone))
+            if (!IsValid(phoneNumber))
                 return;
 
-            navigationParameters.Add("phone", phone);
+            navigationParameters.Add("phone", phoneNumber);
             navigationService.NavigateAsync(nameof(NameRegistrationView), navigationParameters);
         }
 
@@ -88,7 +73,7 @@ namespace ETicketMobile.ViewModels.Registration
         {
             if (!IsPhoneCorrectLong(phone))
             {
-                PhoneWarning = ErrorMessage.PhoneFormat;
+                PhoneWarning = AppResource.PhoneFormat;
 
                 return false;
             }
@@ -103,11 +88,9 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        private string GetPhoneNumber()
+        private string GetPhoneNumber(string phoneNumber)
         {
-            var phone = Regex.Replace(PhoneNumber, @"[^\d]", string.Empty);
-
-            return "+" + phone;
+            return "+38" + phoneNumber;
         }
     }
 }

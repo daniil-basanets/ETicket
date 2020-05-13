@@ -3,27 +3,68 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:prism="http://prismlibrary.com"
+    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile" 
+    xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Registration.BirthdayRegistrationView">
 
-    <ContentPage.Content>
-        <StackLayout
-            Margin="30">
-            <Label
-                Text="Enter your date of birth"
-                Margin="0, 10, 0, 10"
-                HorizontalOptions="CenterAndExpand"/>
-            <DatePicker
-                Date="{Binding Birthday}"
-                MaximumDate="{Binding MinBirthday}"
-                MinimumDate="{Binding MaxBirthday}"
-                Format="dd.MM.yyyy"
-                Margin="30, 0, 0, 30"/>
-            <Button
-                Text="Next"
-                Command="{Binding NavigateToConfirmEmailView}"
-                CornerRadius="10"/>
-        </StackLayout>
-    </ContentPage.Content>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ControlTemplate x:Key="placeholderTemplate">
+                <Label Text="{TemplateBinding Placeholder}" 
+                    FontAttributes="Bold" 
+                    TextColor="White"
+                    BackgroundColor="#B73562" 
+                    HeightRequest="50"
+                    VerticalTextAlignment="Center"
+                    HorizontalTextAlignment="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{TemplateBinding ToggleCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </ControlTemplate>
+
+            <ControlTemplate x:Key="footerTemplate">
+                <StackLayout Orientation="Horizontal" Spacing="0" HorizontalOptions="FillAndExpand" BackgroundColor="#B73562">
+                    <Button Text="{TemplateBinding CancelButtonText}" 
+                        TextColor="White"
+                        BackgroundColor="Transparent"
+                        Command="{TemplateBinding CancelCommand}" />
+                    <Button Text="{TemplateBinding AcceptButtonText}" 
+                        TextColor="White"
+                        BackgroundColor="Transparent"
+                        Command="{TemplateBinding AcceptCommand}" />
+                </StackLayout>
+            </ControlTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <StackLayout Margin="10, 0">
+            <Label
+                Text="{local:Translate EnterBirthday}"
+                Style="{StaticResource TitleLabelStyle}" />
+
+            <telerikInput:RadDateTimePicker
+                SelectedDate="{Binding Birthday}"
+                DisplayStringFormat="dd.MM.yyyy"
+                SpinnerFormatString="yyyy MMMM dd"
+                StartDate="1990,1,1"
+                EndDate="2013,1,1"
+                Placeholder="Pick a time!"
+                AreSpinnerHeadersVisible="True">
+            </telerikInput:RadDateTimePicker>
+
+            <telerikInput:RadButton
+                Command="{Binding NavigateToConfirmEmailView}"
+                Text="{local:Translate Next}"
+                Style="{StaticResource ActionButtonStyle}" />
+        </StackLayout>
+    </Grid>
+
 </ContentPage>

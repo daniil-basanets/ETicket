@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:prism="http://prismlibrary.com"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:ETicketMobile.Views.UserActions"
+    xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    android:TabbedPage.ToolbarPlacement="Bottom"
+    x:Class="ETicketMobile.Views.UserActions.MainMenuView">
+
+    <views:UserAccountView IconImageSource="User.png"/>
+    
+    <views:SettingsView IconImageSource="Settings.png"/>
+
+</TabbedPage>

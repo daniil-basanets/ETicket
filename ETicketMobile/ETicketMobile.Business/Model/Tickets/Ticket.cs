@@ -6,10 +6,10 @@
 
         public string Name { get; set; }
 
-        public decimal Price { get; set; }
-
         public int DurationHours { get; set; }
 
         public int Amount { get; set; }
+
+        public decimal Coefficient { get; set; }
     }
 }
