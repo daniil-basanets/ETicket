@@ -2,7 +2,7 @@
 using ETicket.ApplicationServices.DTOs;
 using ETicket.DataAccess.Domain.Entities;
 
-namespace ETicketAdmin.Mapping
+namespace ETicket.ApplicationServices.Mapping
 {
     public class TransactionHistoryMapperProfile : Profile
     {
