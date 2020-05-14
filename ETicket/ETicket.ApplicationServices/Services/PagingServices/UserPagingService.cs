@@ -39,13 +39,21 @@ namespace ETicket.ApplicationServices.Services.PagingServices
             };
         }
 
+        public DateTime ParseDateTime(string parseValue)
+        {
+            if (DateTime.TryParse(parseValue, out DateTime result))
+            {
+                return result;
+            }
+            return new DateTime();
+        }
         public Expression<Func<User, bool>> GetSingleFilterExpression(string columnName, string filterValue)
         {
             return columnName switch
             {
                 "firstName" => (t => t.FirstName.StartsWith(filterValue)),
                 "lastName" => (t => t.LastName.StartsWith(filterValue)),
-                "dateOfBirth" => (t => t.DateOfBirth.ToString().Contains(filterValue)),
+                "dateOfBirth" => (t => t.DateOfBirth.Date == ParseDateTime(filterValue).Date),
                 "privilege" => (t => t.Privilege.Name == filterValue),
                 "document" => (t => t.Document.Number.StartsWith(filterValue)),
                 _ => (t => true)

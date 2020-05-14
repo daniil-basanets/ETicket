@@ -37,17 +37,17 @@ namespace ETicket.ApplicationServices.Services.PagingServices
             };
         }
 
-        public DateTime ParseDateTime(string str)
+        public DateTime ParseDateTime(string parseValue)
         {
-            if (DateTime.TryParse(str, out DateTime result))
+            if (DateTime.TryParse(parseValue, out DateTime result))
             {
                 return result;
             }
             return new DateTime();
         }
-        public bool? ParseBoolean(string str)
+        public bool? ParseBoolean(string parseValue)
         {
-            if (Boolean.TryParse(str, out bool result))
+            if (Boolean.TryParse(parseValue, out bool result))
             {
                 return result;
             }

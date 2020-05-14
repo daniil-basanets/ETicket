@@ -21,57 +21,82 @@
         </div>
 
         <div class="card-body users">
-            <div class="filters">
-                <details>
-                    <summary>Filters</summary>
-                    <table border="0" class="filter-table">
-                        <tr>
-                            <th>First name:</th>
-                            <th>
-                                <input type="text" class="user-filter-form form-control form-control-sm" id="first-name-input">
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>Last name:</th>
-                            <th>
-                                <input type="text" class="user-filter-form form-control form-control-sm" id="last-name-input">
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>Privilege:</th>
-                            <th>
-                                @Html.DropDownList("privilege-select", ViewData["PrivilegeId"] as IEnumerable<SelectListItem>, "", new { @class = "user-filter-form custom-select custom-select-sm form-control form-control-sm" })
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>Document:</th>
-                            <th>
-                                <input type="text" class="user-filter-form form-control form-control-sm" id="document-input">
-                            </th>
-                        </tr>
-                    </table>
+            @*<div class="filters">
+                    <details>
+                        <summary>Filters</summary>
+                        <table border="0" class="filter-table">
+                            <tr>
+                                <th>First name:</th>
+                                <th>
+                                    <input type="text" class="user-filter-form form-control form-control-sm" id="first-name-input">
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Last name:</th>
+                                <th>
+                                    <input type="text" class="user-filter-form form-control form-control-sm" id="last-name-input">
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Privilege:</th>
+                                <th>
+                                    @Html.DropDownList("privilege-select", ViewData["PrivilegeId"] as IEnumerable<SelectListItem>, "", new { @class = "user-filter-form custom-select custom-select-sm form-control form-control-sm" })
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Document:</th>
+                                <th>
+                                    <input type="text" class="user-filter-form form-control form-control-sm" id="document-input">
+                                </th>
+                            </tr>
+                        </table>
 
-                </details>
-                <p></p>
-            </div>
+                    </details>
+                    <p></p>
+                </div>*@
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>
-                                @Html.DisplayNameFor(model => model.FirstName)
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.FirstName)
+                                    </summary>
+                                    <input type="text" class="document-filter-form  form-control form-control-sm" id="first-name-input">
+                                </details>
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.LastName)
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.LastName)
+                                    </summary>
+                                    <input type="text" class="document-filter-form  form-control form-control-sm" id="last-name-input">
+                                </details>
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.DateOfBirth)
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.DateOfBirth)
+                                    </summary>
+                                    <input type="text" id="date-birth-datepicker" class="document-filter-form form-control form-control-sm">
+                                </details>
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Privilege)
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.Privilege)
+                                    </summary>
+                                    @Html.DropDownList("privilege-select", ViewData["PrivilegeId"] as IEnumerable<SelectListItem>, "", new { @class = "document-filter-form custom-select custom-select-sm form-control form-control-sm" })
+                                </details>
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Document)
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.Document)
+                                    </summary>
+                                    <input type="text" class="document-filter-form  form-control form-control-sm" id="document-input">
+                                </details>
                             </th>
                             <th>
                                 Actions
@@ -165,3 +190,23 @@
 <script src="/js/data-table-users-filters.js"></script>
 <script src="~/js/button-create-moves/button-create-move.js"></script>
 
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+    $(function () {
+        $("#date-birth-datepicker").datepicker({
+            dateFormat: "dd.mm.yy"
+        });
+    });
+
+    function makeSingleOnClickEvent(e) {
+        if (!e) {
+            var e = window.event;
+        }
+        e.cancelBubble = true;
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+    }
+</script>

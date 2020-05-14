@@ -2,7 +2,9 @@
     { columnName: "firstName", inputId: "#first-name-input", isCheckBox: false },
     { columnName: "lastName", inputId: "#last-name-input", isCheckBox: false },
     { columnName: "privilege", inputId: "#privilege-select option:selected", isCheckBox: true },
-    { columnName: "document", inputId: "#document-input", isCheckBox: false }
+    { columnName: "document", inputId: "#document-input", isCheckBox: false },
+    { columnName: "dateOfBirth", inputId: "#date-birth-datepicker", isCheckBox: false }
+   
 ];
 
 function getFilterMapColumnValue() {
@@ -169,6 +171,12 @@ $(document).ready(function () {
         });
 
     $("#document-input").unbind()
+        .bind("change", function (e) {
+            isNewSearch = true;
+            table.draw();
+        });
+
+    $("#date-birth-datepicker").unbind()
         .bind("change", function (e) {
             isNewSearch = true;
             table.draw();

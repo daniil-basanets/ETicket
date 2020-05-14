@@ -28,9 +28,9 @@ namespace ETicket.ApplicationServices.Services.PagingServices
                     .Include(t => t.User);
         }
 
-        public DateTime ParseDateTime(string str)
+        public DateTime ParseDateTime(string parseValue)
         {
-            if(DateTime.TryParse(str, out DateTime result))
+            if(DateTime.TryParse(parseValue, out DateTime result))
             {
                 return result;
             }
