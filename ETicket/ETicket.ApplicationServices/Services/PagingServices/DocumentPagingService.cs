@@ -1,12 +1,13 @@
-﻿using ETicket.ApplicationServices.Services.DataTable.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
+
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
+using ETicket.ApplicationServices.Extensions;
 
 namespace ETicket.ApplicationServices.Services.PagingServices
 {
@@ -37,30 +38,14 @@ namespace ETicket.ApplicationServices.Services.PagingServices
             };
         }
 
-        public DateTime ParseDateTime(string parseValue)
-        {
-            if (DateTime.TryParse(parseValue, out DateTime result))
-            {
-                return result;
-            }
-            return new DateTime();
-        }
-        public bool? ParseBoolean(string parseValue)
-        {
-            if (Boolean.TryParse(parseValue, out bool result))
-            {
-                return result;
-            }
-            return null;
-        }
         public Expression<Func<Document, bool>> GetSingleFilterExpression(string columnName, string filterValue)
         {
             return columnName switch
             {
                 "documentType" => (t => t.DocumentType.Name.StartsWith(filterValue)),
                 "number" => (t => t.Number.StartsWith(filterValue)),
-                "expirationDate" => (t => t.ExpirationDate.Value.Date == ParseDateTime(filterValue).Date),
-                "isValid" => (t => t.IsValid == ParseBoolean(filterValue)),
+                "expirationDate" => (t => t.ExpirationDate.Value.Date == filterValue.ParseToDate()),
+                "isValid" => (t => t.IsValid == filterValue.ParseToBoolean()),
                 _ => (t => true)
             };
         }

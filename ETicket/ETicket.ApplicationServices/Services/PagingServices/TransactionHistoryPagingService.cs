@@ -1,12 +1,14 @@
-﻿using ETicket.ApplicationServices.Services.DataTable.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
+
+using ETicket.ApplicationServices.Extensions;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
+
 
 namespace ETicket.ApplicationServices.Services.PagingServices
 {
@@ -26,20 +28,12 @@ namespace ETicket.ApplicationServices.Services.PagingServices
                 .Include(t => t.TicketType);
         }
 
-        public DateTime ParseDateTime(string parseValue)
-        {
-            if (DateTime.TryParse(parseValue, out DateTime result))
-            {
-                return result;
-            }
-            return new DateTime();
-        }
         public Expression<Func<TransactionHistory, bool>> GetSingleFilterExpression(string columnName, string filterValue)
         {
             return columnName switch
             {
                 "totalPrice" => (t => t.TotalPrice.ToString() == filterValue),
-                "date" => (t => t.Date.Date == ParseDateTime(filterValue).Date),
+                "date" => (t => t.Date.Date == filterValue.ParseToDate()),
                 "ticketType" => (t => t.TicketType.TypeName == filterValue),
                 "count" => (t => t.Count.ToString() == filterValue),
                 _ => (t => true)

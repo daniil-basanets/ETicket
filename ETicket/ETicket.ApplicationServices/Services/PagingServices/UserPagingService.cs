@@ -1,12 +1,13 @@
-﻿using ETicket.ApplicationServices.Services.DataTable.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
+
+using ETicket.ApplicationServices.Extensions;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
 
 namespace ETicket.ApplicationServices.Services.PagingServices
 {
@@ -39,21 +40,13 @@ namespace ETicket.ApplicationServices.Services.PagingServices
             };
         }
 
-        public DateTime ParseDateTime(string parseValue)
-        {
-            if (DateTime.TryParse(parseValue, out DateTime result))
-            {
-                return result;
-            }
-            return new DateTime();
-        }
         public Expression<Func<User, bool>> GetSingleFilterExpression(string columnName, string filterValue)
         {
             return columnName switch
             {
                 "firstName" => (t => t.FirstName.StartsWith(filterValue)),
                 "lastName" => (t => t.LastName.StartsWith(filterValue)),
-                "dateOfBirth" => (t => t.DateOfBirth.Date == ParseDateTime(filterValue).Date),
+                "dateOfBirth" => (t => t.DateOfBirth.Date == filterValue.ParseToDate()),
                 "privilege" => (t => t.Privilege.Name == filterValue),
                 "document" => (t => t.Document.Number.StartsWith(filterValue)),
                 _ => (t => true)
