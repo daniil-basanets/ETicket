@@ -21,6 +21,7 @@ namespace ETicket.ApplicationServices.Services
                 cfg.AddProfile<PrivilegeMapperProfile>();
                 cfg.AddProfile<UserMapperProfile>();
                 cfg.AddProfile<TransactionHistoryMapperProfile>();
+                cfg.AddProfile<CarrierMapperProfile>();
             });
 
             return config.CreateMapper();
