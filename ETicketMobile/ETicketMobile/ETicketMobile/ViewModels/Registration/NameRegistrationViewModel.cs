@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
 using Prism.Navigation;
 using Xamarin.Forms;
@@ -85,28 +86,28 @@ namespace ETicketMobile.ViewModels.Registration
         {
             if (IsNameEmpty(firstName))
             {
-                FirstNameWarning = ErrorMessage.FirstNameEmpty;
+                FirstNameWarning = AppResource.FirstNameEmpty;
 
                 return false;
             }
 
             if (IsNameEmpty(lastName))
             {
-                LastNameWarning = ErrorMessage.LastNameEmpty;
+                LastNameWarning = AppResource.LastNameEmpty;
 
                 return false;
             }
 
             if (!IsNameValid(firstName))
             {
-                FirstNameWarning = ErrorMessage.FirstNameValid;
+                FirstNameWarning = AppResource.FirstNameValid;
 
                 return false;
             }
 
             if (!IsNameValid(lastName))
             {
-                LastNameWarning = ErrorMessage.LastNameValid;
+                LastNameWarning = AppResource.LastNameValid;
 
                 return false;
             }

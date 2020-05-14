@@ -3,7 +3,9 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:prism="http://prismlibrary.com" 
+    xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
     xmlns:bindingconverters="clr-namespace:ETicketMobile.UserInterface.BindingConverters;assembly=ETicketMobile.UserInterface"
+    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Login.LoginView">
 
@@ -13,85 +15,64 @@
             <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    
-    <StackLayout
-        Orientation="Vertical"
-        Margin="30, 0, 30, 0">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
 
-            <StackLayout
-                Grid.Row="0"
-                VerticalOptions="Center">
-                <Frame
-                    CornerRadius="50"
-                    WidthRequest="100"
-                    HeightRequest="100"
-                    Padding="0"
-                    HorizontalOptions="Center"
-                    IsClippedToBounds="True"
-                    BackgroundColor="#4e73df"
-                    HasShadow="False">
-                    <Image
-                        Source="ETicket.jpg"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"/>
-                </Frame>
-            </StackLayout>
-            <StackLayout
-                Grid.Row="1"
-                Margin="0, 10, 0, 10">
-                <StackLayout VerticalOptions="Center">
-                    <Label
-                        IsVisible="{Binding EmailWarning, Converter={StaticResource StringToBooleanConverter}}"
-                        Text="{Binding EmailWarning}"
-                        TextColor="{Binding EmailWarning, Converter={StaticResource StringToColorConverter}}"/>
-                    <Entry
-                        Text="{Binding Email, Mode=TwoWay}"
-                        Placeholder="Email"
-                        Keyboard="Email"/>
-                    <Entry
-                        Text="{Binding Password, Mode=TwoWay}"
-                        Placeholder="{Binding PasswordPlaceHolder}"
-                        PlaceholderColor="{Binding PasswordPlaceHolderColor}"
-                        IsPassword="True"/>
-                    <Label
-                        Text="Forgot Login?"
-                        TextColor="Blue"
-                        HorizontalOptions="EndAndExpand"
-                        Margin="0, 10, 0, 10">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding NavigateToForgetPasswordView}"/>
-                        </Label.GestureRecognizers>
-                    </Label>
-                    <Button
-                        Command="{Binding NavigateToLoginView}"
-                        CornerRadius="10"
-                        Text="Sign in"/>
-                </StackLayout>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-                <StackLayout
-                    Grid.Row="2"
-                    HorizontalOptions="Center"
-                    Orientation="Horizontal"
-                    Margin="0, 10, 0, 10">
-                    <Label
-                        Text="Don't have an account?"
-                        HorizontalTextAlignment="Center"/>
-                    <Label
-                        Text="Sign up."
-                        TextColor="Blue"
-                        HorizontalTextAlignment="Center">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding NavigateToRegistrationView}"/>
-                        </Label.GestureRecognizers>
-                    </Label>
-                </StackLayout>
-            </StackLayout>
+        <StackLayout Margin="10, 0">
+            <Label 
+                Text="Log Into Your Account"
+                Style="{StaticResource TitleLabelStyle}" />
+
+            <Label
+                IsVisible="{Binding EmailWarning, Converter={StaticResource StringToBooleanConverter}}"
+                Text="{Binding EmailWarning}"
+                TextColor="{Binding EmailWarning, Converter={StaticResource StringToColorConverter}}"/>
+
+            <telerikInput:RadEntry
+                WatermarkText="{local:Translate Email}"
+                Text="{Binding Email, Mode=TwoWay}"
+                Style="{StaticResource LoginEntryStyle}"
+                Keyboard="Email"/>
+
+            <telerikInput:RadEntry
+                Text="{Binding Password, Mode=TwoWay}"
+                WatermarkText="{Binding PasswordPlaceHolder, Mode=TwoWay}"
+                WatermarkTextColor="{Binding PasswordPlaceHolderColor}"
+                Style="{StaticResource LoginEntryStyle}"
+                IsPassword="True"/>
+
+            <telerikInput:RadButton
+                Command="{Binding NavigateToLoginView}"
+                Text="{local:Translate SignIn}"
+                Style="{StaticResource ActionButtonStyle}" />
+
+            <telerikInput:RadButton
+                Command="{Binding NavigateToForgetPasswordView}"
+                Text="{local:Translate ForgotPassword}"
+                Style="{StaticResource SecondaryActionButtonStyle}"
+                FontAttributes="None" />
+        </StackLayout>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Label 
+                Text="{local:Translate RegistrationHint}"
+                Style="{StaticResource NormalLabelStyle}"/>
+
+            <telerikInput:RadButton
+                Command="{Binding NavigateToRegistrationView}"
+                Text="{local:Translate SignUp}"
+                Style="{StaticResource SecondaryActionButtonStyle}"
+                Grid.Column="1" />
         </Grid>
-    </StackLayout>
+    </Grid>
 </ContentPage>

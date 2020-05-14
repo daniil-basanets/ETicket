@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
+using ETicketMobile.DataAccess.LocalAPI.Interfaces;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
@@ -28,6 +30,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         private string confirmEmailWarning;
         private int activationCodeTimer;
 
+        private bool timerActivated;
+
         #endregion
 
         #region Properties
@@ -50,6 +54,12 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             set => SetProperty(ref activationCodeTimer, value);
         }
 
+        public bool TimerActivated
+        {
+            get => timerActivated;
+            set => SetProperty(ref timerActivated, value);
+        }
+
         #endregion
 
         public ConfirmForgotPasswordViewModel(INavigationService navigationService)
@@ -59,8 +69,17 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
             httpClient = new HttpClientService();
+        }
 
+        public override void OnAppearing()
+        {
+            Init();
             InitActivationCodeTimer();
+        }
+
+        private void Init()
+        {
+            TimerActivated = false;
         }
 
         #region Timer
@@ -90,7 +109,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private void OnSendActivationCode()
         {
-            if (ActivationCodeTimer > 0)
+            if (ActivationCodeTimer != 0)
                 return;
 
             var email = navigationParameters.GetValue<string>("email");
@@ -99,6 +118,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             ActivationCodeTimer = 60;
 
             timer.Start();
+
+            TimerActivated = true;
         }
 
         private async void RequestActivationCode(string email)
@@ -120,7 +141,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         {
             if (string.IsNullOrEmpty(code))
             {
-                ConfirmEmailWarning = ErrorMessage.ConfirmEmailEmpty;
+                ConfirmEmailWarning = AppResource.ConfirmEmailEmpty;
 
                 return false;
             }
@@ -128,7 +149,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             var confirmEmailIsSucceeded = await ConfirmEmail(code);
             if (!confirmEmailIsSucceeded)
             {
-                ConfirmEmailWarning = ErrorMessage.ConfirmEmailWrong;
+                ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
 
                 return false;
             }
