@@ -26,6 +26,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            log.Info(nameof(Index));
+
             try
             {
                 return View(carrierService.GetAll());
@@ -42,6 +44,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Details(int? id)
         {
+            log.Info(nameof(Details));
+
             if (id == null)
             {
                 log.Warn(nameof(Details) + " id is null");
@@ -53,7 +57,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                carrierDto = carrierService.GetDto((int)id);
+                carrierDto = carrierService.Get((int)id);
             }
             catch (Exception e)
             {
@@ -76,6 +80,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            log.Info(nameof(Create));
+
             return View();
         }
 
@@ -84,6 +90,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(CarrierDto carrierDto)
         {
+            log.Info(nameof(Create) + ":Post");
+
             try
             {
                 if (ModelState.IsValid)
@@ -107,6 +115,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
+            log.Info(nameof(Edit));
+
             return Details(id);
         }
 
@@ -115,6 +125,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, CarrierDto carrierDto)
         {
+            log.Info(nameof(Edit) + ":Post");
+
             if (id != carrierDto.Id)
             {
                 log.Warn(nameof(Edit) + " id is not equal to carrierDto.Id");
@@ -145,6 +157,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(int? id)
         {
+            log.Info(nameof(Delete));
+
             return Details(id);
         }
 
@@ -153,6 +167,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
+            log.Info(nameof(DeleteConfirmed) + ":Post");
+
             try
             {
                 carrierService.Delete(id);

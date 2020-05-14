@@ -29,6 +29,8 @@ namespace ETicket.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult GetAll()
         {
+            log.Info(nameof(GetAll));
+
             try
             {
                 return Ok(carrierService.GetAll());
@@ -48,6 +50,8 @@ namespace ETicket.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetCarrierById(int id)
         {
+            log.Info(nameof(GetCarrierById));
+
             try
             {
                 var carrier = carrierService.Get(id);
@@ -75,6 +79,8 @@ namespace ETicket.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult UpdateCarrier(int id, CarrierDto carrierDto)
         {
+            log.Info(nameof(UpdateCarrier));
+
             try
             {
                 if (id != carrierDto.Id)
@@ -102,6 +108,8 @@ namespace ETicket.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult CreateCarrier(CarrierDto carrierDto)
         {
+            log.Info(nameof(CreateCarrier));
+
             try
             {
                 carrierService.Create(carrierDto);
