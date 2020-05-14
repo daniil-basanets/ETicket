@@ -31,6 +31,15 @@ namespace ETicket.DataAccess.Domain.Repositories
             return user;
         }
 
+        public User GetByEmail(string email)
+        {
+            var user = context.ETUsers
+                .Include(u => u.Document)
+                .Include(u => u.Privilege)
+                .FirstOrDefault(m => m.Email == email);
+            return user;
+        }
+
         public void Create(User user)
         {
             context.ETUsers.Add(user);

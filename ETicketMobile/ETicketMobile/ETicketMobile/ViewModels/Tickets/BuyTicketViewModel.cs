@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using ETicketMobile.Data.Domain.Entities;
-using ETicketMobile.DataAccess.Domain.LocalAPI.Interfaces;
+using ETicketMobile.Data.Entities;
+using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.WebAccess;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
@@ -52,10 +52,8 @@ namespace ETicketMobile.ViewModels.Tickets
 
         #endregion
 
-        public BuyTicketViewModel(
-            INavigationService navigationService,
-            ILocalApi localApi
-        ) : base(navigationService)
+        public BuyTicketViewModel(INavigationService navigationService, ILocalApi localApi)
+            : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
@@ -93,8 +91,7 @@ namespace ETicketMobile.ViewModels.Tickets
             {
                 Id = id,
                 Name = name,
-                Amount = amount,
-                Price = price
+                Coefficient = price
             };
 
             var response = await httpClient.PostAsync<TicketDto, string>(TicketsEndpoint.BuyTicket, ticket, accessToken);
