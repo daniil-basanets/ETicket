@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using ETicket.Admin.Models.IdentityModels;
+using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,8 +13,14 @@ namespace ETicket.Admin.Controllers
 {
     public class AccountController : Controller
     {
+
+        #region Private members
+
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+        #endregion
 
         public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
@@ -20,88 +28,134 @@ namespace ETicket.Admin.Controllers
             this.signInManager = signInManager;
         }
 
-        public IActionResult Index()
-        {
-            return RedirectToAction("Login", "Account");
-        }
-
         [HttpGet]
         public IActionResult Register()
         {
+            log.Info(nameof(AccountController.Register));
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            if (ModelState.IsValid)
-            {
-                IdentityUser user = new IdentityUser { Email = model.Email, UserName = model.Email };
+            log.Info(nameof(AccountController.Register) + " POST");
 
-                var result = await userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+            try
+            {
+                if (ModelState.IsValid)
                 {
-                    //await userManager.AddToRoleAsync(user, "SuperUser");// какая роль при регистрации?
-                    await signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Login", "Account");
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
+                    IdentityUser user = new IdentityUser { Email = model.Email, UserName = model.Email };
+                    var result = await userManager.CreateAsync(user, model.Password);
+
+                    if (result.Succeeded)
                     {
-                        ModelState.AddModelError(string.Empty, error.Description);
+                        await signInManager.SignInAsync(user, false);
+
+                        return RedirectToAction("Login", "Account");
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                            log.Warn(error.Description);
+                        }
                     }
                 }
-            }
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            } 
         }
 
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
         {
-            return View(new LoginModel { ReturnUrl = returnUrl });
+            log.Info(nameof(AccountController.Login));
+
+            try
+            {
+                return View(new LoginModel { ReturnUrl = returnUrl });
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            if (ModelState.IsValid)
+            log.Info(nameof(AccountController.Login) + " POST");
+
+            try
             {
-                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
-                if (result.Succeeded)
+                if (ModelState.IsValid)
                 {
-                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                    var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                    
+                    if (result.Succeeded)
                     {
-                        return Redirect(model.ReturnUrl);
+                        if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                        {
+                            return Redirect(model.ReturnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        log.Warn("Wrong email or password");
+                        ModelState.AddModelError("", "Wrong email or password"); 
                     }
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Wrong email or password");
-                }
-            }
 
-            return View(model);
+                return View(model);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }   
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await signInManager.SignOutAsync();
+            log.Info(nameof(AccountController.Logout));
 
-            return RedirectToAction("Login", "Account");
+            try
+            {
+                await signInManager.SignOutAsync();
+
+                return RedirectToAction("Login", "Account");
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         [HttpGet]
         public IActionResult AccessDenied()
         {
+            log.Info(nameof(AccountController.AccessDenied));
+
             return View();
         }
     }
