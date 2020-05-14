@@ -61,6 +61,7 @@ namespace ETicket.Admin
             services.AddTransient<ITicketTypeService, TicketTypeService>();
             services.AddTransient<ICarrierService, CarrierService>();
             services.AddTransient<IPrivilegeService, PrivilegeService>();
+            services.AddTransient<ITicketVerificationService, TicketVerificationService>();
 
 
             services.AddIdentityCore<IdentityUser>(o =>
