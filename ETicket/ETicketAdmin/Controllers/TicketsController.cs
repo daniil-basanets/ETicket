@@ -22,8 +22,20 @@ namespace ETicket.Admin.Controllers
         private readonly ITransactionAppService transactionService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+        #endregion
+
+        public TicketController(ITransactionAppService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService)
+        {
+            this.ticketService = ticketService;
+            this.ticketTypeService = ticketTypeService;
+            this.userService = userService;
+            transactionService = transactionAppService;
+        }
+
         private void InitViewDataForSelectList(TicketDto ticketDto = null)
         {
+            log.Info(nameof(TicketController.InitViewDataForSelectList));
+
             try
             {
                 ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName", ticketDto?.Id);
@@ -36,19 +48,11 @@ namespace ETicket.Admin.Controllers
             }
         }
 
-        #endregion
-
-        public TicketController(ITransactionAppService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService)
-        {
-            this.ticketService = ticketService;
-            this.ticketTypeService = ticketTypeService;
-            this.userService = userService;
-            transactionService = transactionAppService;
-        }
-
         [HttpGet]
         public IActionResult Index()
         {
+            log.Info(nameof(TicketController.Index));
+
             try
             {
                 ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName");
@@ -67,6 +71,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Details(Guid? id)
         {
+            log.Info(nameof(TicketController.Details));
+
             if (id == null)
             {
                 log.Warn(nameof(TicketController.Details) + " id is null");
@@ -100,6 +106,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            log.Info(nameof(TicketController.Create));
+
             InitViewDataForSelectList();
 
             return View();
@@ -109,6 +117,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(TicketDto ticketDto)
         {
+            log.Info(nameof(TicketController.Create) + ":Post");
+
             try
             {
                 TicketType ticketType = null;
@@ -145,6 +155,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(Guid? id)
         {
+            log.Info(nameof(TicketController.Edit));
+
             if (id == null)
             {
                 log.Warn(nameof(TicketController.Edit) + " id is null");
@@ -181,6 +193,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, TicketDto ticketDto)
         {
+            log.Info(nameof(TicketController.Edit) + ":Post");
+
             TicketType ticketType = null;
 
             if (id != ticketDto.Id)
@@ -223,6 +237,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(Guid? id)
         {
+            log.Info(nameof(TicketController.Delete));
+
             if (id == null)
             {
                 log.Warn(nameof(TicketController.Delete) + " id is null");
@@ -257,6 +273,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
+            log.Info(nameof(TicketController.DeleteConfirmed) + ":Post");
+
             try
             {
                 ticketService.Delete(id);
