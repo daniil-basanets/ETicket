@@ -1,5 +1,6 @@
 using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.DocumentTypes;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Interfaces;
@@ -49,6 +50,7 @@ namespace ETicket.WebAPI
             services.AddTransient<IUnitOfWork, UnitOfWork>(e => new UnitOfWork(e.GetService<ETicketDataContext>()));
 
             services.AddTransient<ICarrierService, CarrierService>();
+            services.AddTransient<IDocumentTypesService, DocumentTypesService>();
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ETicketDataContext>();
             services.AddIdentityCore<IdentityUser>(o =>
