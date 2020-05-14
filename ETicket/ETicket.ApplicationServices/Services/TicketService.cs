@@ -48,7 +48,7 @@ namespace ETicket.ApplicationServices.Services
 
             if (ticket.TicketType == null)
             {
-                ticket.TicketType = ticketTypeService.GetTicketTypeById(ticket.TicketTypeId);
+                ticket.TicketType = uow.TicketTypes.Get(ticket.TicketTypeId);
             }
 
             if (ticket.ActivatedUTCDate != null)

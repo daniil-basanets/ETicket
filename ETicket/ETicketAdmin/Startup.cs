@@ -1,4 +1,5 @@
 using System;
+using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
@@ -6,7 +7,6 @@ using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.DocumentTypes;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Services.Transaction;
-using ETicket.ApplicationServices.Services.Users;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;

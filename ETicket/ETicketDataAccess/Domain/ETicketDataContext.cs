@@ -6,7 +6,8 @@ namespace ETicket.DataAccess.Domain
 {
     public class ETicketDataContext : IdentityDbContext
     {
-        // ToDo Region
+        #region DbSets
+
         public DbSet<TransactionHistory> TransactionHistory { get; set; }
         public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
@@ -14,6 +15,10 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentType> DocumentTypes { get; set; }
         public DbSet<Privilege> Privileges { get; set; }
+        public DbSet<Carrier> Carriers { get; set; }
+        public DbSet<RouteStation> RouteStations { get; set; }
+
+        #endregion
 
         public ETicketDataContext(DbContextOptions<ETicketDataContext> options) : base(options) { }
 
