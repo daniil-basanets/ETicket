@@ -22,11 +22,11 @@ namespace ETicket.ApplicationServices.Services
             this.uow = uow;
             mapper = new MapperService();
         }
-        public IEnumerable<Privilege>GetAll()
+        public IEnumerable<Privilege>GetPrivileges()
         {
             return uow.Privileges.GetAll().ToList();
         }
-        public Privilege Get(int id)
+        public Privilege GetPrivilegeById(int id)
         {
             return uow.Privileges.Get(id);
         }
@@ -49,11 +49,6 @@ namespace ETicket.ApplicationServices.Services
         {
             uow.Privileges.Delete(id);
             uow.Save();
-        }
-
-        public bool Exists(int id)
-        {
-            return uow.Privileges.Get(id) != null;
         }
     }
 }

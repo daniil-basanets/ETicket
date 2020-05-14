@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
@@ -27,14 +26,14 @@ namespace ETicket.ApplicationServices.Services
             unitOfWork.Save();
         }
         
-        public IEnumerable<TicketType> GetAll()
+        public IEnumerable<TicketType> GetTicketTypes()
         {
             return unitOfWork.TicketTypes.GetAll().ToList();
         }
         
-        public TicketType Get(int id)
+        public TicketTypeDto GetTicketTypeById(int id)
         {
-            return unitOfWork.TicketTypes.Get(id);
+            return mapper.Map<TicketType, TicketTypeDto>(unitOfWork.TicketTypes.Get(id));
         }
         
         public void Update(TicketTypeDto ticketTypeDto)
@@ -49,11 +48,6 @@ namespace ETicket.ApplicationServices.Services
         {
             unitOfWork.TicketTypes.Delete(id);
             unitOfWork.Save();
-        }
-        
-        public bool Exists(int id)
-        {
-            return unitOfWork.TicketTypes.Get(id) != null;
         }
     }
 }

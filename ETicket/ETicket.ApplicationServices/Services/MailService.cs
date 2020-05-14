@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using ETicket.ApplicationServices.Services.Interfaces;
 
-namespace ETicket.ApplicationServices.Services.Users
+namespace ETicket.ApplicationServices.Services
 {
     public class MailService : IMailService
     {

@@ -47,19 +47,25 @@ namespace ETicket.ApplicationServices.Services
             uow.Save();
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<User> GetUsers()
         {
             return uow.Users.GetAll().ToList();
         }
 
-        public User GetById(Guid id)
+        public UserDto GetUserById(Guid id)
         {
-            return uow.Users.Get(id);
+            var user = uow.Users.Get(id);
+            return mapper.Map<User, UserDto>(user);
+        }
+
+        public User GetByEmail(string email)
+        {
+            return uow.Users.GetByEmail(email);
         }
 
         public void SendMessage(Guid id, string message)
         {
-            var user = GetById(id);
+            var user = GetUserById(id);
 
             mailService.SendEmail(user.Email, message, "Reminders");
         }
@@ -69,11 +75,6 @@ namespace ETicket.ApplicationServices.Services
             var user = mapper.Map<UserDto, User>(userDto);
             uow.Users.Update(user);
             uow.Save();
-        }
-
-        public bool Exists(Guid id)
-        {
-            return uow.Users.UserExists(id);
         }
     }
 }

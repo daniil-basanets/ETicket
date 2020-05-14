@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com" 
+    xmlns:bindingconverters="clr-namespace:ETicketMobile.UserInterface.BindingConverters;assembly=ETicketMobile.UserInterface"
+    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
+    xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="ETicketMobile.Views.Registration.EmailRegistrationView">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter" />
+            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackLayout Margin="10, 0">
+            <Label
+                Text="{local:Translate EnterEmail}"
+                Style="{StaticResource TitleLabelStyle}" />
+
+            <Label
+                Text="{local:Translate EmailHint}"
+                Style="{StaticResource NormalLabelStyle}"/>
+
+            <Label
+                IsVisible="{Binding EmailWarning, Converter={StaticResource StringToBooleanConverter}}"
+                Text="{Binding EmailWarning}"
+                TextColor="{Binding EmailWarning, Converter={StaticResource StringToColorConverter}}"
+                Style="{StaticResource NormalLabelStyle}"/>
+
+            <telerikInput:RadEntry
+                x:Name="EmailEntry"
+                WatermarkText="{local:Translate Email}"
+                Style="{StaticResource LoginEntryStyle}" />
+
+            <telerikInput:RadButton
+                Command="{Binding NavigateToPhoneRegistrationView}"
+                CommandParameter="{Binding Source={x:Reference EmailEntry}, Path=Text}"
+                Text="{local:Translate Next}"
+                Style="{StaticResource ActionButtonStyle}" />
+        </StackLayout>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Label
+                Text="{local:Translate AlreadySignUp}"
+                Style="{StaticResource NormalLabelStyle}"/>
+
+            <telerikInput:RadButton
+                Command="{Binding NavigateToPhoneRegistrationView}"
+                Text="{local:Translate SignIn}"
+                Style="{StaticResource SecondaryActionButtonStyle}"
+                Grid.Column="1" />
+        </Grid>
+    </Grid>
+
+</ContentPage>

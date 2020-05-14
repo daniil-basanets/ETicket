@@ -21,12 +21,12 @@ namespace ETicket.ApplicationServices.Services.DocumentTypes
             mapper = new MapperService();
         }
 
-        public IEnumerable<DocumentType> GetAll()
+        public IEnumerable<DocumentType> GetDocumentTypes()
         {
             return unitOfWork.DocumentTypes.GetAll().ToList();
         }
 
-        public DocumentType Get(int id)
+        public DocumentType GetDocumentTypeById(int id)
         {
             return unitOfWork.DocumentTypes.Get(id);
         }
@@ -36,7 +36,7 @@ namespace ETicket.ApplicationServices.Services.DocumentTypes
             var documentType = mapper.Map<DocumentTypeDto, DocumentType>(documentTypeDto);
 
             unitOfWork.DocumentTypes.Create(documentType);
-            Save();
+            unitOfWork.Save();
         }
 
         public void Update(DocumentTypeDto documentTypeDto)
@@ -44,22 +44,12 @@ namespace ETicket.ApplicationServices.Services.DocumentTypes
             var documentType = mapper.Map<DocumentTypeDto, DocumentType>(documentTypeDto);
 
             unitOfWork.DocumentTypes.Create(documentType);
-            Save();
+            unitOfWork.Save();
         }
 
         public void Delete(int id)
         {
             unitOfWork.DocumentTypes.Delete(id);
-            Save();
-        }
-
-        public bool Exists(int id)
-        {
-            return unitOfWork.DocumentTypes.Get(id) != null;
-        }
-
-        private void Save()
-        {
             unitOfWork.Save();
         }
     }

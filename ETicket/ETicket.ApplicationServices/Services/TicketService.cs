@@ -21,19 +21,19 @@ namespace ETicket.ApplicationServices.Services
             mapper = new MapperService();
         }
 
-        IEnumerable<Ticket> ITicketService.GetAll()
+        IEnumerable<Ticket> ITicketService.GetTickets()
         {
             return uow.Tickets.GetAll().ToList();
         }
 
-        public Ticket Get(Guid id)
+        public Ticket GetTicketById(Guid id)
         {
             return uow.Tickets.Get(id);
         }
 
         public TicketDto GetDto(Guid id)
         {
-            var ticket = Get(id); ;
+            var ticket = GetTicketById(id); ;
             var ticketDto = mapper.Map<Ticket, TicketDto>(ticket);
 
             return ticketDto;
@@ -48,7 +48,7 @@ namespace ETicket.ApplicationServices.Services
 
             if (ticket.TicketType == null)
             {
-                ticket.TicketType = ticketTypeService.Get(ticket.TicketTypeId);
+                ticket.TicketType = uow.TicketTypes.Get(ticket.TicketTypeId);
             }
 
             if (ticket.ActivatedUTCDate != null)
@@ -72,11 +72,6 @@ namespace ETicket.ApplicationServices.Services
         {
             uow.Tickets.Delete(id);
             uow.Save();
-        }
-
-        public bool Exists(Guid id)
-        {
-            return uow.Tickets.Get(id) != null;
         }
     }
 }

@@ -1,0 +1,31 @@
+﻿.dataTables_filter {
+    text-align: left !important;
+}
+.button_create {
+    text-align: right !important;
+}
+.dataTables_length {
+    margin: 2px 0 !important;
+}
+.dataTables_info {
+    padding-top: 0.5em !important;
+    white-space: pre-line !important;
+}
+.dataTables_paginate {
+
+}
+
+@media screen and (max-width: 991px) {
+    div.dataTables_wrapper div.dataTables_length,
+    div.dataTables_wrapper div.dataTables_info,
+    div.dataTables_wrapper div.dataTables_paginate {
+        text-align: center;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    div.dataTables_wrapper div.dataTables_filter,
+    div.dataTables_wrapper div.button_create {
+        text-align: center !important;
+    }
+}

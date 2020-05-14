@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com" 
+    xmlns:bindingconverters="clr-namespace:ETicketMobile.UserInterface.BindingConverters;assembly=ETicketMobile.UserInterface"
+    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile" 
+    xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="ETicketMobile.Views.Registration.PhoneRegistrationView">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter" />
+            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <StackLayout Margin="10, 0">
+            <Label
+                Text="{local:Translate EnterPhone}"
+                Style="{StaticResource TitleLabelStyle}"/>
+
+            <Label
+                IsVisible="{Binding PhoneWarning, Converter={StaticResource StringToBooleanConverter}}"
+                Text="{Binding PhoneWarning}"
+                TextColor="{Binding PhoneWarning, Converter={StaticResource StringToColorConverter}}"
+                Style="{StaticResource NormalLabelStyle}"/>
+
+            <telerikInput:RadMaskedInput
+                x:Name="PhoneEntry"
+                WatermarkText="{local:Translate Phone}"
+                RejectedSymbolErrorText=""
+                Placeholder="*"
+                Mask="+380 (00)-000-00-00"
+                MaskType="Text">
+                <telerikInput:RadMaskedInput.BorderStyle>
+                    <telerikInput:BorderStyle 
+                        BorderColor="Gray" 
+                        BorderThickness="3" 
+                        CornerRadius="5"/>
+                </telerikInput:RadMaskedInput.BorderStyle>
+            </telerikInput:RadMaskedInput>
+
+            <telerikInput:RadButton
+                Command="{Binding NavigateToNameRegistrationView}"
+                CommandParameter="{Binding Source={x:Reference PhoneEntry}, Path=InputValue}"
+                Text="{local:Translate Next}"
+                Style="{StaticResource ActionButtonStyle}" />
+        </StackLayout>
+    </Grid>
+
+</ContentPage>
