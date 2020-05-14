@@ -20,9 +20,4 @@ namespace ETicket.ApplicationServices.DTOs
 
         public Guid? DocumentId { get; set; }
     }
-
-    public class UserIdDto
-    {
-        public Guid Id { get; set; }
-    }
 }
