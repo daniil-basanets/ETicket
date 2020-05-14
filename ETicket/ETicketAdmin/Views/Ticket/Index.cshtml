@@ -20,44 +20,6 @@
         </div>
         <div class="card-body tickets">
             <div class="filters">
-                @*<details>
-                    <summary>Filters</summary>
-                    <table border="0" class="filter-table">
-                        <tr>
-
-                            <th>Ticket type:</th>
-                            <th>
-                                @Html.DropDownList("ticket-type-select", ViewData["TicketTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "ticket-filter-form custom-select custom-select-sm form-control form-control-sm" })
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>Created:</th>
-                            <th>
-                                <input type="text" id="created-date-datepicker" class="ticket-filter-form form-control form-control-sm" >
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>Activated:</th>
-                            <th>
-                                <input type="text" id="activated-date-datepicker" class="ticket-filter-form form-control form-control-sm" >
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>Expiration:</th>
-                            <th>
-                                <input type="text" id="expiration-date-datepicker" class="ticket-filter-form form-control form-control-sm" >
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>User name:</th>
-                            <th>
-                                <input type="text" id="user-name-input" class="ticket-filter-form form-control form-control-sm">
-                            </th>
-                        </tr>
-
-                    </table>
-
-                </details>*@
                 <p></p>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -70,13 +32,6 @@
                                         </summary>
                                         @Html.DropDownList("ticket-type-select", ViewData["TicketTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "ticket-filter-form custom-select custom-select-sm form-control form-control-sm" })
                                     </details>
-                                    @*@Html.DisplayNameFor(model => model.TicketType)
-                                    <details onclick="makeSingleOnClickEvent()">
-                                        <summary>
-                                            Filter
-                                        </summary>
-                                        @Html.DropDownList("ticket-type-select", ViewData["TicketTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "ticket-filter-form custom-select custom-select-sm form-control form-control-sm" })
-                                    </details>*@
                                 </th>
                                 <th>
                                     <details onclick="makeSingleOnClickEvent()">
@@ -177,6 +132,8 @@
     </div>
 </div>
 <script src="/vendor/jquery/jquery.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <!-- Page level plugins -->
 <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
@@ -185,33 +142,3 @@
 <!-- Page level custom scripts -->
 <script src="~/js/data-table-tickets-filters.js"></script>
 <script src="~/js/button-create-moves/button-create-move.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-<script>
-    $(function () {
-        $("#created-date-datepicker").datepicker({
-            dateFormat: "dd.mm.yy"
-        });
-    });
-    $(function () {
-        $("#activated-date-datepicker").datepicker({
-            dateFormat: "dd.mm.yy"
-        });
-    });
-    $(function () {
-        $("#expiration-date-datepicker").datepicker({
-            dateFormat: "dd.mm.yy"
-        });
-    });
-
-    function makeSingleOnClickEvent(e) {
-        if (!e) {
-            var e = window.event;
-        }
-        e.cancelBubble = true;
-        if (e.stopPropagation) {
-            e.stopPropagation();
-        }
-    }
-</script>

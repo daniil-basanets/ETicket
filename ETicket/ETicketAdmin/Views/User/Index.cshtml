@@ -21,39 +21,6 @@
         </div>
 
         <div class="card-body users">
-            @*<div class="filters">
-                    <details>
-                        <summary>Filters</summary>
-                        <table border="0" class="filter-table">
-                            <tr>
-                                <th>First name:</th>
-                                <th>
-                                    <input type="text" class="user-filter-form form-control form-control-sm" id="first-name-input">
-                                </th>
-                            </tr>
-                            <tr>
-                                <th>Last name:</th>
-                                <th>
-                                    <input type="text" class="user-filter-form form-control form-control-sm" id="last-name-input">
-                                </th>
-                            </tr>
-                            <tr>
-                                <th>Privilege:</th>
-                                <th>
-                                    @Html.DropDownList("privilege-select", ViewData["PrivilegeId"] as IEnumerable<SelectListItem>, "", new { @class = "user-filter-form custom-select custom-select-sm form-control form-control-sm" })
-                                </th>
-                            </tr>
-                            <tr>
-                                <th>Document:</th>
-                                <th>
-                                    <input type="text" class="user-filter-form form-control form-control-sm" id="document-input">
-                                </th>
-                            </tr>
-                        </table>
-
-                    </details>
-                    <p></p>
-                </div>*@
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
@@ -181,6 +148,8 @@
 </div>
 @*<script src="~/js/user-script.js"></script>*@
 <script src="/vendor/jquery/jquery.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <!-- Page level plugins -->
 <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
@@ -189,24 +158,3 @@
 <!-- Page level custom scripts -->
 <script src="/js/data-table-users-filters.js"></script>
 <script src="~/js/button-create-moves/button-create-move.js"></script>
-
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-<script>
-    $(function () {
-        $("#date-birth-datepicker").datepicker({
-            dateFormat: "dd.mm.yy"
-        });
-    });
-
-    function makeSingleOnClickEvent(e) {
-        if (!e) {
-            var e = window.event;
-        }
-        e.cancelBubble = true;
-        if (e.stopPropagation) {
-            e.stopPropagation();
-        }
-    }
-</script>

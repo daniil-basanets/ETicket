@@ -25,6 +25,16 @@ function getFilterMapColumnValue() {
 }
 var isNewSearch = false;
 
+function makeSingleOnClickEvent(e) {
+    if (!e) {
+        var e = window.event;
+    }
+    e.cancelBubble = true;
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+}
+
 $(document).ready(function () {
     $.noConflict();
     //Variable for count entries
@@ -125,6 +135,10 @@ $(document).ready(function () {
                 sLengthMenu: "_MENU_",
             }
         });
+
+    $("#date-datepicker").datepicker({
+        dateFormat: "dd.mm.yy"
+    });
 
     //Change event listener for search
     //Search after pressing Enter or defocusing the search input field
