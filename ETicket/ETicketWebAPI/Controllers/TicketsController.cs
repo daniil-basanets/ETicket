@@ -2,13 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using log4net;
-using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
-using System.Linq;
+using ETicket.ApplicationServices.DTOs;
 
 namespace ETicket.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/tickets")]
     [ApiController]
     public class TicketsController : ControllerBase
     {
@@ -21,28 +20,9 @@ namespace ETicket.WebAPI.Controllers
         public TicketsController(ITicketService ticketService)
         {
             this.ticketService = ticketService;
-        }
+        }   
 
-        // GET: api/Tickets?userId=Value
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetUserTickets(UserIdDto userIdDto)
-        {
-            try
-            {
-                var tickets = ticketService.Get().Where(t => t.UserId == userIdDto.Id);
-                return Ok(ticketService.Get());
-            }
-            catch (Exception e)
-            {
-                log.Error(e);
-
-                return BadRequest();
-            }
-        }
-
-        // GET: api/Tickets/5
+        // GET: api/tickets/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -70,15 +50,15 @@ namespace ETicket.WebAPI.Controllers
             }
         }
 
-        // PUT: api/Tickets/Activate/5
-        [HttpPut("/[action]/{id}")]
+        // PUT: api/tickets/activate
+        [HttpPut("/activate/{ticketId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult Activate(Guid ticketId, Guid userId)
+        public IActionResult Activate(Guid ticketId)
         {
             try
             {
-                ticketService.Activate(ticketId, userId);
+                ticketService.Activate(ticketId);
 
                 return NoContent();
             }
