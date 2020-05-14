@@ -1,7 +1,8 @@
 ﻿var filters = [
     { columnName: "totalPrice", inputId: "#total-price-input", isCheckBox: false },
     { columnName: "count", inputId: "#count-input", isCheckBox: false },
-    { columnName: "ticketType", inputId: "#type-select option:selected", isCheckBox: true }
+    { columnName: "ticketType", inputId: "#type-select option:selected", isCheckBox: true },
+    { columnName: "date", inputId: "#date-datepicker", isCheckBox: false }
 ];
 
 function getFilterMapColumnValue() {
@@ -144,6 +145,12 @@ $(document).ready(function () {
             isNewSearch = true;
             table.draw();
     });
+
+    $('#date-datepicker').unbind()
+        .bind("change", function (e) {
+            isNewSearch = true;
+            table.draw();
+        });
 
     //Event listener for Details button 
     $("#dataTable tbody").on('click', '#detailsButton', function () {

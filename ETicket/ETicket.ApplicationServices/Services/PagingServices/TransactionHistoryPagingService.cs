@@ -26,12 +26,20 @@ namespace ETicket.ApplicationServices.Services.PagingServices
                 .Include(t => t.TicketType);
         }
 
+        public DateTime ParseDateTime(string parseValue)
+        {
+            if (DateTime.TryParse(parseValue, out DateTime result))
+            {
+                return result;
+            }
+            return new DateTime();
+        }
         public Expression<Func<TransactionHistory, bool>> GetSingleFilterExpression(string columnName, string filterValue)
         {
             return columnName switch
             {
                 "totalPrice" => (t => t.TotalPrice.ToString() == filterValue),
-                "date" => (t => t.Date.ToString().Contains(filterValue)),
+                "date" => (t => t.Date.Date == ParseDateTime(filterValue).Date),
                 "ticketType" => (t => t.TicketType.TypeName == filterValue),
                 "count" => (t => t.Count.ToString() == filterValue),
                 _ => (t => true)
