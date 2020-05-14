@@ -2,14 +2,14 @@
 using ETicket.ApplicationServices.DTOs;
 using ETicket.DataAccess.Domain.Entities;
 
-namespace ETicketAdmin.Mapping
+namespace ETicket.ApplicationServices.Mapping
 {
     public class TicketMapperProfile : Profile
     {
         public TicketMapperProfile()
         {
-            CreateMap<TicketDto, Ticket>();
-            CreateMap<TicketTypeDto, TicketType>();
+            CreateMap<TicketDto, Ticket>().ReverseMap();
+            CreateMap<TicketTypeDto, TicketType>().ReverseMap();
         }
     }
 }

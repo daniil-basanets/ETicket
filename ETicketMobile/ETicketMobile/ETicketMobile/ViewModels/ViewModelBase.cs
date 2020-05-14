@@ -1,13 +1,15 @@
-﻿using Prism.Mvvm;
+﻿using Prism.AppModel;
+using Prism.Mvvm;
 using Prism.Navigation;
 
 namespace ETicketMobile.ViewModels
 {
-    public class ViewModelBase : BindableBase, IInitialize, INavigationAware, IDestructible
+    public class ViewModelBase : BindableBase, IInitialize, INavigationAware, IDestructible, IPageLifecycleAware
     {
         protected INavigationService NavigationService { get; private set; }
 
         private string _title;
+
         public string Title
         {
             get { return _title; }
@@ -26,7 +28,6 @@ namespace ETicketMobile.ViewModels
 
         public virtual void OnNavigatedFrom(INavigationParameters parameters)
         {
-
         }
 
         public virtual void OnNavigatedTo(INavigationParameters parameters)
@@ -37,6 +38,14 @@ namespace ETicketMobile.ViewModels
         public virtual void Destroy()
         {
 
+        }
+
+        public virtual void OnAppearing()
+        {
+        }
+
+        public virtual void OnDisappearing()
+        {
         }
     }
 }

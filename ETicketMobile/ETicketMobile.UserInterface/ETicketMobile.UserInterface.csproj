@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Localization\Extensions\**" />
+    <EmbeddedResource Remove="Localization\Extensions\**" />
+    <None Remove="Localization\Extensions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="4.6.0.726" />
   </ItemGroup>
 

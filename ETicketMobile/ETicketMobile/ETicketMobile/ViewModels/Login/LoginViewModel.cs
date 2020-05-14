@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Android.Util;
 using ETicketMobile.Business.Mapping;
-using ETicketMobile.Data.Domain.Entities;
-using ETicketMobile.DataAccess.Domain.LocalAPI.Interfaces;
+using ETicketMobile.Data.Entities;
+using ETicketMobile.DataAccess.LocalAPI.Interfaces;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Registration;
-using ETicketMobile.Views.Tickets;
+using ETicketMobile.Views.UserActions;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
@@ -82,10 +83,8 @@ namespace ETicketMobile.ViewModels.Login
 
         #endregion
 
-        public LoginViewModel(
-            INavigationService navigationService,
-            ILocalApi localApi
-        ) : base(navigationService)
+        public LoginViewModel(INavigationService navigationService, ILocalApi localApi)
+            : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
@@ -94,13 +93,16 @@ namespace ETicketMobile.ViewModels.Login
                 ?? throw new ArgumentNullException(nameof(localApi));
 
             httpClient = new HttpClientService();
+        }
 
+        public override void OnAppearing()
+        {
             FillProperties();
         }
 
         private void FillProperties()
         {
-            PasswordPlaceHolder = "Password";
+            PasswordPlaceHolder = AppResource.PasswordPlaceHolderDefault;
         }
 
         private void OnNavigateToForgetPasswordView(object obj)
@@ -115,31 +117,33 @@ namespace ETicketMobile.ViewModels.Login
 
         private async void OnNavigateToLoginView(object obj)
         {
-            if (!IsValid(email))
-                return;
+            //if (!IsValid(email))
+            //    return;
 
             var token = await GetTokenAsync();
-            if (token == null)
+            if (token.RefreshJwtToken == null)
             {
-                EmailWarning = "User doesn't exists";
+                EmailWarning = AppResource.EmailWarning;
 
                 Password = string.Empty;
-                PasswordPlaceHolder = "or wrong password";
+                PasswordPlaceHolder = AppResource.PasswordPlaceHolderWrong;
                 PasswordPlaceHolderColor = Color.Red;
 
                 return;
             }
 
             await localApi.AddAsync(token);
-            await navigationService.NavigateAsync(nameof(TicketsView));
+
+            var navigationParameters = new NavigationParameters { { "email", Email } };
+            await navigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
         }
 
         private async Task<Token> GetTokenAsync()
         {
             var userSignIn = new UserSignInRequestDto
             {
-                Email = email,
-                Password = password
+                Email = "joe@gmail.com", //email,
+                Password = "qwerty12" // password
             };
 
             var tokenDto = await httpClient.PostAsync<UserSignInRequestDto, TokenDto>(
@@ -156,7 +160,7 @@ namespace ETicketMobile.ViewModels.Login
         {
             if (IsEmpty(email))
             {
-                EmailWarning = ErrorMessage.EmailEmpty;
+                EmailWarning = AppResource.EmailEmpty;
 
                 return false;
             }
@@ -164,7 +168,7 @@ namespace ETicketMobile.ViewModels.Login
             if (IsEmpty(password))
             {
                 Password = string.Empty;
-                PasswordPlaceHolder = ErrorMessage.PasswordEmpty;
+                PasswordPlaceHolder = AppResource.PasswordEmpty;
                 PasswordPlaceHolderColor = Color.Red;
 
                 return false;
@@ -172,7 +176,7 @@ namespace ETicketMobile.ViewModels.Login
 
             if (!IsEmailValid(email))
             {
-                EmailWarning = ErrorMessage.EmailInvalid;
+                EmailWarning = AppResource.EmailInvalid;
 
                 return false;
             }
