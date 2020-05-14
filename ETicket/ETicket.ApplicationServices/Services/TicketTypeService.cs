@@ -27,12 +27,12 @@ namespace ETicket.ApplicationServices.Services
             unitOfWork.Save();
         }
         
-        public IEnumerable<TicketType> GetAll()
+        public IEnumerable<TicketType> GetTicketType()
         {
             return unitOfWork.TicketTypes.GetAll().ToList();
         }
         
-        public TicketType Get(int id)
+        public TicketType GetTicketTypeById(int id)
         {
             return unitOfWork.TicketTypes.Get(id);
         }
@@ -49,11 +49,6 @@ namespace ETicket.ApplicationServices.Services
         {
             unitOfWork.TicketTypes.Delete(id);
             unitOfWork.Save();
-        }
-        
-        public bool Exists(int id)
-        {
-            return unitOfWork.TicketTypes.Get(id) != null;
         }
     }
 }
