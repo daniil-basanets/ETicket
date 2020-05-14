@@ -39,12 +39,7 @@ namespace ETicket.Admin.Controllers
             privilegeService = PService;
             documentService = DService;
             documentTypeService = DTService;
-            this.context = context;
-            repository = new UnitOfWork(context);
             this.dataTableService = dataTableService;
-            //dataTableService = new DataTableService<User>(dataTablePaging);
-
-            //this.mapper = mapper;
         }
 
         [HttpGet]
