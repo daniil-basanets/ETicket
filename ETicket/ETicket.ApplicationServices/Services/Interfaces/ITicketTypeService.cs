@@ -6,16 +6,14 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface ITicketTypeService
     {
-        public IEnumerable<TicketType> GetAll();
+        public IEnumerable<TicketType> GetTicketType();
         
-        public TicketType Get(int id);
+        public TicketType GetTicketTypeById(int id);
 
         public void Create(TicketTypeDto documentTypeDto);
 
         public void Update(TicketTypeDto documentTypeDto);
 
         public void Delete(int id);
-
-        public bool Exists(int id);
     }
 }

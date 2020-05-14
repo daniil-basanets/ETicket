@@ -2,11 +2,9 @@ using System;
 using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DocumentTypes;
-using ETicket.ApplicationServices.Services.DocumentTypes.Interfaces;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Services.Transaction;
 using ETicket.ApplicationServices.Services.Users;
-using ETicket.ApplicationServices.Services.Users.Interfaces;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
@@ -39,7 +37,9 @@ namespace ETicket.Admin
         {
             services.AddControllersWithViews();
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
-            services.AddTransient<IUnitOfWork, UnitOfWork>(x => new UnitOfWork(x.GetService<ETicketDataContext>()));
+            services.AddTransient<IUnitOfWork, UnitOfWork>(u => new UnitOfWork(u.GetService<ETicketDataContext>()));
+
+            services.AddTransient<ITransactionAppService, TransactionAppService>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ETicketDataContext>()
@@ -59,7 +59,8 @@ namespace ETicket.Admin
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IDocumentTypesService, DocumentTypesService>();
             services.AddTransient<ITicketTypeService, TicketTypeService>();
-            
+            services.AddTransient<IPrivilegeService, PrivilegeService>();
+
 
             services.AddIdentityCore<IdentityUser>(o =>
             {
