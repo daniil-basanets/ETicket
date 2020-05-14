@@ -28,17 +28,95 @@ namespace ETicket.ApplicationServices.Services.PagingServices
                     .Include(t => t.User);
         }
 
+        public DateTime ParseDateTime(string str)
+        {
+            if(DateTime.TryParse(str, out DateTime result))
+            {
+                return result;
+            }
+            return new DateTime();
+        }
+
         public Expression<Func<Ticket, bool>> GetSingleFilterExpression(string columnName, string filterValue)
         {
             return columnName switch
             {
                 "ticketType" => (t => t.TicketType.TypeName == filterValue),
-                "createdUTCDate" => (t => t.CreatedUTCDate.ToString().Contains(filterValue)),
-                "activatedUTCDate" => (t => t.ActivatedUTCDate.ToString().Contains(filterValue)),
-                "expirationUTCDate" => (t => t.ExpirationUTCDate.ToString().Contains(filterValue)),
+                "createdUTCDate" => (t => t.CreatedUTCDate.Date == ParseDateTime(filterValue).Date),
+                "activatedUTCDate" => (t => t.ActivatedUTCDate.Value.Date == ParseDateTime(filterValue).Date),
+                "expirationUTCDate" => (t => t.ExpirationUTCDate.Value.Date == ParseDateTime(filterValue).Date),
                 "user" => (t => t.User.FirstName.StartsWith(filterValue) || t.User.LastName.StartsWith(filterValue)),
                 _ => (t => true)
             };
+
+            //return columnName switch
+            //{
+            //    "ticketType" => (t => t.TicketType.TypeName == filterValue),
+            //    ("createdUTCDate") => (t => DateTime.TryParse(filterValue, out _) || DateTime.Parse(filterValue) == t.CreatedUTCDate.Date),
+            //    "activatedUTCDate" => (t => t.ActivatedUTCDate.Value.Date == DateTime.Parse(filterValue).Date),
+            //    "expirationUTCDate" => (t => t.ExpirationUTCDate.Value.Date == DateTime.Parse(filterValue).Date),
+            //    "user" => (t => t.User.FirstName.StartsWith(filterValue) || t.User.LastName.StartsWith(filterValue)),
+            //    (string s, bool d) => (t => true)
+            //};
+
+            //return columnName switch
+            //{
+            //    "ticketType" => (t => t.TicketType.TypeName == filterValue),
+            //    "createdUTCDate" => (t => t.CreatedUTCDate.Date == DateTime.Parse(filterValue).Date),
+            //    "activatedUTCDate" => (t => t.ActivatedUTCDate.Date == DateTime.Parse(filterValue).Date),
+            //    "expirationUTCDate" => (t => t.ExpirationUTCDate.Date == DateTime.Parse(filterValue).Date),
+            //    "user" => (t => t.User.FirstName.StartsWith(filterValue) || t.User.LastName.StartsWith(filterValue)),
+            //    _ => (t => true)
+            //};
+
+            //switch (columnName) 
+            //{
+            //    case "ticketType":
+            //        return (t => t.TicketType.TypeName == filterValue);
+            //    case "createdUTCDate":                           
+            //        if(DateTime.TryParse(filterValue, out DateTime createdDate))
+            //        {
+            //            return (t => t.CreatedUTCDate.Date == createdDate.Date);
+            //        }
+            //        else
+            //        {
+            //            return t => false;
+            //        }
+            //    case "activatedUTCDate":
+            //        if (DateTime.TryParse(filterValue, out DateTime activatedDate))
+            //        {
+            //            return (t => t.ActivatedUTCDate.Value.Date == activatedDate.Date);
+            //        }
+            //        else
+            //        {
+            //            return t => false;
+            //        }
+            //    case "expirationUTCDate":
+            //        if (DateTime.TryParse(filterValue, out DateTime date))
+            //        {
+            //            return (t => t.ExpirationUTCDate.Value.Date == date.Date);
+            //        }
+            //        else
+            //        {
+            //            return t => false;
+            //        }
+            //    case "user":
+            //        {
+            //            return (t => t.User.FirstName.StartsWith(filterValue) || t.User.LastName.StartsWith(filterValue));
+            //        }
+            //    default:
+            //        return (t => true);
+            //}
+
+
+
+            //"ticketType" => ,
+            //"createdUTCDate" => (t => t.CreatedUTCDate.Date == DateTime.Parse(filterValue).Date),
+            //"activatedUTCDate" => (t => t.ActivatedUTCDate.Date == DateTime.Parse(filterValue).Date),
+            //"expirationUTCDate" => (t => t.ExpirationUTCDate.Date == DateTime.Parse(filterValue).Date),
+            //"user" => (t => t.User.FirstName.StartsWith(filterValue) || t.User.LastName.StartsWith(filterValue)),
+            //_ => (t => true)
+
         }
 
         public IList<Expression<Func<Ticket, bool>>> GetGlobalSearchExpressions(string searchValue)

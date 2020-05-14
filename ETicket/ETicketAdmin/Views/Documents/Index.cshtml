@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-    <link href="~/css/ButtonMoves/moved-data-table-controls.css" rel="stylesheet" />
+<link href="~/css/ButtonMoves/moved-data-table-controls.css" rel="stylesheet" />
 <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 <div class="container-fluid">
@@ -23,7 +23,7 @@
                     <thead>
                         <tr>
                             <th>
-                                <details>
+                                <details onclick="makeSingleOnClickEvent()">
                                     <summary>
                                         @Html.DisplayNameFor(model => model.DocumentType)
                                     </summary>
@@ -33,7 +33,7 @@
                                 </details>
                             </th>
                             <th>
-                                <details>
+                                <details onclick="makeSingleOnClickEvent()">
                                     <summary>
                                         @Html.DisplayNameFor(model => model.Number)
                                     </summary>
@@ -41,16 +41,31 @@
                                         <input type="text" class="document-filter-form form-control form-control-sm" id="document-number-input">
                                     </div>
                                 </details>
-                            </th>                       
-                            <th>
-                                @Html.DisplayNameFor(model => model.ExpirationDate)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.IsValid)
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.ExpirationDate)
+                                    </summary>
+                                    <input type="text" id="expiration-date-datepicker" class="ticket-filter-form form-control form-control-sm">
+                                </details>
                             </th>
-	                         <th>
-	                            Actions
-	                        </th>
+                            <th>
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.IsValid)
+                                    </summary>
+                                    <select id="is-valid-select">
+                                        <option value=""></option>
+                                        <option value="True">Yes</option>
+                                        <option value="False">No</option>
+                                    </select>
+                                    @*<input type="checkbox" id="is-valid-datepicker" class="ticket-filter-form form-control form-control-sm">*@
+                                </details>
+                            </th>
+                            <th>
+                                Actions
+                            </th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -101,7 +116,7 @@
                     </tbody>
                 </table>
             </div>
-         </div>
+        </div>
     </div>
 </div>
 
@@ -114,6 +129,26 @@
 <!-- Page level custom scripts -->
 <script src="~/js/data-table-documents-filters.js"></script>
 <script src="~/js/button-create-moves/button-create-move.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+    $(function () {
+        $("#expiration-date-datepicker").datepicker({
+            dateFormat: "dd.mm.yy"
+        });
+    });
+
+    function makeSingleOnClickEvent(e) {
+        if (!e) {
+            var e = window.event;
+        }
+        e.cancelBubble = true;
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+    }
+</script>
 
 
 

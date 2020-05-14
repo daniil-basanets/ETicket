@@ -1,6 +1,9 @@
 ﻿var filters = [
     { columnName: "ticketType", inputId: "#ticket-type-select option:selected", isCheckBox: true },
-    { columnName: "user", inputId: "#user-name-input", isCheckBox: false }
+    { columnName: "user", inputId: "#user-name-input", isCheckBox: false },
+    { columnName: "createdUTCDate", inputId: "#created-date-datepicker", isCheckBox: false },
+    { columnName: "activatedUTCDate", inputId: "#activated-date-datepicker", isCheckBox: false },
+    { columnName: "expirationUTCDate", inputId: "#expiration-date-datepicker", isCheckBox: false }
 ];
 
 function getFilterMapColumnValue() {
@@ -13,6 +16,7 @@ function getFilterMapColumnValue() {
         }
         else {
             value = $(filters[i].inputId).val();
+            
         }
         if (value) {
             result.set(filters[i].columnName, value);
@@ -167,6 +171,21 @@ $(document).ready(function () {
         });
 
     $('#ticket-type-select').change(function () {
+        isNewSearch = true;
+        table.draw();
+    });
+
+    $('#created-date-datepicker').change(function () {
+        isNewSearch = true;
+        table.draw();
+    });
+
+    $('#activated-date-datepicker').change(function () {
+        isNewSearch = true;
+        table.draw();
+    });
+
+    $('#expiration-date-datepicker').change(function () {
         isNewSearch = true;
         table.draw();
     });

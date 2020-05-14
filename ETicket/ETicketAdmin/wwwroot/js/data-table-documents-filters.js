@@ -1,6 +1,8 @@
 ﻿var filters = [
     { columnName: "documentType", inputId: "#document-type-select option:selected", isCheckBox: true },
     { columnName: "number", inputId: "#document-number-input", isCheckBox: false },
+    { columnName: "expirationDate", inputId: "#expiration-date-datepicker", isCheckBox: false },
+    { columnName: "isValid", inputId: "#is-valid-select option:selected", isCheckBox: false }
 ];
 
 function getFilterMapColumnValue() {
@@ -146,7 +148,19 @@ $(document).ready(function () {
             table.draw();
         });
 
+    $('#is-valid-select')
+        .change(function () {
+            isNewSearch = true;
+            table.draw();
+        });
+    
     $("#document-number-input").unbind()
+        .bind("change", function (e) {
+            isNewSearch = true;
+            table.draw();
+        });
+
+    $("#expiration-date-datepicker").unbind()
         .bind("change", function (e) {
             isNewSearch = true;
             table.draw();

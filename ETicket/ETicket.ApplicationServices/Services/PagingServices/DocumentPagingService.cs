@@ -37,14 +37,30 @@ namespace ETicket.ApplicationServices.Services.PagingServices
             };
         }
 
+        public DateTime ParseDateTime(string str)
+        {
+            if (DateTime.TryParse(str, out DateTime result))
+            {
+                return result;
+            }
+            return new DateTime();
+        }
+        public bool? ParseBoolean(string str)
+        {
+            if (Boolean.TryParse(str, out bool result))
+            {
+                return result;
+            }
+            return null;
+        }
         public Expression<Func<Document, bool>> GetSingleFilterExpression(string columnName, string filterValue)
         {
             return columnName switch
             {
                 "documentType" => (t => t.DocumentType.Name.StartsWith(filterValue)),
                 "number" => (t => t.Number.StartsWith(filterValue)),
-                "expirationDate" => (t => t.ExpirationDate.ToString().Contains(filterValue)),
-                "isValid" => (t => t.IsValid.ToString() == filterValue),
+                "expirationDate" => (t => t.ExpirationDate.Value.Date == ParseDateTime(filterValue).Date),
+                "isValid" => (t => t.IsValid == ParseBoolean(filterValue)),
                 _ => (t => true)
             };
         }
