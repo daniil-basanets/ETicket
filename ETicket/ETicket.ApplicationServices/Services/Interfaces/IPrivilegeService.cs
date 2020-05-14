@@ -11,6 +11,5 @@ namespace ETicket.ApplicationServices.Services.Interfaces
         public void Create(PrivilegeDto privilegeDto);
         public void Update(PrivilegeDto privilegeDto);
         public void Delete(int id);
-        public bool Exists(int id);
     }
 }

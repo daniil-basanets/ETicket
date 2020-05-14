@@ -26,14 +26,14 @@ namespace ETicket.ApplicationServices.Services
             unitOfWork.Save();
         }
         
-        public IEnumerable<TicketType> GetTicketType()
+        public IEnumerable<TicketType> GetTicketTypes()
         {
             return unitOfWork.TicketTypes.GetAll().ToList();
         }
         
-        public TicketType GetTicketTypeById(int id)
+        public TicketTypeDto GetTicketTypeById(int id)
         {
-            return unitOfWork.TicketTypes.Get(id);
+            return mapper.Map<TicketType, TicketTypeDto>(unitOfWork.TicketTypes.Get(id));
         }
         
         public void Update(TicketTypeDto ticketTypeDto)

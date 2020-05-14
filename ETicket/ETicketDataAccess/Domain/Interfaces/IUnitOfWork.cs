@@ -19,22 +19,7 @@ namespace ETicket.DataAccess.Domain.Interfaces
         UserRepository Users { get; }
 
         CarrierRepository Carriers { get; }
-        
-        AreaRepository Areas { get; }
-
-        PriceListRepository PriceList { get; }
-
-        RouteRepository Routes { get; }
-
-        TransportRepository Transports { get; }
-
-        TicketAreaRepository TicketAreas { get; }
-
         TicketVerificationRepository TicketVerifications { get; }
-
-        StationRepository Stations { get; }
-
-        RouteStationRepository RouteStation { get; }
 
         void Save();
     }

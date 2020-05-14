@@ -10,18 +10,12 @@ namespace ETicket.ApplicationServices.Services.Interfaces
     {
         public IEnumerable<Carrier> GetAll();
 
-        public IQueryable<Carrier> Get();
-
-        public Carrier Get(int id);
-
-        public CarrierDto GetDto(int id);
+        public CarrierDto Get(int id);
 
         public void Create(CarrierDto carrierDto);
 
         public void Update(CarrierDto carrierDto);
 
         public void Delete(int id);
-
-        public bool Exists(int id);
     }
 }

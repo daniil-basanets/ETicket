@@ -17,7 +17,7 @@ namespace ETicket.DataAccess.Domain.Entities
 
         [Required]
         [MaxLength(50)]
-        public string Adress { get; set; }
+        public string Address { get; set; }
 
         [MaxLength(30)]
         [DisplayName("International Bank Account Number (IBAN)")]

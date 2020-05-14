@@ -31,6 +31,8 @@ namespace ETicket.Admin.Controllers
 
         public IActionResult Index()
         {
+            log.Info(nameof(AdminController.Index));
+
             try
             {
                 return View(userManager.Users.ToList());
@@ -45,6 +47,8 @@ namespace ETicket.Admin.Controllers
 
         public async Task<ActionResult> Delete(string id)
         {
+            log.Info(nameof(AdminController.Delete));
+
             try
             {
                 var user = await userManager.FindByIdAsync(id);
@@ -72,6 +76,8 @@ namespace ETicket.Admin.Controllers
 
         public async Task<ActionResult> EditRoles(string userId)
         {
+            log.Info(nameof(AdminController.EditRoles));
+
             try
             {
                 var user = await userManager.FindByIdAsync(userId);
@@ -106,6 +112,8 @@ namespace ETicket.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> EditRoles(string userId, List<string> roles)
         {
+            log.Info(nameof(AdminController.EditRoles) + " POST");
+
             try
             {
                 var user = await userManager.FindByIdAsync(userId);

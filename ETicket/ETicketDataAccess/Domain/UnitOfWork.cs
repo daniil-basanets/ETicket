@@ -18,14 +18,8 @@ namespace ETicket.DataAccess.Domain
         private TicketTypeRepository ticketTypeRepository;
         private TransactionHistoryRepository transactionHistoryRepository;
         private UserRepository userRepository;
-        private RouteRepository routeRepository;
         private CarrierRepository carrierRepository;
         private RouteStationRepository routeStationRepository;
-        private AreaRepository areaRepository;
-        private StationRepository stationRepository;
-        private PriceListRepository priceListRepository;
-        private TransportRepository transportRepository;
-        private TicketAreaRepository ticketAreaRepository;
         private TicketVerificationRepository ticketVerificationRepository;
 
         #endregion
@@ -102,16 +96,6 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public RouteRepository Routes
-        {
-            get
-            {
-                if (routeRepository == null)
-                    routeRepository = new RouteRepository(eTicketDataContext);
-                return routeRepository;
-            }
-        }
-
         public CarrierRepository Carriers
         {
             get
@@ -120,12 +104,10 @@ namespace ETicket.DataAccess.Domain
                 {
                     carrierRepository = new CarrierRepository(eTicketDataContext);
                 }
-
                 return carrierRepository;
             }
         }
-
-        public RouteStationRepository RouteStation
+                public RouteStationRepository RouteStation
         {
             get
             {
@@ -137,61 +119,7 @@ namespace ETicket.DataAccess.Domain
                 return routeStationRepository;
             }
         }
-
-        public AreaRepository Areas => areaRepository ??= new AreaRepository(eTicketDataContext);
         
-        public PriceListRepository PriceList
-        {
-            get
-            {
-                if(priceListRepository == null)
-                {
-                    priceListRepository = new PriceListRepository(eTicketDataContext);
-                }
-
-                return priceListRepository;
-            }
-        }
-        
-
-        public StationRepository Stations
-        {
-            get
-            {
-                if (stationRepository == null)
-                    stationRepository = new StationRepository(eTicketDataContext);
-
-                return stationRepository;
-            }
-        }
-
-        public TransportRepository Transports
-        {
-            get
-            {
-                if (transportRepository == null)
-                {
-                    transportRepository = new TransportRepository(eTicketDataContext);
-                }
-
-                return transportRepository;
-            }
-        }
-        
-        public TicketAreaRepository TicketAreas
-        {
-            get
-            {
-                if (ticketAreaRepository == null)
-                {
-                    ticketAreaRepository = new TicketAreaRepository(eTicketDataContext);
-                }
-
-                return ticketAreaRepository;
-            }
-        }
-
-
         public TicketVerificationRepository TicketVerifications
         {
             get

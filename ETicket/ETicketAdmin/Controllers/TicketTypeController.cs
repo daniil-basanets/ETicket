@@ -2,10 +2,9 @@ using System;
 using System.Reflection;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
+using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using log4net;
-using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.Admin.Controllers
 {
@@ -23,9 +22,11 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            logger.Info(nameof(TicketController.Index));
+            
             try
             {
-                var ticketTypes = ticketTypeService.GetTicketType();
+                var ticketTypes = ticketTypeService.GetTicketTypes();
                 
                 return View(ticketTypes);
             }
@@ -40,6 +41,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Details(int? id)
         {
+            logger.Info(nameof(TicketController.Index));
+            
             if (id == null)
             {
                 logger.Warn(nameof(TicketTypeController.Details) + " id is null");
@@ -47,11 +50,18 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            TicketType ticketType;
-
             try
             {
-                ticketType = ticketTypeService.GetTicketTypeById(id.Value);                
+                var ticketTypeDto = ticketTypeService.GetTicketTypeById(id.Value);  
+                
+                if (ticketTypeDto == null)
+                {
+                    logger.Warn(nameof(TicketTypeController.Details) + " ticketType is null");
+                
+                    return NotFound();
+                }
+                
+                return View(ticketTypeDto);
             }
             catch (Exception exception)
             {
@@ -59,20 +69,13 @@ namespace ETicket.Admin.Controllers
                 
                 return BadRequest();
             }
-
-            if (ticketType == null)
-            {
-                logger.Warn(nameof(TicketTypeController.Details) + " ticketType is null");
-                
-                return NotFound();
-            }
-
-            return View(ticketType);
         }
-        
+
         [HttpGet]
         public IActionResult Create()
         {
+            logger.Info(nameof(TicketTypeController.Create));
+            
             return View();
         }
         
@@ -80,6 +83,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(TicketTypeDto ticketTypeDto)
         {
+            logger.Info(nameof(TicketTypeController.Create));
+            
             if (!ModelState.IsValid)
             {                
                 return View(ticketTypeDto);
@@ -102,40 +107,17 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                logger.Warn(nameof(TicketTypeController.Edit) + " id is null");
-
-                return NotFound();
-            }
-
-            TicketType ticketType;
-
-            try
-            {
-                ticketType = ticketTypeService.GetTicketTypeById(id.Value);
-            }
-            catch (Exception exception)
-            {
-                logger.Error(exception);
-
-                return BadRequest();
-            }
-
-            if (ticketType == null)
-            {
-                logger.Warn(nameof(TicketTypeController.Edit) + " ticketType is null");
-
-                return NotFound();
-            }
+            logger.Info(nameof(TicketTypeController.Edit));
             
-            return View(ticketType);
+            return Details(id);
         }
         
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, TicketTypeDto ticketTypeDto)
         {
+            logger.Info(nameof(TicketTypeController.Edit));
+            
             if (id != ticketTypeDto.Id)
             {
                 logger.Warn(nameof(TicketTypeController.Edit) + " id is not equal to ticketTypeDto.Id");
@@ -156,47 +138,23 @@ namespace ETicket.Admin.Controllers
                     return BadRequest();
                 }
             }
-            
             return RedirectToAction(nameof(Index));
         }
         
         [HttpGet]
         public IActionResult Delete(int? id)
         {
-            if (id == null)
-            {
-                logger.Warn(nameof(TicketTypeController.Delete) + " id is null");
-
-                return NotFound();
-            }
-
-            TicketType ticketType;
-
-            try
-            {
-                ticketType = ticketTypeService.GetTicketTypeById(id.Value);
-            }
-            catch (Exception exception)
-            {
-                logger.Error(exception);
-
-                return BadRequest();
-            }            
+            logger.Info(nameof(TicketTypeController.Delete));
             
-            if (ticketType == null)
-            {
-                logger.Warn(nameof(TicketTypeController.Delete) + " ticketType is null");
-
-                return NotFound();
-            }
-
-            return View(ticketType);
+            return Details(id);
         }
         
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
+            logger.Info(nameof(TicketTypeController.DeleteConfirmed));
+            
             try
             {
                 ticketTypeService.Delete(id);

@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com"
+    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="ETicketMobile.Views.Tickets.AreasView">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <Setter Property="HorizontalOptions" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout Margin="10">
+            <ListView 
+                ItemsSource="{Binding Areas}"
+                SeparatorVisibility="None"
+                Margin="15, 10, 15, 10"
+                RowHeight="60">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame
+                                HorizontalOptions="FillAndExpand"
+                                BackgroundColor="White"
+                                CornerRadius="10"
+                                Margin="5"
+                                Padding="0">
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackLayout 
+                                        Orientation="Horizontal"
+                                        Grid.Column="0"
+                                        VerticalOptions="Center"
+                                        Margin="10, 0, 0, 0">
+                                        <CheckBox IsChecked="{Binding Selected}"/>
+                                        <Label 
+                                            Text="{local:Translate Choose}"
+                                            VerticalTextAlignment="Center"/>
+                                    </StackLayout>
+                                    <StackLayout Grid.Column="1">
+                                        <Label Text="{local:Translate Area}"/>
+                                        <Label Text="{Binding Name}"/>
+                                    </StackLayout>
+                                    <StackLayout Grid.Column="2">
+                                        <Label Text="{local:Translate Description}"/>
+                                        <Label
+                                            Text="{Binding Description}"
+                                            FontAttributes="Bold"
+                                            TextColor="Green"/>
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Button 
+                Command="{Binding Buy}"
+                HorizontalOptions="EndAndExpand"
+                Text="{local:Translate BuyButton}"/>
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>

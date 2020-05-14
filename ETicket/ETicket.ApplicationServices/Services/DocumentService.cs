@@ -48,10 +48,5 @@ namespace ETicket.ApplicationServices.Services
             unitOfWork.Documents.Delete(id);
             unitOfWork.Save();
         }
-
-        public bool Exists(Guid id)
-        {
-            return unitOfWork.Documents.Get(id) != null;
-        }
     }
 }

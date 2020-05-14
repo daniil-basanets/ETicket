@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            log.Info(nameof(UserController.Index));
+
             try
             {
                 ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name");
@@ -52,6 +55,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Details(Guid? id)
         {
+            log.Info(nameof(UserController.Details));
+
             if (id == null)
             {
                 log.Warn(nameof(UserController.Details) + " id is null");
@@ -83,6 +88,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult CreateUserWithDocument()
         {
+            log.Info(nameof(UserController.CreateUserWithDocument));
+
             try
             {
                 ViewData["DocumentTypeId"] = new SelectList(documentTypeService.GetDocumentTypes(), "Id", "Name");
@@ -101,6 +108,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateUserWithDocument(DocumentDto documentDto, UserDto userDto)
         {
+            log.Info(nameof(UserController.CreateUserWithDocument) + " POST");
+
             try
             {
                 if (ModelState.IsValid)
@@ -125,6 +134,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            log.Info(nameof(UserController.Create));
+
             try
             {
                 ViewData["DocumentId"] = new SelectList(documentService.GetDocuments(), "Id", "Number");
@@ -145,6 +156,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(UserDto userDto)
         {
+            log.Info(nameof(UserController.Create) + " POST");
+
             try
             {
                 if (ModelState.IsValid)
@@ -177,6 +190,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult SendMessage(Guid? id)
         {
+            log.Info(nameof(UserController.SendMessage));
+
             if (id == null)
             {
                 log.Warn(nameof(UserController.Create) + " id is null");
@@ -191,6 +206,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SendMessage(Guid id, string message)
         {
+            log.Info(nameof(UserController.SendMessage) + " POST");
+
             try
             {
                 if (ModelState.IsValid)
@@ -213,6 +230,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(Guid? id)
         {
+            log.Info(nameof(UserController.Edit));
+
             if (id == null)
             {
                 log.Warn(nameof(UserController.Edit) + " id is null");
@@ -250,6 +269,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, UserDto userDto)
         {
+            log.Info(nameof(UserController.Edit) + " POST");
+
             if (id != userDto.Id)
             {
                 log.Warn(nameof(UserController.Edit) + " id is not equal to userDto.Id");
@@ -282,6 +303,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(Guid? id)
         {
+            log.Info(nameof(UserController.Delete));
+
             if (id == null)
             {
                 log.Warn(nameof(UserController.Edit) + " id is null");
@@ -314,6 +337,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
+            log.Info(nameof(UserController.DeleteConfirmed) + " POST");
+
             try
             {
                 userService.Delete(id);
