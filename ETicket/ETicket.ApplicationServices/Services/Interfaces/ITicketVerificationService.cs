@@ -10,7 +10,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
     {
         public IEnumerable<TicketVerification> GetTicketVerifications();
 
-        public TicketVerification GetTicketVerificationById(Guid id);
+        public TicketVerificationDto GetTicketVerificationById(Guid id);
 
         public void Create(TicketVerificationDto ticketVerificationDtoDto);
     }

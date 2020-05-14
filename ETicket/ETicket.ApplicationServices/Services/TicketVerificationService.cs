@@ -29,9 +29,11 @@ namespace ETicket.ApplicationServices.Services
                     .Include(x => x.Transport);
         }
 
-        public TicketVerification GetTicketVerificationById(Guid id)
+        public TicketVerificationDto GetTicketVerificationById(Guid id)
         {
-            return unitOfWork.TicketVerifications.Get(id);
+            var ticketVerification = unitOfWork.TicketVerifications.Get(id);
+
+            return mapper.Map<TicketVerification, TicketVerificationDto>(ticketVerification);
         }
 
         public void Create(TicketVerificationDto ticketVerificationDto)
