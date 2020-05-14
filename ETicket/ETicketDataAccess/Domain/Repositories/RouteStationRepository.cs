@@ -28,7 +28,7 @@ namespace ETicket.DataAccess.Domain.Repositories
 
         public void Delete(int id)
         {
-            throw new NotImplementedException("Do not use this. Use DeleteStationFromRoutes or DeleteRouteFromStations instead");
+            throw new NotImplementedException();
         }
 
         public void DeleteRouteFromStations(int routeId)
