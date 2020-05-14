@@ -7,11 +7,11 @@ using ETicket.ApplicationServices.Services.Interfaces;
 
 namespace ETicket.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/carriers")]
     [ApiController]
     public class CarriersController : ControllerBase
     {
-        #region Privat Members
+        #region Private members
 
         private readonly ICarrierService carrierService;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -46,15 +46,15 @@ namespace ETicket.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetCarrier(int id)
+        public IActionResult GetCarrierById(int id)
         {
             try
             {
-                var carrier = carrierService.GetDto(id);
+                var carrier = carrierService.Get(id);
 
                 if (carrier == null)
                 {
-                    log.Warn(nameof(GetCarrier) + " carrier is null");
+                    log.Warn(nameof(GetCarrierById) + " carrier is null");
 
                     return NotFound();
                 }
@@ -106,7 +106,7 @@ namespace ETicket.WebAPI.Controllers
             {
                 carrierService.Create(carrierDto);
 
-                return Created(nameof(GetCarrier), carrierDto);
+                return Created(nameof(GetCarrierById), carrierDto);
             }
             catch (Exception e)
             {
