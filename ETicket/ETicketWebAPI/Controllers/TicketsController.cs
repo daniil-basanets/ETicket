@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using log4net;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.ApplicationServices.DTOs;
 
 namespace ETicket.WebAPI.Controllers
 {
@@ -20,7 +19,7 @@ namespace ETicket.WebAPI.Controllers
         public TicketsController(ITicketService ticketService)
         {
             this.ticketService = ticketService;
-        }   
+        }
 
         // GET: api/tickets/5
         [HttpGet("{id}")]
@@ -29,9 +28,11 @@ namespace ETicket.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetTicket(Guid id)
         {
+            log.Info(nameof(GetTicket));
+
             try
             {
-                var ticketDto = ticketService.GetDto(id);
+                var ticketDto = ticketService.GetTicketById(id);
 
                 if (ticketDto == null)
                 {
@@ -56,6 +57,8 @@ namespace ETicket.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult Activate(Guid ticketId)
         {
+            log.Info(nameof(Activate));
+
             try
             {
                 ticketService.Activate(ticketId);

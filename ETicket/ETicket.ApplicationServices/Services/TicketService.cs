@@ -26,14 +26,9 @@ namespace ETicket.ApplicationServices.Services
             return uow.Tickets.GetAll().ToList();
         }
 
-        public Ticket GetTicketById(Guid id)
+        public TicketDto GetTicketById(Guid id)
         {
-            return uow.Tickets.Get(id);
-        }
-
-        public TicketDto GetDto(Guid id)
-        {
-            var ticket = GetTicketById(id); ;
+            var ticket = uow.Tickets.Get(id);
             var ticketDto = mapper.Map<Ticket, TicketDto>(ticket);
 
             return ticketDto;

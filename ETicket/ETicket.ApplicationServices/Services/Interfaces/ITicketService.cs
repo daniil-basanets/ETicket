@@ -11,9 +11,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 
         public IEnumerable<Ticket> GetTicketsByUserId(Guid userId);
 
-        public Ticket GetTicketById(Guid id);
-
-        public TicketDto GetDto(Guid id);
+        public TicketDto GetTicketById(Guid id);
 
         public void Create(TicketDto ticketDto);
 
