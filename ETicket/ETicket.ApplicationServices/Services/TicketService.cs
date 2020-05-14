@@ -74,22 +74,28 @@ namespace ETicket.ApplicationServices.Services
             uow.Save();
         }
 
-        public void Activate(Guid ticketId, Guid userId)
+        public void Activate(Guid ticketId)
         {
-            var ticket = uow.Tickets.GetAll().Where(t => t.Id == ticketId).Where(t => t.UserId == userId).FirstOrDefault();
+            var ticket = uow.Tickets.GetAll().Where(t => t.Id == ticketId).FirstOrDefault();
 
 
             if (ticket == null)
             {
-                var e = new ApplicationException(nameof(Activate) + " ticket with id = " + ticketId + ", userId = " + userId + " does not exists");
+                var e = new ApplicationException(nameof(Activate) + " ticket with id = " + ticketId + " does not exists");
                 e.Data.Add("ticketId", ticketId);
-                e.Data.Add("userId", userId);
 
                 throw e;
             }
 
             ticket.ActivatedUTCDate = DateTime.UtcNow;
             ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(ticket.TicketType.DurationHours);
+            uow.Tickets.Update(ticket);
+            uow.Save();
+        }
+
+        public IEnumerable<Ticket> GetTicketsByUserId(Guid userId)
+        {
+           return  uow.Tickets.GetAll().Where(t => t.UserId == userId);
         }
     }
 }
