@@ -1,4 +1,4 @@
-﻿var filters = [
+var filters = [
     { columnName: "ticketType", inputId: "#ticket-type-select option:selected", isCheckBox: true },
     { columnName: "user", inputId: "#user-name-input", isCheckBox: false },
     { columnName: "createdUTCDate", inputId: "#created-date-datepicker", isCheckBox: false },

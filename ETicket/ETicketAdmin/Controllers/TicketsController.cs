@@ -73,9 +73,8 @@ namespace ETicket.Admin.Controllers
             try
             {
                 ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName");
-                var tickets = ticketService.GetTickets();
 
-                return View(tickets.ToList());
+                return View();
             }
             catch (Exception e)
             {

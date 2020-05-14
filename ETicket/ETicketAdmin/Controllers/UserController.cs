@@ -56,7 +56,7 @@ namespace ETicket.Admin.Controllers
             {
                 ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name");
 
-                return View(userService.GetUsers());
+                return View();
             }
             catch (Exception e)
             {

@@ -1,5 +1,6 @@
-﻿using ETicket.ApplicationServices.Extensions;
-using ETicket.Admin.Models.DataTables;
+using System;
+using System.Linq;
+using ETicket.ApplicationServices.Services;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -20,6 +21,7 @@ namespace ETicket.Admin.Controllers
         #region Private Members
 
         private readonly IUnitOfWork unitOfWork;
+        private DatabaseServices services;
         private readonly IDataTableService<TransactionHistory> dataTableService;
 
         #endregion
@@ -28,16 +30,13 @@ namespace ETicket.Admin.Controllers
         {
             this.unitOfWork = unitOfWork;
             this.dataTableService = dataTableService;
+            //services =new IntegratedServices(unitOfWork, )
         }
 
         // GET: TransactionHistories
         public IActionResult Index()
         {
-            var ticketTypes = unitOfWork
-                    .TicketTypes
-                    .GetAll()
-                    .AsNoTracking();
-
+            var ticketTypes = unitOfWork.TicketTypes.GetAll();
             ViewData["TicketTypeId"] = new SelectList(ticketTypes, "Id", "TypeName");
 
             return View();
