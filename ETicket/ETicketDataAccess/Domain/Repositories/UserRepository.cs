@@ -59,6 +59,7 @@ namespace ETicket.DataAccess.Domain.Repositories
                 context.ETUsers.Remove(user);
             }
         }
+
         public bool UserExists(Guid id)
         {
             return context.ETUsers.Any(e => e.Id == id);
