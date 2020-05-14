@@ -5,9 +5,6 @@ using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
-using ETicket.ApplicationServices.Services.DataTable.Interfaces;
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.ApplicationServices.Services
 {
