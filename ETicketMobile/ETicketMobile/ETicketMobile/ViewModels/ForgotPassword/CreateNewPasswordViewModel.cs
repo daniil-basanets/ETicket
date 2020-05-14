@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.Login;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
@@ -84,6 +85,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             if (!await RequestChangePassword(password))
                 return;
 
+            navigationParameters.Add("newPassword", ConfirmPassword);
             await navigationService.NavigateAsync(nameof(LoginView));
         }
 
@@ -93,8 +95,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
             var createNewPasswordDto = CreateNewPasswordDto(email, password);
             var response = await httpClient.PostAsync<CreateNewPasswordRequestDto, CreateNewPasswordResponseDto>(
-                TicketsEndpoint.ChangePassword,
-                createNewPasswordDto
+                    TicketsEndpoint.ResetPassword,
+                    createNewPasswordDto
             );
 
             return response.Succeeded;
@@ -105,7 +107,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             return new CreateNewPasswordRequestDto
             {
                 Email = email,
-                Password = password
+                NewPassword = password
             };
         }
 
@@ -115,35 +117,35 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         {
             if (string.IsNullOrEmpty(password))
             {
-                PasswordWarning = ErrorMessage.PasswordEmpty;
+                PasswordWarning = AppResource.PasswordEmpty;
 
                 return false;
             }
 
             if (!IsPasswordShort(password))
             {
-                PasswordWarning = ErrorMessage.PasswordShort;
+                PasswordWarning = AppResource.PasswordShort;
 
                 return false;
             }
 
             if (!IsPasswordLong(password))
             {
-                PasswordWarning = ErrorMessage.PasswordLong;
+                PasswordWarning = AppResource.PasswordLong;
 
                 return false;
             }
 
             if (IsPasswordWeak(password))
             {
-                PasswordWarning = ErrorMessage.PasswordStrong;
+                PasswordWarning = AppResource.PasswordStrong;
 
                 return false;
             }
 
             if (!PasswordsMatched(password))
             {
-                ConfirmPasswordWarning = ErrorMessage.PasswordsMatch;
+                ConfirmPasswordWarning = AppResource.PasswordsMatch;
 
                 return false;
             }

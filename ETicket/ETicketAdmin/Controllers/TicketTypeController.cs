@@ -1,9 +1,10 @@
+using System;
+using System.Reflection;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
+using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.Admin.Controllers
 {
@@ -11,36 +12,70 @@ namespace ETicket.Admin.Controllers
     public class TicketTypeController : Controller
     {
         private readonly ITicketTypeService ticketTypeService;
+        private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public TicketTypeController(ITicketTypeService ticketTypeService)
         {
             this.ticketTypeService = ticketTypeService;
         }
         
+        [HttpGet]
         public IActionResult Index()
         {
-            return View(ticketTypeService.GetAll());
+            logger.Info(nameof(TicketController.Index));
+            
+            try
+            {
+                var ticketTypes = ticketTypeService.GetTicketTypes();
+                
+                return View(ticketTypes);
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception);
+
+                return BadRequest();
+            }
         }
         
+        [HttpGet]
         public IActionResult Details(int? id)
         {
+            logger.Info(nameof(TicketController.Index));
+            
             if (id == null)
             {
+                logger.Warn(nameof(TicketTypeController.Details) + " id is null");
+
                 return NotFound();
             }
 
-            var ticketType = ticketTypeService.Get(id.Value);
-            
-            if (ticketType == null)
+            try
             {
-                return NotFound();
+                var ticketTypeDto = ticketTypeService.GetTicketTypeById(id.Value);  
+                
+                if (ticketTypeDto == null)
+                {
+                    logger.Warn(nameof(TicketTypeController.Details) + " ticketType is null");
+                
+                    return NotFound();
+                }
+                
+                return View(ticketTypeDto);
             }
-
-            return View(ticketType);
+            catch (Exception exception)
+            {
+                logger.Error(exception);
+                
+                return BadRequest();
+            }
         }
-        
+
+        [HttpGet]
         public IActionResult Create()
         {
+            logger.Info(nameof(TicketTypeController.Create));
+            
             return View();
         }
         
@@ -48,85 +83,89 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(TicketTypeDto ticketTypeDto)
         {
+            logger.Info(nameof(TicketTypeController.Create));
+            
             if (!ModelState.IsValid)
-            {
+            {                
                 return View(ticketTypeDto);
             }
 
-            ticketTypeService.Create(ticketTypeDto);
+            try
+            {
+                ticketTypeService.Create(ticketTypeDto);                
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception);
 
+                return BadRequest();
+            }
+            
             return RedirectToAction(nameof(Index));
         }
         
+        [HttpGet]
         public IActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ticketType = ticketTypeService.Get(id.Value);
+            logger.Info(nameof(TicketTypeController.Edit));
             
-            if (ticketType == null)
-            {
-                return NotFound();
-            }
-            
-            return View(ticketType);
+            return Details(id);
         }
         
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, TicketTypeDto ticketTypeDto)
         {
+            logger.Info(nameof(TicketTypeController.Edit));
+            
             if (id != ticketTypeDto.Id)
             {
+                logger.Warn(nameof(TicketTypeController.Edit) + " id is not equal to ticketTypeDto.Id");
+
                 return NotFound();
             }
 
-            if (!ModelState.IsValid) return View(ticketTypeDto);
-            try
+            if (ModelState.IsValid)
             {
-                ticketTypeService.Update(ticketTypeDto);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ticketTypeService.Exists(ticketTypeDto.Id))
+                try
                 {
-                    return NotFound();
+                    ticketTypeService.Update(ticketTypeDto);
                 }
-                else
+                catch (Exception exception)
                 {
-                    throw;
+                    logger.Error(exception);
+
+                    return BadRequest();
                 }
             }
-                
             return RedirectToAction(nameof(Index));
         }
         
+        [HttpGet]
         public IActionResult Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ticketType = ticketTypeService.Get(id.Value);
+            logger.Info(nameof(TicketTypeController.Delete));
             
-            if (ticketType == null)
-            {
-                return NotFound();
-            }
-
-            return View(ticketType);
+            return Details(id);
         }
         
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            ticketTypeService.Delete(id);
+            logger.Info(nameof(TicketTypeController.DeleteConfirmed));
             
+            try
+            {
+                ticketTypeService.Delete(id);
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception);
+
+                return BadRequest();
+            }
+
             return RedirectToAction(nameof(Index));
         }
     }
