@@ -20,6 +20,8 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         CarrierRepository Carriers { get; }
 
+        TicketVerificationRepository TicketVerifications { get; }
+
         void Save();
     }
 }

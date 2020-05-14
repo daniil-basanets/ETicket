@@ -17,6 +17,7 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Privilege> Privileges { get; set; }
         public DbSet<Carrier> Carriers { get; set; }
         public DbSet<RouteStation> RouteStations { get; set; }
+        public DbSet<TicketVerification> TicketVerifications { get; set; }
 
         #endregion
 

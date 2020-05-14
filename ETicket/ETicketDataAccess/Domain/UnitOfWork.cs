@@ -19,6 +19,7 @@ namespace ETicket.DataAccess.Domain
         private UserRepository userRepository;
         private CarrierRepository carrierRepository;
         private RouteStationRepository routeStationRepository;
+        private TicketVerificationRepository ticketVerificationRepository;
 
         #endregion
 
@@ -117,7 +118,19 @@ namespace ETicket.DataAccess.Domain
                 return routeStationRepository;
             }
         }
-        
+
+        public TicketVerificationRepository TicketVerifications
+        {
+            get
+            {
+                if (ticketVerificationRepository == null)
+                {
+                    ticketVerificationRepository = new TicketVerificationRepository(eTicketDataContext);
+                }
+                return ticketVerificationRepository;
+            }
+        }
+
         public void Save()
         {
             eTicketDataContext.SaveChanges();
