@@ -13,5 +13,6 @@ namespace ETicket.ApplicationServices.Services.Interfaces
         public void Create(DocumentDto documentTypeDto);
         public void Update(DocumentDto documentTypeDto);
         public void Delete(Guid id);
+        public bool Exists(Guid id);
     }
 }

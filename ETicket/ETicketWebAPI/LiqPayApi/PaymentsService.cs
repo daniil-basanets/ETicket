@@ -35,7 +35,7 @@ namespace ETicket.WebAPI.LiqPayApi
             this.userService = userService;
             this.transactionAppService = transactionAppService;
 
-            liqPayClient = new LiqPayClient(merchant.PublicKey, merchant.PrivateKey);
+            liqPayClient = new LiqPayClient(merchant.MerchantId.ToString(), merchant.Password);
         }
 
         public async Task<LiqPayResponse> Process(
@@ -113,7 +113,7 @@ namespace ETicket.WebAPI.LiqPayApi
                 TotalPrice = (decimal)totalPrice
             };
 
-            transactionAppService.AddTransaction(transaction);
+            //transactionAppService.AddTransaction(transaction);
         }
 
         private void SaveTicket(string email, int ticketTypeId, Guid transactionHistoryId)

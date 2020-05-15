@@ -1,56 +1,83 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ETicket.DataAccess.Domain;
-using ETicket.DataAccess.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using ETicket.ApplicationServices.Services;
-using ETicket.ApplicationServices.Services.DocumentTypes;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.ApplicationServices.DTOs;
+using log4net;
+using System.Reflection;
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class RoutesController : Controller
-    { 
+    {
         private readonly RouteService routeService;
+
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public RoutesController(IUnitOfWork unitOfWork)
         {
             routeService = new RouteService(unitOfWork);
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
-            var routes = routeService.Read();
+            log.Info(nameof(RoutesController.Index));
 
-            return View(routes);
+            try
+            {
+                var routes = routeService.GetRoutes();
+
+                return View(routes);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
-        // GET: Routes/Details/5
+        [HttpGet]
         public IActionResult Details(int? id)
         {
-            if (id == null)
+            log.Info(nameof(RoutesController.Details));
+
+            try
             {
-                return NotFound();
+                if (id == null)
+                {
+                    log.Warn(nameof(RoutesController.Details) + " id is null");
+
+                    return NotFound();
+                }
+
+                var route = routeService.GetRouteById(id.Value);
+
+                if (route == null)
+                {
+                    log.Warn(nameof(RoutesController.Details) + " route is null");
+
+                    return NotFound();
+                }
+
+                return View(route);
             }
-
-            var route = routeService.Read(id.Value);
-
-            if (route == null)
+            catch (Exception e)
             {
-                return NotFound();
-            }
+                log.Error(e);
 
-            return View(route);
+                return BadRequest();
+            }
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
+            log.Info(nameof(RoutesController.Create));
+
             return View();
         }
 
@@ -58,97 +85,140 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(RouteDto routeDto)
         {
-            if (ModelState.IsValid)
+            log.Info(nameof(RoutesController.Create));
+
+            try
             {
-                routeService.Create(routeDto);
-                routeService.Save();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    routeService.Create(routeDto);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(routeDto);
             }
-            return View(routeDto);
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
-        // GET: Routes/Edit/5
+        [HttpGet]
         public IActionResult Edit(int? id)
         {
-            if (id == null)
+            log.Info(nameof(RoutesController.Edit));
+
+            try
             {
-                return NotFound();
+                if (id == null)
+                {
+                    log.Warn(nameof(RoutesController.Edit) + " id is null");
+
+                    return NotFound();
+                }
+
+                var route = routeService.GetRouteById(id.Value);
+
+                if (route == null)
+                {
+                    log.Warn(nameof(RoutesController.Edit) + " route is null");
+
+                    return NotFound();
+                }
+
+                return View(route);
             }
-
-            var route = routeService.Read(id.Value);
-
-            if (route == null)
+            catch (Exception e)
             {
-                return NotFound();
-            }
+                log.Error(e);
 
-            return View(route);
+                return BadRequest();
+            }
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, RouteDto routeDto)
         {
+            log.Info(nameof(RoutesController.Edit));
+
             if (id != routeDto.Id)
             {
+                log.Warn(nameof(RoutesController.Edit) + " id isn't equal to routeDto.Id");
+
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
                     routeService.Update(routeDto);
-                    routeService.Save();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RouteExists(routeDto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
 
-            return View(routeDto);
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(routeDto);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
-        // GET: Routes/Delete/5
+        [HttpGet]
         public IActionResult Delete(int? id)
         {
+            log.Info(nameof(RoutesController.Delete));
+
             if (id == null)
             {
+                log.Warn(nameof(RoutesController.Delete) + " id is null");
+
                 return NotFound();
             }
 
-            var route = routeService.Read(id.Value);
-            
-            if (route == null)
+            try
             {
-                return NotFound();
-            }
+                var route = routeService.GetRouteById(id.Value);
 
-            return View(route);
+                if (route == null)
+                {
+                    return NotFound();
+                }
+
+                return View(route);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            routeService.Delete(id);
-            routeService.Save();
+            log.Info(nameof(RoutesController.DeleteConfirmed));
 
-            return RedirectToAction(nameof(Index));
-        }
+            try
+            {
+                routeService.Delete(id);
 
-        private bool RouteExists(int id)
-        {
-            return routeService.Read(id) != null;
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
     }
 }

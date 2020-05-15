@@ -7,10 +7,11 @@ using System.Text;
 
 namespace ETicket.ApplicationServices.Services.Interfaces
 {
-    interface IRouteService
+    public interface IRouteService
     {
-        public IQueryable<Route> Read();
-        public Route Read(int id);
+        public IEnumerable<Route> GetRoutes();
+
+        public Route GetRouteById(int id);
 
         public void Create(RouteDto documentTypeDto);
 
