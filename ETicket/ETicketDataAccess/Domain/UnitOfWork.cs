@@ -21,6 +21,7 @@ namespace ETicket.DataAccess.Domain
         private CarrierRepository carrierRepository;
         private RouteStationRepository routeStationRepository;
         private SecretCodeRepository secretCodeRepository;
+        private StationRepository StationRepository;
         private TicketVerificationRepository ticketVerificationRepository;
 
         #endregion
@@ -129,6 +130,17 @@ namespace ETicket.DataAccess.Domain
                     secretCodeRepository = new SecretCodeRepository(eTicketDataContext);
 
                 return secretCodeRepository;
+            }
+        }
+
+        public StationRepository Stations
+        {
+            get
+            {
+                if (stationRepository == null)
+                    stationRepository = new StationRepository(eTicketDataContext);
+
+                return stationRepository;
             }
         }
 

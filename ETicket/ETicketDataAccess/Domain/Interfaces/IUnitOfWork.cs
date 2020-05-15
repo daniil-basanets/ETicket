@@ -22,6 +22,8 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         SecretCodeRepository SecretCodes { get; }
 
+        StationRepository Stations { get; }
+
         TicketVerificationRepository TicketVerifications { get; }
 
         void Save();
