@@ -1747,6 +1747,15 @@
     <ProjectReference Include="..\ETicketWebAPI\ETicket.WebAPI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ETicket.ApplicationServices">
+      <HintPath>..\ETicketWebAPI\bin\Debug\netcoreapp3.1\ETicket.ApplicationServices.dll</HintPath>
+    </Reference>
+    <Reference Include="ETicket.WebAPI">
+      <HintPath>..\ETicketWebAPI\bin\Debug\netcoreapp3.1\ETicket.WebAPI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 

@@ -30,6 +30,12 @@
     <ProjectReference Include="..\ETicket.ApplicationServices\ETicket.ApplicationServices.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ETicket.DataAccess">
+      <HintPath>..\ETicketDataAccess\bin\Debug\netcoreapp3.1\ETicket.DataAccess.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 
