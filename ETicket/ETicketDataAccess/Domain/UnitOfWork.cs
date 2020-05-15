@@ -21,6 +21,7 @@ namespace ETicket.DataAccess.Domain
         private CarrierRepository carrierRepository;
         private RouteStationRepository routeStationRepository;
         private SecretCodeRepository secretCodeRepository;
+        private AreaRepository areaRepository;
 
         #endregion
 
@@ -129,6 +130,11 @@ namespace ETicket.DataAccess.Domain
 
                 return secretCodeRepository;
             }
+        }
+        
+        public AreaRepository Areas
+        {
+            get { return areaRepository ??= new AreaRepository(eTicketDataContext); }
         }
 
         public void Save()
