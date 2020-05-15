@@ -134,7 +134,13 @@ namespace ETicket.DataAccess.Domain
         
         public AreaRepository Areas
         {
-            get { return areaRepository ??= new AreaRepository(eTicketDataContext); }
+            get 
+            {
+                if (areaRepository == null)
+                    areaRepository = new AreaRepository(eTicketDataContext);
+
+                return areaRepository;
+            }
         }
 
         public void Save()
