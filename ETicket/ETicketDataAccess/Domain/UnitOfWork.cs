@@ -1,4 +1,5 @@
-﻿using ETicket.DataAccess.Domain.Interfaces;
+﻿using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.DataAccess.Domain.Repositories;
 using System;
 
@@ -17,6 +18,9 @@ namespace ETicket.DataAccess.Domain
         private TicketTypeRepository ticketTypeRepository;
         private TransactionHistoryRepository transactionHistoryRepository;
         private UserRepository userRepository;
+        private CarrierRepository carrierRepository;
+        private RouteStationRepository routeStationRepository;
+        private SecretCodeRepository secretCodeRepository;
 
         #endregion
 
@@ -89,6 +93,41 @@ namespace ETicket.DataAccess.Domain
                 if (userRepository == null)
                     userRepository = new UserRepository(eTicketDataContext);
                 return userRepository;
+            }
+        }
+
+        public CarrierRepository Carriers
+        {
+            get
+            {
+                if(carrierRepository == null)
+                {
+                    carrierRepository = new CarrierRepository(eTicketDataContext);
+                }
+                return carrierRepository;
+            }
+        }
+                public RouteStationRepository RouteStation
+        {
+            get
+            {
+                if (routeStationRepository == null)
+                {
+                    routeStationRepository = new RouteStationRepository(eTicketDataContext);
+                }
+
+                return routeStationRepository;
+            }
+        }
+
+        public SecretCodeRepository SecretCodes
+        {
+            get
+            {
+                if (secretCodeRepository == null)
+                    secretCodeRepository = new SecretCodeRepository(eTicketDataContext);
+
+                return secretCodeRepository;
             }
         }
 
