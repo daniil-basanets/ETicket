@@ -155,8 +155,6 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-
-
     public void Save()
         {
             eTicketDataContext.SaveChanges();
