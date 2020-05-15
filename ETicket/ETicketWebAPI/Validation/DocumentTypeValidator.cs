@@ -1,9 +1,9 @@
-using ETicket.DataAccess.Domain.Entities;
+using ETicket.ApplicationServices.DTOs;
 using FluentValidation;
 
 namespace ETicket.WebAPI.Validation
 {
-    public class DocumentTypeValidator : AbstractValidator<DocumentType>
+    public class DocumentTypeValidator : AbstractValidator<DocumentTypeDto>
     {
         public DocumentTypeValidator()
         {
