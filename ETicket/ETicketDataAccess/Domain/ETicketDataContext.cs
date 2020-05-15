@@ -13,6 +13,7 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<User> ETUsers { get; set; }
         public DbSet<Document> Documents { get; set; }
+        public DbSet<Route> Routes { get; set; }
         public DbSet<DocumentType> DocumentTypes { get; set; }
         public DbSet<Privilege> Privileges { get; set; }
         public DbSet<Carrier> Carriers { get; set; }
