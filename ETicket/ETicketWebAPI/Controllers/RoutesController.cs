@@ -24,12 +24,16 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet]
         public IActionResult GetRoutes()
         {
+            log.Info(nameof(RoutesController.GetRoutes));
+
             return Ok(routeService.GetRoutes());
         }
 
         [HttpGet("{id}")]
         public IActionResult GetRoute(int id)
         {
+            log.Info(nameof(RoutesController.GetRoute));
+
             try
             {
                 var route = routeService.GetRouteById(id);
@@ -50,8 +54,10 @@ namespace ETicket.WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult PutRoute(int id, RouteDto routeDto)
+        public IActionResult UpdateRoute(int id, RouteDto routeDto)
         {
+            log.Info(nameof(RoutesController.UpdateRoute));
+
             try
             {
                 if (id != routeDto.Id | routeDto == null)
@@ -79,6 +85,8 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost]
         public IActionResult PostRoute(RouteDto routeDto)
         {
+            log.Info(nameof(RoutesController.PostRoute));
+
             try
             {
                 if (routeDto == null)
@@ -101,6 +109,8 @@ namespace ETicket.WebAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteRoute(int id)
         {
+            log.Info(nameof(RoutesController.DeleteRoute));
+
             try
             {
                 var route = routeService.GetRouteById(id);
