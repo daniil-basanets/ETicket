@@ -1,6 +1,6 @@
 ﻿var filters = [
     { columnName: "totalPrice", inputId: "#total-price-input", isCheckBox: false },
-    { columnName: "ticketType", inputId: "#reference-number-input", isCheckBox: false },
+    { columnName: "referenceNumber", inputId: "#reference-number-input", isCheckBox: false },
     { columnName: "date", inputId: "#date-datepicker", isCheckBox: false }
 ];
 
