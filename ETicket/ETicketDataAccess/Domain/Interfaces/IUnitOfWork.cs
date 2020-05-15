@@ -6,6 +6,8 @@ namespace ETicket.DataAccess.Domain.Interfaces
     {
         DocumentRepository Documents { get; }
 
+        RouteRepository Routes { get; }
+
         DocumentTypeRepository DocumentTypes { get; }
 
         PrivilegeRepository Privileges { get; }

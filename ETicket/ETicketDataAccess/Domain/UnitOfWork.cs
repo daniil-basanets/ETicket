@@ -22,6 +22,7 @@ namespace ETicket.DataAccess.Domain
         private CarrierRepository carrierRepository;
         private RouteStationRepository routeStationRepository;
         private SecretCodeRepository secretCodeRepository;
+        private RouteRepository routeRepository;
         private StationRepository stationRepository;
         private TransportRepository transportRepository;
         private PriceListRepository priceListRepository;
@@ -36,6 +37,16 @@ namespace ETicket.DataAccess.Domain
                 if (documentRepository == null)
                     documentRepository = new DocumentRepository(eTicketDataContext);
                 return documentRepository;
+            }
+        }
+
+        public RouteRepository Routes
+        {
+            get
+            {
+                if (routeRepository == null)
+                    routeRepository = new RouteRepository(eTicketDataContext);
+                return routeRepository;
             }
         }
 
