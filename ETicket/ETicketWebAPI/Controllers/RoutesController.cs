@@ -9,7 +9,7 @@ using System;
 namespace ETicket.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/routes")]
     public class RoutesController : ControllerBase
     {
         IRouteService routeService;

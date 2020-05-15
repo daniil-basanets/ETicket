@@ -9,10 +9,9 @@ using System.Reflection;
 namespace ETicket.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/documents")]
     public class DocumentsController : ControllerBase
     {
-
         IDocumentService documentService;
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);

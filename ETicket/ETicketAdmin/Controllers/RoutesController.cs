@@ -15,6 +15,7 @@ namespace ETicket.Admin.Controllers
         private readonly RouteService routeService;
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public RoutesController(IUnitOfWork unitOfWork)
         {
             routeService = new RouteService(unitOfWork);
