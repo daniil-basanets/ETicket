@@ -20,6 +20,8 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 
         public void Update(UserDto user);
 
+        public User GetByEmail(string email);
+
         public void Delete(Guid id);
     }
 }

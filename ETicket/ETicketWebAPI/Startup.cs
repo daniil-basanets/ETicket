@@ -1,3 +1,4 @@
+using System;
 using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.Interfaces;
@@ -50,7 +51,12 @@ namespace ETicket.WebAPI
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
             services.AddTransient<IUnitOfWork, UnitOfWork>(e => new UnitOfWork(e.GetService<ETicketDataContext>()));
 
+            services.AddTransient<ITicketService, TicketService>();
+            services.AddTransient<ITicketTypeService, TicketTypeService>();
             services.AddTransient<ICarrierService, CarrierService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IMailService, MailService>();
+            
 
 
             services.AddIdentity<IdentityUser, IdentityRole>()

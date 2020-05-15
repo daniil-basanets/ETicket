@@ -10,15 +10,15 @@ namespace ETicket.DataAccess.Domain.Entities
         public int Id { get; set; }
 
         [Required]
-        public double Price { get; set; }
+        public decimal Price { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }
 
         [Required]
         public int AreaId { get; set; }
+        
         [ForeignKey("AreaId")]
- 
         public Area Area { get; set; }
     }
 }
