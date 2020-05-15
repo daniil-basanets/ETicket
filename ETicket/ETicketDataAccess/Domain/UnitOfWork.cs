@@ -21,6 +21,9 @@ namespace ETicket.DataAccess.Domain
         private CarrierRepository carrierRepository;
         private RouteStationRepository routeStationRepository;
         private SecretCodeRepository secretCodeRepository;
+        private StationRepository stationRepository;
+        private TransportRepository transportRepository;
+        private PriceListRepository priceListRepository;
 
         #endregion
 
@@ -95,6 +98,17 @@ namespace ETicket.DataAccess.Domain
                 return userRepository;
             }
         }
+        
+        public PriceListRepository PriceList
+        {
+            get
+            {
+                if (priceListRepository == null)
+                    priceListRepository = new PriceListRepository(eTicketDataContext);
+
+                return priceListRepository;
+            }
+        }
 
         public CarrierRepository Carriers
         {
@@ -107,7 +121,7 @@ namespace ETicket.DataAccess.Domain
                 return carrierRepository;
             }
         }
-                public RouteStationRepository RouteStation
+        public RouteStationRepository RouteStation
         {
             get
             {
@@ -128,6 +142,28 @@ namespace ETicket.DataAccess.Domain
                     secretCodeRepository = new SecretCodeRepository(eTicketDataContext);
 
                 return secretCodeRepository;
+            }
+        }
+
+        public StationRepository Stations
+        {
+            get
+            {
+                if (stationRepository == null)
+                    stationRepository = new StationRepository(eTicketDataContext);
+
+                return stationRepository;
+            }
+        }
+
+        public TransportRepository Transports
+        {
+            get
+            {
+                if (transportRepository == null)
+                    transportRepository = new TransportRepository(eTicketDataContext);
+
+                return transportRepository;
             }
         }
 
