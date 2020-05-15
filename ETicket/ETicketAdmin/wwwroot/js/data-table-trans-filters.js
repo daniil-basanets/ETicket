@@ -1,7 +1,6 @@
 ﻿var filters = [
     { columnName: "totalPrice", inputId: "#total-price-input", isCheckBox: false },
-    { columnName: "count", inputId: "#count-input", isCheckBox: false },
-    { columnName: "ticketType", inputId: "#type-select option:selected", isCheckBox: true },
+    { columnName: "ticketType", inputId: "#reference-number-input", isCheckBox: false },
     { columnName: "date", inputId: "#date-datepicker", isCheckBox: false }
 ];
 
@@ -108,17 +107,8 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    name: "ticketType",
-                    data: "ticketType",
-                    render: function (data, type, row) {
-                        if (data != null) {
-                            return '<a href = "TicketType/Details/' + data.id + '">' + data.typeName + '</a>'
-                        }
-                    }
-                },
-                {
-                    name: "count",
-                    data: "count",
+                    name: "referenceNumber",
+                    data: "referenceNumber",
                 },
                 {
                     data: null,
@@ -149,16 +139,11 @@ $(document).ready(function () {
             table.search(searchValue).draw();
         });
 
-    $('#total-price-input, #count-input').unbind()
+    $('#total-price-input, #reference-number-input').unbind()
         .bind("change", function (e) {
             isNewSearch = true;
             table.draw();
         });
-
-    $('#type-select').change(function () {
-            isNewSearch = true;
-            table.draw();
-    });
 
     $('#date-datepicker').unbind()
         .bind("change", function (e) {

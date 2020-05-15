@@ -34,8 +34,7 @@ namespace ETicket.ApplicationServices.Services.PagingServices
             {
                 "totalPrice" => (t => t.TotalPrice.ToString() == filterValue),
                 "date" => (t => t.Date.Date == filterValue.ParseToDate()),
-                "ticketType" => (t => t.TicketType.TypeName == filterValue),
-                "count" => (t => t.Count.ToString() == filterValue),
+                "referenceNumber" => (t => t.ReferenceNumber.StartsWith(filterValue)),
                 _ => (t => true)
             };
         }
@@ -58,8 +57,7 @@ namespace ETicket.ApplicationServices.Services.PagingServices
             {
                 (t => t.TotalPrice.ToString().StartsWith(searchValue)),
                 (t => t.Date.ToString().Contains(searchValue)),
-                (t => t.TicketType.TypeName.ToString().Contains(searchValue)),
-                (t => t.Count.ToString().StartsWith(searchValue)),
+                (t => t.ReferenceNumber.StartsWith(searchValue)),
             };
         }
 
@@ -69,8 +67,7 @@ namespace ETicket.ApplicationServices.Services.PagingServices
             {
                 { "totalPrice", (t => t.TotalPrice) },
                 { "date", (t => t.Date) },
-                { "ticketType", (t => t.TicketType.TypeName) },
-                { "count", (t => t.Count) }
+                { "referenceNumber", (t => t.ReferenceNumber) }
             };
         }
     }

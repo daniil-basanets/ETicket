@@ -38,17 +38,9 @@
                             <th>
                                 <details onclick="makeSingleOnClickEvent()">
                                     <summary>
-                                        @Html.DisplayName("Ticket Type")
+                                        @Html.DisplayName("Reference number")
                                     </summary>
-                                    @Html.DropDownList("type-select", ViewData["TicketTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "document-filter-form custom-select custom-select-sm form-control form-control-sm" })
-                                </details>
-                            </th>
-                            <th>
-                                <details onclick="makeSingleOnClickEvent()">
-                                    <summary>
-                                        @Html.DisplayName("Count")
-                                    </summary>
-                                    <input type="text" class="document-filter-form form-control form-control-sm" id="count-input">
+                                    <input type="text" class="document-filter-form form-control form-control-sm" id="reference-number-input">
                                 </details>
                             </th>
                             <th>
@@ -65,10 +57,7 @@
                                 @Html.DisplayName("Date")
                             </th>
                             <th>
-                                @Html.DisplayName("Ticket Type")
-                            </th>
-                            <th>
-                                @Html.DisplayName("Count")
+                                @Html.DisplayName("Reference number")
                             </th>
                             <th>
                                 Actions
@@ -87,10 +76,7 @@
                                     @item.Date.ToString("yyyy-MM-dd hh:mm:ss")
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.TicketType.TypeName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Count)
+                                    @Html.DisplayFor(modelItem => item.ReferenceNumber)
                                 </td>
                                 <td>
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
