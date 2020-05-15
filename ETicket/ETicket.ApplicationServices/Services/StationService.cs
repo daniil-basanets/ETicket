@@ -33,14 +33,10 @@ namespace ETicket.ApplicationServices.Services
             uow.Save();
         }
 
-        public bool Exists(int id)
+        public StationDto Get(int id)
         {
-            return uow.Stations.StationExists(id);
-        }
-
-        public Station Get(int id)
-        {
-            return uow.Stations.Get(id);
+            var station = uow.Stations.Get(id);
+            return mapper.Map<Station, StationDto>(station);
         }
 
         public IEnumerable<Station> GetAll()
