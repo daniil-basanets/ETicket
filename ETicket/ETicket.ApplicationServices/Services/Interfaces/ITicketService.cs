@@ -9,14 +9,16 @@ namespace ETicket.ApplicationServices.Services.Interfaces
     {
         public IEnumerable<Ticket> GetTickets();
 
-        public Ticket GetTicketById(Guid id);
+        public IEnumerable<TicketDto> GetTicketsByUserId(Guid userId);
 
-        public TicketDto GetDto(Guid id);
+        public TicketDto GetTicketById(Guid id);
 
         public void Create(TicketDto ticketDto);
 
         public void Update(TicketDto ticketDto);
 
         public void Delete(Guid id);
+
+        public void Activate(Guid ticketId);
     }
 }
