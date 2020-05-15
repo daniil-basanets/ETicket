@@ -12,11 +12,13 @@ namespace ETicket.ApplicationServices.Services
     public class TicketVerificationService : ITicketVerificationService
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly ITicketService ticketService;
         private readonly MapperService mapper;
 
-        public TicketVerificationService(IUnitOfWork unitOfWork)
+        public TicketVerificationService(IUnitOfWork unitOfWork, ITicketService ticketService)
         {
             this.unitOfWork = unitOfWork;
+            this.ticketService = ticketService;
             mapper = new MapperService();
         }
 
@@ -69,7 +71,7 @@ namespace ETicket.ApplicationServices.Services
             }
             if (ticket.ActivatedUTCDate == null)
             {
-                ActivateTicket(ticket);
+                ticketService.Activate(ticket.Id);
             }
 
             var transport = unitOfWork.Transports.Get(transportId);
