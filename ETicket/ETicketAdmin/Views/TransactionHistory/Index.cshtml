@@ -60,12 +60,6 @@
                                 @Html.DisplayName("Date")
                             </th>
                             <th>
-                                @Html.DisplayName("Ticket Type")
-                            </th>
-                            <th>
-                                @Html.DisplayName("Count")
-                            </th>
-                            <th>
                                 Actions
                             </th>
                         </tr>
@@ -77,12 +71,6 @@
                             </th>
                             <th>
                                 @Html.DisplayName("Date")
-                            </th>
-                            <th>
-                                @Html.DisplayName("Ticket Type")
-                            </th>
-                            <th>
-                                @Html.DisplayName("Count")
                             </th>
                             <th>
                                 Actions
@@ -99,13 +87,7 @@
 
                                 <td>
                                     @item.Date.ToString("yyyy-MM-dd hh:mm:ss")
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.TicketType.TypeName)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Count)
-                                </td>
+                                </td>    
                                 <td>
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
                                 </td>

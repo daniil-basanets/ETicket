@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

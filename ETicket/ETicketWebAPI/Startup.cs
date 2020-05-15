@@ -4,6 +4,7 @@ using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.WebAPI.Models;
+using ETicket.WebAPI.Models.Identity;
 using ETicket.WebAPI.Models.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace ETicket.WebAPI
@@ -55,7 +57,11 @@ namespace ETicket.WebAPI
             services.AddTransient<IMailService, MailService>();
             
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ETicketDataContext>();
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+               .AddEntityFrameworkStores<ETicketDataContext>()
+               .AddDefaultTokenProviders()
+               .AddTokenProvider(AuthOptions.ISSUER, typeof(DataProtectorTokenProvider<IdentityUser>));
             services.AddIdentityCore<IdentityUser>(o =>
             {
                 o.Password.RequireDigit = false;
@@ -64,9 +70,38 @@ namespace ETicket.WebAPI
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequiredLength = 4;
             });
+            const string jwtSchemeName = "JwtBearer";
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = jwtSchemeName;
+                    options.DefaultChallengeScheme = jwtSchemeName;
+                })
+                .AddJwtBearer(jwtSchemeName, jwtBearerOptions =>
+                {
+                    jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+
+                        ValidateIssuer = true,
+                        ValidIssuer = AuthOptions.ISSUER,
+
+                        ValidateAudience = true,
+                        ValidAudience = AuthOptions.AUDIENCE,
+
+                        ValidateLifetime = true,
+
+                        ClockSkew = TimeSpan.FromSeconds(5)
+                    };
+                });
+
             services.AddControllers();
             services.AddSingleton<IMerchant>(merchant);
             services.AddSingleton<IMerchantSettings>(merchantSettings);
+
+            services.AddTransient<IMailService, MailService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ISecretCodeService, SecretCodeService>();
 
 
             services.AddSwaggerGen(c =>
