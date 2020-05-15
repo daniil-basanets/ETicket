@@ -14,6 +14,8 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         TicketTypeRepository TicketTypes { get; }
 
+        TicketVerificationRepository TicketVerifications { get; }
+        
         TransactionHistoryRepository TransactionHistory { get; }
 
         UserRepository Users { get; }
