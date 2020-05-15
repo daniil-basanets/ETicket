@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using ETicket.ApplicationServices.Services.PrivilegeService;
+using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +25,7 @@ namespace ETicket.WebAPI.Controllers
 
             try
             {
-                return Ok(privilegeService.GetAll());
+                return Ok(privilegeService.GetPrivileges());
             }
             catch (Exception exception)
             {
@@ -42,7 +42,7 @@ namespace ETicket.WebAPI.Controllers
 
             try
             {
-                return Ok(privilegeService.Get(id));
+                return Ok(privilegeService.GetPrivilegeById(id));
             }
             catch (Exception exception)
             {
@@ -52,5 +52,4 @@ namespace ETicket.WebAPI.Controllers
             }
         }
     }
-
 }
