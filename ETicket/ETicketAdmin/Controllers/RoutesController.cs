@@ -6,19 +6,20 @@ using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.ApplicationServices.DTOs;
 using log4net;
 using System.Reflection;
+using ETicket.ApplicationServices.Services.Interfaces;
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class RoutesController : Controller
     {
-        private readonly RouteService routeService;
+        private readonly IRouteService routeService;
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public RoutesController(IUnitOfWork unitOfWork)
+        public RoutesController(IRouteService routeService)
         {
-            routeService = new RouteService(unitOfWork);
+            this.routeService = routeService;
         }
 
         [HttpGet]
