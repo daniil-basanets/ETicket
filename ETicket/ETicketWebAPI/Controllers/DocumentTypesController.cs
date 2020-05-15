@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace ETicket.WebAPI.Controllers
 {
-    [Route("api/documenttypes")]
+    [Route("api/document-types")]
     [ApiController]
     public class DocumentTypesController : ControllerBase
     {
