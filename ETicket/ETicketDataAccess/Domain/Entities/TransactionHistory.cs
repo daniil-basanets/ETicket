@@ -19,13 +19,5 @@ namespace ETicket.DataAccess.Domain.Entities
 
         [Required]
         public DateTime Date { get; set; }
-
-        public int TicketTypeId { get; set; }
-
-        [ForeignKey("TicketTypeId")]
-        public TicketType TicketType { get; set; }
-
-        [Required]
-        public int Count { get; set; }
     }
 }

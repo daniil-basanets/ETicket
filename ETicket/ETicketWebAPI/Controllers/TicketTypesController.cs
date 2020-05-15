@@ -1,30 +1,55 @@
-﻿using System.Collections.Generic;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
-using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Reflection;
+using ETicket.ApplicationServices.Services.Interfaces;
+using log4net;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ETicket.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/tickettypes")]
     [ApiController]
-    [Authorize]
     public class TicketTypesController : ControllerBase
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly ITicketTypeService ticketTypeService;
+        private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public TicketTypesController(IUnitOfWork unitOfWork)
+        public TicketTypesController(ITicketTypeService ticketTypeService)
         {
-            this.unitOfWork = unitOfWork;
+            this.ticketTypeService = ticketTypeService;
+        }
+        
+        [HttpGet]
+        public IActionResult GetTicketTypes()
+        {
+            logger.Info(nameof(TicketTypesController.GetTicketTypes));
+            
+            try
+            {
+                return Ok(ticketTypeService.GetTicketTypes());
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception);
+                
+                return BadRequest();
+            }
         }
 
-        // GET: api/TicketTypes
-        [HttpGet]
-        public IEnumerable<TicketType> GetTicketTypes()
+        [HttpGet("{id}")]
+        public IActionResult GetTicketType(int id)
         {
-            var ticketTypes = unitOfWork.TicketTypes.GetAll();
-
-            return ticketTypes;
+            logger.Info(nameof(TicketTypesController.GetTicketType));
+            
+            try
+            {
+                return Ok(ticketTypeService.GetTicketTypeById(id));
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception);
+                
+                return BadRequest();
+            }
         }
     }
 }

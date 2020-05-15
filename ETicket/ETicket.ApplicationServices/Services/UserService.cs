@@ -52,9 +52,10 @@ namespace ETicket.ApplicationServices.Services
             return uow.Users.GetAll().ToList();
         }
 
-        public User GetUserById(Guid id)
+        public UserDto GetUserById(Guid id)
         {
-            return uow.Users.Get(id);
+            var user = uow.Users.Get(id);
+            return mapper.Map<User, UserDto>(user);
         }
 
         public User GetByEmail(string email)

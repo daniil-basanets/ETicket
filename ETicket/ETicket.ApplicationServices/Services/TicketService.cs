@@ -5,6 +5,7 @@ using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
+using AutoMapper.QueryableExtensions;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -26,14 +27,9 @@ namespace ETicket.ApplicationServices.Services
             return uow.Tickets.GetAll().ToList();
         }
 
-        public Ticket GetTicketById(Guid id)
+        public TicketDto GetTicketById(Guid id)
         {
-            return uow.Tickets.Get(id);
-        }
-
-        public TicketDto GetDto(Guid id)
-        {
-            var ticket = GetTicketById(id); ;
+            var ticket = uow.Tickets.Get(id);
             var ticketDto = mapper.Map<Ticket, TicketDto>(ticket);
 
             return ticketDto;
@@ -48,7 +44,7 @@ namespace ETicket.ApplicationServices.Services
 
             if (ticket.TicketType == null)
             {
-                ticket.TicketType = ticketTypeService.GetTicketTypeById(ticket.TicketTypeId);
+                ticket.TicketType = uow.TicketTypes.Get(ticket.TicketTypeId);
             }
 
             if (ticket.ActivatedUTCDate != null)
@@ -72,6 +68,34 @@ namespace ETicket.ApplicationServices.Services
         {
             uow.Tickets.Delete(id);
             uow.Save();
+        }
+
+        public void Activate(Guid ticketId)
+        {
+            var ticket = uow.Tickets.GetAll().Where(t => t.Id == ticketId).FirstOrDefault();
+
+
+            if (ticket == null)
+            {
+                var e = new ApplicationException(nameof(Activate) + " ticket with id = " + ticketId + " does not exists");
+                e.Data.Add("ticketId", ticketId);
+
+                throw e;
+            }
+
+            ticket.ActivatedUTCDate = DateTime.UtcNow;
+            ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(ticket.TicketType.DurationHours);
+            uow.Tickets.Update(ticket);
+            uow.Save();
+        }
+
+        public IEnumerable<TicketDto> GetTicketsByUserId(Guid userId)
+        {
+            var query = uow.Tickets.GetAll()
+                .Where(t => t.UserId == userId)
+                .OrderBy(t => t.CreatedUTCDate);
+
+            return mapper.ProjectTo<TicketDto>(query).ToList<TicketDto>();
         }
     }
 }

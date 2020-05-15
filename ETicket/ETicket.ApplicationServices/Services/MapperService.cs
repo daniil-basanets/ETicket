@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using ETicket.ApplicationServices.Mapping;
 
 namespace ETicket.ApplicationServices.Services
@@ -21,6 +22,7 @@ namespace ETicket.ApplicationServices.Services
                 cfg.AddProfile<PrivilegeMapperProfile>();
                 cfg.AddProfile<UserMapperProfile>();
                 cfg.AddProfile<TransactionHistoryMapperProfile>();
+                cfg.AddProfile<CarrierMapperProfile>();
             });
 
             return config.CreateMapper();
@@ -29,6 +31,11 @@ namespace ETicket.ApplicationServices.Services
         public TDestination Map<TSource, TDestination>(TSource source)
         {
             return mapper.Map<TSource, TDestination>(source);
+        }
+
+        public IQueryable<TDestination> ProjectTo<TDestination>(IQueryable source)
+        {
+            return mapper.ProjectTo<TDestination>(source);
         }
     }
 }
