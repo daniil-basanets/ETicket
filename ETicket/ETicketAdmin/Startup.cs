@@ -1,9 +1,9 @@
 using System;
 using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Logger;
+using ETicket.ApplicationServices.Services.Interfaces;
+//using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DocumentTypes;
-using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Services.Transaction;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
@@ -26,7 +26,7 @@ namespace ETicket.Admin
     {
         public Startup(IConfiguration configuration)
         {
-            LoggerService.Initialize();
+            //LoggerService.Initialize();
             Configuration = configuration;
         }
 
@@ -45,23 +45,23 @@ namespace ETicket.Admin
                 .AddEntityFrameworkStores<ETicketDataContext>()
                 .AddDefaultTokenProviders();
             services.AddControllersWithViews().AddFluentValidation();
-            services.AddTransient<IValidator<TicketType>, TicketTypeValidator>();
-            services.AddTransient<IValidator<Ticket>, TicketValidator>();
-            services.AddTransient<IValidator<User>, UserValidator>();
-            services.AddTransient<IValidator<Document>, DocumentValidator>();
-            services.AddTransient<IValidator<DocumentType>, DocumentTypeValidator>();
-            services.AddTransient<IValidator<Privilege>, PrivilegeValidator>();
-            services.AddTransient<IValidator<TransactionHistory>, TransactionHistoryValidator>();
+            services.AddTransient<IValidator<TicketTypeDto>, TicketTypeValidator>();
+            services.AddTransient<IValidator<TicketDto>, TicketValidator>();
+            services.AddTransient<IValidator<UserDto>, UserValidator>();
+            services.AddTransient<IValidator<DocumentDto>, DocumentValidator>();
+            services.AddTransient<IValidator<DocumentTypeDto>, DocumentTypeValidator>();
+            services.AddTransient<IValidator<PrivilegeDto>, PrivilegeValidator>();
+            services.AddTransient<IValidator<TransactionHistoryDto>, TransactionHistoryValidator>();
 
 
             services.AddTransient<ITicketService, TicketService>();
-            services.AddTransient<IMailService, MailService>();
+            //services.AddTransient<IMailService, MailService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IDocumentTypesService, DocumentTypesService>();
             services.AddTransient<ITicketTypeService, TicketTypeService>();
             services.AddTransient<ICarrierService, CarrierService>();
             services.AddTransient<IPrivilegeService, PrivilegeService>();
-
+            services.AddTransient<ITransportService, TransportService>();
 
             services.AddIdentityCore<IdentityUser>(o =>
             {

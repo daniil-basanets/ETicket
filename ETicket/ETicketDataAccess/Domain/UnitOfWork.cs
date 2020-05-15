@@ -21,7 +21,10 @@ namespace ETicket.DataAccess.Domain
         private CarrierRepository carrierRepository;
         private RouteStationRepository routeStationRepository;
         private SecretCodeRepository secretCodeRepository;
-
+        private RouteRepository routeRepository;
+        private StationRepository stationRepository;
+        private AreaRepository areaRepository;
+        private TicketVerificationRepository ticketVerificationRepository;
         #endregion
 
         public DocumentRepository Documents
@@ -107,7 +110,7 @@ namespace ETicket.DataAccess.Domain
                 return carrierRepository;
             }
         }
-                public RouteStationRepository RouteStation
+        public RouteStationRepository RouteStation
         {
             get
             {
@@ -131,6 +134,50 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
+        public RouteRepository Routes
+        {
+            get
+            {
+                if (routeRepository == null)
+                   routeRepository = new RouteRepository(eTicketDataContext);
+                return routeRepository;
+            }
+        }
+
+        public StationRepository Stations
+        {
+            get
+            {
+                if (stationRepository == null)
+                {
+                    stationRepository = new StationRepository(eTicketDataContext);
+                }
+                return stationRepository;
+            }
+        }
+
+        public AreaRepository Areas
+        {
+            get
+            {
+                if (areaRepository == null)
+                {
+                   areaRepository = new AreaRepository(eTicketDataContext);
+                }
+                return areaRepository;
+            }
+        }
+        public TicketVerificationRepository TicketVerifications
+        {
+            get
+            {
+                if (ticketVerificationRepository == null)
+                {
+                    ticketVerificationRepository = new TicketVerificationRepository(eTicketDataContext);
+                }
+                return ticketVerificationRepository;
+            }
+        }
         public void Save()
         {
             eTicketDataContext.SaveChanges();

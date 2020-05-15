@@ -18,7 +18,12 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Carrier> Carriers { get; set; }
         public DbSet<RouteStation> RouteStations { get; set; }
         public DbSet<SecretCode> SecretCodes { get; set; }
-
+        public DbSet<Route> Routes { get; set; }
+        public DbSet<Area> Areas { get; set; }
+        public DbSet<TicketVerification> TicketVerifications { get; set; }
+        public DbSet<TicketArea> TicketAreas { get; set; }
+        public DbSet<Station> Stations { get; set; }
+        public DbSet<PriceList> PriceList { get; set; }
         #endregion
 
         public ETicketDataContext(DbContextOptions<ETicketDataContext> options) : base(options) { }
