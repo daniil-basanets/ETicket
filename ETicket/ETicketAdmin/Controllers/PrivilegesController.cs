@@ -6,6 +6,7 @@ using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using System.Reflection;
 using System;
+using ETicket.ApplicationServices.Services.Interfaces;
 
 namespace ETicket.Admin.Controllers
 {
