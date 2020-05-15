@@ -1,255 +1,177 @@
 ﻿using System;
-using System.Reflection;
 using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.Interfaces;
-using log4net;
+using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.DocumentTypes;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+
+//TODO move common to another common project
+//TODO (nice ot have) Remove submit use ajax instead
+//TODO add logger for controllers (log4NET)
+//TODO Unit TESTS (coverage: in Services work must be mocked throw UnitOfWork, UOW must return mock instead of real DB data)
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class DocumentsController : Controller
     {
-        private readonly IDocumentService documentService;
-        private readonly IDocumentTypesService documentTypesService;
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly DocumentService documentService;
+        private readonly DocumentTypesService documentTypesService;
 
-        public DocumentsController(IDocumentService documentService, IDocumentTypesService documentTypesService)
+        public DocumentsController(IUnitOfWork unitOfWork)
         {
-            this.documentService = documentService;
-            this.documentTypesService = documentTypesService;
+            documentService = new DocumentService(unitOfWork);
+            documentTypesService = new DocumentTypesService(unitOfWork);
         }
 
-        [HttpGet]
         public IActionResult Index()
         {
-            log.Info(nameof(DocumentsController.Index));
+            var documentsTypes = documentTypesService.GetAll();
 
-            try
-            {
-                var documentsTypes = documentTypesService.GetDocumentTypes();
-                ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
-                var documents = documentService.GetDocuments();
+            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
 
-                return View(documents);
-            }
-            catch (Exception e)
-            {
-                log.Error(e);
+            var documents = documentService.Read();
 
-                return BadRequest();
-            }
+            return View(documents);
         }
 
-        [HttpGet]
         public IActionResult Details(Guid? id)
         {
-            log.Info(nameof(DocumentsController.Details));
-
             if (id == null)
             {
-                log.Warn(nameof(DocumentsController.Details) + " id is null");
-
                 return NotFound();
             }
 
-            try
+            var document = documentService.Read(id.Value);
+
+            if (document == null)
             {
-                var document = documentService.GetDocumentById(id.Value);
-
-                if (document == null)
-                {
-                    log.Warn(nameof(DocumentsController.Details) + " document is null");
-
-                    return NotFound();
-                }
-
-                return View(document);
+                return NotFound();
             }
-            catch (Exception e)
-            {
-                log.Error(e);
 
-                return BadRequest();
-            }
+            return View(document);
         }
 
-        [HttpGet]
         public IActionResult Create()
         {
-            log.Info(nameof(DocumentsController.Create));
+            var documentsTypes = documentTypesService.GetAll();
 
-            try
-            {
-                var documentsTypes = documentTypesService.GetDocumentTypes();
+            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
 
-                ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
-
-                return View();
-            }
-            catch (Exception e)
-            {
-                log.Error(e);
-
-                return BadRequest();
-            }
+            return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(DocumentDto documentDto)
         {
-            log.Info(nameof(DocumentsController.Create));
-
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    documentService.Create(documentDto);
+                documentService.Create(documentDto);
+                documentService.Save();
 
-                    return RedirectToAction(nameof(Index));
-                }
-
-                var documentsTypes = documentTypesService.GetDocumentTypes();
-
-                ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
-
-                return View(documentDto);
+                return RedirectToAction(nameof(Index));
             }
-            catch (Exception e)
-            {
-                log.Error(e);
 
-                return BadRequest();
-            }
+            var documentsTypes = documentTypesService.GetAll();
+
+            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
+
+            return View(documentDto);
         }
 
-        [HttpGet]
         public IActionResult Edit(Guid? id)
         {
-            log.Info(nameof(DocumentsController.Edit));
-
             if (id == null)
             {
-                log.Warn(nameof(DocumentsController.Edit) + " id is null");
-
                 return NotFound();
             }
 
-            try
+            var document = documentService.Read(id.Value);
+
+            if (document == null)
             {
-                var document = documentService.GetDocumentById(id.Value);
-
-                if (document == null)
-                {
-                    log.Warn(nameof(DocumentsController.Edit) + " document is null");
-
-                    return NotFound();
-                }
-
-                var documentsTypes = documentTypesService.GetDocumentTypes();
-
-                ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", document.DocumentTypeId);
-
-                return View(document);
+                return NotFound();
             }
-            catch (Exception e)
-            {
-                log.Error(e);
 
-                return BadRequest();
-            }
+            var documentsTypes = documentTypesService.GetAll();
+
+            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", document.DocumentTypeId);
+
+            return View(document);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, DocumentDto documentDto)
         {
-            log.Info(nameof(DocumentsController.Edit));
-
             if (id != documentDto.Id)
             {
-                log.Warn(nameof(DocumentsController.Edit) + " id isn't equal to documentDto.Id");
-
                 return NotFound();
             }
 
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                try
                 {
                     documentService.Update(documentDto);
-
-                    return RedirectToAction(nameof(Index));
+                    documentService.Save();
                 }
-
-                var documentsTypes = documentTypesService.GetDocumentTypes();
-
-                ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
-
-                return View(documentDto);
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!DocumentExists(documentDto.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
             }
-            catch (Exception e)
-            {
-                log.Error(e);
 
-                return BadRequest();
-            }
+            var documentsTypes = documentTypesService.GetAll();
+
+            ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name", documentDto.DocumentTypeId);
+
+            return View(documentDto);
         }
 
-        [HttpGet]
         public IActionResult Delete(Guid? id)
         {
-            log.Info(nameof(DocumentsController.Delete));
-
             if (id == null)
             {
-                log.Warn(nameof(DocumentsController.Delete) + " id is null");
-
                 return NotFound();
             }
 
-            try
+            var document = documentService.Read(id.Value);
+
+            if (document == null)
             {
-                var document = documentService.GetDocumentById(id.Value);
-
-                if (document == null)
-                {
-                    log.Warn(nameof(DocumentsController.Delete) + " document is null");
-
-                    return NotFound();
-                }
-
-                return View(document);
+                return NotFound();
             }
-            catch (Exception e)
-            {
-                log.Error(e);
 
-                return BadRequest();
-            }
+            return View(document);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
-            log.Info(nameof(DocumentsController.DeleteConfirmed));
+            documentService.Delete(id);
+            documentService.Save();
 
-            try
-            {
-                documentService.Delete(id);
+            return RedirectToAction(nameof(Index));
+        }
 
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception e)
-            {
-                log.Error(e);
-
-                return BadRequest();
-            }
+        private bool DocumentExists(Guid id)
+        {
+            return documentService.Read(id) != null;
         }
     }
 }
