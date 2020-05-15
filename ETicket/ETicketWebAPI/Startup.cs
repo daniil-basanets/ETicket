@@ -51,6 +51,8 @@ namespace ETicket.WebAPI
             services.AddTransient<ITicketService, TicketService>();
             services.AddTransient<ITicketTypeService, TicketTypeService>();
             services.AddTransient<ICarrierService, CarrierService>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IMailService, MailService>();
             
 
             services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ETicketDataContext>();

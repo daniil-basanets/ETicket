@@ -5,6 +5,7 @@ using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
+using AutoMapper.QueryableExtensions;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -88,9 +89,13 @@ namespace ETicket.ApplicationServices.Services
             uow.Save();
         }
 
-        public IEnumerable<Ticket> GetTicketsByUserId(Guid userId)
+        public IEnumerable<TicketDto> GetTicketsByUserId(Guid userId)
         {
-           return  uow.Tickets.GetAll().Where(t => t.UserId == userId);
+            var query = uow.Tickets.GetAll()
+                .Where(t => t.UserId == userId)
+                .OrderBy(t => t.CreatedUTCDate);
+
+            return mapper.ProjectTo<TicketDto>(query).ToList<TicketDto>();
         }
     }
 }

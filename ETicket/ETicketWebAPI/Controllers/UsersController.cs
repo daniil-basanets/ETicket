@@ -25,8 +25,8 @@ namespace ETicket.WebAPI.Controllers
             this.ticketService = ticketService;
         }
 
-        // GET: api/users{id}/Tickets
-        [HttpGet]
+        // GET: api/users/{id}/tickets
+        [HttpGet("{userid}/tickets")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult GetTicketsByUser(Guid userId)
