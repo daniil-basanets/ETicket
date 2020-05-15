@@ -24,6 +24,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            log.Info(nameof(RoutesController.Index));
+
             try
             {
                 var routes = routeService.GetRoutes();
@@ -41,6 +43,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Details(int? id)
         {
+            log.Info(nameof(RoutesController.Details));
+
             try
             {
                 if (id == null)
@@ -72,6 +76,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            log.Info(nameof(RoutesController.Create));
+
             return View();
         }
 
@@ -79,6 +85,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(RouteDto routeDto)
         {
+            log.Info(nameof(RoutesController.Create));
+
             try
             {
                 if (ModelState.IsValid)
@@ -100,6 +108,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
+            log.Info(nameof(RoutesController.Edit));
+
             try
             {
                 if (id == null)
@@ -132,6 +142,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, RouteDto routeDto)
         {
+            log.Info(nameof(RoutesController.Edit));
+
             if (id != routeDto.Id)
             {
                 log.Warn(nameof(RoutesController.Edit) + " id isn't equal to routeDto.Id");
@@ -161,6 +173,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(int? id)
         {
+            log.Info(nameof(RoutesController.Delete));
+
             if (id == null)
             {
                 log.Warn(nameof(RoutesController.Delete) + " id is null");
@@ -191,6 +205,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
+            log.Info(nameof(RoutesController.DeleteConfirmed));
+
             try
             {
                 routeService.Delete(id);
