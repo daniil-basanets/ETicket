@@ -13,99 +13,80 @@ namespace ETicket.ApplicationServicesTests
     public class TicketTypeServiceTests
     {
         private readonly Mock<TicketTypeRepository> ticketTypeRepository;
-        private readonly Mock<IUnitOfWork> unitOfWork;
-        private TicketTypeService ticketTypeService;
+        private readonly TicketTypeService ticketTypeService;
         private readonly IQueryable<TicketType> fakeTicketTypes;
         private readonly TicketTypeDto ticketTypeDto;
+        private TicketType ticketType;
 
         public TicketTypeServiceTests()
         {
             ticketTypeRepository = new Mock<TicketTypeRepository>(null);
-            unitOfWork = new Mock<IUnitOfWork>();
-            ticketTypeDto = new TicketTypeDto
-            {
-                Id = 5,
-                TypeName = "TestDto",
-                DurationHours = 22
-            };
+            var unitOfWork = new Mock<IUnitOfWork>();
             fakeTicketTypes = new List<TicketType>
                 {
                     new TicketType {Id = 1, TypeName = "Test1", Price = 2.3M, DurationHours = 12, IsPersonal = true},
                     new TicketType {Id = 2, TypeName = "Test2", Price = 2.4M, DurationHours = 13, IsPersonal = false}
                 }.AsQueryable();
+            ticketTypeDto = new TicketTypeDto
+            {
+                Id = 3,
+                TypeName = "asd",
+                Price = 2.3M,
+                DurationHours = 12,
+                IsPersonal = true
+            };
+            ticketTypeRepository.Setup(m => m.GetAll()).Returns(fakeTicketTypes);
+            ticketTypeRepository.Setup(m => m.Get(fakeTicketTypes.First().Id)).Returns(fakeTicketTypes.First());
+            ticketTypeRepository.Setup(r => r.Create(It.IsAny<TicketType>()))
+                .Callback<TicketType>(x => ticketType = x);
+            ticketTypeRepository.Setup(r => r.Update(It.IsAny<TicketType>()))
+                .Callback<TicketType>(x => ticketType = x);
+            unitOfWork.Setup(x => x.TicketTypes).Returns(ticketTypeRepository.Object);
+            
+            ticketTypeService = new TicketTypeService(unitOfWork.Object);
         }
         
         [Fact]
         public void TicketTypeGetAll()
         {
-            ticketTypeRepository.Setup(m => m.GetAll()).Returns(fakeTicketTypes);
-            unitOfWork.Setup(x => x.TicketTypes).Returns(ticketTypeRepository.Object);
-            
-            ticketTypeService = new TicketTypeService(unitOfWork.Object);
             var ticketTypes = ticketTypeService.GetAll();
             
             Assert.NotNull(ticketTypes);
-            Assert.Equal((uint)13,fakeTicketTypes.Last().DurationHours);
+            Assert.Equal((uint)12,fakeTicketTypes.First().DurationHours);
+            Assert.Equal(2,fakeTicketTypes.Count());
         }
 
         [Fact]
         public void GetByIdTicketType()
         {
-            ticketTypeRepository.Setup(m => m.Get(1)).Returns(fakeTicketTypes.First);
-            unitOfWork.Setup(m => m.TicketTypes).Returns(ticketTypeRepository.Object);
-            
-            ticketTypeService = new TicketTypeService(unitOfWork.Object);
-            var ticketType = ticketTypeService.Get(1);
-            
-            Assert.Equal(fakeTicketTypes.First().DurationHours,ticketType.DurationHours);
+            Assert.Equal(fakeTicketTypes.First().DurationHours, ticketTypeService.Get(1).DurationHours);
         }
 
         [Fact]
         public void DeleteTicketType() 
         {
-            unitOfWork.Setup(m => m.TicketTypes).Returns(ticketTypeRepository.Object);
-            
-            ticketTypeService = new TicketTypeService(unitOfWork.Object);
-            ticketTypeService.Delete(It.IsAny<int>());
-            
-            ticketTypeRepository.Verify(m=>m.Delete(It.IsAny<int>()));
-        }
-
-        [Fact]
-        public void DeleteTest()
-        {
-            ticketTypeRepository.Setup(m => m.GetAll()).Returns(fakeTicketTypes);
-            unitOfWork.Setup(m => m.TicketTypes).Returns(ticketTypeRepository.Object);
-            
-            ticketTypeService = new TicketTypeService(unitOfWork.Object);
-            ticketTypeService.GetAll();
-            ticketTypeService.Delete(fakeTicketTypes.First().Id);
-
-            var temp = ticketTypeService.GetAll();
-            
-            Assert.Equal(1,ticketTypeService.GetAll().Count());
-        }
-
-        [Fact]
-        public void CreateTicketType()
-        {
-            unitOfWork.Setup(m => m.TicketTypes).Returns(ticketTypeRepository.Object);
-            
-            ticketTypeService = new TicketTypeService(unitOfWork.Object);
             ticketTypeService.Create(ticketTypeDto);
+            ticketTypeService.Delete(3);
             
-            ticketTypeRepository.Verify(m=>m.Create(It.IsAny<TicketType>()));
+            Assert.Null(ticketType);
         }
         
         [Fact]
+        public void CreateTicketType()
+        {
+            ticketTypeService.Create(ticketTypeDto);
+
+            ticketTypeRepository.Verify(x => x.Create(It.IsAny<TicketType>()), Times.Once);
+
+            Assert.Equal(ticketTypeDto.TypeName, ticketType.TypeName);
+        }
+
+        [Fact]
         public void UpdateTicketType()
         {
-            unitOfWork.Setup(m => m.TicketTypes).Returns(ticketTypeRepository.Object);
-            
-            ticketTypeService = new TicketTypeService(unitOfWork.Object);
             ticketTypeService.Update(ticketTypeDto);
             
-            ticketTypeRepository.Verify(m=>m.Update(It.IsAny<TicketType>()));
+            Assert.Equal("asd",ticketType.TypeName);
         }
     }
 }
