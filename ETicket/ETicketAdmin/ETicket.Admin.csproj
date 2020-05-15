@@ -24,7 +24,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
     <PackageReference Include="MimeKit" Version="2.6.0" />
   </ItemGroup>
 
@@ -1744,6 +1744,15 @@
   <ItemGroup>
     <ProjectReference Include="..\ETicket.ApplicationServices\ETicket.ApplicationServices.csproj" />
     <ProjectReference Include="..\ETicketWebAPI\ETicket.WebAPI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ETicket.ApplicationServices">
+      <HintPath>..\ETicketWebAPI\bin\Debug\netcoreapp3.1\ETicket.ApplicationServices.dll</HintPath>
+    </Reference>
+    <Reference Include="ETicket.WebAPI">
+      <HintPath>..\ETicketWebAPI\bin\Debug\netcoreapp3.1\ETicket.WebAPI.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

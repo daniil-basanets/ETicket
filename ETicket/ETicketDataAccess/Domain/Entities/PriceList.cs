@@ -15,10 +15,10 @@ namespace ETicket.DataAccess.Domain.Entities
         [Required]
         public DateTime StartDate { get; set; }
 
-        [Required]
+       /* [Required]
         public int AreaId { get; set; }
         [ForeignKey("AreaId")]
  
-        public Area Area { get; set; }
+        public Area Area { get; set; }*/
     }
 }
