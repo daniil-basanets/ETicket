@@ -51,6 +51,7 @@ namespace ETicket.WebAPI
             services.AddTransient<IUnitOfWork, UnitOfWork>(e => new UnitOfWork(e.GetService<ETicketDataContext>()));
 
             services.AddTransient<ICarrierService, CarrierService>();
+            services.AddTransient<ITicketVerificationService, TicketVerificationService>();
 
 
             services.AddIdentity<IdentityUser, IdentityRole>()
