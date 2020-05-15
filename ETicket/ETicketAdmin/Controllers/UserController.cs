@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,8 +24,8 @@ namespace ETicket.Admin.Controllers
     public class UserController : Controller
     {
         #region Private members
-        private readonly IDataTableService<User> dataTableService;
 
+        private readonly IDataTableService<User> dataTableService;
         private readonly IUserService userService;
         private readonly IPrivilegeService privilegeService;
         private readonly IDocumentService documentService;

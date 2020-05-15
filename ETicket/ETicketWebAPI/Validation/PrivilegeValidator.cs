@@ -1,9 +1,9 @@
-using ETicket.DataAccess.Domain.Entities;
+using ETicket.ApplicationServices.DTOs;
 using FluentValidation;
 
 namespace ETicket.WebAPI.Validation
 {
-    public class PrivilegeValidator : AbstractValidator<Privilege>
+    public class PrivilegeValidator : AbstractValidator<PrivilegeDto>
     {
         public PrivilegeValidator()
         {

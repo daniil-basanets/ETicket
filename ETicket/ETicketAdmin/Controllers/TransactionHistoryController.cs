@@ -1,15 +1,9 @@
 using System;
 using System.Linq;
-using ETicket.ApplicationServices.Services;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.DataTable;
 
@@ -20,24 +14,23 @@ namespace ETicket.Admin.Controllers
     {
         #region Private Members
 
-        private readonly IUnitOfWork unitOfWork;
-        private DatabaseServices services;
+        private readonly ITransactionAppService transactionAppService;
         private readonly IDataTableService<TransactionHistory> dataTableService;
 
         #endregion
 
-        public TransactionHistoryController(IUnitOfWork unitOfWork, IDataTableService<TransactionHistory> dataTableService)
+        public TransactionHistoryController(
+            ITransactionAppService transactionAppService,
+            IDataTableService<TransactionHistory> dataTableService)
         {
-            this.unitOfWork = unitOfWork;
+            this.transactionAppService = transactionAppService;
             this.dataTableService = dataTableService;
-            //services =new IntegratedServices(unitOfWork, )
         }
 
         // GET: TransactionHistories
         public IActionResult Index()
         {
-            var ticketTypes = unitOfWork.TicketTypes.GetAll();
-            ViewData["TicketTypeId"] = new SelectList(ticketTypes, "Id", "TypeName");
+           
 
             return View();
         }
@@ -56,19 +49,14 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var transactionHistory = unitOfWork
-                    .TransactionHistory
-                    .GetAll()
-                    .AsNoTracking()
-                    .Include(t => t.TicketType)
-                    .FirstOrDefault(m => m.Id == id);
+            var transaction = transactionAppService.Read(id.Value);
 
-            if (transactionHistory == null)
+            if (transaction == null)
             {
                 return NotFound();
             }
 
-            return View(transactionHistory);
+            return View(transaction);
         }
     }
 }
