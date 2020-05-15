@@ -1,11 +1,11 @@
-using System;
-using System.Linq;
-using ETicket.ApplicationServices.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
-using ETicket.ApplicationServices.Services.DataTable;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.Admin.Models.DataTables;
 
 namespace ETicket.Admin.Controllers
 {
@@ -30,8 +30,6 @@ namespace ETicket.Admin.Controllers
         // GET: TransactionHistories
         public IActionResult Index()
         {
-           
-
             return View();
         }
 
@@ -49,7 +47,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var transaction = transactionAppService.Read(id.Value);
+            var transaction = transactionAppService.GetTransactionById(id.Value);
 
             if (transaction == null)
             {

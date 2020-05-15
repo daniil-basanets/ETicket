@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Reflection;
-using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+
+using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.Admin.Models.DataTables;
 
 namespace ETicket.Admin.Controllers
 {

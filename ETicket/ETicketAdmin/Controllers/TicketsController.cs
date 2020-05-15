@@ -1,22 +1,16 @@
-﻿using System;
-using System.Linq;
+﻿using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-
-using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.Interfaces;
-using log4net;
+using System;
+using System.Linq;
 using System.Reflection;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.ApplicationServices.Services.Users.Interfaces;
-using ETicket.DataAccess.Domain.Interfaces;
+
 using ETicket.Admin.Models.DataTables;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
-using ETicket.ApplicationServices.Services.DataTable;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.Admin.Controllers
 {
@@ -40,13 +34,13 @@ namespace ETicket.Admin.Controllers
             this.ticketTypeService = ticketTypeService;
             this.userService = userService;
             this.dataTableService = dataTableService;
+            this.transactionService = transactionAppService;
         }
 
         [HttpGet]
         public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
         {
-            return Json(dataTableService.GetDataTablePage(pagingInfo));
-            transactionService = transactionAppService;
+            return Json(dataTableService.GetDataTablePage(pagingInfo));          
         }
 
         private void InitViewDataForSelectList(TicketDto ticketDto = null)
@@ -72,8 +66,6 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName");
-
                 return View();
             }
             catch (Exception e)
