@@ -49,10 +49,5 @@ namespace ETicket.DataAccess.Domain.Repositories
         {
             context.Update(item);
         }
-
-        public bool StationExists(int id)
-        {
-            return context.Stations.Any(e => e.Id == id);
-        }
     }
 }

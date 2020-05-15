@@ -24,6 +24,12 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         SecretCodeRepository SecretCodes { get; }
 
+        StationRepository Stations { get; }
+        
+        TransportRepository Transports { get; }
+        
+        PriceListRepository PriceList { get; }
+
         void Save();
     }
 }
