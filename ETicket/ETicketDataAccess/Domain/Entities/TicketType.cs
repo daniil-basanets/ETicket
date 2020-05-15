@@ -25,6 +25,6 @@ namespace ETicket.DataAccess.Domain.Entities
         [Required]
         [DataType(DataType.Currency)]
         [Range(0, double.MaxValue)]
-        public decimal Price { get; set; }
+        public decimal Coefficient { get; set; }
     }
 }

@@ -38,7 +38,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName", ticketDto?.Id);
+                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketTypes(), "Id", "TypeName", ticketDto?.Id);
                 ViewData["TransactionHistoryId"] = new SelectList(transactionService.GetTransactions(), "Id", "ReferenceNumber", ticketDto?.TransactionHistoryId);
                 ViewData["UserId"] = new SelectList(userService.GetUsers().Select(s => new { s.Id, Name = $"{s.LastName} {s.FirstName}" }), "Id", "Name", ticketDto?.UserId);
             }
@@ -55,7 +55,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName");
+                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketTypes(), "Id", "TypeName");
                 var tickets = ticketService.GetTickets();
 
                 return View(tickets.ToList());
@@ -80,7 +80,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            Ticket ticket;
+            TicketDto ticket;
 
             try
             {
@@ -121,7 +121,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                TicketType ticketType = null;
+                TicketTypeDto ticketType = null;
 
                 ticketType = ticketTypeService.GetTicketTypeById(ticketDto.TicketTypeId);
 
@@ -168,7 +168,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                ticketDto = ticketService.GetDto((Guid)id);
+                ticketDto = ticketService.GetTicketById((Guid)id);
             }
             catch (Exception e)
             {
@@ -195,7 +195,7 @@ namespace ETicket.Admin.Controllers
         {
             log.Info(nameof(TicketController.Edit) + ":Post");
 
-            TicketType ticketType = null;
+            TicketTypeDto ticketType = null;
 
             if (id != ticketDto.Id)
             {
@@ -246,7 +246,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            Ticket ticket;
+            TicketDto ticket;
 
             try
             {

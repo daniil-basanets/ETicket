@@ -17,6 +17,8 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Privilege> Privileges { get; set; }
         public DbSet<Carrier> Carriers { get; set; }
         public DbSet<RouteStation> RouteStations { get; set; }
+        public DbSet<SecretCode> SecretCodes { get; set; }
+        public DbSet<Station> Stations { get; set; }
 
         #endregion
 
@@ -30,11 +32,6 @@ namespace ETicket.DataAccess.Domain
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //ToAsk - inquire Roman concerning Tabulations
-
-            modelBuilder.Entity<TransactionHistory>()
-                    .HasOne<TicketType>(s => s.TicketType)
-                    .WithMany()
-                    .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<User>()
                    .HasOne(i => i.Privilege)
