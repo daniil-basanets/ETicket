@@ -1,4 +1,5 @@
-﻿using ETicket.DataAccess.Domain.Interfaces;
+﻿using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.DataAccess.Domain.Repositories;
 using System;
 
@@ -15,8 +16,17 @@ namespace ETicket.DataAccess.Domain
         private PrivilegeRepository privilegeRepository;
         private TicketRepository ticketRepository;
         private TicketTypeRepository ticketTypeRepository;
+        private TicketVerificationRepository ticketVerificationRepository;
         private TransactionHistoryRepository transactionHistoryRepository;
         private UserRepository userRepository;
+        private CarrierRepository carrierRepository;
+        private RouteStationRepository routeStationRepository;
+        private SecretCodeRepository secretCodeRepository;
+        private RouteRepository routeRepository;
+        private StationRepository stationRepository;
+        private TransportRepository transportRepository;
+        private PriceListRepository priceListRepository;
+        private AreaRepository areaRepository;
 
         #endregion
 
@@ -27,6 +37,16 @@ namespace ETicket.DataAccess.Domain
                 if (documentRepository == null)
                     documentRepository = new DocumentRepository(eTicketDataContext);
                 return documentRepository;
+            }
+        }
+
+        public RouteRepository Routes
+        {
+            get
+            {
+                if (routeRepository == null)
+                    routeRepository = new RouteRepository(eTicketDataContext);
+                return routeRepository;
             }
         }
 
@@ -71,6 +91,17 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
+        public TicketVerificationRepository TicketVerifications
+        {
+            get
+            {
+                if (ticketVerificationRepository == null)
+                    ticketVerificationRepository = new TicketVerificationRepository(eTicketDataContext);
+
+                return ticketVerificationRepository;
+            }
+        }
+
         public TransactionHistoryRepository TransactionHistory
         {
             get
@@ -91,8 +122,87 @@ namespace ETicket.DataAccess.Domain
                 return userRepository;
             }
         }
+        
+        public PriceListRepository PriceList
+        {
+            get
+            {
+                if (priceListRepository == null)
+                    priceListRepository = new PriceListRepository(eTicketDataContext);
 
-        public void Save()
+                return priceListRepository;
+            }
+        }
+
+        public CarrierRepository Carriers
+        {
+            get
+            {
+                if(carrierRepository == null)
+                {
+                    carrierRepository = new CarrierRepository(eTicketDataContext);
+                }
+                return carrierRepository;
+            }
+        }
+        public RouteStationRepository RouteStation
+        {
+            get
+            {
+                if (routeStationRepository == null)
+                {
+                    routeStationRepository = new RouteStationRepository(eTicketDataContext);
+                }
+
+                return routeStationRepository;
+            }
+        }
+
+        public SecretCodeRepository SecretCodes
+        {
+            get
+            {
+                if (secretCodeRepository == null)
+                    secretCodeRepository = new SecretCodeRepository(eTicketDataContext);
+
+                return secretCodeRepository;
+            }
+        }
+
+        public StationRepository Stations
+        {
+            get
+            {
+                if (stationRepository == null)
+                    stationRepository = new StationRepository(eTicketDataContext);
+
+                return stationRepository;
+            }
+        }
+        
+        public AreaRepository Areas
+        {
+            get 
+            {
+                if (areaRepository == null)
+                    areaRepository = new AreaRepository(eTicketDataContext);
+
+                return areaRepository;
+            }
+        }
+
+        public TransportRepository Transports
+        {
+            get
+            {
+                if (transportRepository == null)
+                    transportRepository = new TransportRepository(eTicketDataContext);
+
+                return transportRepository;
+            }
+        }
+
+    public void Save()
         {
             eTicketDataContext.SaveChanges();
         }

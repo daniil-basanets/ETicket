@@ -60,7 +60,7 @@ namespace ETicketMobile.ViewModels.Tickets
         {
             id = dto.Id;
             name = dto.Name;
-            price = dto.Price;
+            price = dto.Coefficient;
         }
 
         protected void OnPropertyChanged(string propertyName)

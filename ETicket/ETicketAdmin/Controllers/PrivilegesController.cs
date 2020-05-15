@@ -1,7 +1,6 @@
 ﻿using ETicket.ApplicationServices.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using System.Reflection;

@@ -4,48 +4,60 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:prism="http://prismlibrary.com" 
     xmlns:bindingconverters="clr-namespace:ETicketMobile.UserInterface.BindingConverters;assembly=ETicketMobile.UserInterface"
+    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile" 
+    xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Registration.NameRegistrationView">
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter" />
-            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter"/>
+            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
-    
-    <ContentPage.Content>
-        <StackLayout Margin="30">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <StackLayout Margin="10, 0">
             <Label
-                Text="Create new user"
-                Margin="0, 10, 0, 10"
-                HorizontalOptions="CenterAndExpand"/>
+                Text="{local:Translate CreateNewUser}"
+                Style="{StaticResource TitleLabelStyle}"/>
+
             <Label
-                Text="Enter your name. You can change it in any time."
-                LineBreakMode="WordWrap"
-                Margin="0, 10, 0, 10"
-                HorizontalOptions="CenterAndExpand"/>
-            <Label 
+                Text="{local:Translate EnterName}"
+                Style="{StaticResource NormalLabelStyle}"/>
+
+            <Label
                 IsVisible="{Binding FirstNameWarning, Converter={StaticResource StringToBooleanConverter}}"
                 Text="{Binding FirstNameWarning}"
-                TextColor="{Binding FirstNameWarning, Converter={StaticResource StringToColorConverter}}"/>
-            <Entry
+                TextColor="{Binding FirstNameWarning, Converter={StaticResource StringToColorConverter}}"
+                Style="{StaticResource NormalLabelStyle}"/>
+
+            <telerikInput:RadEntry
                 Text="{Binding FirstName, Mode=TwoWay}"
-                Placeholder="First name"
-                Keyboard="Text"/>
+                WatermarkText="{local:Translate FirstName}"
+                Style="{StaticResource LoginEntryStyle}"/>
+
             <Label
                 IsVisible="{Binding LastNameWarning, Converter={StaticResource StringToBooleanConverter}}"
                 Text="{Binding LastNameWarning}"
-                TextColor="{Binding LastNameWarning, Converter={StaticResource StringToColorConverter}}"/>
-            <Entry
+                TextColor="{Binding LastNameWarning, Converter={StaticResource StringToColorConverter}}"
+                Style="{StaticResource NormalLabelStyle}"/>
+
+            <telerikInput:RadEntry
                 Text="{Binding LastName, Mode=TwoWay}"
-                Placeholder="Last name"
-                Keyboard="Text"/>
-            <Button
-                Text="Next"
+                WatermarkText="{local:Translate LastName}"
+                Style="{StaticResource LoginEntryStyle}"/>
+
+            <telerikInput:RadButton
                 Command="{Binding NavigateToPasswordRegistrationView}"
-                CornerRadius="10"/>
+                Text="{local:Translate Next}"
+                Style="{StaticResource ActionButtonStyle}"/>
         </StackLayout>
-    </ContentPage.Content>
+    </Grid>
 
 </ContentPage>

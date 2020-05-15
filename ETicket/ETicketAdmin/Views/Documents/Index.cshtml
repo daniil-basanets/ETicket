@@ -4,74 +4,67 @@
     ViewData["Title"] = "Index";
 }
 
+<link href="~/css/ButtonMoves/moved-data-table-controls.css" rel="stylesheet" />
 <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Documents</h6>
+            <div>
+                <div id="buttonCreate" class="button_create">
+                    <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                </div>
+            </div>
         </div>
         <div class="card-body documents">
-            @*<div class="filters">
-                <details>
-                    <summary>Filters</summary>
-                    <table border="0" class="filter-table">
-                        <tr>
-                            <th>Document number:</th>
-                            <th>
-                                <form class="document-filter-form">
-                                    <input type="text" class="document-filter-form form-control form-control-sm" id="document-number-input">
-                                </form>
-                            </th>
-                        </tr>
-
-                        <tr>
-                            <th>Document type:</th>
-                            <th>
-                                <form class="document-filter-form">
-                                    @Html.DropDownList("document-type-select", ViewData["DocumentTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "document-filter-form custom-select custom-select-sm form-control form-control-sm" })
-                                </form>
-                            </th>
-                        </tr>
-                    </table>
-
-                </details>
-                <p></p>
-                </div>*@
             <div class="table-responsive">
                 <table class="table table-bordered filters" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>
-                                <details>
+                                <details onclick="makeSingleOnClickEvent()">
                                     <summary>
                                         @Html.DisplayNameFor(model => model.DocumentType)
                                     </summary>
-                                    @*<form class="document-filter-form">
+                                    <form class="document-filter-form">
                                         @Html.DropDownList("document-type-select", ViewData["DocumentTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "document-filter-form custom-select custom-select-sm form-control form-control-sm" })
-                                    </form>*@
+                                    </form>
                                 </details>
                             </th>
                             <th>
-                                <details>
+                                <details onclick="makeSingleOnClickEvent()">
                                     <summary>
                                         @Html.DisplayNameFor(model => model.Number)
                                     </summary>
                                     <div class="filters">
-                                        <form class="document-filter-form">
-                                            <input type="text" class="document-filter-form form-control form-control-sm" id="document-number-input">
-                                        </form>
+                                        <input type="text" class="document-filter-form form-control form-control-sm" id="document-number-input">
                                     </div>
                                 </details>
-                            </th>                       
-                            <th>
-                                @Html.DisplayNameFor(model => model.ExpirationDate)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.IsValid)
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.ExpirationDate)
+                                    </summary>
+                                    <input type="text" id="expiration-date-datepicker" class="document-filter-form form-control form-control-sm">
+                                </details>
                             </th>
                             <th>
-                                <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.IsValid)
+                                    </summary>
+                                    <select id="is-valid-select" class="document-filter-form form-control form-control-sm">
+                                        <option value=""></option>
+                                        <option value="True">Yes</option>
+                                        <option value="False">No</option>
+                                    </select>
+                                    @*<input type="checkbox" id="is-valid-datepicker" class="ticket-filter-form form-control form-control-sm">*@
+                                </details>
+                            </th>
+                            <th>
+                                Actions
                             </th>
                         </tr>
                     </thead>
@@ -95,36 +88,41 @@
                         </tr>
                     </tfoot>
                     <tbody>
-                        @foreach (var item in Model)
+                        @if (Model != null)
                         {
-                            <tr>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.DocumentType.Name)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Number)
-                                </td>
-                                <td>
-                                    @(item.ExpirationDate.HasValue ? item.ExpirationDate.Value.ToString("yyyy-MM-dd") : "")
-                                </td>
-                                <td>
-                                    @(item.IsValid ? "Yes" : "No")
-                                </td>
-                                <td>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                                </td>
-                            </tr>
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DocumentType.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Number)
+                                    </td>
+                                    <td>
+                                        @(item.ExpirationDate.HasValue ? item.ExpirationDate.Value.ToString("yyyy-MM-dd") : "")
+                                    </td>
+                                    <td>
+                                        @(item.IsValid ? "Yes" : "No")
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                                    </td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>
             </div>
-         </div>
+        </div>
     </div>
 </div>
 
 <script src="/vendor/jquery/jquery.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <!-- Page level plugins -->
 <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
@@ -132,6 +130,9 @@
 
 <!-- Page level custom scripts -->
 <script src="~/js/data-table-documents-filters.js"></script>
+<script src="~/js/button-create-moves/button-create-move.js"></script>
+
+
 
 
 

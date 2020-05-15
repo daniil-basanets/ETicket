@@ -10,6 +10,6 @@
         
         public bool IsPersonal { get; set; }
         
-        public decimal Price { get; set; }
+        public decimal Coefficient { get; set; }
     }
 }

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Linq;
-using ETicket.ApplicationServices.Services;
-using ETicket.DataAccess.Domain.Entities;
-using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using System;
+
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.Admin.Models.DataTables;
 
 namespace ETicket.Admin.Controllers
 {
@@ -15,30 +14,29 @@ namespace ETicket.Admin.Controllers
     {
         #region Private Members
 
-        private readonly IUnitOfWork unitOfWork;
-        private DatabaseServices services;
+        private readonly ITransactionAppService transactionAppService;
+        private readonly IDataTableService<TransactionHistory> dataTableService;
 
         #endregion
 
-        public TransactionHistoryController(IUnitOfWork unitOfWork)
+        public TransactionHistoryController(
+            ITransactionAppService transactionAppService,
+            IDataTableService<TransactionHistory> dataTableService)
         {
-            this.unitOfWork = unitOfWork;
-            //services =new IntegratedServices(unitOfWork, )
+            this.transactionAppService = transactionAppService;
+            this.dataTableService = dataTableService;
         }
 
         // GET: TransactionHistories
         public IActionResult Index()
         {
-            var ticketTypes = unitOfWork.TicketTypes.GetAll();
-            ViewData["TicketTypeId"] = new SelectList(ticketTypes, "Id", "TypeName");
+            return View();
+        }
 
-            IQueryable<TransactionHistory> eTicketDataContext = unitOfWork
-                    .TransactionHistory
-                    .GetAll()
-                    .AsNoTracking()
-                    .Include(t => t.TicketType);
-
-            return View(eTicketDataContext);
+        [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
+        {
+            return Json(dataTableService.GetDataTablePage(pagingInfo));
         }
 
         // GET: TransactionHistories/Details/5
@@ -49,19 +47,14 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var transactionHistory = unitOfWork
-                    .TransactionHistory
-                    .GetAll()
-                    .AsNoTracking()
-                    .Include(t => t.TicketType)
-                    .FirstOrDefault(m => m.Id == id);
+            var transaction = transactionAppService.GetTransactionById(id.Value);
 
-            if (transactionHistory == null)
+            if (transaction == null)
             {
                 return NotFound();
             }
 
-            return View(transactionHistory);
+            return View(transaction);
         }
     }
 }

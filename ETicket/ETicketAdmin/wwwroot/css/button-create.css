@@ -1,0 +1,6 @@
+﻿
+@media screen and (max-width: 767px) {
+    div.dataTables_wrapper div.button_Create {
+        text-align: center;
+    }
+}

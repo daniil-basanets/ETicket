@@ -15,6 +15,9 @@ namespace ETicketMobile.Business.Mapping
                 cfg.AddProfile<TicketMapperProfile>();
                 cfg.AddProfile<UserMapperProfile>();
                 cfg.AddProfile<TokenMapperProfile>();
+                cfg.AddProfile<AreasMapperProfile>();
+                cfg.AddProfile<TransactionMapperProfile>();
+                cfg.AddProfile<LocalizationMapperProfile>();
             });
 
             var mapper = config.CreateMapper();

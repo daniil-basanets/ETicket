@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using ETicket.ApplicationServices.DTOs;
-using ETicket.DataAccess.Domain.Entities;
+﻿using System.Linq;
+using AutoMapper;
+using ETicket.ApplicationServices.Mapping;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -15,23 +15,28 @@ namespace ETicket.ApplicationServices.Services
 
         private IMapper ConfigureMapper()
         {
-            var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<DocumentTypeDto, DocumentType>();
-                cfg.CreateMap<DocumentDto, Document>();
-                cfg.CreateMap<TicketTypeDto, TicketType>();
-                cfg.CreateMap<UserDto, User>();
-                cfg.CreateMap<TicketDto, Ticket>();
-                cfg.CreateMap<Ticket, TicketDto>();
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<TicketMapperProfile>();
+                cfg.AddProfile<DocumentMapperProfile>();
+                cfg.AddProfile<PrivilegeMapperProfile>();
+                cfg.AddProfile<UserMapperProfile>();
+                cfg.AddProfile<TransactionHistoryMapperProfile>();
+                cfg.AddProfile<CarrierMapperProfile>();
+                cfg.AddProfile<AreaMapperProfile>();
             });
 
-            var mapper = config.CreateMapper();
-
-            return mapper;
+            return config.CreateMapper();
         }
 
         public TDestination Map<TSource, TDestination>(TSource source)
         {
             return mapper.Map<TSource, TDestination>(source);
+        }
+
+        public IQueryable<TDestination> ProjectTo<TDestination>(IQueryable source)
+        {
+            return mapper.ProjectTo<TDestination>(source);
         }
     }
 }
