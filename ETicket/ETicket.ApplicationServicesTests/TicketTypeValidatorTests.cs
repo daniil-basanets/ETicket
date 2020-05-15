@@ -1,5 +1,6 @@
 using ETicket.ApplicationServices.DTOs;
 using ETicket.WebAPI.Validation;
+using FluentValidation.TestHelper;
 using Xunit;
 
 namespace ETicket.ApplicationServicesTests
@@ -7,7 +8,7 @@ namespace ETicket.ApplicationServicesTests
     public class TicketTypeValidatorTests
     {
         private readonly TicketTypeValidator ticketTypeValidator;
-        private TicketTypeDto ticketTypeDto;
+        private readonly TicketTypeDto ticketTypeDto;
 
         public TicketTypeValidatorTests()
         {
@@ -23,17 +24,34 @@ namespace ETicket.ApplicationServicesTests
 
         [Theory]
         [InlineData("")]
+        [InlineData((string) null)]
         [InlineData("q")]
         [InlineData("#")]
         [InlineData("qwertyuioplkjhgfdsazxcvbnmetretertretertertsadasdsadsa")]
         [InlineData("                                                        ")]
         [InlineData("  f   ")]
-        public void TicketType_TypeName_ShouldCorrect(string typeName)
+        [InlineData(" \r \t \n" )]
+        //[InlineData(0)]
+        public void TicketType_TypeName_ShouldFail(string typeName)
         {
             ticketTypeDto.TypeName = typeName;
-            var valid = ticketTypeValidator.Validate(ticketTypeDto).IsValid.Equals(true);
-
-            Assert.False(valid);
+            
+            var isValid = ticketTypeValidator.Validate(ticketTypeDto).IsValid.Equals(true);
+            
+            Assert.True(isValid);
+        }
+        
+        [Theory]
+        [InlineData("")]
+        [InlineData((string) null)]
+        [InlineData("q")]
+        [InlineData("#")]
+        [InlineData("qwertyuioplkjhgfdsazxcvbnmetretertretertertsadasdsadsa")]
+        [InlineData("                                                        ")]
+        [InlineData("  f   ")]
+        public void TicketType_TypeName_ShouldHaveError(string typeName)
+        {
+            ticketTypeValidator.ShouldHaveValidationErrorFor(ticketType => ticketType.TypeName, typeName);
         }
     }
 }
