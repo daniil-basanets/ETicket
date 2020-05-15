@@ -25,7 +25,6 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Transport> Transports { get; set; }
         public DbSet<PriceList> PriceList { get; set; }
         public DbSet<Area> Areas { get; set; }
-        public DbSet<Route> Routes { get; set; }
 
         #endregion
 
