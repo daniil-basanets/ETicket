@@ -19,16 +19,7 @@ namespace ETicket.WebAPI.Controllers
             this.verificationService = ticketVerificationService;
         }
 
-        [HttpGet("ticket/{ticketId}")]
-        public IActionResult GetTicketVerificationHistory(Guid ticketId)
-        {
-            var ticketVerification = verificationService
-                     .GetTicketVerifications()
-                     .Where(t => t.TicketId == ticketId)
-                     .OrderByDescending(t => t.VerificationUTCDate);
 
-            return Ok(ticketVerification);
-        }
 
         [HttpPost]
         public IActionResult VerifyTicket([FromBody]VerifyTicketRequest request)

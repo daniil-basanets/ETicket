@@ -36,6 +36,17 @@ namespace ETicket.ApplicationServices.Services
             return mapper.Map<TicketVerification, TicketVerificationDto>(ticketVerification);
         }
 
+        public IEnumerable<TicketVerification> GetVerificationHistoryByTicketId(Guid ticketId)
+        {
+            var history = unitOfWork.TicketVerifications
+                    .GetAll()
+                    .Where(t => t.TicketId == ticketId)
+                    .OrderByDescending(t => t.VerificationUTCDate);
+
+            return history.ToList();
+        }
+
+
         public void Create(TicketVerificationDto ticketVerificationDto)
         {
             var ticketVerification = mapper.Map<TicketVerificationDto, TicketVerification>(ticketVerificationDto);

@@ -8,11 +8,13 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface ITicketVerificationService
     {
-        public IEnumerable<TicketVerification> GetTicketVerifications();
+        IEnumerable<TicketVerification> GetTicketVerifications();
 
-        public TicketVerificationDto GetTicketVerificationById(Guid id);
+        TicketVerificationDto GetTicketVerificationById(Guid id);
 
-        public void Create(TicketVerificationDto ticketVerificationDtoDto);
+        IEnumerable<TicketVerification> GetVerificationHistoryByTicketId(Guid ticketId);
+
+        void Create(TicketVerificationDto ticketVerificationDtoDto);
 
         bool VerifyTicket(Guid ticketId, long transportId, float longitude, float latitude);
     }
