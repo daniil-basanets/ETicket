@@ -13,5 +13,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
         public TicketVerificationDto GetTicketVerificationById(Guid id);
 
         public void Create(TicketVerificationDto ticketVerificationDtoDto);
+
+        bool VerifyTicket(Guid ticketId, long transportId, float longitude, float latitude);
     }
 }

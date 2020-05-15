@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
@@ -42,6 +42,80 @@ namespace ETicket.ApplicationServices.Services
 
             unitOfWork.TicketVerifications.Create(ticketVerification);
             unitOfWork.Save();
+        }
+
+        public bool VerifyTicket(Guid ticketId, long transportId, float longitude, float latitude)
+        {
+            var ticket = unitOfWork
+                    .Tickets
+                    .GetAll()
+                    .Include(t => t.TicketArea)
+                    .FirstOrDefault(t => t.Id == ticketId);
+
+            if (ticket == null)
+            {
+                return false;
+            }
+            if (ticket.ActivatedUTCDate == null)
+            {
+                ActivateTicket(ticket);
+            }
+
+            var transport = unitOfWork.Transports.Get(transportId);
+
+            if (transport == null)
+            {
+                return false;
+            }
+
+            var station = GetNearestStationOnRoute(
+                    transport.RouteId, longitude, latitude);
+
+            if (station == null)
+            {
+                return false;
+            }
+
+            var isValid = true;
+
+            //Check for expired ticket
+            if (ticket.ExpirationUTCDate < DateTime.UtcNow || !ticket.TicketArea.Any(t => t.AreaId == station.Area.Id))
+            {
+                isValid = false;
+            }
+
+            var ticketVerificationDto = new TicketVerificationDto
+            {
+                Id = Guid.NewGuid(),
+                VerificationUTCDate = DateTime.UtcNow,
+                TicketId = ticketId,
+                TransportId = transport.Id,
+                StationId = station.Id,
+                IsVerified = isValid
+            };
+            Create(ticketVerificationDto);
+
+            return isValid;
+        }
+
+        private void ActivateTicket(Ticket ticket)
+        {
+            ticket.ActivatedUTCDate = DateTime.UtcNow;
+            ticket.ExpirationUTCDate = DateTime.UtcNow.AddHours(ticket.TicketType.DurationHours);
+            unitOfWork.Tickets.Update(ticket);
+            unitOfWork.Save();
+        }
+
+        private Station GetNearestStationOnRoute(int routeId, float latitude, float longitude)
+        {
+            return unitOfWork
+                    .RouteStation
+                    .GetAll()
+                    .Where(t => t.Route.Id == routeId)
+                    .Include(t => t.Station.Area)
+                    .Select(t => t.Station)
+                    .OrderBy(t => Math.Sqrt(Math.Pow(t.Latitude * latitude, 2) + Math.Pow(t.Longitude * longitude, 2)))
+                    .FirstOrDefault();
         }
     }
 }

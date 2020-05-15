@@ -63,16 +63,16 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.ActionLink(item.TicketId.ToString(), "Details", "Tickets", new { id = item.TicketId }, null)
+                                    @Html.ActionLink(item.TicketId.ToString(), "Details", "Ticket", new { id = item.TicketId }, null)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.VerificationUTCDate)
                                 </td>
                                 <td>
-                                    @Html.ActionLink(item.Station.Name, "Details", "Stations", new { id = item.StationId }, null)
+                                    @Html.DisplayFor(modelItem => item.Station.Name)
                                 </td>
                                 <td>
-                                    @Html.ActionLink(item.TransportId.ToString(), "Details", "Transports", new { id = item.TransportId }, null)
+                                    @Html.DisplayFor(modelItem => item.TransportId)
                                 </td>
                                 <td>
                                     @(item.IsVerified ? "Yes" : "No")
