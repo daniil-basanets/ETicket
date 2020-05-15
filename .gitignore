@@ -8,6 +8,7 @@
 _build/
 _site/
 Properties/
+**/logs
 
 # See #577
 # Use git add -f to force override .sln when required. Not needed in most cases.

@@ -1,10 +1,9 @@
-using System;
-using ETicket.DataAccess.Domain.Entities;
+using ETicket.ApplicationServices.DTOs;
 using FluentValidation;
 
 namespace ETicket.WebAPI.Validation
 {
-    public class TicketTypeValidator : AbstractValidator<TicketType>
+    public class TicketTypeValidator : AbstractValidator<TicketTypeDto>
     {
         public TicketTypeValidator()
         {

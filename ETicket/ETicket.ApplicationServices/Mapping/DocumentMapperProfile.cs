@@ -8,8 +8,8 @@ namespace ETicket.ApplicationServices.Mapping
     {
         public DocumentMapperProfile()
         {
-            CreateMap<DocumentDto, Document>();
-            CreateMap<DocumentTypeDto, DocumentType>();
+            CreateMap<DocumentDto, Document>().ReverseMap();
+            CreateMap<DocumentTypeDto, DocumentType>().ReverseMap();
         }
     }
 }

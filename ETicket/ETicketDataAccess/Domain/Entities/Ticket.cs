@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -42,5 +44,7 @@ namespace ETicket.DataAccess.Domain.Entities
         [DisplayName("Transaction")]
         [ForeignKey("TransactionHistoryId")]
         public TransactionHistory TransactionHistory { get; set; }
+
+        public ICollection<TicketArea>  TicketArea { get; set; }
     }
 }
