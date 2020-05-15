@@ -57,7 +57,7 @@ namespace ETicket.ApplicationServices.Services
             unitOfWork.Save();
         }
 
-        public bool VerifyTicket(Guid ticketId, long transportId, float longitude, float latitude)
+        public VerifyTicketResponceDto VerifyTicket(Guid ticketId, long transportId, float longitude, float latitude)
         {
             var ticket = unitOfWork
                     .Tickets
@@ -67,7 +67,7 @@ namespace ETicket.ApplicationServices.Services
 
             if (ticket == null)
             {
-                return false;
+                return new VerifyTicketResponceDto { IsValid = false, ErrorMessage = "Ticket was not found" };
             }
             if (ticket.ActivatedUTCDate == null)
             {
@@ -78,7 +78,7 @@ namespace ETicket.ApplicationServices.Services
 
             if (transport == null)
             {
-                return false;
+                return new VerifyTicketResponceDto { IsValid = false, ErrorMessage = "Transport was not found" };
             }
 
             var station = GetNearestStationOnRoute(
@@ -86,15 +86,20 @@ namespace ETicket.ApplicationServices.Services
 
             if (station == null)
             {
-                return false;
+                return new VerifyTicketResponceDto { IsValid = false, ErrorMessage = "Station was not found" };
             }
 
-            var isValid = true;
+            VerifyTicketResponceDto result = new VerifyTicketResponceDto { IsValid = true};
 
             //Check for expired ticket
-            if (ticket.ExpirationUTCDate < DateTime.UtcNow || !ticket.TicketArea.Any(t => t.AreaId == station.Area.Id))
+            if (ticket.ExpirationUTCDate < DateTime.UtcNow)
             {
-                isValid = false;
+                result = new VerifyTicketResponceDto { IsValid = false, ErrorMessage = "Ticket expired" };
+            }
+            //Compare ticket areas with train station
+            if (!ticket.TicketArea.Any(t => t.AreaId == station.Area.Id))
+            {
+                result = new VerifyTicketResponceDto { IsValid = false, ErrorMessage = "Ticket does not contain the zone" };
             }
 
             var ticketVerificationDto = new TicketVerificationDto
@@ -104,11 +109,11 @@ namespace ETicket.ApplicationServices.Services
                 TicketId = ticketId,
                 TransportId = transport.Id,
                 StationId = station.Id,
-                IsVerified = isValid
+                IsVerified = result.IsValid
             };
             Create(ticketVerificationDto);
 
-            return isValid;
+            return result;
         }
 
         private void ActivateTicket(Ticket ticket)

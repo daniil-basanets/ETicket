@@ -19,8 +19,6 @@ namespace ETicket.WebAPI.Controllers
             this.verificationService = ticketVerificationService;
         }
 
-
-
         [HttpPost]
         public IActionResult VerifyTicket([FromBody]VerifyTicketRequest request)
         {
