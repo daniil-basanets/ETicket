@@ -1,17 +1,19 @@
 using System;
+using ETicket.ApplicationServices.DTOs;
 using ETicket.DataAccess.Domain.Entities;
 using FluentValidation;
 
 namespace ETicket.WebAPI.Validation
 {
-    public class TicketTypeValidator : AbstractValidator<TicketType>
+    public class TicketTypeValidator : AbstractValidator<TicketTypeDto>
     {
         public TicketTypeValidator()
         {
             RuleFor(t => t.TypeName)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("{PropertyName} is empty")
-                .Length(2, 50).WithMessage("Lenght {TotalLength} of {PropertyName} is Invalid");
+                .Length(2, 50).WithMessage("Lenght {TotalLength} of {PropertyName} is Invalid")
+                .Must(BeAValidName);
 
             RuleFor(t => t.IsPersonal)
                 .NotNull();
@@ -27,7 +29,12 @@ namespace ETicket.WebAPI.Validation
                 .GreaterThan(decimal.Zero).WithMessage("{PropertyName} should be greater than {ComparisonValue}")
                 .Must(BeAValidPrice).WithMessage("{PropertyName} is Invalid");
         }
-        
+
+        private bool BeAValidName(string name)
+        {
+            name = name.Replace(" ", "");
+            return name.Length >= 2;
+        }
         private bool BeAValidPrice(decimal price)
         {
             var temp = price.ToString().Split('.', ',');

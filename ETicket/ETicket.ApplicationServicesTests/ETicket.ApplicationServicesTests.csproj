@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ETicket.ApplicationServices\ETicket.ApplicationServices.csproj" />
     <ProjectReference Include="..\ETicketDataAccess\ETicket.DataAccess.csproj" />
+    <ProjectReference Include="..\ETicketWebAPI\ETicket.WebAPI.csproj" />
   </ItemGroup>
 
 </Project>

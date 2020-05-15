@@ -17,6 +17,7 @@ namespace ETicket.ApplicationServicesTests
         private readonly IQueryable<TicketType> fakeTicketTypes;
         private readonly TicketTypeDto ticketTypeDto;
         private TicketType ticketType;
+        private TicketType ticketTypeForUpdate;
 
         public TicketTypeServiceTests()
         {
@@ -32,22 +33,30 @@ namespace ETicket.ApplicationServicesTests
                 Id = 3,
                 TypeName = "asd",
                 Price = 2.3M,
-                DurationHours = 12,
+                
                 IsPersonal = true
+            };
+            ticketTypeForUpdate = new TicketType
+            {
+                Id = 3,
+                DurationHours = 12
             };
             ticketTypeRepository.Setup(m => m.GetAll()).Returns(fakeTicketTypes);
             ticketTypeRepository.Setup(m => m.Get(fakeTicketTypes.First().Id)).Returns(fakeTicketTypes.First());
             ticketTypeRepository.Setup(r => r.Create(It.IsAny<TicketType>()))
                 .Callback<TicketType>(x => ticketType = x);
             ticketTypeRepository.Setup(r => r.Update(It.IsAny<TicketType>()))
-                .Callback<TicketType>(x => ticketType = x);
+                .Callback<TicketType>(x => ticketTypeForUpdate = x);
+            ticketTypeRepository.Setup(r => r.Delete(It.IsAny<int>()))
+                .Callback<int>(x => ticketTypeForUpdate.Id = x);
+            
             unitOfWork.Setup(x => x.TicketTypes).Returns(ticketTypeRepository.Object);
             
             ticketTypeService = new TicketTypeService(unitOfWork.Object);
         }
         
         [Fact]
-        public void TicketTypeGetAll()
+        public void GetAll_TicketTypes_ShouldCorrect()
         {
             var ticketTypes = ticketTypeService.GetAll();
             
@@ -57,22 +66,21 @@ namespace ETicket.ApplicationServicesTests
         }
 
         [Fact]
-        public void GetByIdTicketType()
+        public void GetByIdTicketType_ShouldCorrect()
         {
             Assert.Equal(fakeTicketTypes.First().DurationHours, ticketTypeService.Get(1).DurationHours);
         }
 
         [Fact]
-        public void DeleteTicketType() 
+        public void Delete_TicketType_ShouldCorrect() 
         {
-            ticketTypeService.Create(ticketTypeDto);
-            ticketTypeService.Delete(3);
+            ticketTypeService.Delete(ticketTypeForUpdate.Id);
             
-            Assert.Null(ticketType);
+            Assert.Equal((uint)12,ticketTypeForUpdate.DurationHours);
         }
         
         [Fact]
-        public void CreateTicketType()
+        public void Create_TicketType_ShouldCorrect()
         {
             ticketTypeService.Create(ticketTypeDto);
 
@@ -82,11 +90,13 @@ namespace ETicket.ApplicationServicesTests
         }
 
         [Fact]
-        public void UpdateTicketType()
+        public void Update_TicketType_ShouldCorrect()
         {
             ticketTypeService.Update(ticketTypeDto);
+            ticketTypeRepository.Verify(x => x.Update(It.IsAny<TicketType>()), Times.Once);
             
-            Assert.Equal("asd",ticketType.TypeName);
+            Assert.Equal("asd",ticketTypeForUpdate.TypeName);
+            //Assert.Equal((uint)12,ticketTypeForUpdate.DurationHours);
         }
     }
 }
