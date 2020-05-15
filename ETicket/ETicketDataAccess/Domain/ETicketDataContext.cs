@@ -22,6 +22,7 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Station> Stations { get; set; }
         public DbSet<Transport> Transports { get; set; }
         public DbSet<PriceList> PriceList { get; set; }
+        public DbSet<Area> Areas { get; set; }
 
         #endregion
 

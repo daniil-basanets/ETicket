@@ -21,6 +21,7 @@ namespace ETicket.DataAccess.Domain.Interfaces
         CarrierRepository Carriers { get; }
 
         SecretCodeRepository SecretCodes { get; }
+        AreaRepository Areas { get; }
 
         StationRepository Stations { get; }
         
