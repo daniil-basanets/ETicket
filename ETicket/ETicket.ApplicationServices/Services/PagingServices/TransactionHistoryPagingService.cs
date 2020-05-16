@@ -23,8 +23,7 @@ namespace ETicket.ApplicationServices.Services.PagingServices
 
         public IQueryable<TransactionHistory> GetAll()
         {
-            return unitOfWork.TransactionHistory
-                .GetAll();
+            return unitOfWork.TransactionHistory.GetAll();
         }
 
         public Expression<Func<TransactionHistory, bool>> GetSingleFilterExpression(string columnName, string filterValue)
