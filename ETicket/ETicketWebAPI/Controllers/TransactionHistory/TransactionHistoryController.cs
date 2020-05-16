@@ -4,11 +4,10 @@ using System.Reflection;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
-using ETicket.WebAPI.Models;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ETicket.WebAPI.Controllers
+namespace ETicket.WebAPI.Controllers.TransactionHistory
 {
     [Route("api/transactionhistory")]
     [ApiController]

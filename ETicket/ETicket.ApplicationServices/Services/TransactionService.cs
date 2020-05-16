@@ -26,7 +26,6 @@ namespace ETicket.ApplicationServices.Services.Transaction
 
         public void AddTransaction(TransactionHistoryDto transactionDto)
         {
-            transactionDto.Id = Guid.NewGuid();
             var transaction = mapperService.Map<TransactionHistoryDto, TransactionHistory>(transactionDto);
 
             unitOfWork.TransactionHistory.Create(transaction);
