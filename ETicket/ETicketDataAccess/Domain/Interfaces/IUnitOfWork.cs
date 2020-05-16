@@ -8,6 +8,8 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         RouteRepository Routes { get; }
 
+        RouteStationRepository RouteStation { get; }
+
         DocumentTypeRepository DocumentTypes { get; }
 
         PrivilegeRepository Privileges { get; }
@@ -15,6 +17,8 @@ namespace ETicket.DataAccess.Domain.Interfaces
         TicketRepository Tickets { get; }
 
         TicketTypeRepository TicketTypes { get; }
+
+        TicketAreaRepository TicketAreas { get; }
 
         TicketVerificationRepository TicketVerifications { get; }
         
@@ -25,6 +29,7 @@ namespace ETicket.DataAccess.Domain.Interfaces
         CarrierRepository Carriers { get; }
 
         SecretCodeRepository SecretCodes { get; }
+
         AreaRepository Areas { get; }
 
         StationRepository Stations { get; }
@@ -32,8 +37,6 @@ namespace ETicket.DataAccess.Domain.Interfaces
         TransportRepository Transports { get; }
         
         PriceListRepository PriceList { get; }
-
-        TicketVerificationRepository TicketVerifications { get; }
 
         void Save();
     }
