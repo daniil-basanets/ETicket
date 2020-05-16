@@ -1,11 +1,15 @@
-﻿namespace ETicket.ApplicationServices.DTOs
+﻿using System.ComponentModel;
+
+namespace ETicket.ApplicationServices.DTOs
 {
     public class TransportDto
     {
         public long Id { get; set; }
 
-        public int? CarrierId { get; set; }
+        [DisplayName("Carrier")]
+        public int CarrierId { get; set; }
 
-        public int? RouteId { get; set; }
+        [DisplayName("Route")]
+        public int RouteId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,6 +14,7 @@ namespace ETicket.DataAccess.Domain.Entities
         public decimal Price { get; set; }
 
         [Required]
+        [DisplayName("Start date")]
         public DateTime StartDate { get; set; }
 
         [Required]
