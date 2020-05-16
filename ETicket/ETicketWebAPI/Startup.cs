@@ -58,7 +58,6 @@ namespace ETicket.WebAPI
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IDocumentTypesService, DocumentTypesService>();
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ETicketDataContext>();
 
 
             services.AddIdentity<IdentityUser, IdentityRole>()
