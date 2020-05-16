@@ -15,6 +15,7 @@ namespace ETicket.DataAccess.Domain.Entities
         public int DocumentTypeId { get; set; }
 
         [ForeignKey("DocumentTypeId")]
+        [DisplayName("Document type")]
         public DocumentType DocumentType { get; set; }
 
         [Required]

@@ -67,7 +67,7 @@ namespace ETicket.Admin
             services.AddTransient<IDocumentService, DocumentService>();
             services.AddTransient<IPriceListService, PriceListService>();
             services.AddTransient<IRouteService, RouteService>();
-            services.AddTransient<ITransactionAppService, TransactionAppService>();
+            services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<ITransportService, TransportService>();
 
 
