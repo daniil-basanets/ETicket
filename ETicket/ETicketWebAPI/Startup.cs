@@ -60,6 +60,7 @@ namespace ETicket.WebAPI
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IDocumentTypesService, DocumentTypesService>();
             services.AddTransient<ITransactionService, TransactionService>();
+            services.AddTransient<ITicketVerificationService, TicketVerificationService>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                .AddEntityFrameworkStores<ETicketDataContext>()

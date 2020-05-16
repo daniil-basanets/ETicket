@@ -13,12 +13,14 @@ namespace ETicket.WebAPI.Controllers
         #region Private members
 
         private readonly ITicketService ticketService;
+        private readonly ITicketVerificationService verificationService;
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
-        public TicketsController(ITicketService ticketService)
+        public TicketsController(ITicketService ticketService, ITicketVerificationService verificationService)
         {
             this.ticketService = ticketService;
+            this.verificationService = verificationService;
         }
 
         // GET: api/tickets/5
@@ -51,6 +53,26 @@ namespace ETicket.WebAPI.Controllers
             }
         }
 
+        [HttpGet("{ticketId}/verification-history")]
+        public IActionResult GetTicketVerificationHistory(Guid ticketId)
+        {
+            log.Info(nameof(GetTicketVerificationHistory));
+
+            try
+            {
+                var ticketVerification = verificationService
+                     .GetVerificationHistoryByTicketId(ticketId);            
+
+                return Ok(ticketVerification);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
         // PUT: api/tickets/activate
         [HttpPut("/activate/{ticketId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -72,6 +94,8 @@ namespace ETicket.WebAPI.Controllers
                 return BadRequest();
             }
         }
+
+
     }
 }
 

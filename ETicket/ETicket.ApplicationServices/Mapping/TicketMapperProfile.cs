@@ -10,6 +10,7 @@ namespace ETicket.ApplicationServices.Mapping
         {
             CreateMap<TicketDto, Ticket>().ReverseMap();
             CreateMap<TicketTypeDto, TicketType>().ReverseMap();
+            CreateMap<TicketVerificationDto, TicketVerification>().ReverseMap();
         }
     }
 }

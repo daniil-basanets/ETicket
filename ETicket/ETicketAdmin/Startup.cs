@@ -69,7 +69,7 @@ namespace ETicket.Admin
             services.AddTransient<IRouteService, RouteService>();
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<ITransportService, TransportService>();
-
+            services.AddTransient<ITicketVerificationService, TicketVerificationService>();
 
             services.AddTransient<IDataTablePagingService<Ticket>, TicketPagingService>();
             services.AddTransient<IDataTablePagingService<User>, UserPagingService>();
@@ -82,6 +82,8 @@ namespace ETicket.Admin
             services.AddTransient<IDataTableService<TransactionHistory>, DataTableService<TransactionHistory>>();
 
             
+           
+
 
             services.AddIdentityCore<IdentityUser>(o =>
             {
