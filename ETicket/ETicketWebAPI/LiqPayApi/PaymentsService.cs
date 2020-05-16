@@ -17,14 +17,14 @@ namespace ETicket.WebAPI.LiqPayApi
 
         private readonly LiqPayClient liqPayClient;
 
-        private readonly ITransactionAppService transactionAppService;
+        private readonly ITransactionService transactionAppService;
         private readonly ITicketService ticketService;
         private readonly IUserService userService;
 
         #endregion
 
         public PaymentsService(
-            ITransactionAppService transactionAppService,
+            ITransactionService transactionAppService,
             ITicketService ticketService,
             IUserService userService,
             IMerchant merchant

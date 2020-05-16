@@ -11,9 +11,5 @@ namespace ETicket.ApplicationServices.DTOs
         public decimal TotalPrice { get; set; }
 
         public DateTime Date { get; set; }
-
-        public int TicketTypeId { get; set; }
-
-        public int Count { get; set; }
     }
 }
