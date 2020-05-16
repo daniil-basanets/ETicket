@@ -50,6 +50,9 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/users/5
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetUser(Guid id)
         {
             log.Info(nameof(UsersController.GetUser));
@@ -77,6 +80,8 @@ namespace ETicket.WebAPI.Controllers
 
         // PUT: api/users/5
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult UpdateUser(Guid id, UserDto userDto)
         {
             log.Info(nameof(UsersController.UpdateUser));
@@ -104,6 +109,8 @@ namespace ETicket.WebAPI.Controllers
 
         // POST: api/users
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult CreateUser(UserDto userDto)
         {
             log.Info(nameof(UsersController.CreateUser));
