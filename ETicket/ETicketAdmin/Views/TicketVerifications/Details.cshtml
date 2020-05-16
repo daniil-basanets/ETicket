@@ -1,4 +1,4 @@
-﻿@model ETicket.DataAccess.Domain.Entities.TicketVerification
+﻿@model ETicket.ApplicationServices.DTOs.TicketVerificationDto
 
 @{
     ViewData["Title"] = "Details";
@@ -11,10 +11,10 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ticket)
+            @Html.DisplayNameFor(model => model.TicketId)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ticket.Id)
+            @Html.DisplayFor(model => model.TicketId)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.VerificationUTCDate)
@@ -23,16 +23,16 @@
             @Html.DisplayFor(model => model.VerificationUTCDate)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Station)
+            @Html.DisplayNameFor(model => model.StationId)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Station.Name)
+            @Html.DisplayFor(model => model.StationId)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Transport)
+            @Html.DisplayNameFor(model => model.TransportId)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Transport.Id)
+            @Html.DisplayFor(model => model.TransportId)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.IsVerified)
