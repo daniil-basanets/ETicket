@@ -5,12 +5,10 @@ using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.DocumentTypes;
-using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Services.Transaction;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
-using ETicket.WebAPI.Validation;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -23,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ETicket.ApplicationServices.Services.PagingServices;
 using ETicket.ApplicationServices.Services.DataTable;
+using ETicket.ApplicationServices.Validation;
 
 namespace ETicket.Admin
 {
@@ -42,8 +41,6 @@ namespace ETicket.Admin
             services.AddControllersWithViews();
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
             services.AddTransient<IUnitOfWork, UnitOfWork>(u => new UnitOfWork(u.GetService<ETicketDataContext>()));
-
-            services.AddTransient<ITransactionAppService, TransactionAppService>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ETicketDataContext>()
@@ -67,6 +64,11 @@ namespace ETicket.Admin
             services.AddTransient<IPrivilegeService, PrivilegeService>();
             services.AddTransient<IAreaService, AreaService>();
             services.AddTransient<IStationService, StationService>();
+            services.AddTransient<IDocumentService, DocumentService>();
+            services.AddTransient<IPriceListService, PriceListService>();
+            services.AddTransient<IRouteService, RouteService>();
+            services.AddTransient<ITransactionService, TransactionService>();
+            services.AddTransient<ITransportService, TransportService>();
 
 
             services.AddTransient<IDataTablePagingService<Ticket>, TicketPagingService>();

@@ -22,13 +22,13 @@ namespace ETicket.Admin.Controllers
         private readonly ITicketService ticketService;
         private readonly ITicketTypeService ticketTypeService;
         private readonly IUserService userService;
-        private readonly ITransactionAppService transactionService;
+        private readonly ITransactionService transactionService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IDataTableService<Ticket> dataTableService;
 
         #endregion
 
-        public TicketController(ITransactionAppService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService, IDataTableService<Ticket> dataTableService)
+        public TicketController(ITransactionService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService, IDataTableService<Ticket> dataTableService)
         {
             this.ticketService = ticketService;
             this.ticketTypeService = ticketTypeService;
@@ -66,6 +66,8 @@ namespace ETicket.Admin.Controllers
 
             try
             {
+                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketTypes(), "Id", "TypeName");
+                
                 return View();
             }
             catch (Exception e)

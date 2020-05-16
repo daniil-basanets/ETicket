@@ -14,13 +14,13 @@ namespace ETicket.Admin.Controllers
     {
         #region Private Members
 
-        private readonly ITransactionAppService transactionAppService;
+        private readonly ITransactionService transactionAppService;
         private readonly IDataTableService<TransactionHistory> dataTableService;
 
         #endregion
 
         public TransactionHistoryController(
-            ITransactionAppService transactionAppService,
+            ITransactionService transactionAppService,
             IDataTableService<TransactionHistory> dataTableService)
         {
             this.transactionAppService = transactionAppService;

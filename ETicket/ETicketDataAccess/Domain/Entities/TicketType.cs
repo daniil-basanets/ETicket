@@ -19,7 +19,7 @@ namespace ETicket.DataAccess.Domain.Entities
         public uint DurationHours { get; set; }
         
         [Required]
-        [DisplayName("Peronal")]
+        [DisplayName("Personal")]
         public bool IsPersonal { get; set; }
         
         [Required]
