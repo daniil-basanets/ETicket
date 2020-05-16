@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using ETicket.ApplicationServices.DTOs;
 using FluentValidation;
 
-namespace ETicket.WebAPI.Validation
+namespace ETicket.ApplicationServices.Validation
 {
     public class UserValidator : AbstractValidator<UserDto>
     {

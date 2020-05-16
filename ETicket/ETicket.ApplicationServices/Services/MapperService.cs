@@ -23,6 +23,7 @@ namespace ETicket.ApplicationServices.Services
                 cfg.AddProfile<UserMapperProfile>();
                 cfg.AddProfile<TransactionHistoryMapperProfile>();
                 cfg.AddProfile<CarrierMapperProfile>();
+                cfg.AddProfile<AreaMapperProfile>();
             });
 
             return config.CreateMapper();

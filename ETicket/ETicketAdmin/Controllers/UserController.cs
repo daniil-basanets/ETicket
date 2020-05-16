@@ -1,13 +1,15 @@
-﻿using System;
-using ETicket.DataAccess.Domain.Interfaces;
+﻿using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.Interfaces;
-using log4net;
+using System;
 using System.Reflection;
+
+using ETicket.Admin.Models.DataTables;
+using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.Admin.Controllers
 {
@@ -16,6 +18,7 @@ namespace ETicket.Admin.Controllers
     {
         #region Private members
 
+        private readonly IDataTableService<User> dataTableService;
         private readonly IUserService userService;
         private readonly IPrivilegeService privilegeService;
         private readonly IDocumentService documentService;
@@ -24,12 +27,13 @@ namespace ETicket.Admin.Controllers
 
         #endregion
 
-        public UserController(IPrivilegeService PService, IUserService UService, IDocumentTypesService DTService, IDocumentService DService)
+        public UserController(IPrivilegeService PService, IUserService UService, IDocumentTypesService DTService, IDocumentService DService, IDataTableService<User> dataTableService)
         {
             userService = UService;
             privilegeService = PService;
             documentService = DService;
             documentTypeService = DTService;
+            this.dataTableService = dataTableService;
         }
 
         [HttpGet]
@@ -41,7 +45,7 @@ namespace ETicket.Admin.Controllers
             {
                 ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name");
 
-                return View(userService.GetUsers());
+                return View();
             }
             catch (Exception e)
             {
@@ -49,6 +53,12 @@ namespace ETicket.Admin.Controllers
 
                 return BadRequest();
             }
+        }
+
+        [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
+        {
+            return Json(dataTableService.GetDataTablePage(pagingInfo));
         }
 
         [HttpGet]

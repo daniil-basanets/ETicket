@@ -25,26 +25,15 @@ namespace ETicket.ApplicationServices.Services
         {
             var routeService = mapper.Map<RouteDto, Route>(routeDto);
             unitOfWork.Routes.Create(routeService);
-            Save();
+            unitOfWork.Save();
         }
 
-        public void Delete(int id)
-        {
-            unitOfWork.Routes.Delete(id);
-            Save();
-        }
-
-        public bool Exists(int id)
-        {
-            return unitOfWork.Routes.Get(id) != null;
-        }
-
-        public IQueryable<Route> Read()
+        public IEnumerable<Route> GetRoutes()
         {
             return unitOfWork.Routes.GetAll();
-        }
+        }       
 
-        public Route Read(int id)
+        public Route GetRouteById(int id)
         {
             return unitOfWork.Routes.Get(id);
         }
@@ -53,12 +42,18 @@ namespace ETicket.ApplicationServices.Services
         {
             var routeService = mapper.Map<RouteDto, Route>(routeDto);
             unitOfWork.Routes.Update(routeService);
-            Save();
+            unitOfWork.Save();
         }
 
-        public void Save()
+        public void Delete(int id)
         {
+            unitOfWork.Routes.Delete(id);
             unitOfWork.Save();
+        }
+        
+        public bool Exists(int id)
+        {
+            return unitOfWork.Routes.Get(id) != null;
         }
     }
 }

@@ -38,7 +38,7 @@ namespace ETicket.WebAPI.Controllers
         {
             var userId = userService.GetByEmail(request.Email).Id;
             var transactionHistories = ticketService
-                    .GetAll()
+                    .GetTickets()
                     .Where(t => t.UserId == userId)
                     .Select(t => t.TransactionHistory);
 
