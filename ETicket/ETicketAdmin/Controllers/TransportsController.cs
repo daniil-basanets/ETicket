@@ -65,7 +65,7 @@ namespace ETicket.Admin.Controllers
             {
                 log.Error(e);
 
-                return BadRequest();
+                return NotFound();
             }
         }
 
