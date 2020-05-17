@@ -26,8 +26,7 @@ namespace ETicket.Admin.Controllers
             log.Info(nameof(MetricsController.Index));
 
             try
-            {
-                ChartDto chartDtoTicketsByTicketTypes = metricsService.TicketsByTicketTypes(DateTime.UtcNow.AddDays(-30), DateTime.UtcNow);
+            {               
                 return View();
             }
             catch (Exception e)
@@ -36,6 +35,13 @@ namespace ETicket.Admin.Controllers
 
                 return BadRequest();
             }
+        }
+
+        public IActionResult GetTicketsByTicketTypes()
+        {
+            ChartDto chartDtoTicketsByTicketTypes = metricsService.TicketsByTicketTypes(DateTime.UtcNow.AddDays(-30), DateTime.UtcNow);
+
+            return Json(chartDtoTicketsByTicketTypes);
         }
     }
 }
