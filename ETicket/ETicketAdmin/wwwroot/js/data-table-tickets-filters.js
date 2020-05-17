@@ -165,18 +165,6 @@ $(document).ready(function () {
             }
         });
 
-    $("#created-date-datepicker").datepicker({
-        dateFormat: "dd.mm.yy"
-    });
-
-    $("#activated-date-datepicker").datepicker({
-        dateFormat: "dd.mm.yy"
-    });
-
-    $("#expiration-date-datepicker").datepicker({
-        dateFormat: "dd.mm.yy"
-    });
-
     //Change event listener for search
     //Search after pressing Enter or defocusing the search input field
     $("#dataTable_filter input").unbind()
@@ -192,25 +180,12 @@ $(document).ready(function () {
             table.draw();
         });
 
-    $('#ticket-type-select').change(function () {
+    $('#activated-date-datepicker, #expiration-date-datepicker, #created-date-datepicker, #ticket-type-select')
+        .change(function () {
         isNewSearch = true;
         table.draw();
     });
 
-    $('#created-date-datepicker').change(function () {
-        isNewSearch = true;
-        table.draw();
-    });
-
-    $('#activated-date-datepicker').change(function () {
-        isNewSearch = true;
-        table.draw();
-    });
-
-    $('#expiration-date-datepicker').change(function () {
-        isNewSearch = true;
-        table.draw();
-    });
 
 
 
