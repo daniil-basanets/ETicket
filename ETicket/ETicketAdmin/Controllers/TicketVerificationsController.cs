@@ -4,6 +4,9 @@ using System;
 using System.Reflection;
 
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.Admin.Models.DataTables;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.Admin.Controllers
 {
@@ -11,14 +14,16 @@ namespace ETicket.Admin.Controllers
     {
         #region Private members
 
+        private readonly IDataTableService<TicketVerification> dataTableService;
         private readonly ITicketVerificationService ticketVerificationService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 
-        public TicketVerificationsController(ITicketVerificationService service)
+        public TicketVerificationsController(ITicketVerificationService service, IDataTableService<TicketVerification> dataTableService)
         {
             this.ticketVerificationService = service;
+            this.dataTableService = dataTableService;
         }
 
         // GET: TicketVerifications
@@ -28,7 +33,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                return View(ticketVerificationService.GetTicketVerifications());
+                return View();
             }
             catch (Exception e)
             {
@@ -36,6 +41,12 @@ namespace ETicket.Admin.Controllers
 
                 return BadRequest();
             }
+        }
+
+        [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
+        {
+            return Json(dataTableService.GetDataTablePage(pagingInfo));
         }
 
         // GET: TicketVerifications/Details/5

@@ -75,11 +75,13 @@ namespace ETicket.Admin
             services.AddTransient<IDataTablePagingService<User>, UserPagingService>();
             services.AddTransient<IDataTablePagingService<Document>, DocumentPagingService>();
             services.AddTransient<IDataTablePagingService<TransactionHistory>, TransactionHistoryPagingService>();
+            services.AddTransient<IDataTablePagingService<TicketVerification>, TicketVerificationPagingService>();
 
             services.AddTransient<IDataTableService<Ticket>, DataTableService<Ticket>>();
             services.AddTransient<IDataTableService<User>, DataTableService<User>>();
             services.AddTransient<IDataTableService<Document>, DataTableService<Document>>();
             services.AddTransient<IDataTableService<TransactionHistory>, DataTableService<TransactionHistory>>();
+            services.AddTransient<IDataTableService<TicketVerification>, DataTableService<TicketVerification>>();
 
             
            
