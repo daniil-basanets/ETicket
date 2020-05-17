@@ -6,12 +6,16 @@ namespace ETicket.ApplicationServices.DTOs
 {
     public class StationDto
     {
+        //TODO: add list of routes
         public int Id { get; set; }
 
         public string Name { get; set; }
 
         [DisplayName("Area")]
         public int AreaId { get; set; }
+
+        [DisplayName("Area")]
+        public Area Area { get; set; }
 
         public double Latitude { get; set; }
 
