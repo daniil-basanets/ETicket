@@ -38,7 +38,7 @@
                                         <summary>
                                             @Html.DisplayNameFor(model => model.CreatedUTCDate)
                                         </summary>
-                                        <input type="text" id="created-date-datepicker" class="ticket-filter-form form-control form-control-sm">
+                                        <input type="date" id="created-date-datepicker" class="ticket-filter-form form-control form-control-sm">
                                     </details>
                                 </th>
                                 <th>
@@ -46,7 +46,7 @@
                                         <summary>
                                             @Html.DisplayNameFor(model => model.ActivatedUTCDate)
                                         </summary>
-                                        <input type="text" id="activated-date-datepicker" class="ticket-filter-form form-control form-control-sm">
+                                        <input type="date" id="activated-date-datepicker" class="ticket-filter-form form-control form-control-sm">
                                     </details>
                                 </th>
                                 <th>
@@ -54,7 +54,7 @@
                                         <summary>
                                             @Html.DisplayNameFor(model => model.ExpirationUTCDate)
                                         </summary>
-                                        <input type="text" id="expiration-date-datepicker" class="ticket-filter-form form-control form-control-sm">
+                                        <input type="date" id="expiration-date-datepicker" class="ticket-filter-form form-control form-control-sm">
                                     </details>
                                 </th>
                                 <th>
@@ -132,8 +132,6 @@
     </div>
 </div>
 <script src="/vendor/jquery/jquery.min.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <!-- Page level plugins -->
 <script src="/vendor/datatables/jquery.dataTables.min.js"></script>
