@@ -16,10 +16,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.WebAPI.Controllers
 {
-    [Route("api/Authentication")]
+    [Route("api/authentication")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
+        #region Private members
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly ETicketDataContext context;
@@ -28,6 +29,7 @@ namespace ETicket.WebAPI.Controllers
         private readonly IMailService mailService;
         private readonly IUserService ETUserService;
         private readonly ISecretCodeService codeService;
+        #endregion
 
         public AuthenticationController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ETicketDataContext context, IMailService mailService, IUserService ETUserService, ISecretCodeService codeService)
         {
@@ -40,7 +42,8 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // Check if email exists
-        [HttpPost("checkEmail")]
+        // POST: api/authentication/check-user
+        [HttpPost("/check-user")]
         public IActionResult CheckEmail([FromBody] RegistrationRequest request)
         {
             if (ModelState.IsValid)
@@ -58,7 +61,8 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // Registration user
-        [HttpPost("registration")]
+        // POST: api/authentication/registration
+        [HttpPost("/registration")]
         public async Task<IActionResult> Registration([FromBody] RegistrationRequest request)
         {
             if (ModelState.IsValid)
@@ -95,7 +99,8 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // Login user
-        [HttpPost("login")]
+        // POST: api/authentication/token
+        [HttpPost("/token")]
         public async Task<IActionResult> GetToken([FromBody] AuthenticationRequest request)
         {
             if (ModelState.IsValid)
@@ -122,7 +127,8 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // Refresh access_jwtToken
-        [HttpPost("refreshUserToken")]
+        // POST: api/authentication/refresh-token
+        [HttpPost("/refresh-token")]
         public async Task<IActionResult> RefreshUserToken([FromBody] string RefreshToken)
         {
             var token = await context.UserTokens.FirstOrDefaultAsync(refT => refT.Value == RefreshToken);// check if token exists
@@ -145,7 +151,8 @@ namespace ETicket.WebAPI.Controllers
             return NotFound();
         }
 
-        [HttpPost("resetPassword")]
+        // POST: api/authentication/reset-password
+        [HttpPost("/reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
             var user = await userManager.FindByEmailAsync(request.Email);
@@ -167,7 +174,8 @@ namespace ETicket.WebAPI.Controllers
             return NotFound(succeeded);
         }
 
-        [HttpPost("checkCode")]
+        // POST: api/authentication/check-code
+        [HttpPost("/check-code")]
         public async Task<IActionResult> CheckCode([FromBody] CheckCodeRequest request)
         {
             var code = await codeService.Get(request.Code, request.Email);
@@ -184,7 +192,8 @@ namespace ETicket.WebAPI.Controllers
             return StatusCode(400, new { succeeded });
         }
 
-        [HttpPost("sendCode")]
+        // POST: api/authentication/send-code
+        [HttpPost("/send-code")]
         public void SendSecretCodeToUser([FromBody] string email)
         {
             if (codeService.Count(email) < 3)
