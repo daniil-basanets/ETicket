@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using ETicket.ApplicationServices.Charts.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
+                ChartDto chartDtoTicketsByTicketTypes = metricsService.TicketsByTicketTypes(DateTime.UtcNow.AddDays(-30), DateTime.UtcNow);
                 return View();
             }
             catch (Exception e)
