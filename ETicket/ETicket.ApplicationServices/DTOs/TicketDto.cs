@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 
@@ -11,8 +12,9 @@ namespace ETicket.ApplicationServices.DTOs
         [DisplayName("Ticket type")]
         public int TicketTypeId { get; set; }
 
-        public string TicketTypeName { get; set; }
-        
+        [DisplayName("Ticket type")]
+        public string? TicketTypeName { get; set; }
+
         [DisplayName("Created")]
         public DateTime CreatedUTCDate { get; set; }
 
@@ -25,13 +27,18 @@ namespace ETicket.ApplicationServices.DTOs
         [DisplayName("User")]
         public Guid? UserId { get; set; }
 
-        public string UserName { get; set; }
-                
+        [DisplayName("User")]
+        public string? UserName { get; set; }
+
         [DisplayName("Transaction")]
         public Guid TransactionHistoryId { get; set; }
 
-        public string TransactionRRN { get; set; }
+        [DisplayName("Transaction")]
+        public string? TransactionRRN { get; set; }
 
-        public IList<KeyValuePair<int, string>> Areas { get; set; }
+        public List<int> SelectedAreaIds { get; set; }
+
+        [DisplayName("Areas")]
+        public IList<KeyValuePair<int, string>>? Areas { get; set; }
     }
 }

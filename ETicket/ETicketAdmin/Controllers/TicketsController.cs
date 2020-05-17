@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Linq;
 using System.Reflection;
-
+using System.Collections.Generic;
 using ETicket.Admin.Models.DataTables;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
@@ -23,18 +23,20 @@ namespace ETicket.Admin.Controllers
         private readonly ITicketTypeService ticketTypeService;
         private readonly IUserService userService;
         private readonly ITransactionService transactionService;
+        private readonly IAreaService areaService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IDataTableService<Ticket> dataTableService;
 
         #endregion
 
-        public TicketController(ITransactionService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService, IDataTableService<Ticket> dataTableService)
+        public TicketController(ITransactionService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService, IAreaService areaService, IDataTableService<Ticket> dataTableService)
         {
             this.ticketService = ticketService;
             this.ticketTypeService = ticketTypeService;
             this.userService = userService;
             this.dataTableService = dataTableService;
             this.transactionService = transactionAppService;
+            this.areaService = areaService;
         }
 
         [HttpGet]
@@ -118,9 +120,22 @@ namespace ETicket.Admin.Controllers
         {
             log.Info(nameof(TicketController.Create));
 
+            TicketDto ticketDto = new TicketDto();
+            ticketDto.SelectedAreaIds = new List<int>();
             InitViewDataForSelectList();
 
-            return View();
+            try
+            {
+                ViewData["AreaId"] = new MultiSelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name", ticketDto?.Areas);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+
+            return View(ticketDto);
         }
 
         [HttpPost]
@@ -179,6 +194,12 @@ namespace ETicket.Admin.Controllers
             try
             {
                 ticketDto = ticketService.GetTicketById((Guid)id);
+                ticketDto.SelectedAreaIds = new List<int>();
+                foreach (var ticketArea in ticketDto.Areas)
+                {
+                    ticketDto.SelectedAreaIds.Add(ticketArea.Key);
+                }
+                ViewData["AreaId"] = new MultiSelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name", ticketDto.SelectedAreaIds);
             }
             catch (Exception e)
             {

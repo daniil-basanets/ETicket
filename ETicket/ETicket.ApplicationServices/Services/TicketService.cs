@@ -21,6 +21,17 @@ namespace ETicket.ApplicationServices.Services
             mapper = new MapperService();
         }
 
+        private void FillSelectedAreaIds(TicketDto ticketDto, Ticket ticket)
+        {
+            ticket.TicketArea = new List<TicketArea>();
+
+            foreach (var areaId in ticketDto.SelectedAreaIds)
+            {
+                TicketArea ticketArea = new TicketArea() { TicketId = ticket.Id, AreaId = areaId };
+                ticket.TicketArea.Add(ticketArea);
+            }
+        }
+
         IEnumerable<Ticket> ITicketService.GetTickets()
         {
             return uow.Tickets.GetAll().ToList();
@@ -41,15 +52,14 @@ namespace ETicket.ApplicationServices.Services
             ticket.Id = Guid.NewGuid();
             ticket.CreatedUTCDate = DateTime.UtcNow;
 
-            if (ticket.TicketType == null)
-            {
-                ticket.TicketType = uow.TicketTypes.Get(ticket.TicketTypeId);
-            }
+            ticket.TicketType = null;
+            ticket.TransactionHistory = null;
 
             if (ticket.ActivatedUTCDate != null)
             {
                 ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(ticket.TicketType.DurationHours);
             }
+            FillSelectedAreaIds(ticketDto, ticket);
 
             uow.Tickets.Create(ticket);
             uow.Save();
@@ -58,6 +68,8 @@ namespace ETicket.ApplicationServices.Services
         public void Update(TicketDto ticketDto)
         {
             var ticket = mapper.Map<TicketDto, Ticket>(ticketDto);
+            
+            FillSelectedAreaIds(ticketDto, ticket);
 
             uow.Tickets.Update(ticket);
             uow.Save();
