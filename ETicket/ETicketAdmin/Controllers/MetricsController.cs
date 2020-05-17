@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +8,17 @@ namespace ETicket.Admin.Controllers
 {
     public class MetricsController : Controller
     {
+        #region Private members
+
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly IMetricsService metricsService;
+
+        #endregion
+
+        public MetricsController(IMetricsService metricsService)
+        {
+            this.metricsService = metricsService;
+        }
 
         public IActionResult Index()
         {
