@@ -11,6 +11,8 @@ namespace ETicket.DataAccess.Domain.Entities
         public int Id { get; set; }
 
         [Required]
+        [DataType(DataType.Currency)]
+        [Range(0.0, double.MaxValue)]
         public decimal Price { get; set; }
 
         [Required]
