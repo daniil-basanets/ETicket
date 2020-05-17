@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.ApplicationServices.DTOs
@@ -11,7 +10,8 @@ namespace ETicket.ApplicationServices.DTOs
 
         public string Name { get; set; }
 
-        public Area? Area { get; set; }
+        [DisplayName("Area")]
+        public int AreaId { get; set; }
 
         public double Latitude { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace ETicket.ApplicationServices.DTOs
 {
@@ -8,8 +9,10 @@ namespace ETicket.ApplicationServices.DTOs
 
         public double Price { get; set; }
 
+        [DisplayName("Start date")]
         public DateTime StartDate { get; set; }
 
-        public int? AreaId { get; set; }
+        [DisplayName("Area")]
+        public int AreaId { get; set; }
     }
 }

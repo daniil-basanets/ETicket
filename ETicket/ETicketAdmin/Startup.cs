@@ -1,14 +1,14 @@
 using System;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.DocumentTypes;
-using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Services.Transaction;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
-using ETicket.WebAPI.Validation;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -19,6 +19,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ETicket.ApplicationServices.Services.PagingServices;
+using ETicket.ApplicationServices.Services.DataTable;
+using ETicket.ApplicationServices.Validation;
 
 namespace ETicket.Admin
 {
@@ -39,19 +42,17 @@ namespace ETicket.Admin
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
             services.AddTransient<IUnitOfWork, UnitOfWork>(u => new UnitOfWork(u.GetService<ETicketDataContext>()));
 
-            services.AddTransient<ITransactionAppService, TransactionAppService>();
-
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ETicketDataContext>()
                 .AddDefaultTokenProviders();
             services.AddControllersWithViews().AddFluentValidation();
-            services.AddTransient<IValidator<TicketType>, TicketTypeValidator>();
-            services.AddTransient<IValidator<Ticket>, TicketValidator>();
-            services.AddTransient<IValidator<User>, UserValidator>();
-            services.AddTransient<IValidator<Document>, DocumentValidator>();
-            services.AddTransient<IValidator<DocumentType>, DocumentTypeValidator>();
-            services.AddTransient<IValidator<Privilege>, PrivilegeValidator>();
-            services.AddTransient<IValidator<TransactionHistory>, TransactionHistoryValidator>();
+            services.AddTransient<IValidator<TicketTypeDto>, TicketTypeValidator>();
+            services.AddTransient<IValidator<TicketDto>, TicketValidator>();
+            services.AddTransient<IValidator<UserDto>, UserValidator>();
+            services.AddTransient<IValidator<DocumentDto>, DocumentValidator>();
+            services.AddTransient<IValidator<DocumentTypeDto>, DocumentTypeValidator>();
+            services.AddTransient<IValidator<PrivilegeDto>, PrivilegeValidator>();
+            services.AddTransient<IValidator<TransactionHistoryDto>, TransactionHistoryValidator>();
 
 
             services.AddTransient<ITicketService, TicketService>();
@@ -61,7 +62,26 @@ namespace ETicket.Admin
             services.AddTransient<ITicketTypeService, TicketTypeService>();
             services.AddTransient<ICarrierService, CarrierService>();
             services.AddTransient<IPrivilegeService, PrivilegeService>();
+            services.AddTransient<IAreaService, AreaService>();
+            services.AddTransient<IStationService, StationService>();
+            services.AddTransient<IDocumentService, DocumentService>();
+            services.AddTransient<IPriceListService, PriceListService>();
+            services.AddTransient<IRouteService, RouteService>();
+            services.AddTransient<ITransactionService, TransactionService>();
+            services.AddTransient<ITransportService, TransportService>();
 
+
+            services.AddTransient<IDataTablePagingService<Ticket>, TicketPagingService>();
+            services.AddTransient<IDataTablePagingService<User>, UserPagingService>();
+            services.AddTransient<IDataTablePagingService<Document>, DocumentPagingService>();
+            services.AddTransient<IDataTablePagingService<TransactionHistory>, TransactionHistoryPagingService>();
+
+            services.AddTransient<IDataTableService<Ticket>, DataTableService<Ticket>>();
+            services.AddTransient<IDataTableService<User>, DataTableService<User>>();
+            services.AddTransient<IDataTableService<Document>, DataTableService<Document>>();
+            services.AddTransient<IDataTableService<TransactionHistory>, DataTableService<TransactionHistory>>();
+
+            
 
             services.AddIdentityCore<IdentityUser>(o =>
             {

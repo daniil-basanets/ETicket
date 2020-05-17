@@ -2,7 +2,7 @@ using System;
 using ETicket.ApplicationServices.DTOs;
 using FluentValidation;
 
-namespace ETicket.WebAPI.Validation
+namespace ETicket.ApplicationServices.Validation
 {
     public class DocumentValidator : AbstractValidator<DocumentDto>
     {

@@ -1,12 +1,15 @@
-﻿using System;
-using System.Linq;
+﻿using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.Interfaces;
-using log4net;
+using System;
+using System.Linq;
 using System.Reflection;
+
+using ETicket.Admin.Models.DataTables;
+using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.Admin.Controllers
@@ -19,17 +22,25 @@ namespace ETicket.Admin.Controllers
         private readonly ITicketService ticketService;
         private readonly ITicketTypeService ticketTypeService;
         private readonly IUserService userService;
-        private readonly ITransactionAppService transactionService;
+        private readonly ITransactionService transactionService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private readonly IDataTableService<Ticket> dataTableService;
 
         #endregion
 
-        public TicketController(ITransactionAppService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService)
+        public TicketController(ITransactionService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService, IDataTableService<Ticket> dataTableService)
         {
             this.ticketService = ticketService;
             this.ticketTypeService = ticketTypeService;
             this.userService = userService;
-            transactionService = transactionAppService;
+            this.dataTableService = dataTableService;
+            this.transactionService = transactionAppService;
+        }
+
+        [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
+        {
+            return Json(dataTableService.GetDataTablePage(pagingInfo));          
         }
 
         private void InitViewDataForSelectList(TicketDto ticketDto = null)
@@ -56,9 +67,8 @@ namespace ETicket.Admin.Controllers
             try
             {
                 ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketTypes(), "Id", "TypeName");
-                var tickets = ticketService.GetTickets();
-
-                return View(tickets.ToList());
+                
+                return View();
             }
             catch (Exception e)
             {

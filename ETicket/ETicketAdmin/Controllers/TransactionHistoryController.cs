@@ -1,9 +1,11 @@
-﻿using System;
-using System.Linq;
-using ETicket.ApplicationServices.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.Admin.Models.DataTables;
 
 namespace ETicket.Admin.Controllers
 {
@@ -12,30 +14,29 @@ namespace ETicket.Admin.Controllers
     {
         #region Private Members
 
-        private readonly ITransactionAppService transactionAppService;
-        private readonly ITicketTypeService ticketTypeService;
+        private readonly ITransactionService transactionAppService;
+        private readonly IDataTableService<TransactionHistory> dataTableService;
 
         #endregion
 
         public TransactionHistoryController(
-            ITransactionAppService transactionAppService,
-            ITicketTypeService ticketTypeService)
+            ITransactionService transactionAppService,
+            IDataTableService<TransactionHistory> dataTableService)
         {
             this.transactionAppService = transactionAppService;
-            this.ticketTypeService = ticketTypeService;
+            this.dataTableService = dataTableService;
         }
 
         // GET: TransactionHistories
         public IActionResult Index()
         {
-            var transactions = transactionAppService.Read();
-            var ticketTypes = ticketTypeService.GetAll()
-                    .OrderBy(t => t.TypeName)
-                    .Select(t => new { t.Id, t.TypeName });
+            return View();
+        }
 
-            ViewData["TicketTypeId"] = new SelectList(ticketTypes, "Id", "TypeName");
-
-            return View(transactions);
+        [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
+        {
+            return Json(dataTableService.GetDataTablePage(pagingInfo));
         }
 
         // GET: TransactionHistories/Details/5
@@ -46,7 +47,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            var transaction = transactionAppService.Read(id.Value);
+            var transaction = transactionAppService.GetTransactionById(id.Value);
 
             if (transaction == null)
             {

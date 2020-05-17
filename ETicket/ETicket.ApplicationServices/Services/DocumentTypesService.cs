@@ -26,9 +26,11 @@ namespace ETicket.ApplicationServices.Services.DocumentTypes
             return unitOfWork.DocumentTypes.GetAll().ToList();
         }
 
-        public DocumentType GetDocumentTypeById(int id)
+        public DocumentTypeDto GetDocumentTypeById(int id)
         {
-            return unitOfWork.DocumentTypes.Get(id);
+            var documentType = unitOfWork.DocumentTypes.Get(id);
+
+            return mapper.Map<DocumentType, DocumentTypeDto>(documentType);
         }
 
         public void Create(DocumentTypeDto documentTypeDto)
