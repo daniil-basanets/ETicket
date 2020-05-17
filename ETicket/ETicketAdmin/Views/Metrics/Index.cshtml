@@ -15,6 +15,18 @@
 
     <div class="col-xl-8 col-lg-7">
 
+        <!-- Bar TicketsByTicketTypes -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Tickets By Ticket Types</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-bar">
+                    <canvas id="tickets-by-types"></canvas>
+                </div>
+            </div>
+        </div>
+
         <!-- Area Chart -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -78,6 +90,7 @@
 <script src="~/vendor/chart.js/Chart.min.js"></script>
 
 <!-- Page level custom scripts -->
+<script src="~/js/chart/chart-bar-tickets-by-types.js"></script>
 <script src="~/vendor/demo/chart-area-demo.js"></script>
 <script src="~/vendor/demo/chart-bar-demo.js"></script>
 <script src="~/vendor/demo/chart-pie-demo.js"></script> 
