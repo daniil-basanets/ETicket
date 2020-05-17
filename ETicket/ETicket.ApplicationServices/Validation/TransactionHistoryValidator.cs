@@ -8,12 +8,6 @@ namespace ETicket.ApplicationServices.Validation
     {
         public TransactionHistoryValidator()
         {
-            RuleFor(t => t.Count)
-                .GreaterThan(0);
-
-            RuleFor(t => t.TicketTypeId)
-                .NotEmpty();
-
             RuleFor(t => t.TotalPrice)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotNull()

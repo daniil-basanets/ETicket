@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ETicket.DataAccess.Domain.Entities
@@ -8,12 +9,14 @@ namespace ETicket.DataAccess.Domain.Entities
         [Key]
         public long Id { get; set; }
 
+        [DisplayName("Carrier")]
         public int CarriersId { get; set; }
 
         [ForeignKey("CarriersId")]
         [Required]
         public Carrier Carriers { get; set; }
 
+        [DisplayName("Route")]
         public int RouteId { get; set; }
 
         [ForeignKey("RouteId")]

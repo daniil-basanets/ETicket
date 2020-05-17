@@ -4,7 +4,7 @@ using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.ApplicationServices.Services.Interfaces
 {
-    interface ITransportService
+    public interface ITransportService
     {
         public IEnumerable<Transport> GetAll();
 

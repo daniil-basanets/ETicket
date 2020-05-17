@@ -8,7 +8,7 @@ using ETicket.DataAccess.Domain.Interfaces;
 
 namespace ETicket.ApplicationServices.Services
 {
-    class TransportService: ITransportService
+    public class TransportService: ITransportService
     {
         #region private members
 
