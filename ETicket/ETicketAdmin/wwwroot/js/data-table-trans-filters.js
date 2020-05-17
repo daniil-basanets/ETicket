@@ -126,10 +126,6 @@ $(document).ready(function () {
             }
         });
 
-    $("#date-datepicker").datepicker({
-        dateFormat: "dd.mm.yy"
-    });
-
     //Change event listener for search
     //Search after pressing Enter or defocusing the search input field
     $("#dataTable_filter input").unbind()
@@ -139,13 +135,7 @@ $(document).ready(function () {
             table.search(searchValue).draw();
         });
 
-    $('#total-price-input, #reference-number-input').unbind()
-        .bind("change", function (e) {
-            isNewSearch = true;
-            table.draw();
-        });
-
-    $('#date-datepicker').unbind()
+    $('#total-price-input, #reference-number-input, #date-datepicker').unbind()
         .bind("change", function (e) {
             isNewSearch = true;
             table.draw();
