@@ -34,7 +34,6 @@ $.getJSON(actionUrl, function (response) {
     if (response != null) {
         chartData = response;
         var maxY = Math.max.apply(null, chartData.data);
-        maxY = maxY;
 
         var ctx = document.getElementById("tickets-by-types");
         var myBarChart = new Chart(ctx, {
@@ -75,8 +74,7 @@ $.getJSON(actionUrl, function (response) {
                     }],
                     yAxes: [{
                         ticks: {
-                            min: 0,
-                            max: maxY,
+                            min: 0,                         
                             maxTicksLimit: 100,
                             padding: 10,
                             callback: function (value, index, values) {
