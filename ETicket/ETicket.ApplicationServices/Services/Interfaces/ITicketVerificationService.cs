@@ -16,6 +16,6 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 
         void Create(TicketVerificationDto ticketVerificationDtoDto);
 
-        VerifyTicketResponceDto VerifyTicket(Guid ticketId, long transportId, float longitude, float latitude);
+        VerifyTicketResponceDto VerifyTicket(Guid ticketId, int transportId, float longitude, float latitude);
     }
 }

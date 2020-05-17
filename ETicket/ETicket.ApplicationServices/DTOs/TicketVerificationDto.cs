@@ -16,8 +16,14 @@ namespace ETicket.ApplicationServices.DTOs
         [DisplayName("Station")]
         public int StationId { get; set; }
 
+        [DisplayName("Station")]
+        public string StationName { get; set; }
+
         [DisplayName("Transport")]
-        public long TransportId { get; set; }
+        public int TransportId { get; set; }
+
+        [DisplayName("Transport")]
+        public string TransportNumber { get; set; }
 
         [DisplayName("Verified")]
         public bool IsVerified { get; set; }

@@ -73,7 +73,7 @@
                                     @Html.ActionLink(item.Station.Name, "Details", "Station", new { id = item.StationId }, null)
                                 </td>
                                 <td>
-                                    @Html.ActionLink(item.TransportId.ToString(), "Details", "Transports", new { id = item.TransportId }, null)
+                                    @Html.ActionLink(item.Transport.Number, "Details", "Transports", new { id = item.TransportId }, null)
                                 </td>
                                 <td>
                                     @(item.IsVerified ? "Yes" : "No")

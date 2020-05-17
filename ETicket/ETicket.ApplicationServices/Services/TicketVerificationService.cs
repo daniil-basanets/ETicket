@@ -57,7 +57,7 @@ namespace ETicket.ApplicationServices.Services
             unitOfWork.Save();
         }
 
-        public VerifyTicketResponceDto VerifyTicket(Guid ticketId, long transportId, float longitude, float latitude)
+        public VerifyTicketResponceDto VerifyTicket(Guid ticketId, int transportId, float longitude, float latitude)
         {
             var ticket = unitOfWork
                     .Tickets
