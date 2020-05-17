@@ -21,17 +21,6 @@ namespace ETicket.ApplicationServices.Services
             mapper = new MapperService();
         }
 
-        private void FillSelectedAreaIds(TicketDto ticketDto, Ticket ticket)
-        {
-            ticket.TicketArea = new List<TicketArea>();
-
-            foreach (var areaId in ticketDto.SelectedAreaIds)
-            {
-                TicketArea ticketArea = new TicketArea() { TicketId = ticket.Id, AreaId = areaId };
-                ticket.TicketArea.Add(ticketArea);
-            }
-        }
-
         IEnumerable<Ticket> ITicketService.GetTickets()
         {
             return uow.Tickets.GetAll().ToList();
@@ -59,7 +48,14 @@ namespace ETicket.ApplicationServices.Services
             {
                 ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(ticket.TicketType.DurationHours);
             }
-            FillSelectedAreaIds(ticketDto, ticket);
+
+            ticket.TicketArea = new List<TicketArea>();
+
+            foreach (var areaId in ticketDto.SelectedAreaIds)
+            {
+                TicketArea ticketArea = new TicketArea() { TicketId = ticket.Id, AreaId = areaId };
+                ticket.TicketArea.Add(ticketArea);
+            }
 
             uow.Tickets.Create(ticket);
             uow.Save();
@@ -68,8 +64,21 @@ namespace ETicket.ApplicationServices.Services
         public void Update(TicketDto ticketDto)
         {
             var ticket = mapper.Map<TicketDto, Ticket>(ticketDto);
-            
-            FillSelectedAreaIds(ticketDto, ticket);
+
+            if (ticket.TicketArea == null)
+            {
+                var ticketAreas = uow.TicketArea.GetAll().Where(t => t.TicketId == ticket.Id).ToList();
+
+                foreach (var ticketArea in ticketAreas)
+                {
+                    uow.TicketArea.Delete(ticketArea);
+                }
+            }
+
+            foreach (var areaId in ticketDto.SelectedAreaIds)
+            {
+                uow.TicketArea.Create(new TicketArea() { TicketId = ticket.Id, AreaId = areaId });
+            }
 
             uow.Tickets.Update(ticket);
             uow.Save();
