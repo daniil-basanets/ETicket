@@ -8,7 +8,11 @@ namespace ETicket.ApplicationServices.Mapping
     {
         public UserMapperProfile()
         {
-            CreateMap<UserDto, User>().ReverseMap();
+            //CreateMap<UserDto, User>().ReverseMap();
+            CreateMap<UserDto, User>()
+                .ReverseMap()
+                .ForMember(d => d.PrivilegeName, d => d.MapFrom(x => x.Privilege.Name))
+                .ForMember(d => d.DocumentNumber, d => d.MapFrom(x => x.Document.Number));
         }
     }
 }
