@@ -1,4 +1,5 @@
-﻿using ETicket.DataAccess.Domain.Repositories;
+﻿using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Repositories;
 
 namespace ETicket.DataAccess.Domain.Interfaces
 {
@@ -14,7 +15,7 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         TicketRepository Tickets { get; }
 
-        TicketTypeRepository TicketTypes { get; }
+        IRepository<TicketType,int> TicketTypes { get; }
 
         TicketVerificationRepository TicketVerifications { get; }
         

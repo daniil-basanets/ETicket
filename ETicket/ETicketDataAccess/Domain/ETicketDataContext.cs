@@ -9,7 +9,7 @@ namespace ETicket.DataAccess.Domain
         #region DbSets
 
         public DbSet<TransactionHistory> TransactionHistory { get; set; }
-        public DbSet<TicketType> TicketTypes { get; set; }
+        public virtual DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<TicketVerification> TicketVerifications { get; set; }
         public DbSet<User> ETUsers { get; set; }
