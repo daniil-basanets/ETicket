@@ -7,7 +7,11 @@ namespace ETicket.DataAccess.Domain.Entities
     public class Transport
     {
         [Key]
-        public long Id { get; set; }
+        public int Id { get; set; }
+
+        [DisplayName("Number")]
+        [Required]
+        public string Number { get; set; }
 
         [DisplayName("Carrier")]
         public int CarriersId { get; set; }
