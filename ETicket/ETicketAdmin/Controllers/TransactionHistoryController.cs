@@ -1,11 +1,12 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using System;
-
+using System.Reflection;
+using ETicket.Admin.Models.DataTables;
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
-using ETicket.Admin.Models.DataTables;
+using log4net;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ETicket.Admin.Controllers
 {
@@ -14,23 +15,33 @@ namespace ETicket.Admin.Controllers
     {
         #region Private Members
 
-        private readonly ITransactionService transactionAppService;
+        private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly IDataTableService<TransactionHistory> dataTableService;
+        private readonly ITransactionService transactionAppService;
 
         #endregion
 
-        public TransactionHistoryController(
-            ITransactionService transactionAppService,
-            IDataTableService<TransactionHistory> dataTableService)
+        public TransactionHistoryController(ITransactionService transactionAppService, IDataTableService<TransactionHistory> dataTableService)
         {
             this.transactionAppService = transactionAppService;
             this.dataTableService = dataTableService;
         }
 
-        // GET: TransactionHistories
         public IActionResult Index()
         {
-            return View();
+            logger.Info(nameof(TransactionHistoryController.Index));
+
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+
+                return BadRequest();
+            }
         }
 
         [HttpGet]
@@ -39,22 +50,36 @@ namespace ETicket.Admin.Controllers
             return Json(dataTableService.GetDataTablePage(pagingInfo));
         }
 
-        // GET: TransactionHistories/Details/5
         public IActionResult Details(Guid? id)
         {
+            logger.Info(nameof(TransactionHistoryController.Details));
+
             if (id == null)
             {
+                logger.Warn(nameof(TransactionHistoryController.Details) + " id is null");
+
                 return NotFound();
             }
 
-            var transaction = transactionAppService.GetTransactionById(id.Value);
-
-            if (transaction == null)
+            try
             {
-                return NotFound();
-            }
+                var transaction = transactionAppService.GetTransactionById(id.Value);
 
-            return View(transaction);
+                if (transaction == null)
+                {
+                    logger.Warn(nameof(TransactionHistoryController.Details) + " transaction is null");
+
+                    return NotFound();
+                }
+
+                return View(transaction);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+
+                return BadRequest();
+            }
         }
     }
 }
