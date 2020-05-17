@@ -54,6 +54,7 @@ namespace ETicket.WebAPI
             services.AddTransient<IDocumentTypesService, DocumentTypesService>();
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<IPriceListService, PriceListService>();
+            services.AddTransient<IAreaService, AreaService>();
 
 
             services.AddIdentity<IdentityUser, IdentityRole>()

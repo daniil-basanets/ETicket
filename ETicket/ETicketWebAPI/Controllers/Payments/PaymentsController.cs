@@ -29,9 +29,8 @@ namespace ETicket.WebAPI.Controllers.Payments
                 transactionAppService, priceListService, ticketTypeService, ticketService, userService, merchant);
         }
 
-        // /api/payments/getTicketPrice
         [HttpPost]
-        [Route("[action]")]
+        [Route("ticketprice")]
         public IActionResult GetTicketPrice(GetTicketPriceRequest request)
         {
             var totalPrice = paymentsService.GetTicketPrice(request.AreasId, request.TicketTypeId);
@@ -39,9 +38,8 @@ namespace ETicket.WebAPI.Controllers.Payments
             return Ok(new { totalPrice });
         }
 
-        // /api/payments/Buy
         [HttpPost]
-        [Route("[action]")]
+        [Route("buy")]
         public async Task<IActionResult> Buy(BuyTicketRequest request)
         {
             var response = await paymentsService.MakePayment(
