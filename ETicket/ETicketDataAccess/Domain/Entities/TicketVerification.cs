@@ -31,7 +31,7 @@ namespace ETicket.DataAccess.Domain.Entities
         [DisplayName("Station")]
         public Station Station { get; set; }
 
-        public long TransportId { get; set; }
+        public int TransportId { get; set; }
 
         [Required]
         [ForeignKey("TransportId")]

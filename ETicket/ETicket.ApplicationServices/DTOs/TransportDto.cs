@@ -4,7 +4,7 @@ namespace ETicket.ApplicationServices.DTOs
 {
     public class TransportDto
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         [DisplayName("Carrier")]
         public int CarrierId { get; set; }
