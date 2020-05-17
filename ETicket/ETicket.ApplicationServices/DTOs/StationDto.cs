@@ -15,7 +15,7 @@ namespace ETicket.ApplicationServices.DTOs
         public int AreaId { get; set; }
 
         [DisplayName("Area")]
-        public Area Area { get; set; }
+        public string AreaName { get; set; }
 
         public double Latitude { get; set; }
 

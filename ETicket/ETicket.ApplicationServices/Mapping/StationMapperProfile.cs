@@ -12,10 +12,10 @@ namespace ETicket.ApplicationServices.Mapping
         //TODO: Add List of Routes to mapper
         public StationMapperProfile()
         {
-            CreateMap<StationDto, Station>().ReverseMap();
-            //CreateMap<Station, StationDto>()
-            //    .ForMember(d => d.AreaName, d => d.MapFrom(x => x.Area.Name))
-            //    .ReverseMap();
+            //CreateMap<StationDto, Station>().ReverseMap();
+            CreateMap<StationDto, Station>()
+                .ReverseMap()
+                .ForMember(d => d.AreaName, d => d.MapFrom(x => x.Area.Name));
         }
     }
 }
