@@ -1,11 +1,16 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Reflection;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.Admin.Models.DataTables;
 
 namespace ETicket.Admin.Controllers
 {
@@ -14,17 +19,19 @@ namespace ETicket.Admin.Controllers
     {
         #region Private Members
 
-        private readonly ITransactionAppService transactionAppService;
-        private readonly ITicketTypeService ticketTypeService;
+        private readonly ITransactionService transactionAppService;
+        private readonly IDataTableService<TransactionHistory> dataTableService;
 
         private readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 
-        public TransactionHistoryController(ITransactionAppService transactionAppService, ITicketTypeService ticketTypeService)
+        public TransactionHistoryController(
+            ITransactionService transactionAppService,
+            IDataTableService<TransactionHistory> dataTableService)
         {
             this.transactionAppService = transactionAppService;
-            this.ticketTypeService = ticketTypeService;
+            this.dataTableService = dataTableService;
         }
 
         [HttpGet]

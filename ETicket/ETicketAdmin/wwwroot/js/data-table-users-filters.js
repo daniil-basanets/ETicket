@@ -1,50 +1,197 @@
-﻿// Call the dataTables jQuery plugin
-$.fn.dataTable.ext.search.push(
-    function (settings, data, dataIndex) {
-        var firstNameInput = ($('#first-name-input').val());
-        var lastNameInput = ($('#last-name-input').val());
-        var privilegeInput = $('#privilege-select option:selected').text();
-        var documentInput = ($('#document-input').val());
+﻿var filters = [
+    { columnName: "firstName", inputId: "#first-name-input", isCheckBox: false },
+    { columnName: "lastName", inputId: "#last-name-input", isCheckBox: false },
+    { columnName: "privilege", inputId: "#privilege-select option:selected", isCheckBox: true },
+    { columnName: "document", inputId: "#document-input", isCheckBox: false },
+    { columnName: "dateOfBirth", inputId: "#date-birth-datepicker", isCheckBox: false }
+   
+];
 
-        
-        var firstN = String(data[0]);
-        var lastN = String(data[1]);
-        var privilege = String(data[3]);
-        var document = String(data[4]);
+function getFilterMapColumnValue() {
+    var result = new Map();
+    var value;
 
-        if (((firstNameInput && firstN.includes(firstNameInput)) || !firstNameInput) &&
-
-            ((lastNameInput && lastN.includes(lastNameInput)) || !lastNameInput) &&
-
-            ((privilegeInput && privilege.includes(privilegeInput)) || !privilegeInput) &&
-
-            ((documentInput&& document.includes(documentInput)) || !documentInput))
-        {
-            return true;
+    for (var i = 0; i < filters.length; i++) {
+        if (filters[i].isCheckBox) {
+            value = $(filters[i].inputId).text();
         }
-
-        return false;
+        else {
+            value = $(filters[i].inputId).val();
+        }
+        if (value) {
+            result.set(filters[i].columnName, value);
+        }
     }
-);
+
+    return result;
+}
+
+function makeSingleOnClickEvent(e) {
+    if (!e) {
+        var e = window.event;
+    }
+    e.cancelBubble = true;
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+}
+
+var isNewSearch = false;
 
 $(document).ready(function () {
     $.noConflict();
-    var table = $('#dataTable').DataTable({
-        columnDefs: [
-            { orderable: false, targets: -1 }
-        ]
+    //Variable for count entries
+    var totalRecords = -1;
+    var pageNumber = 1;
 
-    });
 
-    $('#first-name-input, #last-name-input, #privilege-select, #document-input').keyup(function () {
-        table.draw();
-    });
+    var table = $('#dataTable')
+        //Read additional fields from server side
+        .on('xhr.dt', function (e, settings, json, xhr) {
+            totalRecords = json.recordsTotal;
+        })
+        .on('page.dt', function () {
+            pageNumber = table.page() + 1;
+        })
+        //DataTable settings
+        .DataTable({
+            columnDefs: [
+                { orderable: false, targets: -1 }
+            ],
+            processing: true,
+            serverSide: true,
+            order: [[1, "desc"]],
+            ajax: {
+                url: 'User/GetCurrentPage',
+                //To send an array correctly by query string
+                traditional: true,
+                type: 'GET',
+                data: function (d) {
+                    var pagingData = {};
+                    pagingData.DrawCounter = d.draw;
 
-    $('#privilege-select').change(function () {
-        table.draw();
-    });
+                    pagingData.PageSize = d.length;
+                    pagingData.TotalEntries = totalRecords;
+
+                    if (isNewSearch) {
+                        pageNumber = 1;
+                        d.page = 1;
+                    }
+
+                    pagingData.PageNumber = pageNumber;
+
+                    pagingData.SortColumnName = d.columns[d.order[0]["column"]]["name"];
+                    pagingData.SortColumnDirection = d.order[0]["dir"];
+
+                    pagingData.SearchValue = d.search["value"];
+
+                    var mapFilters = getFilterMapColumnValue();
+                    pagingData.FilterColumnNames = Array.from(mapFilters.keys());
+                    pagingData.FilterValues = Array.from(mapFilters.values());
+
+                    isNewSearch = false;
+                    return pagingData;
+                }
+            },
+
+            //Columns data order       
+            columns: [
+                {
+                    name: "firstName",
+                    data: "firstName"
+                },
+                {
+                    name: "lastName",
+                    data: "lastName"
+                },
+                {
+                    name: "dateOfBirth",
+                    data: "dateOfBirth",
+                    render: function (data, type, row) {
+                        if (data != null) {
+                            var date = new Date(Date.parse(data));
+                            return date.toLocaleDateString();
+                        }
+                    }
+                },
+                {
+                    name: "privilege",
+                    data: "privilege",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (data != null) {
+                            return '<a href = "Privileges/Details/' + data.id + '">' + data.name + '</a>'
+                        }
+                    }
+                },
+                {
+                    name: "document",
+                    data: "document",
+                    defaultContent: "",
+                    render: function (data, type, row) {
+                        if (data != null) {
+                            return '<a href = "Documents/Details/' + data.id + '">' + data.number + '</a>'
+                        }
+                    }
+                },
+                {
+                    data: null,
+                    //Set default buttons (Edit, Delete)
+                    //href = "#" because <a> without href have a special style
+                    defaultContent:
+                        '<a class="btn btn-warning btn-sm" href = "#" id = "editButton">Edit</a>' + ' '
+                        + '<a class="btn btn-info btn-sm" href = "#" id = "detailsButton">Details</a>' + ' '
+                        + '<a class="btn btn-danger btn-sm" href = "#" id = "deleteButton">Delete</a>'
+                }
+            ],
+            language: {
+                //Set message for pop-up window
+                processing: "Take data from server. Please wait..."
+            },
+            oLanguage: {
+                sLengthMenu: "_MENU_",
+            }
+        });
+
+    //Change event listener for search
+    //Search after pressing Enter or defocusing the search input field
+    $("#dataTable_filter input").unbind()
+        .bind("change", function (e) {
+            var searchValue = $(this).val();
+            isNewSearch = true;
+            table.search(searchValue).draw();
+        });
+
+    $("#first-name-input, #last-name-input, #document-input, #date-birth-datepicker").unbind()
+        .bind("change", function (e) {
+            isNewSearch = true;
+            table.draw();
+        });
+
+    $('#privilege-select')
+        .change(function () {
+            isNewSearch = true;
+            table.draw();
+        });
+
+    //Event listener for Edit button 
+    $("#dataTable tbody").on('click', '#editButton', function () {
+        var data = table.row($(this).parents('tr')).data();
+        location.href = "/User/Edit/" + data.id;
+    })
+    //Event listener for Details button 
+    $("#dataTable tbody").on('click', '#detailsButton', function () {
+        var data = table.row($(this).parents('tr')).data();
+        location.href = "/User/Details/" + data.id;
+    })
+    //Event listener for Delete button 
+    $("#dataTable tbody").on('click', '#deleteButton', function () {
+        var data = table.row($(this).parents('tr')).data();
+        location.href = "/User/Delete/" + data.id;
+    })
 
     //Delete container from loyout only for Index
     $('.container').removeClass('container');
 
 });
+

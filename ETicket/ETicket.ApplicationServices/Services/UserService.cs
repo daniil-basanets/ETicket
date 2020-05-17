@@ -52,16 +52,22 @@ namespace ETicket.ApplicationServices.Services
             return uow.Users.GetAll().ToList();
         }
 
-        public User GetUserById(Guid id)
+        public UserDto GetUserById(Guid id)
         {
-            return uow.Users.Get(id);
+            var user = uow.Users.Get(id);
+            return mapper.Map<User, UserDto>(user);
+        }
+
+        public User GetByEmail(string email)
+        {
+            return uow.Users.GetByEmail(email);
         }
 
         public void SendMessage(Guid id, string message)
         {
             var user = GetUserById(id);
 
-            mailService.SendEmail(user.Email, message);
+            mailService.SendEmail(user.Email, message, "Reminders");
         }
 
         public void Update(UserDto userDto)
@@ -69,11 +75,6 @@ namespace ETicket.ApplicationServices.Services
             var user = mapper.Map<UserDto, User>(userDto);
             uow.Users.Update(user);
             uow.Save();
-        }
-
-        public bool Exists(Guid id)
-        {
-            return uow.Users.UserExists(id);
         }
     }
 }

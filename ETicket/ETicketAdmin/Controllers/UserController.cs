@@ -1,11 +1,15 @@
-﻿using System;
-using ETicket.DataAccess.Domain.Interfaces;
+﻿using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Reflection;
+
+using ETicket.Admin.Models.DataTables;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
 using log4net;
 using System.Reflection;
 
@@ -16,6 +20,7 @@ namespace ETicket.Admin.Controllers
     {
         #region Private members
 
+        private readonly IDataTableService<User> dataTableService;
         private readonly IUserService userService;
         private readonly IPrivilegeService privilegeService;
         private readonly IDocumentService documentService;
@@ -24,17 +29,20 @@ namespace ETicket.Admin.Controllers
 
         #endregion
 
-        public UserController(IPrivilegeService PService, IUserService UService, IDocumentTypesService DTService, IDocumentService DService)
+        public UserController(IPrivilegeService PService, IUserService UService, IDocumentTypesService DTService, IDocumentService DService, IDataTableService<User> dataTableService)
         {
             userService = UService;
             privilegeService = PService;
             documentService = DService;
             documentTypeService = DTService;
+            this.dataTableService = dataTableService;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
+            log.Info(nameof(UserController.Index));
+
             try
             {
                 ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name");
@@ -52,6 +60,14 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Details(Guid? id)
         {
+            return Json(dataTableService.GetDataTablePage(pagingInfo));
+        }
+
+        [HttpGet]
+        public IActionResult Details(Guid? id)
+        {
+            log.Info(nameof(UserController.Details));
+
             if (id == null)
             {
                 log.Warn(nameof(UserController.Details) + " id is null");
@@ -83,6 +99,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult CreateUserWithDocument()
         {
+            log.Info(nameof(UserController.CreateUserWithDocument));
+
             try
             {
                 ViewData["DocumentTypeId"] = new SelectList(documentTypeService.GetDocumentTypes(), "Id", "Name");
@@ -101,6 +119,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreateUserWithDocument(DocumentDto documentDto, UserDto userDto)
         {
+            log.Info(nameof(UserController.CreateUserWithDocument) + " POST");
+
             try
             {
                 if (ModelState.IsValid)
@@ -136,6 +156,17 @@ namespace ETicket.Admin.Controllers
             {
                 log.Error(e);
 
+            try
+            {
+                ViewData["DocumentId"] = new SelectList(documentService.GetDocuments(), "Id", "Number");
+                ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name");
+
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
                 return BadRequest();
             }
 
@@ -145,6 +176,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(UserDto userDto)
         {
+            log.Info(nameof(UserController.Create) + " POST");
+
             try
             {
                 if (ModelState.IsValid)
@@ -170,6 +203,15 @@ namespace ETicket.Admin.Controllers
             {
                 log.Error(e);
 
+                ViewData["DocumentId"] = new SelectList(documentService.GetDocuments(), "Id", "Number", userDto.DocumentId);
+                ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name", userDto.PrivilegeId);
+
+                return View(userDto);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
                 return BadRequest();
             }
         }
@@ -177,6 +219,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult SendMessage(Guid? id)
         {
+            log.Info(nameof(UserController.SendMessage));
+
             if (id == null)
             {
                 log.Warn(nameof(UserController.Create) + " id is null");
@@ -191,6 +235,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SendMessage(Guid id, string message)
         {
+            log.Info(nameof(UserController.SendMessage) + " POST");
+
             try
             {
                 if (ModelState.IsValid)
@@ -213,6 +259,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(Guid? id)
         {
+            log.Info(nameof(UserController.Edit));
+
             if (id == null)
             {
                 log.Warn(nameof(UserController.Edit) + " id is null");
@@ -250,6 +298,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, UserDto userDto)
         {
+            log.Info(nameof(UserController.Edit) + " POST");
+
             if (id != userDto.Id)
             {
                 log.Warn(nameof(UserController.Edit) + " id is not equal to userDto.Id");
@@ -282,6 +332,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(Guid? id)
         {
+            log.Info(nameof(UserController.Delete));
+
             if (id == null)
             {
                 log.Warn(nameof(UserController.Edit) + " id is null");
@@ -314,6 +366,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
+            log.Info(nameof(UserController.DeleteConfirmed) + " POST");
+
             try
             {
                 userService.Delete(id);

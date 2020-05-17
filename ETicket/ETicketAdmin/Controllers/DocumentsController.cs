@@ -7,6 +7,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
+using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.Admin.Models.DataTables;
+
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
@@ -14,36 +20,46 @@ namespace ETicket.Admin.Controllers
     {
         private readonly IDocumentService documentService;
         private readonly IDocumentTypesService documentTypesService;
+        private readonly IDataTableService<Document> dataTableService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public DocumentsController(IDocumentService documentService, IDocumentTypesService documentTypesService)
+        public DocumentsController(IDocumentService documentService, IDocumentTypesService documentTypesService, IDataTableService<Document> dataTableService)
         {
             this.documentService = documentService;
             this.documentTypesService = documentTypesService;
+            this.dataTableService = dataTableService;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
+            log.Info(nameof(DocumentsController.Index));
+
             try
             {
                 var documentsTypes = documentTypesService.GetDocumentTypes();
                 ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
-                var documents = documentService.GetDocuments();                
 
-                return View(documents);
+                return View();
             }
             catch (Exception e)
             {
                 log.Error(e);
 
                 return BadRequest();
-            }            
+            }
         }
 
         [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
+        {
+            return Json(dataTableService.GetDataTablePage(pagingInfo));
+        }
+        
         public IActionResult Details(Guid? id)
         {
+            log.Info(nameof(DocumentsController.Details));
+
             if (id == null)
             {
                 log.Warn(nameof(DocumentsController.Details) + " id is null");
@@ -69,12 +85,14 @@ namespace ETicket.Admin.Controllers
                 log.Error(e);
 
                 return BadRequest();
-            }            
+            }
         }
 
         [HttpGet]
         public IActionResult Create()
         {
+            log.Info(nameof(DocumentsController.Create));
+
             try
             {
                 var documentsTypes = documentTypesService.GetDocumentTypes();
@@ -88,17 +106,19 @@ namespace ETicket.Admin.Controllers
                 log.Error(e);
 
                 return BadRequest();
-            }            
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(DocumentDto documentDto)
         {
+            log.Info(nameof(DocumentsController.Create));
+
             try
             {
                 if (ModelState.IsValid)
-                {      
+                {
                     documentService.Create(documentDto);
 
                     return RedirectToAction(nameof(Index));
@@ -121,6 +141,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(Guid? id)
         {
+            log.Info(nameof(DocumentsController.Edit));
+
             if (id == null)
             {
                 log.Warn(nameof(DocumentsController.Edit) + " id is null");
@@ -150,13 +172,15 @@ namespace ETicket.Admin.Controllers
                 log.Error(e);
 
                 return BadRequest();
-            }         
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, DocumentDto documentDto)
         {
+            log.Info(nameof(DocumentsController.Edit));
+
             if (id != documentDto.Id)
             {
                 log.Warn(nameof(DocumentsController.Edit) + " id isn't equal to documentDto.Id");
@@ -186,10 +210,12 @@ namespace ETicket.Admin.Controllers
                 return BadRequest();
             }
         }
-        
+
         [HttpGet]
         public IActionResult Delete(Guid? id)
         {
+            log.Info(nameof(DocumentsController.Delete));
+
             if (id == null)
             {
                 log.Warn(nameof(DocumentsController.Delete) + " id is null");
@@ -222,6 +248,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
+            log.Info(nameof(DocumentsController.DeleteConfirmed));
+
             try
             {
                 documentService.Delete(id);
@@ -233,7 +261,7 @@ namespace ETicket.Admin.Controllers
                 log.Error(e);
 
                 return BadRequest();
-            }            
+            }
         }
     }
 }

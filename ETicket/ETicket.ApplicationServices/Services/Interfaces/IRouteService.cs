@@ -10,6 +10,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
     public interface IRouteService
     {
         public IEnumerable<Route> GetRoutes();
+
         public Route GetRouteById(int id);
 
         public void Create(RouteDto documentTypeDto);

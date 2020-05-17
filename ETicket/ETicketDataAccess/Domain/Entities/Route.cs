@@ -18,14 +18,14 @@ namespace ETicket.DataAccess.Domain.Entities
         public string Number { get; set; }
 
         [Required]
-        [DisplayName("First Station")]
+        [DisplayName("First station")]
         public int FirstStationId { get; set; }
 
         [ForeignKey("FirstStationId")]
         public Station FirstStation { get; set; }
 
         [Required]
-        [DisplayName("Last Station")]
+        [DisplayName("Last station")]
         public int LastStationId { get; set; }
 
         [ForeignKey("LastStationId")]

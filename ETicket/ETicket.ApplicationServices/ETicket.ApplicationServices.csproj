@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.2" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="MailKit" Version="2.6.0" />
     <PackageReference Include="MimeKit" Version="2.6.0" />
@@ -13,6 +14,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ETicketDataAccess\ETicket.DataAccess.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\DataTable\" />
   </ItemGroup>
 
 </Project>

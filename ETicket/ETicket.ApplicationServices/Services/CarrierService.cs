@@ -36,29 +36,14 @@ namespace ETicket.ApplicationServices.Services
             uow.Save();
         }
 
-        public bool Exists(int id)
-        {
-            return uow.Carriers.Get(id) != null;
-        }
-
-        public IQueryable<Carrier> Get()
-        {
-            return uow.Carriers.GetAll();
-        }
-
-        public Carrier Get(int id)
-        {
-            return uow.Carriers.Get(id);
-        }
-
         public IEnumerable<Carrier> GetAll()
         {
             return uow.Carriers.GetAll().ToList();
         }
 
-        public CarrierDto GetDto(int id)
+        public CarrierDto Get(int id)
         {
-            var carrier = Get(id);
+            var carrier = uow.Carriers.Get(id);
 
             return mapper.Map<Carrier, CarrierDto>(carrier);
         }

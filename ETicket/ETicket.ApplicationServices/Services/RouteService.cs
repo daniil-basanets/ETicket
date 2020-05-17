@@ -2,8 +2,10 @@
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -26,21 +28,10 @@ namespace ETicket.ApplicationServices.Services
             unitOfWork.Save();
         }
 
-        public void Delete(int id)
-        {
-            unitOfWork.Routes.Delete(id);
-            unitOfWork.Save();
-        }
-
-        public bool Exists(int id)
-        {
-            return unitOfWork.Routes.Get(id) != null;
-        }
-
         public IEnumerable<Route> GetRoutes()
         {
-            return unitOfWork.Routes.GetAll().ToList();
-        }
+            return unitOfWork.Routes.GetAll();
+        }       
 
         public Route GetRouteById(int id)
         {
@@ -52,6 +43,17 @@ namespace ETicket.ApplicationServices.Services
             var routeService = mapper.Map<RouteDto, Route>(routeDto);
             unitOfWork.Routes.Update(routeService);
             unitOfWork.Save();
+        }
+
+        public void Delete(int id)
+        {
+            unitOfWork.Routes.Delete(id);
+            unitOfWork.Save();
+        }
+        
+        public bool Exists(int id)
+        {
+            return unitOfWork.Routes.Get(id) != null;
         }
     }
 }

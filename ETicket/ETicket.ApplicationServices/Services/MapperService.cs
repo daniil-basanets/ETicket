@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.DataAccess.Domain.Entities;
 using ETicketAdmin.Mapping;
@@ -16,16 +17,29 @@ namespace ETicket.ApplicationServices.Services
 
         private IMapper ConfigureMapper()
         {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<TicketMapperProfile>();
+                cfg.AddProfile<DocumentMapperProfile>();
+                cfg.AddProfile<PrivilegeMapperProfile>();
+                cfg.AddProfile<UserMapperProfile>();
+                cfg.AddProfile<TransactionHistoryMapperProfile>();
+                cfg.AddProfile<CarrierMapperProfile>();
+                cfg.AddProfile<AreaMapperProfile>();
+            });
             var config = new MapperConfiguration(cfg =>  cfg.AddProfile<MapperProfile>());
 
-            var mapper = config.CreateMapper();
-
-            return mapper;
+            return config.CreateMapper();
         }
 
         public TDestination Map<TSource, TDestination>(TSource source)
         {
             return mapper.Map<TSource, TDestination>(source);
+        }
+
+        public IQueryable<TDestination> ProjectTo<TDestination>(IQueryable source)
+        {
+            return mapper.ProjectTo<TDestination>(source);
         }
     }
 }

@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com" 
+    xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+    xmlns:bindingconverters="clr-namespace:ETicketMobile.UserInterface.BindingConverters;assembly=ETicketMobile.UserInterface"
+    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="ETicketMobile.Views.Login.LoginView">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter" />
+            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackLayout Margin="10, 0">
+            <Label 
+                Text="Log Into Your Account"
+                Style="{StaticResource TitleLabelStyle}" />
+
+            <Label
+                IsVisible="{Binding EmailWarning, Converter={StaticResource StringToBooleanConverter}}"
+                Text="{Binding EmailWarning}"
+                TextColor="{Binding EmailWarning, Converter={StaticResource StringToColorConverter}}"/>
+
+            <telerikInput:RadEntry
+                WatermarkText="{local:Translate Email}"
+                Text="{Binding Email, Mode=TwoWay}"
+                Style="{StaticResource LoginEntryStyle}"
+                Keyboard="Email"/>
+
+            <telerikInput:RadEntry
+                Text="{Binding Password, Mode=TwoWay}"
+                WatermarkText="{Binding PasswordPlaceHolder, Mode=TwoWay}"
+                WatermarkTextColor="{Binding PasswordPlaceHolderColor}"
+                Style="{StaticResource LoginEntryStyle}"
+                IsPassword="True"/>
+
+            <telerikInput:RadButton
+                Command="{Binding NavigateToLoginView}"
+                Text="{local:Translate SignIn}"
+                Style="{StaticResource ActionButtonStyle}" />
+
+            <telerikInput:RadButton
+                Command="{Binding NavigateToForgetPasswordView}"
+                Text="{local:Translate ForgotPassword}"
+                Style="{StaticResource SecondaryActionButtonStyle}"
+                FontAttributes="None" />
+        </StackLayout>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Label 
+                Text="{local:Translate RegistrationHint}"
+                Style="{StaticResource NormalLabelStyle}"/>
+
+            <telerikInput:RadButton
+                Command="{Binding NavigateToRegistrationView}"
+                Text="{local:Translate SignUp}"
+                Style="{StaticResource SecondaryActionButtonStyle}"
+                Grid.Column="1" />
+        </Grid>
+    </Grid>
+</ContentPage>

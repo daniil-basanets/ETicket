@@ -6,23 +6,27 @@ using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.ApplicationServices.DTOs;
 using log4net;
 using System.Reflection;
+using ETicket.ApplicationServices.Services.Interfaces;
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
     public class RoutesController : Controller
     {
-        private readonly RouteService routeService;
+        private readonly IRouteService routeService;
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        public RoutesController(IUnitOfWork unitOfWork)
+
+        public RoutesController(IRouteService routeService)
         {
-            routeService = new RouteService(unitOfWork);
+            this.routeService = routeService;
         }
 
         [HttpGet]
         public IActionResult Index()
         {
+            log.Info(nameof(RoutesController.Index));
+
             try
             {
                 var routes = routeService.GetRoutes();
@@ -40,6 +44,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Details(int? id)
         {
+            log.Info(nameof(RoutesController.Details));
+
             try
             {
                 if (id == null)
@@ -71,6 +77,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            log.Info(nameof(RoutesController.Create));
+
             return View();
         }
 
@@ -78,6 +86,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(RouteDto routeDto)
         {
+            log.Info(nameof(RoutesController.Create));
+
             try
             {
                 if (ModelState.IsValid)
@@ -99,6 +109,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
+            log.Info(nameof(RoutesController.Edit));
+
             try
             {
                 if (id == null)
@@ -131,6 +143,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, RouteDto routeDto)
         {
+            log.Info(nameof(RoutesController.Edit));
+
             if (id != routeDto.Id)
             {
                 log.Warn(nameof(RoutesController.Edit) + " id isn't equal to routeDto.Id");
@@ -160,6 +174,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(int? id)
         {
+            log.Info(nameof(RoutesController.Delete));
+
             if (id == null)
             {
                 log.Warn(nameof(RoutesController.Delete) + " id is null");
@@ -190,6 +206,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
+            log.Info(nameof(RoutesController.DeleteConfirmed));
+
             try
             {
                 routeService.Delete(id);

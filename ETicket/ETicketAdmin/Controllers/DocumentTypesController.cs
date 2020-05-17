@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.DTOs;
@@ -23,6 +23,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            log.Info(nameof(DocumentTypesController.Index));
+
             try
             {
                 var documentTypes = documentTypeService.GetDocumentTypes();
@@ -40,6 +42,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            log.Info(nameof(DocumentTypesController.Create));
+
             return View();
         }
 
@@ -48,6 +52,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(DocumentTypeDto documentTypeDto)
         {
+            log.Info(nameof(DocumentTypesController.Create));
+            
             if (ModelState.IsValid)
             {
                 try
@@ -70,6 +76,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
+            log.Info(nameof(DocumentTypesController.Edit));
+            
             if (id == null)
             {
                 log.Warn(nameof(DocumentTypesController.Edit) + " id is null");
@@ -101,6 +109,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, DocumentTypeDto documentTypeDto)
         {
+            log.Info(nameof(DocumentTypesController.Edit));
+            
             if (id != documentTypeDto.Id)
             {
                 log.Warn(nameof(DocumentTypesController.Edit) + " id is not equal to documentTypeDto.Id");
@@ -130,6 +140,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(int? id)
         {
+            log.Info(nameof(DocumentTypesController.Delete));
+            
             if (id == null)
             {
                 log.Warn(nameof(DocumentTypesController.Delete) + " id is null");
@@ -162,6 +174,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
+            log.Info(nameof(DocumentTypesController.DeleteConfirmed));
+            
             try
             {
                 documentTypeService.Delete(id);

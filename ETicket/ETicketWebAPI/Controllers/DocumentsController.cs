@@ -9,10 +9,9 @@ using System.Reflection;
 namespace ETicket.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/documents")]
     public class DocumentsController : ControllerBase
     {
-
         IDocumentService documentService;
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -25,12 +24,16 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet]
         public IActionResult GetDocuments()
         {
+            log.Info(nameof(DocumentsController.GetDocuments));
+
             return Ok(documentService.GetDocuments());
         }
                 
         [HttpGet("{id}")]
         public IActionResult GetDocument(Guid id)
         {
+            log.Info(nameof(DocumentsController.GetDocument));
+
             try
             {
                 var document = documentService.GetDocumentById(id);
@@ -51,8 +54,10 @@ namespace ETicket.WebAPI.Controllers
         }
                
         [HttpPut("{id}")]
-        public  IActionResult PutDocument(Guid id, DocumentDto documentDto)
+        public  IActionResult UpdateDocument(Guid id, DocumentDto documentDto)
         {
+            log.Info(nameof(DocumentsController.UpdateDocument));
+
             try
             {
                 if (id != documentDto.Id | documentDto == null)
@@ -80,6 +85,8 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost]
         public IActionResult PostDocument(DocumentDto documentDto)
         {
+            log.Info(nameof(DocumentsController.PostDocument));
+
             try
             {
                 if (documentDto == null)
@@ -102,6 +109,8 @@ namespace ETicket.WebAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteDocument(Guid id)
         {
+            log.Info(nameof(DocumentsController.DeleteDocument));
+
             try
             {
                 var document = documentService.GetDocumentById(id);

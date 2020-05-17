@@ -10,7 +10,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
     public interface IUserService
     {
         public IEnumerable<User> GetUsers();
-        public User GetUserById(Guid id);
+        public UserDto GetUserById(Guid id);
 
         public void CreateUser(UserDto user);
 
@@ -20,8 +20,8 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 
         public void Update(UserDto user);
 
-        public void Delete(Guid id);
+        public User GetByEmail(string email);
 
-        public bool Exists(Guid id);
+        public void Delete(Guid id);
     }
 }

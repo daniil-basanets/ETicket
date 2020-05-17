@@ -31,12 +31,16 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            log.Info(nameof(AccountController.Register));
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel model)
         {
+            log.Info(nameof(AccountController.Register) + " POST");
+
             try
             {
                 if (ModelState.IsValid)
@@ -46,7 +50,6 @@ namespace ETicket.Admin.Controllers
 
                     if (result.Succeeded)
                     {
-                        //await userManager.AddToRoleAsync(user, "SuperUser");// какая роль при регистрации?
                         await signInManager.SignInAsync(user, false);
 
                         return RedirectToAction("Login", "Account");
@@ -74,6 +77,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
         {
+            log.Info(nameof(AccountController.Login));
+
             try
             {
                 return View(new LoginModel { ReturnUrl = returnUrl });
@@ -90,6 +95,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
         {
+            log.Info(nameof(AccountController.Login) + " POST");
+
             try
             {
                 if (ModelState.IsValid)
@@ -124,10 +131,16 @@ namespace ETicket.Admin.Controllers
             }   
         }
 
+                return BadRequest();
+            }   
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
+            log.Info(nameof(AccountController.Logout));
+
             try
             {
                 await signInManager.SignOutAsync();
@@ -145,6 +158,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult AccessDenied()
         {
+            log.Info(nameof(AccountController.AccessDenied));
+
             return View();
         }
     }

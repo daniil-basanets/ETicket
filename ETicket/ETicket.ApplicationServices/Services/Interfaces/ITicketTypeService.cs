@@ -6,9 +6,9 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface ITicketTypeService
     {
-        public IEnumerable<TicketType> GetTicketType();
+        public IEnumerable<TicketType> GetTicketTypes();
         
-        public TicketType GetTicketTypeById(int id);
+        public TicketTypeDto GetTicketTypeById(int id);
 
         public void Create(TicketTypeDto documentTypeDto);
 

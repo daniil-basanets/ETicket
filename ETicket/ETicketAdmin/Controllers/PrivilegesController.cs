@@ -1,7 +1,6 @@
 ﻿using ETicket.ApplicationServices.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using System.Reflection;
@@ -28,12 +27,25 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View(privilegeService.GetPrivileges());
+            log.Info(nameof(PrivilegesController.Index));
+
+            try
+            {
+                return View(privilegeService.GetPrivileges());
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         [HttpGet]
         public IActionResult Details(int? id)
         {
+            log.Info(nameof(PrivilegesController.Details));
+
             if (id == null)
             {
                 log.Warn(nameof(PrivilegesController.Details) + " id is null");
@@ -65,6 +77,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            log.Info(nameof(PrivilegesController.Create));
+
             return View();
         }
         
@@ -72,6 +86,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(PrivilegeDto privilegeDto)
         {
+            log.Info(nameof(PrivilegesController.Create));
+
             try
             {
                 if (ModelState.IsValid)
@@ -95,6 +111,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Edit(int? id)
         {
+            log.Info(nameof(PrivilegesController.Edit));
+
             if (id == null)
             {
                 log.Warn(nameof(PrivilegesController.Edit) + " id is null");
@@ -125,6 +143,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, PrivilegeDto privilegeDto)
         {
+            log.Info(nameof(PrivilegesController.Edit));
+
             if (id != privilegeDto.Id)
             {
                 log.Warn(nameof(PrivilegesController.Edit) + " id is not equal to privilegeDto.Id");
@@ -154,6 +174,8 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(int? id)
         {
+            log.Info(nameof(PrivilegesController.Delete));
+
             if (id == null)
             {
                 log.Warn(nameof(PrivilegesController.Edit) + " id is null");
@@ -186,6 +208,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
+            log.Info(nameof(PrivilegesController.DeleteConfirmed));
+
             try
             {
                 privilegeService.Delete(id);
