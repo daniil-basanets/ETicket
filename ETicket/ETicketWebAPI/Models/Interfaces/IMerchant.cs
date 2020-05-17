@@ -2,7 +2,8 @@
 {
     public interface IMerchant
     {
-        int MerchantId { get; set; }
-        string Password { get; set; }
+        string PublicKey { get; set; }
+
+        string PrivateKey { get; set; }
     }
 }
