@@ -1,7 +1,7 @@
 using ETicket.ApplicationServices.DTOs;
 using FluentValidation;
 
-namespace ETicket.WebAPI.Validation
+namespace ETicket.ApplicationServices.Validation
 {
     public class TicketTypeValidator : AbstractValidator<TicketTypeDto>
     {
@@ -10,7 +10,7 @@ namespace ETicket.WebAPI.Validation
             RuleFor(t => t.TypeName)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("{PropertyName} is empty")
-                .Length(2, 50).WithMessage("Lenght {TotalLength} of {PropertyName} is Invalid");
+                .Length(2, 50).WithMessage("Length {TotalLength} of {PropertyName} is Invalid");
 
             RuleFor(t => t.IsPersonal)
                 .NotNull();
@@ -20,18 +20,10 @@ namespace ETicket.WebAPI.Validation
                 .NotEmpty().WithMessage("{PropertyName} is empty")
                 .InclusiveBetween((uint)1,uint.MaxValue).WithMessage("Value should be from {From} to {To}");
 
-            RuleFor(t => t.Price)
+            RuleFor(t => t.Coefficient)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotNull()
-                .GreaterThan(decimal.Zero).WithMessage("{PropertyName} should be greater than {ComparisonValue}")
-                .Must(BeAValidPrice).WithMessage("{PropertyName} is Invalid");
-        }
-        
-        private bool BeAValidPrice(decimal price)
-        {
-            var temp = price.ToString().Split('.', ',');
-            
-            return temp.Length == 1 || temp[1].Length <= 2;
+                .GreaterThan(decimal.Zero).WithMessage("{PropertyName} should be greater than {ComparisonValue}");
         }
     }
 }

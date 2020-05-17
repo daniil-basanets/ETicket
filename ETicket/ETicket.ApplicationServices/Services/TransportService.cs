@@ -8,7 +8,7 @@ using ETicket.DataAccess.Domain.Interfaces;
 
 namespace ETicket.ApplicationServices.Services
 {
-    class TransportService: ITransportService
+    public class TransportService: ITransportService
     {
         #region private members
 
@@ -29,7 +29,7 @@ namespace ETicket.ApplicationServices.Services
             return uow.Transports.GetAll().ToList();
         }
 
-        public Transport Get(long id)
+        public Transport Get(int id)
         {
             return uow.Transports.Get(id);
         }
@@ -48,13 +48,13 @@ namespace ETicket.ApplicationServices.Services
             uow.Save();
         }
 
-        public void Delete(long id)
+        public void Delete(int id)
         {
             uow.Transports.Delete(id);
             uow.Save();
         }
 
-        public bool Exists(long id)
+        public bool Exists(int id)
         {
             return uow.Transports.Get(id) != null;
         }

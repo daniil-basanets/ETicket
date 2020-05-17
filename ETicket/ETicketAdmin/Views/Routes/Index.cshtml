@@ -4,12 +4,18 @@
     ViewData["Title"] = "Index";
 }
 
+<link href="~/css/ButtonMoves/moved-data-table-controls.css" rel="stylesheet" />
 <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Routes</h6>
+            <div>
+                <div id="buttonCreate" class="button_create">
+                    <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                </div>
+            </div>
         </div>
         <div class="card-body documents">
             <div class="table-responsive">
@@ -17,26 +23,16 @@
                     <thead>
                         <tr>
                             <th>
-                                <details>
-                                    <summary>
-                                        @Html.DisplayNameFor(model => model.Number)
-                                    </summary>
-                                </details>
+                                @Html.DisplayNameFor(model => model.Number)
                             </th>
                             <th>
-                                <details>
-                                    <summary>
-                                        @Html.DisplayNameFor(model => model.FirstStationId)
-                                    </summary>
-                                    <div class="filters">
-                                    </div>
-                                </details>
+                                @Html.DisplayNameFor(model => model.FirstStationId)
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.LastStationId)
                             </th>
                             <th>
-                                <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                                Actions
                             </th>
                         </tr>
                     </thead>
@@ -90,8 +86,5 @@
 <script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
 <!-- Page level custom scripts -->
-<script src="~/js/data-table-documents-filters.js"></script>
-
-
-
-
+<script src="~/js/datatables-starter.js"></script>
+<script src="~/js/button-create-moves/button-create-move.js"></script>

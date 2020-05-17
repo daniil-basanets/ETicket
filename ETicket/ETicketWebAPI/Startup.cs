@@ -1,7 +1,9 @@
 using System;
 using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.DocumentTypes;
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.ApplicationServices.Services.Transaction;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.WebAPI.Models;
@@ -56,13 +58,14 @@ namespace ETicket.WebAPI
             services.AddTransient<ICarrierService, CarrierService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IMailService, MailService>();
-            
-
+            services.AddTransient<IDocumentTypesService, DocumentTypesService>();
+            services.AddTransient<ITransactionService, TransactionService>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                .AddEntityFrameworkStores<ETicketDataContext>()
                .AddDefaultTokenProviders()
                .AddTokenProvider(AuthOptions.ISSUER, typeof(DataProtectorTokenProvider<IdentityUser>));
+            
             services.AddIdentityCore<IdentityUser>(o =>
             {
                 o.Password.RequireDigit = false;

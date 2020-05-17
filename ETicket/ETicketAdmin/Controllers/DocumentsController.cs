@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Reflection;
-using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+
+using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.Admin.Models.DataTables;
 
 namespace ETicket.Admin.Controllers
 {
@@ -14,12 +18,14 @@ namespace ETicket.Admin.Controllers
     {
         private readonly IDocumentService documentService;
         private readonly IDocumentTypesService documentTypesService;
+        private readonly IDataTableService<Document> dataTableService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public DocumentsController(IDocumentService documentService, IDocumentTypesService documentTypesService)
+        public DocumentsController(IDocumentService documentService, IDocumentTypesService documentTypesService, IDataTableService<Document> dataTableService)
         {
             this.documentService = documentService;
             this.documentTypesService = documentTypesService;
+            this.dataTableService = dataTableService;
         }
 
         [HttpGet]
@@ -31,9 +37,8 @@ namespace ETicket.Admin.Controllers
             {
                 var documentsTypes = documentTypesService.GetDocumentTypes();
                 ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
-                var documents = documentService.GetDocuments();
 
-                return View(documents);
+                return View();
             }
             catch (Exception e)
             {
@@ -44,6 +49,11 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
+        {
+            return Json(dataTableService.GetDataTablePage(pagingInfo));
+        }
+        
         public IActionResult Details(Guid? id)
         {
             log.Info(nameof(DocumentsController.Details));

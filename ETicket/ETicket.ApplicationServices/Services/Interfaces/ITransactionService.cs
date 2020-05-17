@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using ETicket.ApplicationServices.DTOs;
 using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.ApplicationServices.Services.Interfaces
 {
-    public interface ITransactionAppService
+    public interface ITransactionService
     {
+        void AddTransaction(TransactionHistoryDto transactionDto);
+
         IEnumerable<TransactionHistory> GetTransactions();
 
-        TransactionHistory GetTransactionById(Guid id);
+        TransactionHistoryDto GetTransactionById(Guid id);
     }
 }

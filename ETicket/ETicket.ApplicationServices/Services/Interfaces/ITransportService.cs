@@ -4,18 +4,18 @@ using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.ApplicationServices.Services.Interfaces
 {
-    interface ITransportService
+    public interface ITransportService
     {
         public IEnumerable<Transport> GetAll();
 
-        public Transport Get(long id);
+        public Transport Get(int id);
 
         public void Create(TransportDto transportDto);
 
         public void Update(TransportDto transportDto);
 
-        public void Delete(long id);
+        public void Delete(int id);
 
-        public bool Exists(long id);
+        public bool Exists(int id);
     }
 }

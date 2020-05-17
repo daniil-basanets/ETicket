@@ -11,6 +11,7 @@ namespace ETicket.DataAccess.Domain
         public DbSet<TransactionHistory> TransactionHistory { get; set; }
         public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<TicketVerification> TicketVerifications { get; set; }
         public DbSet<User> ETUsers { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<Route> Routes { get; set; }
@@ -23,6 +24,7 @@ namespace ETicket.DataAccess.Domain
         public DbSet<Station> Stations { get; set; }
         public DbSet<Transport> Transports { get; set; }
         public DbSet<PriceList> PriceList { get; set; }
+        public DbSet<Area> Areas { get; set; }
 
         #endregion
 

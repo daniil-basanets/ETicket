@@ -16,6 +16,7 @@ namespace ETicket.DataAccess.Domain
         private PrivilegeRepository privilegeRepository;
         private TicketRepository ticketRepository;
         private TicketTypeRepository ticketTypeRepository;
+        private TicketVerificationRepository ticketVerificationRepository;
         private TransactionHistoryRepository transactionHistoryRepository;
         private UserRepository userRepository;
         private CarrierRepository carrierRepository;
@@ -25,6 +26,7 @@ namespace ETicket.DataAccess.Domain
         private StationRepository stationRepository;
         private TransportRepository transportRepository;
         private PriceListRepository priceListRepository;
+        private AreaRepository areaRepository;
 
         #endregion
 
@@ -86,6 +88,17 @@ namespace ETicket.DataAccess.Domain
                     ticketTypeRepository = new TicketTypeRepository(eTicketDataContext);
 
                 return ticketTypeRepository;
+            }
+        }
+
+        public TicketVerificationRepository TicketVerifications
+        {
+            get
+            {
+                if (ticketVerificationRepository == null)
+                    ticketVerificationRepository = new TicketVerificationRepository(eTicketDataContext);
+
+                return ticketVerificationRepository;
             }
         }
 
@@ -166,6 +179,17 @@ namespace ETicket.DataAccess.Domain
                 return stationRepository;
             }
         }
+        
+        public AreaRepository Areas
+        {
+            get 
+            {
+                if (areaRepository == null)
+                    areaRepository = new AreaRepository(eTicketDataContext);
+
+                return areaRepository;
+            }
+        }
 
         public TransportRepository Transports
         {
@@ -178,7 +202,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public void Save()
+    public void Save()
         {
             eTicketDataContext.SaveChanges();
         }
