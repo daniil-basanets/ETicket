@@ -100,7 +100,7 @@ namespace ETicket.ApplicationServices.Services
 
             List<DateTime> timePeriods = new List<DateTime>();
             
-            for (DateTime d = start.Date.AddDays(-1); d <= end; d = d.AddDays(1))
+            for (DateTime d = start.Date; d <= end.AddDays(1); d = d.AddDays(1))
             {
                 timePeriods.Add(d);
             }
@@ -116,7 +116,7 @@ namespace ETicket.ApplicationServices.Services
 
             return new ChartDto()
             {
-                Labels = timePeriods.Skip(1).Select(d => d.ToShortDateString()).ToList(),
+                Labels = timePeriods.Select(d => d.ToShortDateString()).ToList(),
                 Data = data.Select(d => d.ToString()).ToList()
             };
         }
