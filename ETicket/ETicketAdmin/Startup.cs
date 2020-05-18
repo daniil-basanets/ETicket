@@ -84,9 +84,6 @@ namespace ETicket.Admin
             services.AddTransient<IDataTableService<TicketVerification>, DataTableService<TicketVerification>>();
 
             
-           
-
-
             services.AddIdentityCore<IdentityUser>(o =>
             {
                 o.Password.RequireDigit = false;

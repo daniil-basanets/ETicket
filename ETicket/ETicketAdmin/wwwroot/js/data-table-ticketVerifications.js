@@ -63,7 +63,7 @@ $(document).ready(function () {
             serverSide: true,
             order: [[1, "desc"]],
             ajax: {
-                url: 'TicketVerifications/GetCurrentPage',
+                url: 'TicketVerifications/GetPage',
                 //To send an array correctly by query string
                 traditional: true,
                 type: 'GET',

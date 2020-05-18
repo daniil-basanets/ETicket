@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using log4net;
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.WebAPI.Models.TicketVerification;
 
 namespace ETicket.WebAPI.Controllers
 {
@@ -95,7 +96,12 @@ namespace ETicket.WebAPI.Controllers
             }
         }
 
-
+        [HttpPost("{ticketId}/verify")]
+        public IActionResult VerifyTicket(Guid ticketId, [FromBody]VerifyTicketRequest request)
+        {
+            return Ok(verificationService.VerifyTicket(
+                ticketId, request.TransportId, request.Longitude, request.Latitude));
+        }
     }
 }
 

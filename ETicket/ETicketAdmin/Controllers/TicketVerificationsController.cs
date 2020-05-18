@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Reflection;
-
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.Admin.Models.DataTables;
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
@@ -44,7 +43,7 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
+        public IActionResult GetPage([FromQuery]DataTablePagingInfo pagingInfo)
         {
             return Json(dataTableService.GetDataTablePage(pagingInfo));
         }
