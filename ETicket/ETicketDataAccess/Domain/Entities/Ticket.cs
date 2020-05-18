@@ -45,6 +45,6 @@ namespace ETicket.DataAccess.Domain.Entities
         [ForeignKey("TransactionHistoryId")]
         public TransactionHistory TransactionHistory { get; set; }
 
-        public IList<TicketArea>  TicketArea { get; set; }
+        public ICollection<TicketArea>  TicketArea { get; set; }
     }
 }
