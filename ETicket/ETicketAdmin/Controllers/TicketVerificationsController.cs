@@ -45,7 +45,18 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult GetPage([FromQuery]DataTablePagingInfo pagingInfo)
         {
-            return Json(dataTableService.GetDataTablePage(pagingInfo));
+            log.Info(nameof(TicketVerificationsController.GetPage));
+
+            try
+            {
+                return Json(dataTableService.GetDataTablePage(pagingInfo));
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         // GET: TicketVerifications/Details/5
