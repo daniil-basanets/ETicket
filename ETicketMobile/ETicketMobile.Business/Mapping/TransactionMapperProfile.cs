@@ -8,8 +8,7 @@ namespace ETicketMobile.Business.Mapping
     {
         public TransactionMapperProfile()
         {
-            CreateMap<TransactionDto, Transaction>();
-            CreateMap<Transaction, TransactionDto>();
+            CreateMap<TransactionDto, Transaction>().ReverseMap();
         }
     }
 }

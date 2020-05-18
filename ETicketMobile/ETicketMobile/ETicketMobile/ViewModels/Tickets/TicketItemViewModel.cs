@@ -55,7 +55,7 @@ namespace ETicketMobile.ViewModels.Tickets
             RemoveTicket = new Command(() => Amount--);
         }
 
-        public TicketItemViewModel(TicketDto dto)
+        public TicketItemViewModel(TicketTypeDto dto)
             : this()
         {
             id = dto.Id;

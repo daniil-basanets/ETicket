@@ -21,7 +21,7 @@ namespace ETicketMobile.DataAccess.Repositories
         private static string GetDatabasePath()
         {
             var basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var path = Path.Combine(basePath, "ETicket.db");
+            var path = Path.Combine(basePath, "ETicket1.db");
 
             return path;
         }

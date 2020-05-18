@@ -85,7 +85,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             if (!await RequestChangePassword(password))
                 return;
 
-            navigationParameters.Add("newPassword", ConfirmPassword);
             await navigationService.NavigateAsync(nameof(LoginView));
         }
 
@@ -95,7 +94,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
             var createNewPasswordDto = CreateNewPasswordDto(email, password);
             var response = await httpClient.PostAsync<CreateNewPasswordRequestDto, CreateNewPasswordResponseDto>(
-                    TicketsEndpoint.ResetPassword,
+                    AuthorizeEndpoint.ResetPassword,
                     createNewPasswordDto
             );
 

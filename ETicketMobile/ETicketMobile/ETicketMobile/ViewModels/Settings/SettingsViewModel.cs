@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using ETicketMobile.Business.Model.UserAccount;
 using ETicketMobile.Resources;
+using ETicketMobile.Views.Login;
 using ETicketMobile.Views.Settings;
 using Prism.Navigation;
 using Xamarin.Forms;
 
-namespace ETicketMobile.ViewModels.UserAccount
+namespace ETicketMobile.ViewModels.Settings
 {
     public class SettingsViewModel : ViewModelBase
     {
@@ -17,14 +18,14 @@ namespace ETicketMobile.ViewModels.UserAccount
 
         private IEnumerable<UserAction> settings;
 
+        public ICommand NavigateToAction => navigateToAction
+            ?? (navigateToAction = new Command<UserAction>(OnNavigateToAction));
+
         public IEnumerable<UserAction> Settings
         {
             get => settings;
             set => SetProperty(ref settings, value);
         }
-
-        public ICommand NavigateToAction => navigateToAction
-            ?? (navigateToAction = new Command<UserAction>(OnNavigateToAction));
 
         public SettingsViewModel(INavigationService navigationService) 
             : base(navigationService)
@@ -43,7 +44,7 @@ namespace ETicketMobile.ViewModels.UserAccount
             Settings = new List<UserAction>
             {
                 new UserAction { Name = AppResource.Localization, View = nameof(LocalizationView) },
-                new UserAction { Name = AppResource.Info, View = nameof(LocalizationView) }
+                new UserAction { Name = AppResource.Logout, View = nameof(LoginView) }
             };
         }
 

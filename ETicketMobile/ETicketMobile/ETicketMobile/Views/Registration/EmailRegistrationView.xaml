@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
     xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
     prism:ViewModelLocator.AutowireViewModel="True"
+    Title="Confirm Email"
     x:Class="ETicketMobile.Views.Registration.EmailRegistrationView">
 
     <ContentPage.Resources>
@@ -61,7 +62,7 @@
                 Style="{StaticResource NormalLabelStyle}"/>
 
             <telerikInput:RadButton
-                Command="{Binding NavigateToPhoneRegistrationView}"
+                Command="{Binding NavigateToSignInView}"
                 Text="{local:Translate SignIn}"
                 Style="{StaticResource SecondaryActionButtonStyle}"
                 Grid.Column="1" />

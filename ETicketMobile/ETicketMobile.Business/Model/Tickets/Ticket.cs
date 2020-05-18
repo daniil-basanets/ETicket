@@ -1,15 +1,20 @@
-﻿namespace ETicketMobile.Business.Model.Tickets
+﻿using System;
+using System.Collections.Generic;
+
+namespace ETicketMobile.Business.Model.Tickets
 {
     public class Ticket
     {
-        public int Id { get; set; }
+        public string TicketType { get; set; }
 
-        public string Name { get; set; }
+        public DateTime CreatedAt { get; set; }
 
-        public int DurationHours { get; set; }
+        public DateTime? ActivatedAt { get; set; }
 
-        public int Amount { get; set; }
+        public DateTime? ExpiredAt { get; set; }
 
-        public decimal Coefficient { get; set; }
+        public string ReferenceNumber { get; set; }
+
+        public IEnumerable<string> TicketAreas { get; set; }
     }
 }

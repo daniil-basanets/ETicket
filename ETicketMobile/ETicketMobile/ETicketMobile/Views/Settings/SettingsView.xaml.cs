@@ -1,6 +1,6 @@
 ﻿using Xamarin.Forms;
 
-namespace ETicketMobile.Views.UserActions
+namespace ETicketMobile.Views.Settings
 {
     public partial class SettingsView : ContentPage
     {

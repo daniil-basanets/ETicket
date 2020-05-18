@@ -8,8 +8,7 @@ namespace ETicketMobile.Business.Mapping
     {
         public AreasMapperProfile()
         {
-            CreateMap<Area, AreaDto>();
-            CreateMap<AreaDto, Area>();
+            CreateMap<Area, AreaDto>().ReverseMap();
         }
     }
 }

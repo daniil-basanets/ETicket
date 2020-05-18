@@ -11,53 +11,31 @@
         <StackLayout>
             <ListView 
                 x:Name="Languages"
-                ItemsSource="{Binding Languages}"
-                SeparatorVisibility="None"
-                RowHeight="70">
-                <ListView.Behaviors>
-                    <prism:EventToCommandBehavior
-                        EventName="ItemTapped"
-                        Command="{Binding ChooseLanguage}"
-                        CommandParameter="{Binding Source={x:Reference Languages}, Path=SelectedItem}"/>
-                </ListView.Behaviors>
+                ItemsSource="{Binding Localizations}"
+                SeparatorVisibility="None">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <Frame 
                                 BackgroundColor="White"
-                                Padding="12"
+                                Padding="12, 12, 0, 12"
                                 BorderColor="#F7F8FA">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*"/>
-                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="9*"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="1*"/>
-                                        <RowDefinition Height="1*"/>
-                                    </Grid.RowDefinitions>
+                                    <RadioButton
+                                        Command="{Binding SelectCommand}"
+                                        CommandParameter="{Binding Language}"
+                                        Grid.Column="0"
+                                        GroupName="0"/>
 
-                                    <StackLayout
-                                        Grid.Column="0">
-                                        <Label
-                                            Grid.Row="0"
-                                            Text="{Binding Language}"/>
-                                        <Label
-                                            Grid.Row="1"
-                                            Text="{Binding Country}"/>
-                                    </StackLayout>
-
-                                    <Image
+                                    <Label
+                                        x:Name="Language"
                                         Grid.Column="1"
-                                        Grid.RowSpan="2"
-                                        HeightRequest="40"
-                                        WidthRequest="40"
-                                        MinimumHeightRequest="40"
-                                        MinimumWidthRequest="40"
-                                        VerticalOptions="Center"
-                                        HorizontalOptions="End"
-                                        Source="RightArrow.png"/>
+                                        Text="{Binding Language}"/>
                                 </Grid>
                             </Frame>
                         </ViewCell>

@@ -87,14 +87,14 @@ namespace ETicketMobile.ViewModels.Tickets
             var name = navigationParameters.GetValue<string>("name");
             var price = navigationParameters.GetValue<decimal>("price");
 
-            var ticket = new TicketDto
+            var ticketTypeDto = new TicketTypeDto
             {
                 Id = id,
                 Name = name,
                 Coefficient = price
             };
 
-            var response = await httpClient.PostAsync<TicketDto, string>(TicketsEndpoint.BuyTicket, ticket, accessToken);
+            var response = await httpClient.PostAsync<TicketTypeDto, string>(TicketsEndpoint.BuyTicket, ticketTypeDto, accessToken);
 
             if (string.IsNullOrEmpty(response))
             {
@@ -102,14 +102,14 @@ namespace ETicketMobile.ViewModels.Tickets
 
                 await localApi.AddAsync(token);
 
-                response = await httpClient.PostAsync<TicketDto, string>(TicketsEndpoint.BuyTicket, ticket, token.AcessJwtToken);
+                response = await httpClient.PostAsync<TicketTypeDto, string>(TicketsEndpoint.BuyTicket, ticketTypeDto, token.AcessJwtToken);
             }
         }
 
         private async Task<Token> RefreshTokenAsync()
         {
             var refreshToken = await localApi.GetTokenAsync();
-            var token = await httpClient.PostAsync<Token, Token>(TicketsEndpoint.RefreshToken, refreshToken);
+            var token = await httpClient.PostAsync<Token, Token>(AuthorizeEndpoint.RefreshToken, refreshToken);
 
             return token;
         }
