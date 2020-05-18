@@ -21,7 +21,7 @@ namespace ETicket.ApplicationServices.Services
 
         #endregion
 
-        public MetricsService(IUnitOfWork uow, ITicketTypeService ticketTypeService, ITicketService ticketService)
+        public MetricsService(IUnitOfWork uow)
         {
             this.uow = uow;
         }
