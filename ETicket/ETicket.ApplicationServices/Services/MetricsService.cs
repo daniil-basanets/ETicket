@@ -49,8 +49,9 @@ namespace ETicket.ApplicationServices.Services
 
         public ChartDto TicketsByTicketTypes(DateTime start, DateTime end)
         {
-            var data = uow.Tickets.GetAll().GroupBy(t => t.TicketType.TypeName)
-                   .Select(g => new { name = g.Key, count = g.Count().ToString() }).ToDictionary( k => k.name, k => k.count);
+           var data = uow.Tickets.GetAll().GroupBy(t => t.TicketType.TypeName)
+                   .Select(g => new { name = g.Key, count = g.Count().ToString() })
+                   .ToDictionary( k => k.name, k => k.count);
 
             ChartDto chartDto = new ChartDto();
             chartDto.Labels = data.Keys.ToArray();
