@@ -56,6 +56,9 @@ namespace ETicket.WebAPI
             services.AddTransient<IPriceListService, PriceListService>();
             services.AddTransient<IAreaService, AreaService>();
             services.AddTransient<ITicketVerificationService, TicketVerificationService>();
+            services.AddTransient<IPrivilegeService, PrivilegeService>();
+            services.AddTransient<IDocumentService, DocumentService>();
+            services.AddTransient<IRouteService, RouteService>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                .AddEntityFrameworkStores<ETicketDataContext>()
