@@ -50,7 +50,7 @@
                 Text="{local:Translate EnterBirthday}"
                 Style="{StaticResource TitleLabelStyle}" />
 
-            <telerikInput:RadDateTimePicker
+            <!--<telerikInput:RadDateTimePicker
                 SelectedDate="{Binding Birthday}"
                 DisplayStringFormat="dd.MM.yyyy"
                 SpinnerFormatString="yyyy MMMM dd"
@@ -58,7 +58,7 @@
                 EndDate="2013,1,1"
                 Placeholder="Pick a time!"
                 AreSpinnerHeadersVisible="True">
-            </telerikInput:RadDateTimePicker>
+            </telerikInput:RadDateTimePicker>-->
 
             <telerikInput:RadButton
                 Command="{Binding NavigateToConfirmEmailView}"

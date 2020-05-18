@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -27,16 +27,16 @@
       <HintPath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v9.0\Mono.Android.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.XamarinForms.Common">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Portable\Telerik.XamarinForms.Common.dll</HintPath>
+      <HintPath>\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Portable\Telerik.XamarinForms.Common.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.XamarinForms.DataControls">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Portable\Telerik.XamarinForms.DataControls.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Portable\Telerik.XamarinForms.DataControls.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.XamarinForms.Input">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Portable\Telerik.XamarinForms.Input.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Portable\Telerik.XamarinForms.Input.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.XamarinForms.Primitives">
-      <HintPath>..\..\..\..\..\..\..\..\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Portable\Telerik.XamarinForms.Primitives.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Portable\Telerik.XamarinForms.Primitives.dll</HintPath>
     </Reference>
   </ItemGroup>
 

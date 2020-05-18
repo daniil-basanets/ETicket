@@ -84,12 +84,17 @@ namespace ETicketMobile
         {
             var localization = await localApi.GetLocalizationAsync().ConfigureAwait(false);
 
-            if (localize != null)
+            if (localization != null)
             {
                 var currentCulture = new CultureInfo(localization.Culture);
 
                 localize.CurrentCulture = currentCulture;
                 AppResource.Culture = currentCulture;
+            }
+            else
+            {
+                localize.CurrentCulture = CultureInfo.CurrentCulture;
+                AppResource.Culture = CultureInfo.CurrentCulture;
             }
         }
     }

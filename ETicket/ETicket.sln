@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ETicket.DataAccess", "ETick
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ETicket.WebAPI", "ETicketWebAPI\ETicket.WebAPI.csproj", "{A91F8673-A9AE-4DB1-814B-73748D7FDA36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETicket.ApplicationServices", "ETicket.ApplicationServices\ETicket.ApplicationServices.csproj", "{E81FEF7E-BD51-42CB-9B36-B11663072E28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ETicket.ApplicationServices", "ETicket.ApplicationServices\ETicket.ApplicationServices.csproj", "{E81FEF7E-BD51-42CB-9B36-B11663072E28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ETicket.ApplicationServicesTests", "ETicket.ApplicationServicesTests\ETicket.ApplicationServicesTests.csproj", "{8FDAD390-93C7-44CB-91D4-E06D894E87ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ETicket.ApplicationServicesTests", "ETicket.ApplicationServicesTests\ETicket.ApplicationServicesTests.csproj", "{8FDAD390-93C7-44CB-91D4-E06D894E87ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,23 +22,18 @@ Global
 		{30F8BD35-78FE-4AA9-A531-E6AE140F6C5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{30F8BD35-78FE-4AA9-A531-E6AE140F6C5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30F8BD35-78FE-4AA9-A531-E6AE140F6C5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{30F8BD35-78FE-4AA9-A531-E6AE140F6C5A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EA75AE8C-52B4-439A-A7A3-EBCD5711C43E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EA75AE8C-52B4-439A-A7A3-EBCD5711C43E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA75AE8C-52B4-439A-A7A3-EBCD5711C43E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA75AE8C-52B4-439A-A7A3-EBCD5711C43E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A91F8673-A9AE-4DB1-814B-73748D7FDA36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A91F8673-A9AE-4DB1-814B-73748D7FDA36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A91F8673-A9AE-4DB1-814B-73748D7FDA36}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A91F8673-A9AE-4DB1-814B-73748D7FDA36}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E81FEF7E-BD51-42CB-9B36-B11663072E28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E81FEF7E-BD51-42CB-9B36-B11663072E28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E81FEF7E-BD51-42CB-9B36-B11663072E28}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E81FEF7E-BD51-42CB-9B36-B11663072E28}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8FDAD390-93C7-44CB-91D4-E06D894E87ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8FDAD390-93C7-44CB-91D4-E06D894E87ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8FDAD390-93C7-44CB-91D4-E06D894E87ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8FDAD390-93C7-44CB-91D4-E06D894E87ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

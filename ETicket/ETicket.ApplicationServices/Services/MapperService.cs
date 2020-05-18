@@ -17,16 +17,16 @@ namespace ETicket.ApplicationServices.Services
 
         private IMapper ConfigureMapper()
         {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<TicketMapperProfile>();
-                cfg.AddProfile<DocumentMapperProfile>();
-                cfg.AddProfile<PrivilegeMapperProfile>();
-                cfg.AddProfile<UserMapperProfile>();
-                cfg.AddProfile<TransactionHistoryMapperProfile>();
-                cfg.AddProfile<CarrierMapperProfile>();
-                cfg.AddProfile<AreaMapperProfile>();
-            });
+            //var config = new MapperConfiguration(cfg =>
+            //{
+            //    cfg.AddProfile<TicketMapperProfile>();
+            //    cfg.AddProfile<DocumentMapperProfile>();
+            //    cfg.AddProfile<PrivilegeMapperProfile>();
+            //    cfg.AddProfile<UserMapperProfile>();
+            //    cfg.AddProfile<TransactionHistoryMapperProfile>();
+            //    cfg.AddProfile<CarrierMapperProfile>();
+            //    cfg.AddProfile<AreaMapperProfile>();
+            //});
             var config = new MapperConfiguration(cfg =>  cfg.AddProfile<MapperProfile>());
 
             return config.CreateMapper();

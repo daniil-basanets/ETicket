@@ -47,7 +47,7 @@
                 IsPassword="True"/>
 
             <telerikInput:RadButton
-                Command="{Binding NavigateToLoginView}"
+                Command="{Binding NavigateToRegistrationView}"
                 Text="{local:Translate SignIn}"
                 Style="{StaticResource ActionButtonStyle}" />
 

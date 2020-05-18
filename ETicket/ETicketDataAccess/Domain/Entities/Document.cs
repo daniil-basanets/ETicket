@@ -24,8 +24,7 @@ namespace ETicket.DataAccess.Domain.Entities
 
         [DisplayName("Expiration date")]
         public DateTime? ExpirationDate { get; set; }
-
-        [DisplayName("Validity")]
+                
         [Required]
         [DisplayName("Validity")]
         public bool IsValid { get; set; }
