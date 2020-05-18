@@ -37,9 +37,10 @@ namespace ETicket.Admin.Controllers
             }
         }
 
-        public IActionResult PassengersByTime()
+        [HttpGet]
+        public IActionResult PassengersByTime(DateTime start, DateTime end)
         {
-            ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByTime(DateTime.UtcNow.AddDays(-30), DateTime.UtcNow, 8);
+            ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByTime(start, end, 8);
 
             return Json(chartDtoTicketsByTicketTypes);
         }
