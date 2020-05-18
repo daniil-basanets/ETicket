@@ -18,6 +18,8 @@ namespace ETicket.ApplicationServices.Services
         private readonly ITicketTypeService ticketTypeService;
         private readonly ITicketService ticketService;
         private const int MaxDaysForChart = 366;
+        private const string EndLessStartError = "End date cannot be less than start date";
+        private const string MaxDaysForChartError = "The period of time cannot be more than {0} days";
 
         #endregion
 
@@ -69,11 +71,11 @@ namespace ETicket.ApplicationServices.Services
         {
             if (start.CompareTo(end) == 1)
             {
-                return new ChartDto() { ErrorMessage = "End date cannot be less than start date" };
+                return new ChartDto() { ErrorMessage = EndLessStartError };
             }
             if ((end - start).TotalDays > MaxDaysForChart)
             {
-                return new ChartDto() { ErrorMessage = "The period of time cannot be more than " + MaxDaysForChart };
+                return new ChartDto() { ErrorMessage = String.Format(MaxDaysForChartError, MaxDaysForChart) };
             }
 
             List<DateTime> timePeriods = new List<DateTime>();
