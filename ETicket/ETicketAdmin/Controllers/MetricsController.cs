@@ -62,13 +62,13 @@ namespace ETicket.Admin.Controllers
             }
         }
 
-        public IActionResult GetTicketsByTicketTypes()
+        public IActionResult GetTicketsByTicketTypes(DateTime start, DateTime end)
         {
             log.Info(nameof(MetricsController.GetTicketsByTicketTypes));
 
             try
             {
-                ChartDto chartDtoTicketsByTicketTypes = metricsService.TicketsByTicketTypes(DateTime.UtcNow.AddDays(-30), DateTime.UtcNow);
+                ChartDto chartDtoTicketsByTicketTypes = metricsService.TicketsByTicketTypes(start, end);
 
                 return Json(chartDtoTicketsByTicketTypes);
             }

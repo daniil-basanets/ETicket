@@ -71,6 +71,13 @@ function refreshChart() {
                 passengerByTimeChart.destroy();
             }
 
+            if (chartData.errorMessage) {
+                $("#passengers-by-time-error").html(chartData.errorMessage);
+            }
+            else {
+                $("#passengers-by-time-error").html("");
+            }
+
             passengerByTimeChart = new Chart(ctx, {
                 type: 'line',
                 data: {
