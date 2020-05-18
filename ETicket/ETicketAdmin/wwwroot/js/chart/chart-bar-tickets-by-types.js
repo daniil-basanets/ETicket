@@ -37,7 +37,7 @@ $.getJSON(actionUrl, function (response) {
 
         var ctx = document.getElementById("tickets-by-types");
         var myBarChart = new Chart(ctx, {
-            type: 'horizontalBar',
+            type: 'bar',
             data: {
                 labels: chartData.labels,
                 datasets: [{
@@ -63,7 +63,7 @@ $.getJSON(actionUrl, function (response) {
                     }
                 },
                 scales: {
-                    yAxes: [{
+                    xAxes: [{
                         scaleLabel: {
                             display: true,
                             labelString: 'ticket types'
@@ -80,7 +80,7 @@ $.getJSON(actionUrl, function (response) {
                         },
                         maxBarThickness: 25,
                     }],
-                    xAxes: [{
+                    yAxes: [{
                         scaleLabel: {
                             display: true,
                             labelString: 'tickets count'
@@ -120,7 +120,7 @@ $.getJSON(actionUrl, function (response) {
                     callbacks: {
                         label: function (tooltipItem, chart) {
                             var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                            return datasetLabel + ': ' + number_format(tooltipItem.xLabel);
+                            return datasetLabel + ': ' + number_format(tooltipItem.yLabel);
                         }
                     }
                 },
