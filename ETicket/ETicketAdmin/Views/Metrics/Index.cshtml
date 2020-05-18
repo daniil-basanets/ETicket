@@ -54,12 +54,16 @@
             <!-- Card Header - Dropdown -->
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Passengers by privilege</h6>
+                From: <input type="date" id="passengers-by-privilege-start" class="form-control form-control-sm">
+                To: <input type="date" id="passengers-by-privilege-end" class="form-control form-control-sm">
             </div>
             <!-- Card Body -->
             <div class="card-body">
                 <div class="chart-pie">
                     <canvas id="passengers-by-privilege"></canvas>
                 </div>
+                <hr>
+                <span id="passengers-by-privilege-error" class="text-danger"></span>
             </div>
         </div>
     </div>

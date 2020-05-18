@@ -65,8 +65,7 @@ function refreshTicketsByTypesChart() {
     $.getJSON(actionUrl, function (response) {
         if (response != null) {
             chartData = response;
-            var maxY = Math.max.apply(null, chartData.data);
-
+            
             var ctx = document.getElementById("tickets-by-types");
 
             if (ticketsByTypesChart != null) {

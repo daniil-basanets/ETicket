@@ -38,9 +38,20 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult PassengersByPrivileges()
+        public IActionResult PassengersByPrivileges(DateTime start, DateTime end)
         {
-            return Json(metricsService.PassengersByPrivileges(DateTime.Now, DateTime.Now));
+            log.Info(nameof(MetricsController.PassengersByTime));
+            
+            try
+            {
+                return Json(metricsService.PassengersByPrivileges(start, end));
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         [HttpGet]

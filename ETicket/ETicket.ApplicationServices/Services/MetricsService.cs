@@ -15,9 +15,6 @@ namespace ETicket.ApplicationServices.Services
         #region Private members
 
         private readonly IUnitOfWork uow;
-        private readonly MapperService mapper;
-        private readonly ITicketTypeService ticketTypeService;
-        private readonly ITicketService ticketService;
         private const int MaxDaysForChart = 366;
         private const string EndLessStartError = "End date cannot be less than start date";
         private const string MaxDaysForChartError = "The period of time cannot be more than {0} days";
@@ -27,19 +24,17 @@ namespace ETicket.ApplicationServices.Services
         public MetricsService(IUnitOfWork uow, ITicketTypeService ticketTypeService, ITicketService ticketService)
         {
             this.uow = uow;
-            this.ticketTypeService = ticketTypeService;
-            this.ticketService = ticketService;
-            mapper = new MapperService();
         }
 
         public ChartDto PassengersByPrivileges(DateTime start, DateTime end)
         {
             if (start.CompareTo(end) == 1)
             {
-                return new ChartDto() { ErrorMessage = "End date cannot be less than start date" };
+                return new ChartDto() { ErrorMessage = EndLessStartError };
             }
 
             var data = uow.TicketVerifications.GetAll()
+                .Where(d=>d.VerificationUTCDate >= start && d.VerificationUTCDate <= end)
                 .Include(t => t.Ticket)
                 .ThenInclude(u => u.User)
                 .ThenInclude(p => p.Privilege)
@@ -76,7 +71,7 @@ namespace ETicket.ApplicationServices.Services
         {
             if (start.CompareTo(end) == 1)
             {
-                return new ChartDto() { ErrorMessage = "End date cannot be less than start date" };
+                return new ChartDto() { ErrorMessage = EndLessStartError };
             }
 
             var data = uow.Tickets.GetAll()
