@@ -56,6 +56,11 @@ namespace ETicket.ApplicationServices.Services
 
         public ChartDto TicketsByTicketTypes(DateTime start, DateTime end)
         {
+            if (start.CompareTo(end) == 1)
+            {
+                return new ChartDto() { ErrorMessage = "End date cannot be less than start date" };
+            }
+
             var data = uow.Tickets.GetAll()
                  .Where(t => t.CreatedUTCDate >= start && t.CreatedUTCDate <= end)
                  .GroupBy(t => t.TicketType.TypeName)

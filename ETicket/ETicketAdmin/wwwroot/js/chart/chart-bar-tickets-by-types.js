@@ -73,17 +73,20 @@ function refreshTicketsByTypesChart() {
                 ticketsByTypesChart.destroy();
             }
 
+            if (chartData.errorMessage) {
+                $("#tickets-by-types-error").html(chartData.errorMessage);
+            }
+            else {
+                $("#tickets-by-types-error").html("");
+            }
+
             ticketsByTypesChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: chartData.labels,
                     datasets: [{
                         label: "Ticket count",
-                        backgroundColor: "rgba(78, 115, 223, 0.9)", //"#4e73df",
-                        //backgroundColor: ["rgba(0,0,128, 1)", "rgba(0,0,255, 1)",
-                        //    "rgba(0,128,0, 1)", "rgba(0,128,128, 0.2)", "rgba(0,255,0, 1)",
-                        //    "rgba(0,255,255, 1)", "rgb(128,0,0)"
-                        //],
+                        backgroundColor: "rgba(78, 115, 223, 0.9)", 
                         hoverBackgroundColor: "#2e59d9",
                         borderColor: "#4e73df",
                         data: chartData.data,
