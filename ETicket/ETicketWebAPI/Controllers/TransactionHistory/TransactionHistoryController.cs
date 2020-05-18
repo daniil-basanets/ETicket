@@ -4,11 +4,10 @@ using System.Reflection;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
-using ETicket.WebAPI.Models;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ETicket.WebAPI.Controllers
+namespace ETicket.WebAPI.Controllers.TransactionHistory
 {
     [Route("api/transactionhistory")]
     [ApiController]
@@ -31,7 +30,6 @@ namespace ETicket.WebAPI.Controllers
             this.userService = userService;
         }
 
-        // GET: api/Transactions
         [HttpPost]
         [Route("transactions")]
         public IActionResult GetTransactions(GetTransactionsRequest request)
@@ -48,10 +46,7 @@ namespace ETicket.WebAPI.Controllers
                     return NotFound();
                 }
 
-                var transactionHistories = ticketService
-                        .GetTickets()
-                        .Where(t => t.UserId == user.Id)
-                        .Select(t => t.TransactionHistory);
+                var transactionHistories = transactionService.GetTransactionsByUserId(user.Id);
 
                 var transactions = transactionHistories.Select(t => new { t.ReferenceNumber, t.TotalPrice, t.Date });
 
@@ -65,9 +60,8 @@ namespace ETicket.WebAPI.Controllers
             }
         }
 
-        // GET: api/Transactions
         [HttpPost]
-        [Route("createtransaction")]
+        [Route("transaction")]
         public IActionResult CreateTransaction(TransactionHistoryDto transactionHistoryDto)
         {
             logger.Info(nameof(TransactionHistoryController.CreateTransaction));

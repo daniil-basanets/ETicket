@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ETicket.WebAPI.Services.BuyTicket
+namespace ETicket.WebAPI.Controllers.Payments
 {
     public class GetTicketPriceRequest
     {

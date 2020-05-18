@@ -2,6 +2,7 @@
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -36,6 +37,7 @@ namespace ETicket.ApplicationServices.Services
         public void Create(PriceListDto priceListDto)
         {
             var priceList = mapper.Map<PriceListDto, PriceList>(priceListDto);
+            priceList.StartDate = DateTime.UtcNow;
             uow.PriceList.Create(priceList);
             uow.Save();
         }
