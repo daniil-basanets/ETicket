@@ -34,12 +34,12 @@ namespace ETicket.ApplicationServices.Services
             throw new NotImplementedException();
         }
 
-        public IQueryable<string> GetATimeQuert(DateTime start, DateTime end)
+        private IQueryable<int> GetPassengerForTimePeriod(DateTime start, DateTime end)
         {
             return uow.TicketVerifications.GetAll()
                 .Where(t => (t.VerificationUTCDate > start && t.VerificationUTCDate <= end))
                 .GroupBy(p => true)
-                .Select(g => g.Count().ToString());
+                .Select(g => g.Count());
         }
 
         public ChartDto PassengersByTime(DateTime start, DateTime end, int accuracy, int routeId)
@@ -76,17 +76,17 @@ namespace ETicket.ApplicationServices.Services
                 start = start.AddHours(minutes);
             }
 
-            var query = GetATimeQuert(timePeriods[0], timePeriods[1]);
+            var query = GetPassengerForTimePeriod(timePeriods[0], timePeriods[1]);
             for (int i = 1; i < timePeriods.Count - 1; i++)
             {
-                query = query.Concat(GetATimeQuert(timePeriods[i], timePeriods[i + 1]));
+                query = query.Concat(GetPassengerForTimePeriod(timePeriods[i], timePeriods[i + 1]));
             }
 
             var data = query.ToList();
 
             ChartDto chartDto = new ChartDto();
             chartDto.Labels = timePeriods.Skip(1).Select(d => d.ToShortDateString()).ToList();
-            chartDto.Data = data;
+            chartDto.Data = data.Select(d => d.ToString()).ToList();
 
             return chartDto;
         }
