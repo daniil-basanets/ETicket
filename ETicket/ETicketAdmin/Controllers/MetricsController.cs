@@ -38,6 +38,12 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
+        public IActionResult PassengersByPrivileges()
+        {
+            return Json(metricsService.PassengersByPrivileges(DateTime.Now, DateTime.Now));
+        }
+
+        [HttpGet]
         public IActionResult PassengersByTime(DateTime start, DateTime end)
         {
             log.Info(nameof(MetricsController.PassengersByTime));

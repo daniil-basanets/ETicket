@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -29,9 +30,26 @@ namespace ETicket.ApplicationServices.Services
             mapper = new MapperService();
         }
 
-        public ChartDto PassengersByPrivileges(DateTime start, DateTime end, int routeId)
+        public ChartDto PassengersByPrivileges(DateTime start, DateTime end)
         {
-            throw new NotImplementedException();
+            if (start.CompareTo(end) == 1)
+            {
+                return new ChartDto() { ErrorMessage = "End date cannot be less than start date" };
+            }
+
+            var data = uow.TicketVerifications.GetAll()
+                .Include(t => t.Ticket)
+                .ThenInclude(u => u.User)
+                .ThenInclude(p => p.Privilege)
+                .Select(n => n.Ticket.User.Privilege)
+                .GroupBy(p => p.Name)
+                .Select(g => new { name = g.Key ?? "No privilege", count = g.Count().ToString() })
+                .ToDictionary( k => k.name, k => k.count);
+
+
+            var chartDto = new ChartDto {Labels = data.Keys.ToArray(), Data = data.Values.ToArray()};
+
+            return chartDto;
         }
 
         public ChartDto PassengersByRoutes(DateTime start, DateTime end, int[] selectedRoutesId)
