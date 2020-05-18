@@ -27,106 +27,144 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     return s.join(dec);
 }
 
-var chartData;
+function yyyy_mm_dd(date) {
+    //var now = new Date();
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    var d = date.getDate();
+    return '' + y + "-" + (m < 10 ? '0' : '') + m + "-" + (d < 10 ? '0' : '') + d;
+}
 
-var actionUrl = '/metrics/GetTicketsByTicketTypes';
-$.getJSON(actionUrl, function (response) {
-    if (response != null) {
-        chartData = response;
-        var maxY = Math.max.apply(null, chartData.data);
-
-        var ctx = document.getElementById("tickets-by-types");
-        var myBarChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: chartData.labels,
-                datasets: [{
-                    label: "Ticket count",
-                    backgroundColor: "rgba(78, 115, 223, 0.9)", //"#4e73df",
-                    //backgroundColor: ["rgba(0,0,128, 1)", "rgba(0,0,255, 1)",
-                    //    "rgba(0,128,0, 1)", "rgba(0,128,128, 0.2)", "rgba(0,255,0, 1)",
-                    //    "rgba(0,255,255, 1)", "rgb(128,0,0)"
-                    //],
-                    hoverBackgroundColor: "#2e59d9",
-                    borderColor: "#4e73df",
-                    data: chartData.data,
-                }],
-            },
-
-            options: {
-                layout: {
-                    padding: {
-                        left: 10,
-                        right: 25,
-                        top: 25,
-                        bottom: 0
-                    }
-                },
-                scales: {
-                    xAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'ticket types'
-                        },
-                        time: {
-                            unit: 'month'
-                        },
-                        gridLines: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            maxTicksLimit: 50
-                        },
-                        maxBarThickness: 25,
-                    }],
-                    yAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'tickets count'
-                        },
-                        ticks: {
-                            min: 0,
-                            maxTicksLimit: 100,
-                            padding: 10,
-                            callback: function (value, index, values) {
-                                return number_format(value);
-                            }
-                        },
-                        gridLines: {
-                            color: "rgb(234, 236, 244)",
-                            zeroLineColor: "rgb(234, 236, 244)",
-                            drawBorder: false,
-                            borderDash: [2],
-                            zeroLineBorderDash: [2]
-                        }
-                    }],
-                },
-                legend: {
-                    display: false
-                },
-                tooltips: {
-                    titleMarginBottom: 10,
-                    titleFontColor: '#6e707e',
-                    titleFontSize: 14,
-                    backgroundColor: "rgb(255,255,255)",
-                    bodyFontColor: "#858796",
-                    borderColor: '#dddfeb',
-                    borderWidth: 1,
-                    xPadding: 15,
-                    yPadding: 15,
-                    displayColors: false,
-                    caretPadding: 10,
-                    callbacks: {
-                        label: function (tooltipItem, chart) {
-                            var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                            return datasetLabel + ': ' + number_format(tooltipItem.yLabel);
-                        }
-                    }
-                },
-            }
-        });
-
-    }
+$(document).ready(function () {
+    var dateStart = new Date(new Date().setMonth(new Date().getMonth() - 1));
+    var dateEnd = new Date();
+    $('#tickets-by-types-start').val(yyyy_mm_dd(dateStart));
+    $('#tickets-by-types-end').val(yyyy_mm_dd(dateEnd));
+    refreshTicketsByTypesChart();
 });
+
+$('#tickets-by-types-start').change(function () {
+    refreshTicketsByTypesChart();
+})
+$('#tickets-by-types-end').change(function () {
+    refreshTicketsByTypesChart();
+})
+
+
+var ticketsByTypesChart = null;
+var chartData;
+function refreshTicketsByTypesChart() {
+    var start = new Date($('#tickets-by-types-start').val());
+    var end = new Date($('#tickets-by-types-end').val());
+
+    if (isNaN(start.valueOf()) || isNaN(end.valueOf())) {
+        return;
+    }
+
+    var actionUrl = '/metrics/GetTicketsByTicketTypes' + "?start=" + start.toISOString() + "&end=" + end.toISOString();
+    $.getJSON(actionUrl, function (response) {
+        if (response != null) {
+            chartData = response;
+            var maxY = Math.max.apply(null, chartData.data);
+
+            var ctx = document.getElementById("tickets-by-types");
+
+            if (ticketsByTypesChart != null) {
+                ticketsByTypesChart.destroy();
+            }
+
+            ticketsByTypesChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: "Ticket count",
+                        backgroundColor: "rgba(78, 115, 223, 0.9)", //"#4e73df",
+                        //backgroundColor: ["rgba(0,0,128, 1)", "rgba(0,0,255, 1)",
+                        //    "rgba(0,128,0, 1)", "rgba(0,128,128, 0.2)", "rgba(0,255,0, 1)",
+                        //    "rgba(0,255,255, 1)", "rgb(128,0,0)"
+                        //],
+                        hoverBackgroundColor: "#2e59d9",
+                        borderColor: "#4e73df",
+                        data: chartData.data,
+                    }],
+                },
+
+                options: {
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 25,
+                            top: 25,
+                            bottom: 0
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'ticket types'
+                            },
+                            time: {
+                                unit: 'month'
+                            },
+                            gridLines: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 50
+                            },
+                            maxBarThickness: 25,
+                        }],
+                        yAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'tickets count'
+                            },
+                            ticks: {
+                                min: 0,
+                                maxTicksLimit: 100,
+                                padding: 10,
+                                callback: function (value, index, values) {
+                                    return number_format(value);
+                                }
+                            },
+                            gridLines: {
+                                color: "rgb(234, 236, 244)",
+                                zeroLineColor: "rgb(234, 236, 244)",
+                                drawBorder: false,
+                                borderDash: [2],
+                                zeroLineBorderDash: [2]
+                            }
+                        }],
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        titleMarginBottom: 10,
+                        titleFontColor: '#6e707e',
+                        titleFontSize: 14,
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyFontColor: "#858796",
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        caretPadding: 10,
+                        callbacks: {
+                            label: function (tooltipItem, chart) {
+                                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                                return datasetLabel + ': ' + number_format(tooltipItem.yLabel);
+                            }
+                        }
+                    },
+                }
+            });
+
+        }
+    })
+};
 
