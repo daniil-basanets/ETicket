@@ -41,7 +41,7 @@ namespace ETicket.ApplicationServices.Services
             ticket.Id = Guid.NewGuid();
             ticket.CreatedUTCDate = DateTime.UtcNow;
 
-            ticket.TicketType = null;
+            ticket.TicketType = uow.TicketTypes.Get(ticket.TicketTypeId);
             ticket.TransactionHistory = null;
 
             if (ticket.ActivatedUTCDate != null)
