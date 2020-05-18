@@ -11,10 +11,15 @@ namespace ETicket.ApplicationServices.Services
 {
     public class MetricsService : IMetricsService
     {
+        #region Private members
+
         private readonly IUnitOfWork uow;
         private readonly MapperService mapper;
         private readonly ITicketTypeService ticketTypeService;
         private readonly ITicketService ticketService;
+        private const int MaxDaysForChart = 366;
+
+        #endregion
 
         public MetricsService(IUnitOfWork uow, ITicketTypeService ticketTypeService, ITicketService ticketService)
         {
@@ -42,7 +47,7 @@ namespace ETicket.ApplicationServices.Services
                 .Select(g => g.Count());
         }
 
-        public ChartDto PassengersByTime(DateTime start, DateTime end, int accuracy, int routeId)
+        public ChartDto PassengersByTime(DateTime start, DateTime end, int routeId)
         {
             throw new NotImplementedException();
         }
@@ -60,23 +65,26 @@ namespace ETicket.ApplicationServices.Services
             return chartDto;
         }
 
-        public ChartDto PassengersByTime(DateTime start, DateTime end, int accuracy)
+        public ChartDto PassengersByTime(DateTime start, DateTime end)
         {
             if (start.CompareTo(end) == 1)
             {
-                throw new InvalidOperationException();
+                return new ChartDto() { ErrorMessage = "End date cannot be less than start date" };
+            }
+            if ((end - start).TotalDays > MaxDaysForChart)
+            {
+                return new ChartDto() { ErrorMessage = "The period of time cannot be more than " + MaxDaysForChart };
             }
 
-            var timeSpan = end - start;
-            var minutes = timeSpan.TotalHours / accuracy;
             List<DateTime> timePeriods = new List<DateTime>();
-            for (int i = 0; i <= accuracy; i++)
+            
+            for (DateTime d = start.Date.AddDays(-1); d <= end; d = d.AddDays(1))
             {
-                timePeriods.Add(start);
-                start = start.AddHours(minutes);
+                timePeriods.Add(d);
             }
 
             var query = GetPassengerForTimePeriod(timePeriods[0], timePeriods[1]);
+            
             for (int i = 1; i < timePeriods.Count - 1; i++)
             {
                 query = query.Concat(GetPassengerForTimePeriod(timePeriods[i], timePeriods[i + 1]));
@@ -84,11 +92,11 @@ namespace ETicket.ApplicationServices.Services
 
             var data = query.ToList();
 
-            ChartDto chartDto = new ChartDto();
-            chartDto.Labels = timePeriods.Skip(1).Select(d => d.ToShortDateString()).ToList();
-            chartDto.Data = data.Select(d => d.ToString()).ToList();
-
-            return chartDto;
+            return new ChartDto()
+            {
+                Labels = timePeriods.Skip(1).Select(d => d.ToShortDateString()).ToList(),
+                Data = data.Select(d => d.ToString()).ToList()
+            };
         }
     }
 }

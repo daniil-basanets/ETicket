@@ -40,16 +40,38 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult PassengersByTime(DateTime start, DateTime end)
         {
-            ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByTime(start, end, 8);
+            log.Info(nameof(MetricsController.PassengersByTime));
 
-            return Json(chartDtoTicketsByTicketTypes);
+            try
+            {
+                ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByTime(start, end);
+
+                return Json(chartDtoTicketsByTicketTypes);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         public IActionResult GetTicketsByTicketTypes()
         {
-            ChartDto chartDtoTicketsByTicketTypes = metricsService.TicketsByTicketTypes(DateTime.UtcNow.AddDays(-30), DateTime.UtcNow);
+            log.Info(nameof(MetricsController.GetTicketsByTicketTypes));
 
-            return Json(chartDtoTicketsByTicketTypes);
+            try
+            {
+                ChartDto chartDtoTicketsByTicketTypes = metricsService.TicketsByTicketTypes(DateTime.UtcNow.AddDays(-30), DateTime.UtcNow);
+
+                return Json(chartDtoTicketsByTicketTypes);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
     }
 }
