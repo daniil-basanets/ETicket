@@ -18,13 +18,13 @@ namespace ETicket.Admin.Controllers
         private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly IDataTableService<TransactionHistory> dataTableService;
-        private readonly ITransactionService transactionAppService;
+        private readonly ITransactionService transactionService;
 
         #endregion
 
-        public TransactionHistoryController(ITransactionService transactionAppService, IDataTableService<TransactionHistory> dataTableService)
+        public TransactionHistoryController(ITransactionService transactionService, IDataTableService<TransactionHistory> dataTableService)
         {
-            this.transactionAppService = transactionAppService;
+            this.transactionService = transactionService;
             this.dataTableService = dataTableService;
         }
 
@@ -47,7 +47,25 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
         {
-            return Json(dataTableService.GetDataTablePage(pagingInfo));
+            logger.Info(nameof(TransactionHistoryController.GetCurrentPage));
+
+            try
+            {
+                if (pagingInfo == null)
+                {
+                    logger.Warn(nameof(TransactionHistoryController.GetCurrentPage) + " pagingInfo is null");
+
+                    return NotFound();
+                }
+
+                return Json(dataTableService.GetDataTablePage(pagingInfo));
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+
+                return BadRequest(ex);
+            }
         }
 
         public IActionResult Details(Guid? id)
@@ -63,7 +81,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                var transaction = transactionAppService.GetTransactionById(id.Value);
+                var transaction = transactionService.GetTransactionById(id.Value);
 
                 if (transaction == null)
                 {
