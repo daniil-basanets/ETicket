@@ -18,7 +18,7 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         TicketTypeRepository TicketTypes { get; }
 
-        TicketAreaRepository TicketAreas { get; }
+        TicketAreaRepository TicketArea { get; }
 
         TicketVerificationRepository TicketVerifications { get; }
         
@@ -37,10 +37,6 @@ namespace ETicket.DataAccess.Domain.Interfaces
         TransportRepository Transports { get; }
         
         PriceListRepository PriceList { get; }
-
-        RouteStationRepository RouteStation { get; }
-
-        TicketAreaRepository TicketArea { get; }
 
         void Save();
     }
