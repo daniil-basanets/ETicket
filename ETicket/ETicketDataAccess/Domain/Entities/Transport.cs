@@ -9,7 +9,7 @@ namespace ETicket.DataAccess.Domain.Entities
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("Number")]
+        [DisplayName("Vehicle number")]
         [Required]
         public string Number { get; set; }
 

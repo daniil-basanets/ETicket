@@ -3,13 +3,13 @@
 @{
     ViewData["Title"] = "Index";
 }
-<link href="~/css/ButtonMoves/moved-data-table-controls.css" rel="stylesheet" />
+<link href="~/css/ButtonMoves/moved-data-table-controls.css" rel="stylesheet"/>
 <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Privileges</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Transports</h6>
             <div>
                 <div id="buttonCreate" class="button_create">
                     <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
@@ -19,47 +19,58 @@
         <div class="card-body">
             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                 <thead>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.CarriersId)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.RouteId)
-                        </th>
-                        <th>
-                            Actions
-                        </th>
-                    </tr>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Number)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Carriers)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Route)
+                    </th>
+
+                    <th>
+                        Actions
+                    </th>
+                </tr>
                 </thead>
                 <tfoot>
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.CarriersId)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.RouteId)
-                        </th>
-                        <th>
-                            Actions
-                        </th>
-                    </tr>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Number)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Carriers)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Route)
+                    </th>
+
+                    <th>
+                        Actions
+                    </th>
+                </tr>
                 </tfoot>
                 <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.CarriersId)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.RouteId)
-                            </td>
-                            <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                            </td>
-                        </tr>
-                    }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Number)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Carriers.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Route.Number)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                }
                 </tbody>
             </table>
         </div>
