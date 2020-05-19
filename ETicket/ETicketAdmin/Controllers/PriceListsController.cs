@@ -4,6 +4,8 @@ using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
 using log4net;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.Admin.Controllers
 {
@@ -13,13 +15,16 @@ namespace ETicket.Admin.Controllers
 
         private readonly IPriceListService priceListService;
 
+        private readonly IAreaService areaService;
+
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 
-        public PriceListsController(IPriceListService priceListService)
+        public PriceListsController(IPriceListService priceListService, IAreaService areaService)
         {
             this.priceListService = priceListService;
+            this.areaService = areaService;
         }
 
         // GET: PriceList
@@ -27,6 +32,9 @@ namespace ETicket.Admin.Controllers
         {
             try
             {
+
+                ViewData["AreaId"] = new SelectList(areaService.GetAreas(), "Id", "Name");
+
                 return View(priceListService.GetAll());
             }
             catch (Exception e)
