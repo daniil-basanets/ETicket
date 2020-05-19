@@ -11,7 +11,13 @@ namespace ETicket.ApplicationServices.DTOs
         [DisplayName("Carrier")]
         public int CarriersId { get; set; }
 
+        [DisplayName("Carrier")]
+        public string Carrier { get; set; }
+
         [DisplayName("Route")]
         public int RouteId { get; set; }
+
+        [DisplayName("Route")]
+        public string Route { get; set; }
     }
 }

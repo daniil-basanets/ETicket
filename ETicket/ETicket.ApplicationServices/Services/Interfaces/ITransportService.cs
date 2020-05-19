@@ -15,7 +15,5 @@ namespace ETicket.ApplicationServices.Services.Interfaces
         public void Update(TransportDto transportDto);
 
         public void Delete(int id);
-
-        public bool Exists(int id);
     }
 }

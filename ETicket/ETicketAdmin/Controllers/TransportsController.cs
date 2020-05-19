@@ -45,6 +45,9 @@ namespace ETicket.Admin.Controllers
         // GET: Transport/Details/5
         public IActionResult Details(int? id)
         {
+            ViewData["RouteId"] = new SelectList(routeService.GetRoutes(), "Id", "Number");
+            ViewData["CarrierId"] = new SelectList(carrierService.GetAll(), "Id", "Name");
+
             if (id == null)
             {
                 log.Warn(nameof(TransportsController.Details) + " id is null");
@@ -158,8 +161,8 @@ namespace ETicket.Admin.Controllers
         public IActionResult Delete(int? id)
         {
             log.Info(nameof(Delete));
-
-            return Details(id);
+            var transport = transportService.Get(id.Value);
+            return View(transport);
         }
 
         // POST: Transport/Delete/5
