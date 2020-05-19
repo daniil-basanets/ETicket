@@ -26,5 +26,11 @@ namespace ETicket.ApplicationServices.DTOs
 
         [DisplayName("Document")]
         public Guid? DocumentId { get; set; }
+
+        [DisplayName("Privilege")]
+        public string PrivilegeName { get; set; }
+
+        [DisplayName("Document")]
+        public string DocumentNumber { get; set; }
     }
 }

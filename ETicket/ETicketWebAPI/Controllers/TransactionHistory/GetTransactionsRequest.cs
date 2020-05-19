@@ -1,4 +1,4 @@
-﻿namespace ETicket.WebAPI.Models
+﻿namespace ETicket.WebAPI.Controllers.TransactionHistory
 {
     public class GetTransactionsRequest
     {
