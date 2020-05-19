@@ -69,6 +69,8 @@ namespace ETicket.Admin
             services.AddTransient<IRouteService, RouteService>();
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<ITransportService, TransportService>();
+            services.AddTransient<IMetricsService, MetricsService>();
+
 
 
             services.AddTransient<IDataTablePagingService<Ticket>, TicketPagingService>();
