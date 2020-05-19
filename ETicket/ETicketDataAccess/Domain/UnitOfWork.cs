@@ -27,6 +27,7 @@ namespace ETicket.DataAccess.Domain
         private TransportRepository transportRepository;
         private PriceListRepository priceListRepository;
         private AreaRepository areaRepository;
+        private TicketAreaRepository ticketAreaRepository;
 
         #endregion
 
@@ -202,7 +203,18 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-    public void Save()
+        public TicketAreaRepository TicketAreas
+        {
+            get
+            {
+                if (ticketAreaRepository == null)
+                    ticketAreaRepository = new TicketAreaRepository(eTicketDataContext);
+
+                return ticketAreaRepository;
+            }
+        }
+
+        public void Save()
         {
             eTicketDataContext.SaveChanges();
         }

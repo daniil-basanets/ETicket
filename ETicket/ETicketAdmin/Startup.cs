@@ -69,22 +69,22 @@ namespace ETicket.Admin
             services.AddTransient<IRouteService, RouteService>();
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<ITransportService, TransportService>();
+            services.AddTransient<ITicketVerificationService, TicketVerificationService>();
             services.AddTransient<IMetricsService, MetricsService>();
-
-
 
             services.AddTransient<IDataTablePagingService<Ticket>, TicketPagingService>();
             services.AddTransient<IDataTablePagingService<User>, UserPagingService>();
             services.AddTransient<IDataTablePagingService<Document>, DocumentPagingService>();
             services.AddTransient<IDataTablePagingService<TransactionHistory>, TransactionHistoryPagingService>();
+            services.AddTransient<IDataTablePagingService<TicketVerification>, TicketVerificationPagingService>();
 
             services.AddTransient<IDataTableService<Ticket>, DataTableService<Ticket>>();
             services.AddTransient<IDataTableService<User>, DataTableService<User>>();
             services.AddTransient<IDataTableService<Document>, DataTableService<Document>>();
             services.AddTransient<IDataTableService<TransactionHistory>, DataTableService<TransactionHistory>>();
+            services.AddTransient<IDataTableService<TicketVerification>, DataTableService<TicketVerification>>();
 
             
-
             services.AddIdentityCore<IdentityUser>(o =>
             {
                 o.Password.RequireDigit = false;

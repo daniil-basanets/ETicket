@@ -1,9 +1,9 @@
-var filters = [
-    { columnName: "ticketType", inputId: "#ticket-type-select option:selected", isCheckBox: true },
-    { columnName: "user", inputId: "#user-name-input", isCheckBox: false },
-    { columnName: "createdUTCDate", inputId: "#created-date-datepicker", isCheckBox: false },
-    { columnName: "activatedUTCDate", inputId: "#activated-date-datepicker", isCheckBox: false },
-    { columnName: "expirationUTCDate", inputId: "#expiration-date-datepicker", isCheckBox: false }
+﻿var filters = [
+    { columnName: "isVerified", inputId: "#is-verified-select option:selected", isCheckBox: false },
+    { columnName: "ticket", inputId: "#ticket-id-input", isCheckBox: false },
+    { columnName: "verificationUTCDate", inputId: "#verification-date-datepicker", isCheckBox: false },
+    { columnName: "station", inputId: "#station-name-input", isCheckBox: false },
+    { columnName: "transport", inputId: "#transport-number-input", isCheckBox: false }  
 ];
 
 function getFilterMapColumnValue() {
@@ -16,7 +16,6 @@ function getFilterMapColumnValue() {
         }
         else {
             value = $(filters[i].inputId).val();
-            
         }
         if (value) {
             result.set(filters[i].columnName, value);
@@ -35,14 +34,14 @@ function makeSingleOnClickEvent(e) {
         e.stopPropagation();
     }
 }
+
 var isNewSearch = false;
 
 $(document).ready(function () {
     $.noConflict();
     //Variable for count entries
-    var totalRecords = -1; 
+    var totalRecords = -1;
     var pageNumber = 1;
-
 
     var table = $('#dataTable')
         //Read additional fields from server side
@@ -64,11 +63,11 @@ $(document).ready(function () {
             serverSide: true,
             order: [[1, "desc"]],
             ajax: {
-                url: 'Ticket/GetCurrentPage',
+                url: 'TicketVerifications/GetPage',
                 //To send an array correctly by query string
                 traditional: true,
                 type: 'GET',
-                data: function (d) { 
+                data: function (d) {
                     var pagingData = {};
                     pagingData.DrawCounter = d.draw;
 
@@ -79,12 +78,12 @@ $(document).ready(function () {
                         pageNumber = 1;
                         d.page = 1;
                     }
-                    
+
                     pagingData.PageNumber = pageNumber;
 
                     pagingData.SortColumnName = d.columns[d.order[0]["column"]]["name"];
                     pagingData.SortColumnDirection = d.order[0]["dir"];
-                    
+
                     pagingData.SearchValue = d.search["value"];
 
                     var mapFilters = getFilterMapColumnValue();
@@ -99,17 +98,17 @@ $(document).ready(function () {
             //Columns data order       
             columns: [
                 {
-                    name: "ticketType",
-                    data: "ticketType",
+                    name: "ticket",
+                    data: "ticket",
                     render: function (data, type, row) {
                         if (data != null) {
-                            return '<a href = "TicketType/Details/' + data.id + '">' + data.typeName + '</a>'
+                            return '<a href = "Ticket/Details/' + data.id + '">' + data.id + '</a>'
                         }
                     }
                 },
                 {
-                    name: "createdUTCDate",
-                    data: "createdUTCDate",
+                    name: "verificationUTCDate",
+                    data: "verificationUTCDate",
                     render: function (data, type, row) {
                         if (data != null) {
                             var date = new Date(Date.parse(data));
@@ -118,34 +117,34 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    name: "activatedUTCDate",
-                    data: "activatedUTCDate",
-                    defaultContent: "",
+                    name: "station",
+                    data: "station",
                     render: function (data, type, row) {
                         if (data != null) {
-                            var date = new Date(Date.parse(data));
-                            return date.toLocaleString();
+                            return '<a href = "Station/Details/' + data.id + '">' + data.name + '</a>'
                         }
                     }
                 },
                 {
-                    name: "expirationUTCDate",
-                    data: "expirationUTCDate",
+                    name: "transport",
+                    data: "transport",
                     defaultContent: "",
                     render: function (data, type, row) {
                         if (data != null) {
-                            var date = new Date(Date.parse(data));
-                            return date.toLocaleString();
+                            return '<a href = "Transports/Details/' + data.id + '">' + data.number + '</a>'
                         }
                     }
                 },
                 {
-                    name: "user",
-                    data: "user",
+                    name: "isVerified",
+                    data: "isVerified",
                     defaultContent: "",
                     render: function (data, type, row) {
-                        if (data != null) {
-                            return '<a href = "User/Details/' + data.id + '">' + data.firstName + ' ' + data.lastName + '</a>'
+                        if (data) {
+                            return "Yes";
+                        }
+                        else {
+                            return "No";
                         }
                     }
                 },
@@ -154,9 +153,7 @@ $(document).ready(function () {
                     //Set default buttons (Edit, Delete)
                     //href = "#" because <a> without href have a special style
                     defaultContent:
-                        '<a class="btn btn-warning btn-sm" href = "#" id = "editButton">Edit</a>' + ' '
-                        + '<a class="btn btn-info btn-sm" href = "#" id = "detailsButton">Details</a>' + ' '
-                        + '<a class="btn btn-danger btn-sm" href = "#" id = "deleteButton">Delete</a>'
+                        '<a class="btn btn-info btn-sm" href = "#" id = "detailsButton">Details</a>'
                 }
             ],
             language: {
@@ -177,38 +174,26 @@ $(document).ready(function () {
             table.search(searchValue).draw();
         });
 
-    $("#user-name-input").unbind()
+    $('#is-verified-select')
+        .change(function () {
+            isNewSearch = true;
+            table.draw();
+        });
+
+    $("#transport-number-input, #station-name-input, #verification-date-datepicker, #ticket-id-input").unbind()
         .bind("change", function (e) {
             isNewSearch = true;
             table.draw();
         });
 
-    $('#activated-date-datepicker, #expiration-date-datepicker, #created-date-datepicker, #ticket-type-select')
-        .change(function () {
-        isNewSearch = true;
-        table.draw();
-    });
-
-
-
-
-    //Event listener for Edit button 
-    $("#dataTable tbody").on('click', '#editButton', function () {
-        var data = table.row($(this).parents('tr')).data();
-        location.href = "/Ticket/Edit/" + data.id;
-    })
     //Event listener for Details button 
     $("#dataTable tbody").on('click', '#detailsButton', function () {
         var data = table.row($(this).parents('tr')).data();
-        location.href = "/Ticket/Details/" + data.id;
-    })
-    //Event listener for Delete button 
-    $("#dataTable tbody").on('click', '#deleteButton', function () {
-        var data = table.row($(this).parents('tr')).data();
-        location.href = "/Ticket/Delete/" + data.id;
+        location.href = "/TicketVerifications/Details/" + data.id;
     })
 
     //Delete container from loyout only for Index
     $('.container').removeClass('container');
 
 });
+
