@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"             
+             xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile" 
+             xmlns:bindingconverters="clr-namespace:ETicketMobile.UserInterface.BindingConverters;assembly=ETicketMobile.UserInterface"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="ETicketMobile.Views.EditInfoView.EditCommonInfoView">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter" />
+            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>    
+    
+    <ContentPage.Content>
+        <StackLayout Margin="10, 0">
+            <Label 
+                Text="Edit your information"
+                Style="{StaticResource TitleLabelStyle}" />
+
+            <Label 
+                Text="Edit your Name"
+                Style="{StaticResource TitleLabelStyle}" />
+            
+            <telerikInput:RadEntry
+                WatermarkText="{local:Translate Name}"
+                Text="{Binding Name, Mode=TwoWay}"
+                Style="{StaticResource EntryStyle}"
+                Keyboard="Email"/>
+
+            <Label 
+                Text="Edit your Phone number"
+                Style="{StaticResource TitleLabelStyle}" />
+            
+            <telerikInput:RadEntry
+                WatermarkText="{local:Translate Phone number}"
+                Text="{Binding Phone number, Mode=TwoWay}"
+                Style="{StaticResource EntryStyle}"
+                Keyboard="Email"/>
+
+            <Label 
+                Text="Edit your Age"
+                Style="{StaticResource TitleLabelStyle}" />
+            
+            <telerikInput:RadEntry
+                WatermarkText="{local:Translate Age}"
+                Text="{Binding Age, Mode=TwoWay}"
+                Style="{StaticResource EntryStyle}"
+                Keyboard="Email"/>
+
+            <telerikInput:RadButton
+                Command="{Binding NavigateToSuccessfullySavedView}"
+                Text="{local:Translate Confirm}"
+                Style="{StaticResource ActionButtonStyle}" />
+        </StackLayout>
+
+
+    </ContentPage.Content>
+
+
+
+
+
+</ContentPage>

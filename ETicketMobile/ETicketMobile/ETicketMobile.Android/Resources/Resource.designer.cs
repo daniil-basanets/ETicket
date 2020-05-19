@@ -9517,7 +9517,6 @@ namespace ETicketMobile.Droid
 			global::Telerik.XamarinForms.InputRenderer.Android.Resource.Layout.on_demand_automatic = global::ETicketMobile.Droid.Resource.Layout.on_demand_automatic;
 			global::Telerik.XamarinForms.InputRenderer.Android.Resource.Layout.on_demand_manual = global::ETicketMobile.Droid.Resource.Layout.on_demand_manual;
 			global::Telerik.XamarinForms.InputRenderer.Android.Resource.Layout.popup_event = global::ETicketMobile.Droid.Resource.Layout.popup_event;
-			global::Telerik.XamarinForms.InputRenderer.Android.Resource.Layout.radextendedlistview_scrollbars = global::ETicketMobile.Droid.Resource.Layout.radextendedlistview_scrollbars;
 			global::Telerik.XamarinForms.InputRenderer.Android.Resource.Layout.RootLayout = global::ETicketMobile.Droid.Resource.Layout.RootLayout;
 			global::Telerik.XamarinForms.InputRenderer.Android.Resource.Layout.scrollview_scrollbars = global::ETicketMobile.Droid.Resource.Layout.scrollview_scrollbars;
 			global::Telerik.XamarinForms.InputRenderer.Android.Resource.Layout.select_dialog_item_material = global::ETicketMobile.Droid.Resource.Layout.select_dialog_item_material;
@@ -27044,58 +27043,55 @@ namespace ETicketMobile.Droid
 			public const int popup_event = 2131427453;
 			
 			// aapt resource value: 0x7F0B007E
-			public const int radextendedlistview_scrollbars = 2131427454;
+			public const int RootLayout = 2131427454;
 			
 			// aapt resource value: 0x7F0B007F
-			public const int RootLayout = 2131427455;
+			public const int scrollview_scrollbars = 2131427455;
 			
 			// aapt resource value: 0x7F0B0080
-			public const int scrollview_scrollbars = 2131427456;
+			public const int select_dialog_item_material = 2131427456;
 			
 			// aapt resource value: 0x7F0B0081
-			public const int select_dialog_item_material = 2131427457;
+			public const int select_dialog_multichoice_material = 2131427457;
 			
 			// aapt resource value: 0x7F0B0082
-			public const int select_dialog_multichoice_material = 2131427458;
+			public const int select_dialog_singlechoice_material = 2131427458;
 			
 			// aapt resource value: 0x7F0B0083
-			public const int select_dialog_singlechoice_material = 2131427459;
+			public const int ShellContent = 2131427459;
 			
 			// aapt resource value: 0x7F0B0084
-			public const int ShellContent = 2131427460;
+			public const int simple_empty_content = 2131427460;
 			
 			// aapt resource value: 0x7F0B0085
-			public const int simple_empty_content = 2131427461;
+			public const int simple_group_header_item = 2131427461;
 			
 			// aapt resource value: 0x7F0B0086
-			public const int simple_group_header_item = 2131427462;
+			public const int simple_list_item = 2131427462;
 			
 			// aapt resource value: 0x7F0B0087
-			public const int simple_list_item = 2131427463;
+			public const int suggestion_item_layout = 2131427463;
 			
 			// aapt resource value: 0x7F0B0088
-			public const int suggestion_item_layout = 2131427464;
-			
-			// aapt resource value: 0x7F0B0089
-			public const int support_simple_spinner_dropdown_item = 2131427465;
-			
-			// aapt resource value: 0x7F0B008B
-			public const int Tabbar = 2131427467;
-			
-			// aapt resource value: 0x7F0B008C
-			public const int table_layout = 2131427468;
+			public const int support_simple_spinner_dropdown_item = 2131427464;
 			
 			// aapt resource value: 0x7F0B008A
-			public const int tab_item_view = 2131427466;
+			public const int Tabbar = 2131427466;
+			
+			// aapt resource value: 0x7F0B008B
+			public const int table_layout = 2131427467;
+			
+			// aapt resource value: 0x7F0B0089
+			public const int tab_item_view = 2131427465;
+			
+			// aapt resource value: 0x7F0B008C
+			public const int Toolbar = 2131427468;
 			
 			// aapt resource value: 0x7F0B008D
-			public const int Toolbar = 2131427469;
+			public const int tooltip_container = 2131427469;
 			
 			// aapt resource value: 0x7F0B008E
-			public const int tooltip_container = 2131427470;
-			
-			// aapt resource value: 0x7F0B008F
-			public const int trial_message = 2131427471;
+			public const int trial_message = 2131427470;
 			
 			static Layout()
 			{

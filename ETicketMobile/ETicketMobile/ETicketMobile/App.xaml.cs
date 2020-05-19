@@ -7,6 +7,7 @@ using ETicketMobile.DataAccess.Repositories;
 using ETicketMobile.Resources;
 using ETicketMobile.UserInterface.Localization.Interfaces;
 using ETicketMobile.ViewModels;
+using ETicketMobile.ViewModels.EditInfo;
 using ETicketMobile.ViewModels.ForgotPassword;
 using ETicketMobile.ViewModels.Login;
 using ETicketMobile.ViewModels.Payment;
@@ -15,6 +16,7 @@ using ETicketMobile.ViewModels.Settings;
 using ETicketMobile.ViewModels.Tickets;
 using ETicketMobile.ViewModels.UserAccount;
 using ETicketMobile.Views;
+using ETicketMobile.Views.EditInfoView;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Login;
 using ETicketMobile.Views.Payment;
@@ -78,6 +80,11 @@ namespace ETicketMobile
             containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
             containerRegistry.RegisterForNavigation<UserTransactionsView, UserTransactionsViewModel>();
             containerRegistry.RegisterForNavigation<LocalizationView, LocalizationViewModel>();
+            containerRegistry.RegisterForNavigation<EditCommonInfoView, EditCommonInfoViewModel>();
+            containerRegistry.RegisterForNavigation<EditPrivateInfoView, EditPrivateInfoViewModel>();
+            containerRegistry.RegisterForNavigation<SuccessfullySavedView, SuccessfullySavedViewModel>();
+
+
         }
 
         private async Task InitCulture(ILocalApi localApi, ILocalize localize)

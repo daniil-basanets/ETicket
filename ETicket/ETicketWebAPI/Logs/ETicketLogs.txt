@@ -1,0 +1,3 @@
+2020-05-18 23:38:47,818 [21] INFO ETicket.WebAPI.Controllers.CarriersController - GetAll
+2020-05-18 23:42:22,521 [13] INFO ETicket.WebAPI.Controllers.DocumentsController - GetDocuments
+2020-05-18 23:42:36,905 [16] INFO ETicket.WebAPI.Controllers.RoutesController - GetRoutes

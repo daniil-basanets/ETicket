@@ -110,6 +110,8 @@ namespace ETicket.WebAPI
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ISecretCodeService, SecretCodeService>();
+            services.AddTransient<IRouteService, RouteService>();
+            services.AddTransient<IDocumentService, DocumentService>();
 
 
             services.AddSwaggerGen(c =>

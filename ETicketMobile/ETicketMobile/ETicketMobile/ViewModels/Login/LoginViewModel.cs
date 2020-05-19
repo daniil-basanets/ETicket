@@ -6,6 +6,8 @@ using ETicketMobile.Business.Mapping;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.Resources;
+using ETicketMobile.ViewModels.EditInfo;
+using ETicketMobile.Views.EditInfoView;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.Views.UserActions;
@@ -112,7 +114,9 @@ namespace ETicketMobile.ViewModels.Login
 
         private void OnNavigateToRegistrationView(object obj)
         {
-            navigationService.NavigateAsync(nameof(EmailRegistrationView));
+            //navigationService.NavigateAsync(nameof(EmailRegistrationView));
+            navigationService.NavigateAsync(nameof(EditCommonInfoView));
+
         }
 
         private async void OnNavigateToLoginView(object obj)

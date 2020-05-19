@@ -46,6 +46,9 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Views\EditInfoView\EditPrivateInfoView.xaml.cs">
+      <DependentUpon>EditPrivateInfoView.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\ForgotPassword\ForgotPasswordView.xaml.cs">
       <DependentUpon>ForgotPasswordView.xaml</DependentUpon>
     </Compile>
@@ -85,6 +88,15 @@
     <EmbeddedResource Update="Resources\AppResource.resx">
       <LastGenOutput>AppResource.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\EditInfoView\EditCommonInfoView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\EditInfoView\EditPrivateInfoView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\EditInfoView\SuccessfullySavedView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\ForgotPassword\ConfirmForgotPasswordView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
