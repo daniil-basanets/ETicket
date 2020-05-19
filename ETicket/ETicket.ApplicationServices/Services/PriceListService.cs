@@ -37,7 +37,6 @@ namespace ETicket.ApplicationServices.Services
         public void Create(PriceListDto priceListDto)
         {
             var priceList = mapper.Map<PriceListDto, PriceList>(priceListDto);
-            priceList.StartDate = DateTime.UtcNow;
             uow.PriceList.Create(priceList);
             uow.Save();
         }
