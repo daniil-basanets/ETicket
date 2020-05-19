@@ -6,6 +6,7 @@ using log4net;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ETicket.DataAccess.Domain.Entities;
+using System.Linq;
 
 namespace ETicket.Admin.Controllers
 {
@@ -45,29 +46,16 @@ namespace ETicket.Admin.Controllers
             }
         }
 
-        // GET: PriceList/Details/5
-        public IActionResult Details(int? id)
+        // GET: PriceList/Create
+        public IActionResult Create()
         {
-            if (id == null)
-            {
-                log.Warn(nameof(PriceListsController.Details) + " id is null");
+            log.Info(nameof(PriceListsController.Create));
 
-                return NotFound();
-            }
             try
             {
-                var priceList = priceListService.Get((Int32)id);
+                ViewData["AreaId"] = new MultiSelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name");
 
-                if (priceList == null)
-                {
-                    log.Warn(nameof(PriceListsController.Details) + " priceList is null");
-
-                    return NotFound();
-                }
-                else
-                {
-                    return View(priceList);
-                }
+                return View();
             }
             catch (Exception e)
             {
@@ -77,33 +65,34 @@ namespace ETicket.Admin.Controllers
             }
         }
 
-        // GET: PriceList/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         // POST: PriceList/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(PriceListDto priceListDto)
         {
-            if (ModelState.IsValid)
+            log.Info(nameof(PriceListsController.Create) + ":Post");
+
+            try
             {
-                try
+               // ViewData["AreaId"] = new MultiSelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name");
+
+                if (ModelState.IsValid)
                 {
-                    priceListService.Create(priceListDto);
+                   priceListService.Create(priceListDto);
+
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception e)
-                {
 
-                    log.Error(e);
-
-                    return BadRequest();
-                }
+                return View(priceListDto);
             }
-            return View(priceListDto);
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+
+
         }
     }
 }
