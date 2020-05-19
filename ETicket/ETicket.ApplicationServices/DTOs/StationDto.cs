@@ -6,7 +6,6 @@ namespace ETicket.ApplicationServices.DTOs
 {
     public class StationDto
     {
-        //TODO: add list of routes
         public int Id { get; set; }
 
         public string Name { get; set; }
