@@ -160,9 +160,38 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(int? id)
         {
-            log.Info(nameof(Delete));
-            var transport = transportService.Get(id.Value);
-            return View(transport);
+            ViewData["RouteId"] = new SelectList(routeService.GetRoutes(), "Id", "Number");
+            ViewData["CarrierId"] = new SelectList(carrierService.GetAll(), "Id", "Name");
+            log.Info(nameof(TransportsController.Delete));
+
+            if (id == null)
+            {
+                log.Warn(nameof(TransportsController.Delete) + " id is null");
+
+                return NotFound();
+            }
+
+            try
+            {
+                var transport = transportService.Get(id.Value);
+
+                if (transport == null)
+                {
+                    log.Warn(nameof(TransportsController.Delete) + " transport is null");
+
+                    return NotFound();
+                }
+                else
+                {
+                    return View(transport);
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         // POST: Transport/Delete/5

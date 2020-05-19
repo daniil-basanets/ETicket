@@ -1,4 +1,5 @@
 ﻿@model ETicket.ApplicationServices.DTOs.TransportDto
+
 @{
     ViewData["Title"] = "Delete";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,16 +13,16 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Carrier)
+            @Html.DisplayNameFor(model => model.CarriersId)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Carrier)
+            @Html.DisplayFor(model => model.CarriersId)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Route)
+            @Html.DisplayNameFor(model => model.RouteId)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Route)
+            @Html.DisplayFor(model => model.RouteId)
         </dd>
     </dl>
 
