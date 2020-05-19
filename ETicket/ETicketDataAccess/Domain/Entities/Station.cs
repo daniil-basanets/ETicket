@@ -20,6 +20,9 @@ namespace ETicket.DataAccess.Domain.Entities
         [ForeignKey("AreaId")]
         public Area Area { get; set; }
 
+        [DisplayName("Area")]
+        public int AreaId { get; set; }
+
         [Required]
         public double Latitude { get; set; }
 

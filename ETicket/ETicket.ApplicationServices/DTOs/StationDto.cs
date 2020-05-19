@@ -13,6 +13,9 @@ namespace ETicket.ApplicationServices.DTOs
         [DisplayName("Area")]
         public int AreaId { get; set; }
 
+        [DisplayName("Area")]
+        public string AreaName { get; set; }
+
         public double Latitude { get; set; }
 
         public double Longitude { get; set; }

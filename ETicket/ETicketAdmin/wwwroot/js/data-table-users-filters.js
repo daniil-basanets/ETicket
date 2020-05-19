@@ -53,6 +53,9 @@ $(document).ready(function () {
         .on('page.dt', function () {
             pageNumber = table.page() + 1;
         })
+        .on('length.dt', function () {
+            isNewSearch = true;
+        })
         //DataTable settings
         .DataTable({
             columnDefs: [
