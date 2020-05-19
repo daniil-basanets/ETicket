@@ -4,6 +4,7 @@ using System;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ETicket.Admin.Controllers
 {
@@ -12,14 +13,18 @@ namespace ETicket.Admin.Controllers
         #region
 
         private readonly ITransportService transportService;
+        private readonly ICarrierService carrierService;
+        private readonly IRouteService routeService;
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 
-        public TransportsController(ITransportService transportService)
+        public TransportsController(ITransportService transportService, ICarrierService carrierService, IRouteService routeService)
         {
             this.transportService = transportService;
+            this.carrierService = carrierService;
+            this.routeService = routeService;
         }
 
         // GET: Transport
@@ -72,6 +77,9 @@ namespace ETicket.Admin.Controllers
         // GET: Transport/Create
         public IActionResult Create()
         {
+            ViewData["RouteId"] = new SelectList(routeService.GetRoutes(), "Id", "Number");
+            ViewData["CarrierId"] = new SelectList(carrierService.GetAll(), "Id", "Name");
+
             return View();
         }
 
@@ -80,6 +88,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(TransportDto transportDto)
         {
+            ViewData["RouteId"] = new SelectList(routeService.GetRoutes(), "Id", "Number", transportDto?.Id);
+            ViewData["CarrierId"] = new SelectList(carrierService.GetAll(), "Id", "Name", transportDto?.Id);
             if (ModelState.IsValid)
             {
                 try
@@ -101,6 +111,9 @@ namespace ETicket.Admin.Controllers
         public IActionResult Edit(int? id)
         {
             log.Info(nameof(Edit));
+            ViewData["RouteId"] = new SelectList(routeService.GetRoutes(), "Id", "Number");
+            ViewData["CarrierId"] = new SelectList(carrierService.GetAll(), "Id", "Name");
+
 
             return Details(id);
         }
@@ -111,6 +124,8 @@ namespace ETicket.Admin.Controllers
         public IActionResult Edit(int id, TransportDto transportDto)
         {
             log.Info(nameof(Edit) + ":Post");
+            ViewData["RouteId"] = new SelectList(routeService.GetRoutes(), "Id", "Number", transportDto?.Id);
+            ViewData["CarrierId"] = new SelectList(carrierService.GetAll(), "Id", "Name", transportDto?.Id);
 
             if (id != transportDto.Id)
             {

@@ -8,7 +8,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
     {
         public IEnumerable<Transport> GetAll();
 
-        public Transport Get(int id);
+        public TransportDto Get(int id);
 
         public void Create(TransportDto transportDto);
 
