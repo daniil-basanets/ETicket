@@ -58,7 +58,7 @@
                                     @Html.DisplayFor(modelItem => item.StartDate)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Area.Name)
+                                    @Html.ActionLink(item.Area.Name, "Details", "Area", new { id = item.AreaId }, null)
                                 </td>
                             </tr>
                         }
