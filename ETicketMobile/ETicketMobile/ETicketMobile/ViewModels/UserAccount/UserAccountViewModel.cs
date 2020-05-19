@@ -4,7 +4,6 @@ using System.Windows.Input;
 using ETicketMobile.Business.Model.UserAccount;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Tickets;
-using ETicketMobile.Views.UserAccount;
 using ETicketMobile.Views.UserActions;
 using Prism.Navigation;
 using Xamarin.Forms;
@@ -31,7 +30,7 @@ namespace ETicketMobile.ViewModels.UserAccount
         public ICommand NavigateToAction => navigateToAction
             ?? (navigateToAction = new Command<UserAction>(OnNavigateToAction));
 
-        public UserAccountViewModel(INavigationService navigationService) 
+        public UserAccountViewModel(INavigationService navigationService)
             : base(navigationService)
         {
             this.navigationService = navigationService
@@ -56,7 +55,9 @@ namespace ETicketMobile.ViewModels.UserAccount
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
             if (string.IsNullOrEmpty(email))
+            {
                 email = navigationParameters.GetValue<string>("email");
+            }
 
             this.navigationParameters = navigationParameters;
         }
