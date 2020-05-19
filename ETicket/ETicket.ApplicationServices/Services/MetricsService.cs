@@ -17,7 +17,7 @@ namespace ETicket.ApplicationServices.Services
         private readonly IUnitOfWork uow;
         private const int MaxDaysForChart = 366;
         private const string EndLessStartError = "End date cannot be less than start date";
-        private const string MaxDaysForChartError = "The period of time cannot be more than {0} days";
+        private const string MaxDaysForChartError = "The period of time cannot be more than one year";
 
         #endregion
 
@@ -95,7 +95,7 @@ namespace ETicket.ApplicationServices.Services
             }
             if ((end - start).TotalDays > MaxDaysForChart)
             {
-                return new ChartDto() { ErrorMessage = String.Format(MaxDaysForChartError, MaxDaysForChart) };
+                return new ChartDto() { ErrorMessage =MaxDaysForChartError };
             }
 
             List<DateTime> timePeriods = new List<DateTime>();
