@@ -85,18 +85,18 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private async Task<IEnumerable<Area>> GetAreas()
         {
-            var areaDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(
+            var areasDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(
                     AreasEndpoint.Get, accessToken).ConfigureAwait(false);
 
-            if (areaDto == null)
+            if (areasDto == null)
             {
                 accessToken = await RefreshToken();
 
-                areaDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(
+                areasDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(
                         AreasEndpoint.Get, accessToken).ConfigureAwait(false);
             }
 
-            var areas = AutoMapperConfiguration.Mapper.Map<IEnumerable<Area>>(areaDto);
+            var areas = AutoMapperConfiguration.Mapper.Map<IEnumerable<Area>>(areasDto);
 
             return areas;
         }
@@ -106,7 +106,7 @@ namespace ETicketMobile.ViewModels.Tickets
             var refreshToken = localApi.GetTokenAsync().Result.RefreshJwtToken;
 
             var tokenDto = await httpClient.PostAsync<string, TokenDto>(
-                    TicketsEndpoint.RefreshToken, refreshToken);
+                    AuthorizeEndpoint.RefreshToken, refreshToken);
 
             var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
 

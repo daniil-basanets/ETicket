@@ -26,7 +26,10 @@ namespace ETicketMobile.ViewModels.Payment
         #region Fields
 
         private readonly INavigationService navigationService;
-        private INavigationParameters navigationParameters;
+
+        private IEnumerable<int> areasId;
+        private int ticketTypeId;
+        private string email;
 
         private readonly HttpClientService httpClient;
 
@@ -123,22 +126,21 @@ namespace ETicketMobile.ViewModels.Payment
 
         public override async void OnNavigatedTo(INavigationParameters navigationParameters)
         {
-            this.navigationParameters = navigationParameters;
+            Description = navigationParameters.GetValue<string>("name");
+            ticketTypeId = navigationParameters.GetValue<int>("ticketId");
+            areasId = navigationParameters["areas"] as IEnumerable<int>;
+            email = navigationParameters.GetValue<string>("email");
 
             var price = await RequestGetTicketPrice();
-
-            Amount = price.TotalPrice;
-            Description = navigationParameters.GetValue<string>("name");
+            Amount = Math.Round(price.TotalPrice, 2);
         }
 
         private async Task<GetTicketPriceResponseDto> RequestGetTicketPrice()
         {
-            var areasId = navigationParameters["areas"] as IEnumerable<int>;
-
             var getTicketPriceRequestDto = new GetTicketPriceRequestDto
             {
                 AreasId = areasId,
-                TicketTypeId = navigationParameters.GetValue<int>("ticketId")
+                TicketTypeId = ticketTypeId
             };
 
             var response = await httpClient.PostAsync<GetTicketPriceRequestDto, GetTicketPriceResponseDto>(
@@ -179,10 +181,7 @@ namespace ETicketMobile.ViewModels.Payment
 
             var response = await RequestBuyTicket(buyTicketRequestDto);
 
-            navigationParameters.Add("result", response.PayResult);
-            navigationParameters.Add("totalPrice", response.TotalPrice);
-            navigationParameters.Add("boughtAt", response.BoughtAt);
-            await navigationService.NavigateAsync(nameof(ReceiptView), navigationParameters);
+            await navigationService.NavigateAsync(nameof(TransactionCompletedView));
         }
 
         private bool IsCvvValid()
@@ -219,14 +218,14 @@ namespace ETicketMobile.ViewModels.Payment
         {
             return new BuyTicketRequestDto
             {
-                TicketTypeId = navigationParameters.GetValue<int>("ticketId"),
-                Email = navigationParameters.GetValue<string>("email"),
-                Coefficient = Amount,
+                TicketTypeId = ticketTypeId,
+                Email = email,
+                Price = Amount,
                 Description = Description,
-                CardNumber = "4731219121169597", //cardNumber,
-                ExpirationMonth = "08", //expirationMonth,
-                ExpirationYear = "23", //expirationYear,
-                CVV2 = "810" //cvv2
+                CardNumber = cardNumber,
+                ExpirationMonth = expirationMonth,
+                ExpirationYear = expirationYear,
+                CVV2 = cvv2
             };
         }
 

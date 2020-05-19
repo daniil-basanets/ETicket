@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using Android.Util;
 using ETicketMobile.Resources;
+using ETicketMobile.Views.Login;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
@@ -26,6 +27,7 @@ namespace ETicketMobile.ViewModels.Registration
         private readonly HttpClientService httpClient;
 
         private ICommand navigateToPhoneRegistrationView;
+        private ICommand navigateToSignInView;
 
         private string emailWarning;
 
@@ -35,6 +37,9 @@ namespace ETicketMobile.ViewModels.Registration
 
         public ICommand NavigateToPhoneRegistrationView => navigateToPhoneRegistrationView 
             ?? (navigateToPhoneRegistrationView = new Command<string>(OnMoveToPhoneRegistrationView));
+
+        public ICommand NavigateToSignInView => navigateToSignInView
+            ?? (navigateToSignInView = new Command(OnNavigateToSignInView));
 
         public string EmailWarning
         {
@@ -65,11 +70,16 @@ namespace ETicketMobile.ViewModels.Registration
             navigationService.NavigateAsync(nameof(PhoneRegistrationView), navigationParams);
         }
 
+        private void OnNavigateToSignInView(object obj)
+        {
+            navigationService.NavigateAsync(nameof(LoginView));
+        }
+
         private bool RequestUserExists(string email)
         {
             var signUpRequestDto = new SignUpRequestDto { Email = email };
 
-            var isUserExists = httpClient.PostAsync<SignUpRequestDto, SignUpResponseDto>(TicketsEndpoint.CheckEmail, signUpRequestDto).Result;
+            var isUserExists = httpClient.PostAsync<SignUpRequestDto, SignUpResponseDto>(AuthorizeEndpoint.CheckEmail, signUpRequestDto).Result;
 
             return isUserExists.Succeeded;
         }

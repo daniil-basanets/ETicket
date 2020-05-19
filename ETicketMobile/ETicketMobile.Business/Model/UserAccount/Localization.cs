@@ -4,7 +4,7 @@
     {
         public string Language { get; set; }
 
-        public string Country { get; set; }
+        public bool IsChoosed { get; set; }
 
         public string Culture { get; set; }
     }

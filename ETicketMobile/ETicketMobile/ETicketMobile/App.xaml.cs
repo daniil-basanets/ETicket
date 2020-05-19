@@ -7,6 +7,7 @@ using ETicketMobile.DataAccess.Repositories;
 using ETicketMobile.Resources;
 using ETicketMobile.UserInterface.Localization.Interfaces;
 using ETicketMobile.ViewModels;
+using ETicketMobile.ViewModels.BoughtTickets;
 using ETicketMobile.ViewModels.ForgotPassword;
 using ETicketMobile.ViewModels.Login;
 using ETicketMobile.ViewModels.Payment;
@@ -21,6 +22,7 @@ using ETicketMobile.Views.Payment;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.Views.Settings;
 using ETicketMobile.Views.Tickets;
+using ETicketMobile.Views.UserAccount;
 using ETicketMobile.Views.UserActions;
 using Prism;
 using Prism.Ioc;
@@ -72,24 +74,30 @@ namespace ETicketMobile
             containerRegistry.RegisterForNavigation<CreateNewPasswordView, CreateNewPasswordViewModel>();
             containerRegistry.RegisterForNavigation<AreasView, AreasViewModel>();
             containerRegistry.RegisterForNavigation<LiqPayView, LiqPayViewModel>();
-            containerRegistry.RegisterForNavigation<ReceiptView, ReceiptViewModel>();
+            containerRegistry.RegisterForNavigation<TransactionCompletedView, TransactionCompletedViewModel>();
             containerRegistry.RegisterForNavigation<MainMenuView, MainMenuViewModel>();
             containerRegistry.RegisterForNavigation<UserAccountView, UserAccountViewModel>();
             containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
             containerRegistry.RegisterForNavigation<UserTransactionsView, UserTransactionsViewModel>();
             containerRegistry.RegisterForNavigation<LocalizationView, LocalizationViewModel>();
+            containerRegistry.RegisterForNavigation<MyTicketsView, MyTicketsViewModel>();
         }
 
         private async Task InitCulture(ILocalApi localApi, ILocalize localize)
         {
             var localization = await localApi.GetLocalizationAsync().ConfigureAwait(false);
 
-            if (localize != null)
+            if (localization != null)
             {
                 var currentCulture = new CultureInfo(localization.Culture);
 
                 localize.CurrentCulture = currentCulture;
                 AppResource.Culture = currentCulture;
+            }
+            else
+            {
+                localize.CurrentCulture = CultureInfo.CurrentCulture;
+                AppResource.Culture = CultureInfo.CurrentCulture;
             }
         }
     }

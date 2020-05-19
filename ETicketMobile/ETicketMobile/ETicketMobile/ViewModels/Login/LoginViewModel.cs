@@ -117,8 +117,8 @@ namespace ETicketMobile.ViewModels.Login
 
         private async void OnNavigateToLoginView(object obj)
         {
-            //if (!IsValid(email))
-            //    return;
+            if (!IsValid(email))
+                return;
 
             var token = await GetTokenAsync();
             if (token.RefreshJwtToken == null)
@@ -135,6 +135,7 @@ namespace ETicketMobile.ViewModels.Login
             await localApi.AddAsync(token);
 
             var navigationParameters = new NavigationParameters { { "email", Email } };
+
             await navigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
         }
 
@@ -142,12 +143,12 @@ namespace ETicketMobile.ViewModels.Login
         {
             var userSignIn = new UserSignInRequestDto
             {
-                Email = "joe@gmail.com", //email,
-                Password = "qwerty12" // password
+                Email = email,
+                Password =  password
             };
 
             var tokenDto = await httpClient.PostAsync<UserSignInRequestDto, TokenDto>(
-                TicketsEndpoint.Login, userSignIn);
+                AuthorizeEndpoint.Login, userSignIn);
 
             var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
 
