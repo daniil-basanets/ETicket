@@ -38,6 +38,10 @@ namespace ETicket.DataAccess.Domain.Interfaces
         
         PriceListRepository PriceList { get; }
 
+        RouteStationRepository RouteStation { get; }
+
+        TicketAreaRepository TicketArea { get; }
+
         void Save();
     }
 }

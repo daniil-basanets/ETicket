@@ -159,6 +159,19 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
+        public TicketAreaRepository TicketArea
+        {
+            get
+            {
+                if (ticketAreaRepository == null)
+                {
+                    ticketAreaRepository = new TicketAreaRepository(eTicketDataContext);
+                }
+
+                return ticketAreaRepository;
+            }
+        }
+
         public SecretCodeRepository SecretCodes
         {
             get
@@ -200,17 +213,6 @@ namespace ETicket.DataAccess.Domain
                     transportRepository = new TransportRepository(eTicketDataContext);
 
                 return transportRepository;
-            }
-        }
-
-        public TicketAreaRepository TicketAreas
-        {
-            get
-            {
-                if (ticketAreaRepository == null)
-                    ticketAreaRepository = new TicketAreaRepository(eTicketDataContext);
-
-                return ticketAreaRepository;
             }
         }
 
