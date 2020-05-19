@@ -99,8 +99,19 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost("{ticketId}/verify")]
         public IActionResult VerifyTicket(Guid ticketId, [FromBody]VerifyTicketRequest request)
         {
-            return Ok(verificationService.VerifyTicket(
-                ticketId, request.TransportId, request.Longitude, request.Latitude));
+            log.Info(nameof(VerifyTicket));
+
+            try
+            {
+                return Ok(verificationService.VerifyTicket(
+                    ticketId, request.TransportId, request.Longitude, request.Latitude));
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
     }
 }
