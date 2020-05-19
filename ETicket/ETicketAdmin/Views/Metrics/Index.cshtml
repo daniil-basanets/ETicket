@@ -1,0 +1,88 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<!-- Custom fonts for this template-->
+<link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+<!-- Custom styles for this template-->
+<link href="~/css/sb-admin-2.min.css" rel="stylesheet">
+
+<!-- Content Row -->
+<div class="row">
+
+    <div class="col-xl-8 col-lg-7">
+
+        <!-- Bar TicketsByTicketTypes -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Tickets by ticket types</h6>
+                From: <input type="date" id="tickets-by-types-start" class="form-control form-control-sm">
+                To: <input type="date" id="tickets-by-types-end" class="form-control form-control-sm">
+            </div>
+            <div class="card-body">
+                <div class="chart-bar">
+                    <canvas id="tickets-by-types"></canvas>
+                </div>
+                <hr />
+                <span id="tickets-by-types-error" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Passengers by time -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Passenger by time</h6>        
+                From: <input type="date" id="passengers-by-time-start" class="form-control form-control-sm">
+                To: <input type="date" id="passengers-by-time-end" class="form-control form-control-sm">
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="passengers-by-time"></canvas>
+                </div>
+                <hr>
+                <span id="passengers-by-time-error" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donut Chart -->
+    <div class="col-xl-4 col-lg-5">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Passengers by privilege</h6>
+                From: <input type="date" id="passengers-by-privilege-start" class="form-control form-control-sm">
+                To: <input type="date" id="passengers-by-privilege-end" class="form-control form-control-sm">
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="chart-pie">
+                    <canvas id="passengers-by-privilege"></canvas>
+                </div>
+                <hr>
+                <span id="passengers-by-privilege-error" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript-->
+<script src="~/vendor/jquery/jquery.min.js"></script>
+<script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="~/js/sb-admin-2.min.js"></script>
+
+<!-- Page level plugins -->
+<script src="~/vendor/chart.js/Chart.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="~/js/chart/chart-bar-tickets-by-types.js"></script>
+<script src="~/js/chart/chart-area-passengers-by-time.js"></script>
+<script src="~/js/chart/chart-pie-passengers-by-privileges.js"></script>

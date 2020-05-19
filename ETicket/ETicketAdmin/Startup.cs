@@ -70,6 +70,7 @@ namespace ETicket.Admin
             services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<ITransportService, TransportService>();
             services.AddTransient<ITicketVerificationService, TicketVerificationService>();
+            services.AddTransient<IMetricsService, MetricsService>();
 
             services.AddTransient<IDataTablePagingService<Ticket>, TicketPagingService>();
             services.AddTransient<IDataTablePagingService<User>, UserPagingService>();
