@@ -9,7 +9,7 @@ namespace ETicket.DataAccess.Domain
     {
         #region private members
 
-        private ETicketDataContext eTicketDataContext;
+        private readonly ETicketDataContext eTicketDataContext;
 
         private DocumentRepository documentRepository;
         private DocumentTypeRepository documentTypeRepository;
@@ -159,7 +159,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public TicketAreaRepository TicketArea
+        public IRepository<TicketArea, TicketArea> TicketArea
         {
             get
             {
@@ -205,7 +205,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public IRepository<Transport,long> Transports
+        public IRepository<Transport,int> Transports
         {
             get
             {

@@ -4,7 +4,7 @@ using ETicket.DataAccess.Domain.Interfaces;
 
 namespace ETicket.DataAccess.Domain.Repositories
 {
-    public class TransportRepository : IRepository<Transport,long>
+    public class TransportRepository : IRepository<Transport,int>
     {
         #region
 
