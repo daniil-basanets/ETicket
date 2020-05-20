@@ -30,7 +30,7 @@ namespace ETicket.DataAccess.Domain
 
         #endregion
 
-        public DocumentRepository Documents
+        public IRepository<Document,Guid> Documents
         {
             get
             {
@@ -40,7 +40,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public RouteRepository Routes
+        public IRepository<Route,int> Routes
         {
             get
             {
@@ -50,7 +50,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public DocumentTypeRepository DocumentTypes
+        public IRepository<DocumentType,int> DocumentTypes
         {
             get
             {
@@ -60,7 +60,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public PrivilegeRepository Privileges
+        public IRepository<Privilege,int> Privileges
         {
             get
             {
@@ -70,7 +70,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public TicketRepository Tickets
+        public IRepository<Ticket,Guid> Tickets
         {
             get
             {
@@ -91,7 +91,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public TicketVerificationRepository TicketVerifications
+        public IRepository<TicketVerification,Guid> TicketVerifications
         {
             get
             {
@@ -102,7 +102,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public TransactionHistoryRepository TransactionHistory
+        public IRepository<TransactionHistory,Guid> TransactionHistory
         {
             get
             {
@@ -113,7 +113,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public UserRepository Users
+        public IRepository<User,Guid> Users
         {
             get
             {
@@ -123,7 +123,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
         
-        public PriceListRepository PriceList
+        public IRepository<PriceList,int> PriceList
         {
             get
             {
@@ -134,7 +134,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public CarrierRepository Carriers
+        public IRepository<Carrier,int> Carriers
         {
             get
             {
@@ -145,7 +145,7 @@ namespace ETicket.DataAccess.Domain
                 return carrierRepository;
             }
         }
-        public RouteStationRepository RouteStation
+        public IRepository<RouteStation,int> RouteStation
         {
             get
             {
@@ -169,7 +169,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public StationRepository Stations
+        public IRepository<Station,int> Stations
         {
             get
             {
@@ -180,7 +180,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
         
-        public AreaRepository Areas
+        public IRepository<Area,int> Areas
         {
             get 
             {
@@ -191,7 +191,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public TransportRepository Transports
+        public IRepository<Transport,long> Transports
         {
             get
             {
