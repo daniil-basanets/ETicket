@@ -81,7 +81,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public TicketTypeRepository TicketTypes
+        public IRepository<TicketType,int> TicketTypes
         {
             get
             {
