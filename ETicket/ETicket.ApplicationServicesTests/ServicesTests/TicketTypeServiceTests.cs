@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ETicket.ApplicationServices.DTOs;
@@ -87,6 +88,26 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
             var actual = ticketTypeService.GetTicketTypeById(id).DurationHours;
             
             Assert.Equal(expected,actual);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public void Create_TicketType_ShouldFailTypeNameIsEmpty(string name)
+        {
+            ticketTypeDto.TypeName = name;
+            Action action = () => ticketTypeService.Create(ticketTypeDto);
+
+            var exception = Assert.Throws<ArgumentException>(action);
+            
+            Assert.Equal("Type name is empty",exception.Message);
+        }
+
+        [Fact]
+        public void Create_TicketType_ShouldFailDtoShouldNotBeNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => ticketTypeService.Create(null));
         }
         
         [Fact]
