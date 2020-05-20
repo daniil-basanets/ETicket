@@ -1,4 +1,4 @@
-﻿@model ETicket.DataAccess.Domain.Entities.User
+﻿@model ETicket.ApplicationServices.DTOs.UserDto
 
 @{
     ViewData["Title"] = "Delete";
@@ -42,16 +42,16 @@
             @(Model.DateOfBirth.ToString("yyyy-MM-dd"))
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Privilege)
+            @Html.DisplayNameFor(model => model.PrivilegeName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Privilege.Name)
+            @Html.DisplayFor(model => model.PrivilegeName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Document)
+            @Html.DisplayNameFor(model => model.DocumentNumber)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Document.Number)
+            @Html.DisplayFor(model => model.DocumentNumber)
         </dd>
     </dl>
 

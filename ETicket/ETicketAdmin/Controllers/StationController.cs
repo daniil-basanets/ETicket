@@ -20,14 +20,16 @@ namespace ETicket.Admin.Controllers
     {
         #region Private members
 
-        private readonly IStationService service;
+        private readonly IStationService stationService;
+        private readonly IAreaService areaService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 
-        public StationController(IStationService service)
+        public StationController(IStationService stationService, IAreaService areaService)
         {
-            this.service = service;
+            this.stationService = stationService;
+            this.areaService = areaService;
         }
 
         // GET: Station
@@ -37,7 +39,9 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                return View(service.GetAll());
+                ViewData["AreaId"] = new SelectList(areaService.GetAreas(), "Id", "Name");
+
+                return View(stationService.GetAll());
             }
             catch (Exception e)
             {
@@ -61,7 +65,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                var station = service.Get(id.Value);
+                var station = stationService.Get(id.Value);
 
                 if (station == null)
                 {
@@ -87,7 +91,18 @@ namespace ETicket.Admin.Controllers
         {
             log.Info(nameof(StationController.Create));
 
-            return View();
+            try
+            {
+                ViewData["AreaId"] = new SelectList(areaService.GetAreas(), "Id", "Name");
+
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         // POST: Station/Create
@@ -97,23 +112,26 @@ namespace ETicket.Admin.Controllers
         {
             log.Info(nameof(StationController.Create) + " POST");
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    service.Create(stationDto);
+
+                    stationService.Create(stationDto);
 
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception e)
-                {
-                    log.Error(e);
 
-                    return BadRequest();
-                }
+                ViewData["AreaId"] = new SelectList(areaService.GetAreas(), "Id", "Name", stationDto.AreaId);
+
+                return View(stationDto);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return View(stationDto);
+                return BadRequest();
+            }
         }
 
         // GET: Station/Edit/5
@@ -130,7 +148,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                var station = service.Get(id.Value);
+                var station = stationService.Get(id.Value);
 
                 if (station == null)
                 {
@@ -140,6 +158,7 @@ namespace ETicket.Admin.Controllers
                 }
                 else
                 {
+                    ViewData["AreaId"] = new SelectList(areaService.GetAreas(), "Id", "Name");
 
                     return View(station);
                 }
@@ -170,10 +189,12 @@ namespace ETicket.Admin.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    service.Update(stationDto);
+                    stationService.Update(stationDto);
 
                     return RedirectToAction(nameof(Index));
                 }
+
+                ViewData["AreaId"] = new SelectList(areaService.GetAreas(), "Id", "Name", stationDto.AreaId);
 
                 return View(stationDto);
             }
@@ -183,7 +204,6 @@ namespace ETicket.Admin.Controllers
 
                 return BadRequest();
             }
-
         }
 
         // GET: Station/Delete/5
@@ -200,7 +220,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                var station = service.Get(id.Value);
+                var station = stationService.Get(id.Value);
 
                 if (station == null)
                 {
@@ -230,7 +250,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                service.Delete(id);
+                stationService.Delete(id);
 
                 return RedirectToAction(nameof(Index));
             }

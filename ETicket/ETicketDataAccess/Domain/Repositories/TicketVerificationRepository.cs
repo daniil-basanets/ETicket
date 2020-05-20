@@ -2,6 +2,7 @@
 using System.Linq;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.DataAccess.Domain.Repositories
 {
@@ -26,7 +27,11 @@ namespace ETicket.DataAccess.Domain.Repositories
 
         public TicketVerification Get(Guid id)
         {
-            return context.TicketVerifications.Find(id);
+            return context.TicketVerifications
+                .Include(x => x.Station)
+                .Include(x => x.Ticket)
+                .Include(x => x.Transport)
+                .FirstOrDefault(t => t.Id == id);
         }
 
         public IQueryable<TicketVerification> GetAll()

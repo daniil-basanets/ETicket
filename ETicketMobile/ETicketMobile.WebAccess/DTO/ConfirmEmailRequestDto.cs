@@ -7,7 +7,7 @@ namespace ETicketMobile.WebAccess.DTO
         [JsonProperty("Email")]
         public string Email { get; set; }
 
-        [JsonProperty("AuthenticationCode")]
+        [JsonProperty("Code")]
         public string ActivationCode { get; set; }
     }
 }

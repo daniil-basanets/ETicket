@@ -53,6 +53,9 @@ $(document).ready(function () {
         .on('page.dt', function () {
             pageNumber = table.page() + 1;
         })
+        .on('length.dt', function () {
+            isNewSearch = true;
+        })
         //DataTable settings
         .DataTable({
             columnDefs: [
@@ -153,10 +156,6 @@ $(document).ready(function () {
             }
         });
 
-    $("#date-birth-datepicker").datepicker({
-        dateFormat: "dd.mm.yy"
-    });
-
     //Change event listener for search
     //Search after pressing Enter or defocusing the search input field
     $("#dataTable_filter input").unbind()
@@ -166,13 +165,7 @@ $(document).ready(function () {
             table.search(searchValue).draw();
         });
 
-    $("#first-name-input").unbind()
-        .bind("change", function (e) {
-            isNewSearch = true;
-            table.draw();
-        });
-
-    $("#last-name-input").unbind()
+    $("#first-name-input, #last-name-input, #document-input, #date-birth-datepicker").unbind()
         .bind("change", function (e) {
             isNewSearch = true;
             table.draw();
@@ -183,20 +176,6 @@ $(document).ready(function () {
             isNewSearch = true;
             table.draw();
         });
-
-    $("#document-input").unbind()
-        .bind("change", function (e) {
-            isNewSearch = true;
-            table.draw();
-        });
-
-    $("#date-birth-datepicker").unbind()
-        .bind("change", function (e) {
-            isNewSearch = true;
-            table.draw();
-        });
-
-
 
     //Event listener for Edit button 
     $("#dataTable tbody").on('click', '#editButton', function () {

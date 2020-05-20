@@ -9,8 +9,10 @@ namespace ETicket.DataAccess.Domain.Interfaces
         IRepository<Document,Guid> Documents { get; }
 
         IRepository<Route,int> Routes { get; }
-
+        
         IRepository<DocumentType,int> DocumentTypes { get; }
+        
+        RouteStationRepository RouteStation { get; }
 
         IRepository<Privilege,int> Privileges { get; }
 
@@ -18,6 +20,10 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         IRepository<TicketType,int> TicketTypes { get; }
 
+        TicketAreaRepository TicketArea { get; }
+
+        TicketVerificationRepository TicketVerifications { get; }
+        
         IRepository<TicketVerification,Guid> TicketVerifications { get; }
         
         IRepository<TransactionHistory,Guid> TransactionHistory { get; }
@@ -27,7 +33,8 @@ namespace ETicket.DataAccess.Domain.Interfaces
         IRepository<Carrier,int> Carriers { get; }
 
         SecretCodeRepository SecretCodes { get; }
-        IRepository<Area,int> Areas { get; }
+        
+        IRepository<Area,int> Areas { get; 
 
         IRepository<Station,int> Stations { get; }
         

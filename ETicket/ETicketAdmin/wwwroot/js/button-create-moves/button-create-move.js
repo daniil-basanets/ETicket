@@ -31,34 +31,28 @@ $(document).ready(function () {
 });
 
 function moveTableRowItems(JQRow, arrIdItems) {
-    let i = 0;
     //Take element html
-    for (const item of arrIdItems) {
+    for (var i = 0; i < arrIdItems.length; i++) {
         //Input item with external div into JQRow
-        $(item).parent("div").appendTo(JQRow);
-        i++;
+        $(arrIdItems[i]).parent("div").appendTo(JQRow);
     }
 }
 
 function changeClassInExternalDiv(arrIdItems, arrNewClassNames) {
-    let i = 0;
-    for (const item of arrIdItems) {
+    for (var i = 0; i < arrIdItems.length; i++) {
         //Clear external div class
-        $(item).parent("div").removeClass();
+        $(arrIdItems[i]).parent("div").removeClass();
         //Add new classes for external div class
-        $(item).parent("div").addClass(arrNewClassNames[i]);
-        i++;
+        $(arrIdItems[i]).parent("div").addClass(arrNewClassNames[i]);
     }
 }
 
 function changeClassInItem(arrIdItems, arrNewClassNames) {
-    let i = 0;
-    for (const item of arrIdItems) {
+    for (var i = 0; i < arrIdItems.length; i++) {
         //Clear item class
-        $(item).removeClass();
+        $(arrIdItems[i]).removeClass();
         //Add new classes for item class
-        $(item).addClass(arrNewClassNames[i]);
-        i++;
+        $(arrIdItems[i]).addClass(arrNewClassNames[i]);
     }
 }
 

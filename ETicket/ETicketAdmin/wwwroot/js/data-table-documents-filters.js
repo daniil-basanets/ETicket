@@ -50,6 +50,9 @@ $(document).ready(function () {
         .on('page.dt', function () {
             pageNumber = table.page() + 1;
         })
+        .on('length.dt', function () {
+            isNewSearch = true;
+        })
         //DataTable settings
         .DataTable({
             columnDefs: [
@@ -143,10 +146,6 @@ $(document).ready(function () {
             }
         });
 
-    $("#expiration-date-datepicker").datepicker({
-        dateFormat: "dd.mm.yy"
-    });
-
     //Change event listener for search
     //Search after pressing Enter or defocusing the search input field
     $("#dataTable_filter input").unbind()
@@ -156,31 +155,17 @@ $(document).ready(function () {
             table.search(searchValue).draw();
         });
 
-    $('#document-type-select')
-        .change(function () {
-            isNewSearch = true;
-            table.draw();
-        });
-
-    $('#is-valid-select')
+    $('#document-type-select, #is-valid-select')
         .change(function () {
             isNewSearch = true;
             table.draw();
         });
     
-    $("#document-number-input").unbind()
+    $("#document-number-input, #expiration-date-datepicker").unbind()
         .bind("change", function (e) {
             isNewSearch = true;
             table.draw();
         });
-
-    $("#expiration-date-datepicker").unbind()
-        .bind("change", function (e) {
-            isNewSearch = true;
-            table.draw();
-        });
-
-
 
     //Event listener for Edit button 
     $("#dataTable tbody").on('click', '#editButton', function () {

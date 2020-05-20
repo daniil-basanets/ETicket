@@ -29,8 +29,16 @@
                 <span asp-validation-for="ExpirationUTCDate" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="inputGroupSelect01">Areas</label>
+                    </div>
+                    @Html.ListBoxFor(m => m.SelectedAreaIds, (MultiSelectList)ViewBag.AreaId, new { @class = "custom-select", @id = "inputGroupSelect01", size = 5 })
+                </div>
+            </div>
+            <div class="form-group">
                 <label asp-for="UserId" class="control-label">User</label>
-                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+                @Html.DropDownListFor(model => model.UserId, (SelectList)ViewBag.UserId, "", new { @class = "form-control" })
                 <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
             <div class="form-group">

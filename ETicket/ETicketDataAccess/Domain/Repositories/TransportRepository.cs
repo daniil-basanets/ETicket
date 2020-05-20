@@ -22,7 +22,7 @@ namespace ETicket.DataAccess.Domain.Repositories
             context.Transports.Add(item);
         }
 
-        public void Delete(long id)
+        public void Delete(int id)
         {
             var transport = context.Transports.Find(id);
 
@@ -32,7 +32,7 @@ namespace ETicket.DataAccess.Domain.Repositories
             }
         }
 
-        public Transport Get(long id)
+        public Transport Get(int id)
         {
             return context.Transports.FirstOrDefault(t => t.Id == id);
         }

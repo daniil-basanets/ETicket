@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.WebAccess.DTO;
@@ -21,6 +20,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         private INavigationParameters navigationParameters;
 
         private readonly HttpClientService httpClient;
+
+        private string email;
 
         private Timer timer;
 
@@ -105,6 +106,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
             this.navigationParameters = navigationParameters;
+            
+            email = navigationParameters.GetValue<string>("email");
         }
 
         private void OnSendActivationCode()
@@ -112,7 +115,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             if (ActivationCodeTimer != 0)
                 return;
 
-            var email = navigationParameters.GetValue<string>("email");
             RequestActivationCode(email);
 
             ActivationCodeTimer = 60;
@@ -124,7 +126,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private async void RequestActivationCode(string email)
         {
-            await httpClient.PostAsync<string, string>(TicketsEndpoint.RequestActivationCode, email);
+            await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
 
         private async void OnNavigateToCreateNewPasswordView(string code)
@@ -146,7 +148,9 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            var confirmEmailIsSucceeded = await ConfirmEmail(code);
+            var resetPasswordRequestDto = CreateConfirmEmailRequestDto(code);
+
+            var confirmEmailIsSucceeded = await ConfirmEmail(resetPasswordRequestDto);
             if (!confirmEmailIsSucceeded)
             {
                 ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
@@ -157,11 +161,20 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             return true;
         }
 
-        private async Task<bool> ConfirmEmail(string activationCode)
+        private ConfirmEmailRequestDto CreateConfirmEmailRequestDto(string code)
         {
-            var response = await httpClient.PostAsync<string, ConfirmEmailResponseDto>(
-                TicketsEndpoint.ConfirmEmail,
-                activationCode
+            return new ConfirmEmailRequestDto
+            {
+                Email = email,
+                ActivationCode = code
+            };
+        }
+
+        private async Task<bool> ConfirmEmail(ConfirmEmailRequestDto confirmEmailRequestDto)
+        {
+            var response = await httpClient.PostAsync<ConfirmEmailRequestDto, ConfirmEmailResponseDto>(
+                AuthorizeEndpoint.CheckCode,
+                confirmEmailRequestDto
             );
 
             return response.Succeeded;

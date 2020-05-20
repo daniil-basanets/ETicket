@@ -5,12 +5,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link href="~/css/ButtonMoves/moved-data-table-controls.css" rel="stylesheet" />
 <link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Stations</h6>
+            <div>
+                <div id="buttonCreate" class="button_create">
+                    <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -26,8 +32,11 @@
                             <th class="table-action">
                                 @Html.DisplayNameFor(model => model.Longitude)
                             </th>
+                            <th class="table-action">
+                                @Html.DisplayNameFor(model => model.Area)
+                            </th>
                             <th>
-                                <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
+                                Actions
                             </th>
                         </tr>
                     </thead>
@@ -41,6 +50,9 @@
                             </th>
                             <th class="table-action">
                                 @Html.DisplayNameFor(model => model.Longitude)
+                            </th>
+                            <th class="table-action">
+                                @Html.DisplayNameFor(model => model.Area)
                             </th>
                             <th>
                                 Actions
@@ -59,6 +71,16 @@
                                 </td>
                                 <td class="table-static">
                                     @Html.DisplayFor(modelItem => item.Longitude)
+                                </td>
+                                <td>
+                                    @if (item.Area == null)
+                                    {
+                                        @Html.DisplayFor(modelItem => item.Area.Name)
+                                    }
+                                    else
+                                    {
+                                        @Html.ActionLink(item.Area.Name, "Details", "Areas", new { id = item.AreaId }, null)
+                                    }
                                 </td>
                                 <td class="table-static">
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
@@ -82,3 +104,4 @@
 
 <!-- Page level custom scripts -->
 <script src="/js/datatables-starter.js"></script>
+<script src="~/js/button-create-moves/button-create-move.js"></script>

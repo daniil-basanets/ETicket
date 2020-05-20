@@ -5,6 +5,7 @@
     xmlns:prism="http://prismlibrary.com"
     xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
     prism:ViewModelLocator.AutowireViewModel="True"
+    Title="Tickets"
     x:Class="ETicketMobile.Views.Tickets.TicketsView">
 
     <ContentPage.Resources>

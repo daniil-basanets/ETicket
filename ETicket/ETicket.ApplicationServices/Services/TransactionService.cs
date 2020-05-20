@@ -26,7 +26,6 @@ namespace ETicket.ApplicationServices.Services.Transaction
 
         public void AddTransaction(TransactionHistoryDto transactionDto)
         {
-            transactionDto.Id = Guid.NewGuid();
             var transaction = mapperService.Map<TransactionHistoryDto, TransactionHistory>(transactionDto);
 
             unitOfWork.TransactionHistory.Create(transaction);
@@ -39,6 +38,14 @@ namespace ETicket.ApplicationServices.Services.Transaction
                     .TransactionHistory
                     .GetAll()
                     .ToList();
+        }
+
+        public IEnumerable<TransactionHistory> GetTransactionsByUserId(Guid id)
+        {
+            return unitOfWork.Tickets
+                        .GetAll()
+                        .Where(t => t.UserId == id)
+                        .Select(t => t.TransactionHistory);
         }
 
         public TransactionHistoryDto GetTransactionById(Guid id)
