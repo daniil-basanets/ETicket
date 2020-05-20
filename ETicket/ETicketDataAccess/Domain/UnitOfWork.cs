@@ -11,23 +11,23 @@ namespace ETicket.DataAccess.Domain
 
         private readonly ETicketDataContext eTicketDataContext;
 
-        private DocumentRepository documentRepository;
-        private DocumentTypeRepository documentTypeRepository;
-        private PrivilegeRepository privilegeRepository;
-        private TicketRepository ticketRepository;
-        private TicketTypeRepository ticketTypeRepository;
-        private TicketVerificationRepository ticketVerificationRepository;
-        private TransactionHistoryRepository transactionHistoryRepository;
-        private UserRepository userRepository;
-        private CarrierRepository carrierRepository;
-        private RouteStationRepository routeStationRepository;
+        private IRepository<Document,Guid> documentRepository;
+        private IRepository<DocumentType,int> documentTypeRepository;
+        private IRepository<Privilege,int> privilegeRepository;
+        private IRepository<Ticket,Guid> ticketRepository;
+        private IRepository<TicketType,int> ticketTypeRepository;
+        private IRepository<TicketVerification,Guid> ticketVerificationRepository;
+        private IRepository<TransactionHistory,Guid> transactionHistoryRepository;
+        private IRepository<User,Guid> userRepository;
+        private IRepository<Carrier,int> carrierRepository;
+        private IRepository<RouteStation,int> routeStationRepository;
         private SecretCodeRepository secretCodeRepository;
-        private RouteRepository routeRepository;
-        private StationRepository stationRepository;
-        private TransportRepository transportRepository;
-        private PriceListRepository priceListRepository;
-        private AreaRepository areaRepository;
-        private TicketAreaRepository ticketAreaRepository;
+        private IRepository<Route,int> routeRepository;
+        private IRepository<Station,int> stationRepository;
+        private IRepository<Transport,int> transportRepository;
+        private IRepository<PriceList,int> priceListRepository;
+        private IRepository<Area,int> areaRepository;
+        private IRepository<TicketArea,TicketArea> ticketAreaRepository;
 
         #endregion
 
