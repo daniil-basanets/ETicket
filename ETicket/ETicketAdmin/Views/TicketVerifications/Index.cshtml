@@ -115,7 +115,7 @@
                                         @Html.ActionLink(item.Station.Name, "Details", "Station", new { id = item.StationId }, null)
                                     </td>
                                     <td>
-                                        @Html.ActionLink(item.Transport.Number, "Details", "Transports", new { id = item.TransportId }, null)
+                                        @Html.DisplayFor(modelItem => item.Transport.Number)
                                     </td>
                                     <td>
                                         @(item.IsVerified ? "Yes" : "No")
