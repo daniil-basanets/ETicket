@@ -53,7 +53,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                ViewData["AreaId"] = new MultiSelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name");
+                ViewData["AreaId"] = new SelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name");
 
                 return View();
             }
@@ -74,7 +74,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-               // ViewData["AreaId"] = new MultiSelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name");
+               ViewData["AreaId"] = new SelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name");
 
                 if (ModelState.IsValid)
                 {
