@@ -95,7 +95,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         private async void RequestActivationCode(string email)
         {
-            await httpClient.PostAsync<string, string>(TicketsEndpoint.RequestActivationCode, email);
+            await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
     }
 }

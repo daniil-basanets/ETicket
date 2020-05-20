@@ -5,6 +5,7 @@
     xmlns:prism="http://prismlibrary.com"
     xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
     prism:ViewModelLocator.AutowireViewModel="True"
+    Title="Areas"
     x:Class="ETicketMobile.Views.Tickets.AreasView">
 
     <ContentPage.Resources>
@@ -20,7 +21,6 @@
             <ListView 
                 ItemsSource="{Binding Areas}"
                 SeparatorVisibility="None"
-                Margin="15, 10, 15, 10"
                 RowHeight="60">
                 <ListView.ItemTemplate>
                     <DataTemplate>

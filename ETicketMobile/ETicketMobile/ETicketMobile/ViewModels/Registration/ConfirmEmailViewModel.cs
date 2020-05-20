@@ -132,7 +132,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         private async void RequestActivationCode(string email)
         {
-            await httpClient.PostAsync<string, string>(TicketsEndpoint.RequestActivationCode, email);
+            await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
 
         private async void OnNavigateToSignInView(string code)
@@ -159,7 +159,7 @@ namespace ETicketMobile.ViewModels.Registration
             };
 
             var tokenDto = await httpClient.PostAsync<UserSignInRequestDto, TokenDto>(
-                TicketsEndpoint.Login, userSignIn);
+                AuthorizeEndpoint.Login, userSignIn);
 
             var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
 
@@ -206,7 +206,7 @@ namespace ETicketMobile.ViewModels.Registration
             };
 
             var response = await httpClient.PostAsync<ConfirmEmailRequestDto, ConfirmEmailResponseDto>(
-                TicketsEndpoint.ConfirmEmail,
+                AuthorizeEndpoint.CheckCode,
                 confirmEmailRequestDto
             );
 
@@ -232,7 +232,7 @@ namespace ETicketMobile.ViewModels.Registration
 
             var response = await httpClient
                 .PostAsync<UserSignUpRequestDto, UserSignUpResponseDto>(
-                    TicketsEndpoint.Registration,
+                    AuthorizeEndpoint.Registration,
                     user
             );
 

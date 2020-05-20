@@ -39,6 +39,7 @@ namespace ETicket.DataAccess.Domain.Entities
         public Transport Transport { get; set; }
 
         [Required]
+        [DisplayName("Verified")]
         public bool IsVerified { get; set; }
     }
 }

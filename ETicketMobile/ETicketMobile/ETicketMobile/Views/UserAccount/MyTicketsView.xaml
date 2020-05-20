@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com" 
+    xmlns:telerikPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="ETicketMobile.Views.UserAccount.MyTicketsView">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="telerikPrimitives:AccordionItemHeader">
+                <Setter Property="IndicatorColor" Value="Blue" />
+                <Setter Property="IndicatorFontSize" Value="16" />
+                <Setter Property="IndicatorLocation" Value="End" />
+                <Setter Property="BorderColor" Value="LightBlue" />
+                <Setter Property="BorderThickness" Value="2" />
+            </Style>
+
+            <Style TargetType="telerikPrimitives:AccordionItem">
+                <Setter Property="BorderColor" Value="LightBlue" />
+                <Setter Property="BorderThickness" Value="2" />
+            </Style>
+
+            <Style TargetType="Frame">
+                <Setter Property="Margin" Value="0, -2, 0, -3" />
+                <Setter Property="Padding" Value="10" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout>
+        <telerikPrimitives:RadAccordion 
+            CanCollapseAllItems="True"
+            AnimationDuration="1500"
+            AnimationEasing="SpringOut"
+            Spacing="5">
+            
+            <telerikPrimitives:AccordionItem IsExpanded="True" HeightRequest="80">
+                <telerikPrimitives:AccordionItem.Header>
+                    <telerikPrimitives:AccordionItemHeader>
+                        <Label
+                            Text="Unused"
+                            Margin="8"/>
+                    </telerikPrimitives:AccordionItemHeader>
+                </telerikPrimitives:AccordionItem.Header>
+                <telerikPrimitives:AccordionItem.Content>
+                    <StackLayout BindableLayout.ItemsSource="{Binding UnusedTickets}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Frame>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="3*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackLayout Grid.Column="0">
+                                            <Label 
+                                                Text="Ticket type"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="Ticket Ref"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="Created At"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                        </StackLayout>
+
+                                        <StackLayout 
+                                            Grid.Column="1"
+                                            HorizontalOptions="StartAndExpand">
+                                            <Label
+                                                Text="{Binding TicketType}"
+                                                HorizontalOptions="Start"
+                                                Style="{StaticResource NormalLabelStyle}"/>
+                                            <Label
+                                                Text="{Binding ReferenceNumber}"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="FillAndExpand"/>
+                                            <Label
+                                                Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                        </StackLayout>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
+                </telerikPrimitives:AccordionItem.Content>
+            </telerikPrimitives:AccordionItem>
+
+            <telerikPrimitives:AccordionItem>
+                <telerikPrimitives:AccordionItem.Header>
+                    <telerikPrimitives:AccordionItemHeader>
+                        <Label 
+                            Text="Active" 
+                            Margin="8" />
+                    </telerikPrimitives:AccordionItemHeader>
+                </telerikPrimitives:AccordionItem.Header>
+                <telerikPrimitives:AccordionItem.Content>
+                    <StackLayout BindableLayout.ItemsSource="{Binding ActivatedTickets}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Frame>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="3*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackLayout Grid.Column="0">
+                                            <Label 
+                                                Text="Ticket type"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="Ticket Ref"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="Created at"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="Activated at"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="Will expire at"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                        </StackLayout>
+
+                                        <StackLayout 
+                                            Grid.Column="1"
+                                            HorizontalOptions="StartAndExpand">
+                                            <Label
+                                                Text="{Binding TicketType}"
+                                                HorizontalOptions="Start"
+                                                Style="{StaticResource NormalLabelStyle}"/>
+                                            <Label
+                                                Text="{Binding ReferenceNumber}"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="FillAndExpand"/>
+                                            <Label
+                                                Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="{Binding ActivatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="{Binding ExpiredAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                        </StackLayout>
+
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
+
+                </telerikPrimitives:AccordionItem.Content>
+            </telerikPrimitives:AccordionItem>
+
+            <telerikPrimitives:AccordionItem>
+                <telerikPrimitives:AccordionItem.Header>
+                    <telerikPrimitives:AccordionItemHeader>
+                        <Label 
+                            Text="Expired" 
+                            Margin="8" />
+                    </telerikPrimitives:AccordionItemHeader>
+                </telerikPrimitives:AccordionItem.Header>
+                <telerikPrimitives:AccordionItem.Content>
+                    <StackLayout BindableLayout.ItemsSource="{Binding ExpiredTickets}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Frame>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*"/>
+                                            <ColumnDefinition Width="3*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackLayout Grid.Column="0">
+                                            <Label 
+                                                Text="Ticket type"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="Ticket Ref"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="Created At"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="Activated At"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="Expired At"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                        </StackLayout>
+
+                                        <StackLayout 
+                                            Grid.Column="1"
+                                            HorizontalOptions="StartAndExpand">
+                                            <Label
+                                                Text="{Binding TicketType}"
+                                                HorizontalOptions="Start"
+                                                Style="{StaticResource NormalLabelStyle}"/>
+                                            <Label
+                                                Text="{Binding ReferenceNumber}"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="FillAndExpand"/>
+                                            <Label
+                                                Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="{Binding ActivatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                            <Label 
+                                                Text="{Binding ExpiredAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
+                                                Style="{StaticResource NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                        </StackLayout>
+
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
+                </telerikPrimitives:AccordionItem.Content>
+            </telerikPrimitives:AccordionItem>
+
+        </telerikPrimitives:RadAccordion>
+
+    </StackLayout>
+
+</ContentPage>

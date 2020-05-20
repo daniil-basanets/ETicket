@@ -1,4 +1,4 @@
-﻿@model ETicket.DataAccess.Domain.Entities.Ticket
+﻿@model ETicket.ApplicationServices.DTOs.TicketDto
 
 @{
     ViewData["Title"] = "Delete";
@@ -11,44 +11,44 @@
     <h4>Ticket</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TicketType)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TicketTypeName)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TicketType.TypeName)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TicketTypeName)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CreatedUTCDate)
         </dt>
         <dd class="col-sm-10">
             @Model.CreatedUTCDate.ToString("yyyy-MM-dd hh:mm")
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ActivatedUTCDate)
         </dt>
         <dd class="col-sm-10">
             @Model.ActivatedUTCDate?.ToString("yyyy-MM-dd hh:mm")
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ExpirationUTCDate)
         </dt>
         <dd class="col-sm-10">
             @Model.ExpirationUTCDate?.ToString("yyyy-MM-dd hh:mm")
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.User.LastName)
+            @Html.DisplayFor(model => model.UserName)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TransactionHistory)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TransactionRRN)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TransactionHistory.Id)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TransactionRRN)
         </dd>
     </dl>
-    
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |

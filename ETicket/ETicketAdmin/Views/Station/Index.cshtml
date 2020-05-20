@@ -32,6 +32,9 @@
                             <th class="table-action">
                                 @Html.DisplayNameFor(model => model.Longitude)
                             </th>
+                            <th class="table-action">
+                                @Html.DisplayNameFor(model => model.Area)
+                            </th>
                             <th>
                                 Actions
                             </th>
@@ -47,6 +50,9 @@
                             </th>
                             <th class="table-action">
                                 @Html.DisplayNameFor(model => model.Longitude)
+                            </th>
+                            <th class="table-action">
+                                @Html.DisplayNameFor(model => model.Area)
                             </th>
                             <th>
                                 Actions
@@ -65,6 +71,16 @@
                                 </td>
                                 <td class="table-static">
                                     @Html.DisplayFor(modelItem => item.Longitude)
+                                </td>
+                                <td>
+                                    @if (item.Area == null)
+                                    {
+                                        @Html.DisplayFor(modelItem => item.Area.Name)
+                                    }
+                                    else
+                                    {
+                                        @Html.ActionLink(item.Area.Name, "Details", "Areas", new { id = item.AreaId }, null)
+                                    }
                                 </td>
                                 <td class="table-static">
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>

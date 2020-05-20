@@ -6,7 +6,7 @@
 
         public string Email { get; set; }
 
-        public decimal Coefficient { get; set; }
+        public decimal Price { get; set; }
 
         public string Description { get; set; }
 

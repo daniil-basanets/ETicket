@@ -8,10 +8,12 @@ using ETicket.DataAccess.Domain.Entities;
 namespace ETicket.ApplicationServices.Mapping
 {
     public class StationMapperProfile : Profile
-    {
+    { 
         public StationMapperProfile()
         {
-            CreateMap<StationDto, Station>().ReverseMap();
+            CreateMap<StationDto, Station>()
+                .ReverseMap()
+                .ForMember(d => d.AreaName, d => d.MapFrom(x => x.Area.Name));
         }
     }
 }

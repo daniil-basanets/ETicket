@@ -5,6 +5,7 @@
     <OutputType>WinExe</OutputType>
     <SignAssembly>false</SignAssembly>
     <DelaySign>false</DelaySign>
+    <MvcBuildViews>true</MvcBuildViews>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\TicketVerifications\" />
+    <Folder Include="wwwroot\images\" />
     <Folder Include="wwwroot\scss\" />
   </ItemGroup>
 

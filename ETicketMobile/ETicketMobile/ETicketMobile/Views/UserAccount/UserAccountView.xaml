@@ -4,12 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:prism="http://prismlibrary.com"
     xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
-    xmlns:telerikDataControls="clr-namespace:Telerik.XamarinForms.DataControls;assembly=Telerik.XamarinForms.DataControls" 
-    xmlns:telerikListView="clr-namespace:Telerik.XamarinForms.DataControls.ListView;assembly=Telerik.XamarinForms.DataControls" xmlns:useraccount="clr-namespace:ETicketMobile.ViewModels.UserAccount"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.UserActions.UserAccountView"
     BackgroundColor="#F7F8FA"
-    Title="{local:Translate Tickets}">
+    Title="{local:Translate Account}">
 
     <ContentPage.Content>
         <StackLayout>

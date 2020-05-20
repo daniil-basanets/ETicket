@@ -4,6 +4,7 @@ using System.Windows.Input;
 using Android.Util;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
+using ETicketMobile.Views.Login;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
@@ -19,6 +20,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         private readonly INavigationService navigationService;
 
         private ICommand navigateToConfirmForgotPasswordView;
+        private ICommand cancelCommand;
 
         private readonly HttpClientService httpClient;
 
@@ -32,6 +34,9 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         public ICommand NavigateToConfirmForgotPasswordView => navigateToConfirmForgotPasswordView 
             ?? (navigateToConfirmForgotPasswordView = new Command<string>(OnNavigateToConfirmForgotPasswordView));
+
+        public ICommand CancelCommand => cancelCommand
+            ?? (cancelCommand = new Command(OnCancelCommand));
 
         public string EmailWarning
         {
@@ -63,6 +68,11 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             };
 
             await navigationService.NavigateAsync(nameof(ConfirmForgotPasswordView), navigationParameters);
+        }
+
+        private void OnCancelCommand(object obj)
+        {
+            navigationService.NavigateAsync(nameof(LoginView));
         }
 
         #region Validation
@@ -107,7 +117,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             var signUpRequestDto = new ForgotPasswordRequestDto { Email = email };
 
             var isUserExists = await httpClient.PostAsync<ForgotPasswordRequestDto, ForgotPasswordResponseDto>(
-                    TicketsEndpoint.CheckEmail, 
+                    AuthorizeEndpoint.CheckEmail, 
                     signUpRequestDto);
 
             return isUserExists.Succeeded;
@@ -127,7 +137,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private async void RequestActivationCode(string email)
         {
-            await httpClient.PostAsync<string, string>(TicketsEndpoint.RequestActivationCode, email);
+            await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
     }
 }
