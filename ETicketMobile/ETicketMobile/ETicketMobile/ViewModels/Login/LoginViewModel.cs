@@ -105,17 +105,17 @@ namespace ETicketMobile.ViewModels.Login
             PasswordPlaceHolder = AppResource.PasswordPlaceHolderDefault;
         }
 
-        private async void OnNavigateToForgetPasswordView(object obj)
+        private async void OnNavigateToForgetPasswordView()
         {
             await navigationService.NavigateAsync(nameof(ForgotPasswordView));
         }
 
-        private async  void OnNavigateToRegistrationView(object obj)
+        private async  void OnNavigateToRegistrationView()
         {
             await navigationService.NavigateAsync(nameof(EmailRegistrationView));
         }
 
-        private async void OnNavigateToLoginView(object obj)
+        private async void OnNavigateToLoginView()
         {
             if (!IsValid(email))
                 return;

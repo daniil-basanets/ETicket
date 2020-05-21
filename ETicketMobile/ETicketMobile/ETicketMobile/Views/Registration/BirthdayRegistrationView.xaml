@@ -39,19 +39,24 @@
             </ControlTemplate>
         </ResourceDictionary>
     </ContentPage.Resources>
-    
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
 
-        <StackLayout Margin="10, 0">
+    <ContentPage.Content>
+
+        <Grid Margin="10, 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1.5*" />
+                <RowDefinition Height="0.5*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="7*" />
+            </Grid.RowDefinitions>
+
             <Label
+                Grid.Row="0"
                 Text="{local:Translate EnterBirthday}"
                 Style="{StaticResource TitleLabelStyle}" />
 
             <telerikInput:RadDateTimePicker
+                Grid.Row="1"
                 SelectedDate="{Binding Birthday}"
                 DisplayStringFormat="dd.MM.yyyy"
                 SpinnerFormatString="yyyy MMMM dd"
@@ -62,10 +67,12 @@
             </telerikInput:RadDateTimePicker>
 
             <telerikInput:RadButton
+                Grid.Row="2"
                 Command="{Binding NavigateToConfirmEmailView}"
                 Text="{local:Translate Next}"
                 Style="{StaticResource ActionButtonStyle}" />
-        </StackLayout>
-    </Grid>
+        </Grid>
+
+    </ContentPage.Content>
 
 </ContentPage>

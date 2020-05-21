@@ -10,49 +10,49 @@
     Title="{local:Translate Account}">
 
     <ContentPage.Content>
-        <StackLayout>
-            <ListView 
-                x:Name="Actions"
-                ItemsSource="{Binding UserActions}"
-                SeparatorVisibility="None">
-                <ListView.Behaviors>
-                    <prism:EventToCommandBehavior
-                        EventName="ItemTapped"
-                        Command="{Binding NavigateToAction}"
-                        CommandParameter="{Binding Source={x:Reference Actions}, Path=SelectedItem}"/>
-                </ListView.Behaviors>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Frame 
-                                BackgroundColor="White"
-                                Padding="12, 12, 0, 12"
-                                BorderColor="#F7F8FA">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="7*"/>
-                                        <ColumnDefinition Width="1*"/>
-                                    </Grid.ColumnDefinitions>
 
-                                    <Label
-                                        Grid.Column="0"
-                                        Text="{Binding Name}"
-                                        Style="{StaticResource NormalLabelStyle}"
-                                        FontSize="15"
-                                        HorizontalTextAlignment="Start"/>
-                                    <Image
-                                        Grid.Column="1"
-                                        Source="RightArrow.png"
-                                        HorizontalOptions="End"
-                                        WidthRequest="50"
-                                        HeightRequest="50"/>
-                                </Grid>
-                            </Frame>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </StackLayout>
+        <ListView
+            x:Name="Actions"
+            ItemsSource="{Binding UserActions}"
+            SeparatorVisibility="None">
+            <ListView.Behaviors>
+                <prism:EventToCommandBehavior
+                    EventName="ItemTapped"
+                    Command="{Binding NavigateToAction}"
+                    CommandParameter="{Binding Source={x:Reference Actions}, Path=SelectedItem}"/>
+            </ListView.Behaviors>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Frame
+                            BackgroundColor="White"
+                            Padding="12, 12, 0, 12"
+                            BorderColor="#F7F8FA">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="7*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label
+                                    Grid.Column="0"
+                                    Text="{Binding Name}"
+                                    Style="{StaticResource NormalLabelStyle}"
+                                    FontSize="15"
+                                    HorizontalTextAlignment="Start"/>
+                                <Image
+                                    Grid.Column="1"
+                                    Source="RightArrow.png"
+                                    HorizontalOptions="End"
+                                    WidthRequest="50"
+                                    HeightRequest="50"/>
+                            </Grid>
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        
     </ContentPage.Content>
 
 </ContentPage>

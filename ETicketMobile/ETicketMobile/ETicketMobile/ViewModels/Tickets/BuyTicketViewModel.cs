@@ -70,18 +70,18 @@ namespace ETicketMobile.ViewModels.Tickets
             base.OnNavigatedTo(navigationParameters);
         }
 
-        private void OnAddTicket(object obj)
+        private void OnAddTicket()
         {
             Amount++;
         }
 
-        private void OnRemoveTicket(object obj)
+        private void OnRemoveTicket()
         {
             if (Amount > 1)
                 Amount--;
         }
 
-        private async void OnBuyTicket(object obj)
+        private async void OnBuyTicket()
         {
             var id = navigationParameters.GetValue<int>("id");
             var name = navigationParameters.GetValue<string>("name");

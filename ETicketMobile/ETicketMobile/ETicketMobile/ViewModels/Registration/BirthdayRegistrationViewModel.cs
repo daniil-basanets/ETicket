@@ -85,7 +85,7 @@ namespace ETicketMobile.ViewModels.Registration
             this.navigationParameters = navigationParameters;
         }
 
-        private async void OnNavigateToConfirmEmailView(object obj)
+        private async void OnNavigateToConfirmEmailView()
         {
             var email = navigationParameters.GetValue<string>("email");
             await RequestActivationCode(email);

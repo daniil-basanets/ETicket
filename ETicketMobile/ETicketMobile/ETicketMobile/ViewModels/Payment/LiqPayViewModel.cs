@@ -149,7 +149,7 @@ namespace ETicketMobile.ViewModels.Payment
             return response;
         }
 
-        private async void OnPay(object obj)
+        private async void OnPay()
         {
             var cardNumber = GetStringWithoutMask(CardNumber);
             if (!IsCardNumberCorrectLength(cardNumber))

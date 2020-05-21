@@ -12,29 +12,39 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter" />
-            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter"/>
+            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
+    <ContentPage.Content>
 
-        <StackLayout Margin="10, 0">
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1.75*"/>
+                <RowDefinition Height="0.75*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
             <Label
+                Grid.Row="0"
+                VerticalTextAlignment="Start"
                 Text="{local:Translate EnterPhone}"
                 Style="{StaticResource TitleLabelStyle}"/>
 
             <Label
+                Grid.Row="1"
+                VerticalTextAlignment="Start"
                 IsVisible="{Binding PhoneWarning, Converter={StaticResource StringToBooleanConverter}}"
                 Text="{Binding PhoneWarning}"
                 TextColor="{Binding PhoneWarning, Converter={StaticResource StringToColorConverter}}"
                 Style="{StaticResource NormalLabelStyle}"/>
 
             <telerikInput:RadMaskedInput
+                Grid.Row="2"
                 x:Name="PhoneEntry"
                 WatermarkText="{local:Translate Phone}"
                 RejectedSymbolErrorText=""
@@ -50,11 +60,13 @@
             </telerikInput:RadMaskedInput>
 
             <telerikInput:RadButton
+                Grid.Row="3"
                 Command="{Binding NavigateToNameRegistrationView}"
                 CommandParameter="{Binding Source={x:Reference PhoneEntry}, Path=InputValue}"
                 Text="{local:Translate Next}"
-                Style="{StaticResource ActionButtonStyle}" />
-        </StackLayout>
-    </Grid>
+                Style="{StaticResource ActionButtonStyle}"/>
+        </Grid>
+
+    </ContentPage.Content>
 
 </ContentPage>

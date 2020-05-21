@@ -10,20 +10,21 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Label">
-                <Setter Property="HorizontalTextAlignment" Value="Center" />
-                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
             </Style>
 
             <Style TargetType="Label" x:Key="TransactionStyle">
-                <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="#7ab72b" />
-                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="#7ab72b"/>
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
                 <Setter Property="HorizontalOptions" Value="Center"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <ContentPage.Content>
+        
         <ListView
             ItemsSource="{Binding Transactions}"
             SeparatorVisibility="None"
@@ -84,6 +85,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        
     </ContentPage.Content>
 
 </ContentPage>

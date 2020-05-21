@@ -11,14 +11,22 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Label">
-                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HorizontalOptions" Value="Center"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout Margin="10">
+
+        <Grid Margin="10">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
             <ListView
+                Grid.Row="0"
                 x:Name="Tickets"
                 ItemsSource="{Binding Tickets}"
                 SeparatorVisibility="None"
@@ -33,17 +41,27 @@
                                 CornerRadius="10"
                                 Margin="5"
                                 Padding="0">
-                                <StackLayout>
+                                <Grid>
+                                    
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="0.65*"/>
+                                        <RowDefinition Height="0.4*"/>
+                                        <RowDefinition Height="0.4*"/>
+                                    </Grid.RowDefinitions>
+                                    
                                     <Label
+                                        Grid.Row="0"
                                         Text="{Binding Name}"
                                         Margin="10"/>
                                     <Label
+                                        Grid.Row="1"
                                         Text="{local:Translate Duration}"/>
                                     <Label
+                                        Grid.Row="2"
                                         Text="{Binding DurationHours}"
                                         FontAttributes="Bold"
                                         TextColor="Green"/>
-                                </StackLayout>
+                                </Grid>
                             </Frame>
                         </ViewCell>
                     </DataTemplate>
@@ -51,12 +69,15 @@
             </ListView>
 
             <Button
+                Grid.Row="1"
                 Text="{local:Translate Choose}"
                 Command="{Binding ChooseTicket}"
                 CommandParameter="{Binding Source={x:Reference Tickets}, Path=SelectedItem}"
                 HorizontalOptions="EndAndExpand"
                 CornerRadius="10"/>
-        </StackLayout>
+
+        </Grid>
+
     </ContentPage.Content>
 
 </ContentPage>

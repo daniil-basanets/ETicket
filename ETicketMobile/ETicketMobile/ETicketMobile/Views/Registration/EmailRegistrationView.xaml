@@ -12,61 +12,78 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter" />
-            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter"/>
+            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid>
+    <Grid Margin="10">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="1.9*"/>
+            <RowDefinition Height="0.4*"/>
+            <RowDefinition Height="0.4*"/>
+            <RowDefinition Height="1.4*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="0.7*"/>
         </Grid.RowDefinitions>
 
-        <StackLayout Margin="10, 0">
-            <Label
-                Text="{local:Translate EnterEmail}"
-                Style="{StaticResource TitleLabelStyle}" />
+        <Label
+            Grid.ColumnSpan="2"
+            Grid.Row="0"
+            Text="{local:Translate EnterEmail}"
+            Style="{StaticResource TitleLabelStyle}"/>
 
-            <Label
-                Text="{local:Translate EmailHint}"
-                Style="{StaticResource NormalLabelStyle}"/>
+        <Label
+            Grid.ColumnSpan="2"
+            Grid.Row="1"
+            Text="{local:Translate EmailHint}"
+            Style="{StaticResource NormalLabelStyle}"/>
 
-            <Label
-                IsVisible="{Binding EmailWarning, Converter={StaticResource StringToBooleanConverter}}"
-                Text="{Binding EmailWarning}"
-                TextColor="{Binding EmailWarning, Converter={StaticResource StringToColorConverter}}"
-                Style="{StaticResource NormalLabelStyle}"/>
+        <Label
+            Grid.ColumnSpan="2"
+            Grid.Row="2"
+            IsVisible="{Binding EmailWarning, Converter={StaticResource StringToBooleanConverter}}"
+            Text="{Binding EmailWarning}"
+            TextColor="{Binding EmailWarning, Converter={StaticResource StringToColorConverter}}"
+            Style="{StaticResource NormalLabelStyle}"/>
 
-            <telerikInput:RadEntry
-                x:Name="EmailEntry"
-                WatermarkText="{local:Translate Email}"
-                Style="{StaticResource LoginEntryStyle}" />
+        <telerikInput:RadEntry
+            Grid.ColumnSpan="2"
+            Grid.Row="3"
+            x:Name="EmailEntry"
+            WatermarkText="{local:Translate Email}"
+            Style="{StaticResource LoginEntryStyle}"/>
 
-            <telerikInput:RadButton
-                Command="{Binding NavigateToPhoneRegistrationView}"
-                CommandParameter="{Binding Source={x:Reference EmailEntry}, Path=Text}"
-                Text="{local:Translate Next}"
-                Style="{StaticResource ActionButtonStyle}" />
-        </StackLayout>
+        <telerikInput:RadButton
+            Grid.ColumnSpan="2"
+            Grid.Row="4"
+            Command="{Binding NavigateToPhoneRegistrationView}"
+            CommandParameter="{Binding Source={x:Reference EmailEntry}, Path=Text}"
+            Text="{local:Translate Next}"
+            Style="{StaticResource ActionButtonStyle}"/>
 
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+        <Label
+            Grid.Column="0"
+            Grid.Row="6"
+            VerticalTextAlignment="End"
+            Text="{local:Translate AlreadySignUp}"
+            Style="{StaticResource NormalLabelStyle}"/>
 
-            <Label
-                Text="{local:Translate AlreadySignUp}"
-                Style="{StaticResource NormalLabelStyle}"/>
+        <telerikInput:RadButton
+            Grid.Column="1"
+            Grid.Row="6"
+            VerticalContentAlignment="End"
+            Command="{Binding NavigateToSignInView}"
+            Text="{local:Translate SignIn}"
+            Style="{StaticResource SecondaryActionButtonStyle}"/>
 
-            <telerikInput:RadButton
-                Command="{Binding NavigateToSignInView}"
-                Text="{local:Translate SignIn}"
-                Style="{StaticResource SecondaryActionButtonStyle}"
-                Grid.Column="1" />
-        </Grid>
     </Grid>
 
 </ContentPage>

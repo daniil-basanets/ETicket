@@ -70,7 +70,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             await navigationService.NavigateAsync(nameof(ConfirmForgotPasswordView), navigationParameters);
         }
 
-        private async void OnCancelCommand(object obj)
+        private async void OnCancelCommand()
         {
             await navigationService.NavigateAsync(nameof(LoginView));
         }

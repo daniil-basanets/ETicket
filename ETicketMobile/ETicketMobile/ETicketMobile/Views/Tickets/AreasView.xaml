@@ -11,14 +11,22 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Label">
-                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HorizontalOptions" Value="Center"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout Margin="10">
-            <ListView 
+
+        <Grid Margin="10">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <ListView
+                Grid.Row="0"
                 ItemsSource="{Binding Areas}"
                 SeparatorVisibility="None"
                 RowHeight="60">
@@ -32,34 +40,48 @@
                                 Margin="5"
                                 Padding="0">
 
-                                <Grid>
+                                <Grid Margin="10, 0, 0, 0">
+
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="0.55*"/>
+                                        <ColumnDefinition Width="1*"/>
                                         <ColumnDefinition Width="2*"/>
                                         <ColumnDefinition Width="2*"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <StackLayout 
-                                        Orientation="Horizontal"
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="1*"/>
+                                        <RowDefinition Height="1*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <CheckBox
                                         Grid.Column="0"
-                                        VerticalOptions="Center"
-                                        Margin="10, 0, 0, 0">
-                                        <CheckBox IsChecked="{Binding Selected}"/>
-                                        <Label 
-                                            Text="{local:Translate Choose}"
-                                            VerticalTextAlignment="Center"/>
-                                    </StackLayout>
-                                    <StackLayout Grid.Column="1">
-                                        <Label Text="{local:Translate Area}"/>
-                                        <Label Text="{Binding Name}"/>
-                                    </StackLayout>
-                                    <StackLayout Grid.Column="2">
-                                        <Label Text="{local:Translate Description}"/>
-                                        <Label
-                                            Text="{Binding Description}"
-                                            FontAttributes="Bold"
-                                            TextColor="Green"/>
-                                    </StackLayout>
+                                        Grid.RowSpan="2"
+                                        IsChecked="{Binding Selected}"/>
+                                    <Label
+                                        Grid.Column="1"
+                                        Grid.RowSpan="2"
+                                        Text="{local:Translate Choose}"
+                                        HorizontalOptions="Start"
+                                        VerticalTextAlignment="Center"/>
+                                    <Label
+                                        Grid.Column="2"
+                                        Grid.Row="0"
+                                        Text="{local:Translate Area}"/>
+                                    <Label
+                                        Grid.Column="2"
+                                        Grid.Row="1"
+                                        Text="{Binding Name}"/>
+                                    <Label
+                                        Grid.Column="3"
+                                        Grid.Row="0"
+                                        Text="{local:Translate Description}"/>
+                                    <Label
+                                        Grid.Column="3"
+                                        Grid.Row="1"
+                                        Text="{Binding Description}"
+                                        FontAttributes="Bold"
+                                        TextColor="Green"/>
                                 </Grid>
                             </Frame>
                         </ViewCell>
@@ -67,11 +89,13 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Button 
+            <Button
+                Grid.Row="1"
                 Command="{Binding Buy}"
                 HorizontalOptions="EndAndExpand"
                 Text="{local:Translate BuyButton}"/>
-        </StackLayout>
+
+        </Grid>
     </ContentPage.Content>
 
 </ContentPage>

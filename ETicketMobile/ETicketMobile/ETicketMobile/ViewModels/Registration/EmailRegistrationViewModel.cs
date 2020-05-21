@@ -71,7 +71,7 @@ namespace ETicketMobile.ViewModels.Registration
             await navigationService.NavigateAsync(nameof(PhoneRegistrationView), navigationParams);
         }
 
-        private async void OnNavigateToSignInView(object obj)
+        private async void OnNavigateToSignInView()
         {
             await navigationService.NavigateAsync(nameof(LoginView));
         }

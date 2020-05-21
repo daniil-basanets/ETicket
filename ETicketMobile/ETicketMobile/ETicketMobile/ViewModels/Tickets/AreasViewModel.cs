@@ -113,7 +113,7 @@ namespace ETicketMobile.ViewModels.Tickets
             return token.AcessJwtToken;
         }
 
-        private async void OnBuy(object obj)
+        private async void OnBuy()
         {
             var selectedAreasId = Areas
                     .Where(a => a.Selected)

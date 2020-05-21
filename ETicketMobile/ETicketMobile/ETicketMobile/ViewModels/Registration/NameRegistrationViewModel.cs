@@ -69,7 +69,7 @@ namespace ETicketMobile.ViewModels.Registration
             base.OnNavigatedTo(navigationParameters);
         }
 
-        private async void OnMoveToPasswordRegistrationView(object obj)
+        private async void OnMoveToPasswordRegistrationView()
         {
             if (!IsValid())
                 return;
