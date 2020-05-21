@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using ETicketMobile.Business.Model.UserAccount;
-using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Settings
 {
