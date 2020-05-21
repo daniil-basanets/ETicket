@@ -7,11 +7,6 @@ namespace ETicket.ApplicationServices.Validation
     {
         public TicketTypeValidator()
         {
-            RuleFor(t => t.Id)
-                .Cascade(CascadeMode.StopOnFirstFailure)
-                .NotEmpty()
-                .GreaterThan(0).WithMessage("{PropertyName} should be greater than zero");
-            
             RuleFor(t => t.TypeName)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("{PropertyName} is empty")
