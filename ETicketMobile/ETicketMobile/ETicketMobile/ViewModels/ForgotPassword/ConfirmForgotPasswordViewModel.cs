@@ -110,12 +110,12 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             email = navigationParameters.GetValue<string>("email");
         }
 
-        private void OnSendActivationCode()
+        private async void OnSendActivationCode()
         {
             if (ActivationCodeTimer != 0)
                 return;
 
-            RequestActivationCode(email);
+            await RequestActivationCode(email);
 
             ActivationCodeTimer = 60;
 
@@ -124,7 +124,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             TimerActivated = true;
         }
 
-        private async void RequestActivationCode(string email)
+        private async Task RequestActivationCode(string email)
         {
             await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }

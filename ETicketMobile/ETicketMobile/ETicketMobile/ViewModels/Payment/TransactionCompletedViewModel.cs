@@ -30,9 +30,9 @@ namespace ETicketMobile.ViewModels.Payment
                 ?? throw new ArgumentNullException(nameof(navigationService));
         }
 
-        private void OnNavigateToMainMenu()
+        private async void OnNavigateToMainMenu()
         {
-            navigationService.NavigateAsync(nameof(MainMenuView));
+            await navigationService.NavigateAsync(nameof(MainMenuView));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.WebAccess.Network;
@@ -87,13 +88,13 @@ namespace ETicketMobile.ViewModels.Registration
         private async void OnNavigateToConfirmEmailView(object obj)
         {
             var email = navigationParameters.GetValue<string>("email");
-            RequestActivationCode(email);
+            await RequestActivationCode(email);
 
             navigationParameters.Add("birth", birthday.Date);
             await navigationService.NavigateAsync(nameof(ConfirmEmailView), navigationParameters);
         }
 
-        private async void RequestActivationCode(string email)
+        private async Task RequestActivationCode(string email)
         {
             await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }

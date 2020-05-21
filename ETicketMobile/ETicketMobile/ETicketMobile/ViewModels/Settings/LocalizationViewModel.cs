@@ -57,7 +57,7 @@ namespace ETicketMobile.ViewModels.Settings
             Localizations.ToList().ForEach(x => x.SelectCommand = selectHandler);
         }
 
-        private void OnLanguageSelected(Localization localization)
+        private async void OnLanguageSelected(Localization localization)
         {
             var currentCulture = new CultureInfo(localization.Culture);
 
@@ -66,7 +66,7 @@ namespace ETicketMobile.ViewModels.Settings
 
             var localizationEntity = AutoMapperConfiguration.Mapper.Map<Data.Entities.Localization>(localization);
 
-            localApi.AddAsync(localizationEntity);
+            await localApi.AddAsync(localizationEntity);
         }
 
         private void SetLocalization(string language)

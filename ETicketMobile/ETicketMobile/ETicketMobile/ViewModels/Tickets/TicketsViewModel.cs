@@ -73,7 +73,7 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private async Task<string> GetAccessToken()
         {
-            var token = await localApi.GetTokenAsync().ConfigureAwait(false);
+            var token = await localApi.GetTokenAsync();
 
             return token.AcessJwtToken;
         }
@@ -81,14 +81,14 @@ namespace ETicketMobile.ViewModels.Tickets
         private async Task<IEnumerable<TicketType>> GetTickets()
         {
             var ticketsDto = await httpClient.GetAsync<IEnumerable<TicketTypeDto>>(
-                    TicketsEndpoint.GetTicketTypes, accessToken).ConfigureAwait(false);
+                    TicketsEndpoint.GetTicketTypes, accessToken);
 
             if (ticketsDto == null)
             {
                 accessToken = await RefreshToken();
 
                 ticketsDto = await httpClient.GetAsync<IEnumerable<TicketTypeDto>>(
-                    TicketsEndpoint.GetTicketTypes, accessToken).ConfigureAwait(false);
+                    TicketsEndpoint.GetTicketTypes, accessToken);
             }
 
             var tickets = AutoMapperConfiguration.Mapper.Map<IEnumerable<TicketType>>(ticketsDto);
@@ -112,7 +112,8 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private async Task<string> RefreshToken()
         {
-            var refreshToken = localApi.GetTokenAsync().Result.RefreshJwtToken;
+            var refreshTokenTask = await localApi.GetTokenAsync();
+            var refreshToken = refreshTokenTask.RefreshJwtToken;
 
             var tokenDto = await httpClient.PostAsync<string, TokenDto>(
                 AuthorizeEndpoint.RefreshToken, refreshToken);
@@ -124,14 +125,14 @@ namespace ETicketMobile.ViewModels.Tickets
             return token.AcessJwtToken;
         }
 
-        private void OnChooseTicket(TicketType ticket)
+        private async void OnChooseTicket(TicketType ticket)
         {
             navigationParameters.Add("ticketId", ticket.Id);
             navigationParameters.Add("durationHours", ticket.DurationHours);
             navigationParameters.Add("name", ticket.Name);
             navigationParameters.Add("coefficient", ticket.Coefficient);
 
-            navigationService.NavigateAsync(nameof(AreasView), navigationParameters);
+            await navigationService.NavigateAsync(nameof(AreasView), navigationParameters);
         }
     }
 }

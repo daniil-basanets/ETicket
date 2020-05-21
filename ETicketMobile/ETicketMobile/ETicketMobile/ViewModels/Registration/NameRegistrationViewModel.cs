@@ -69,7 +69,7 @@ namespace ETicketMobile.ViewModels.Registration
             base.OnNavigatedTo(navigationParameters);
         }
 
-        private void OnMoveToPasswordRegistrationView(object obj)
+        private async void OnMoveToPasswordRegistrationView(object obj)
         {
             if (!IsValid())
                 return;
@@ -77,7 +77,7 @@ namespace ETicketMobile.ViewModels.Registration
             navigationParameters.Add("firstName", firstName);
             navigationParameters.Add("lastName", lastName);
 
-            navigationService.NavigateAsync(nameof(PasswordRegistrationView), navigationParameters);
+            await navigationService.NavigateAsync(nameof(PasswordRegistrationView), navigationParameters);
         }
 
         #region Validation

@@ -56,7 +56,7 @@ namespace ETicketMobile.ViewModels.Registration
             this.navigationParameters = navigationParameters;
         }
 
-        private void OnNavigateToNameRegistrationView(string phone)
+        private async void OnNavigateToNameRegistrationView(string phone)
         {
             var phoneNumber = GetPhoneNumber(phone);
 
@@ -64,7 +64,7 @@ namespace ETicketMobile.ViewModels.Registration
                 return;
 
             navigationParameters.Add("phone", phoneNumber);
-            navigationService.NavigateAsync(nameof(NameRegistrationView), navigationParameters);
+            await navigationService.NavigateAsync(nameof(NameRegistrationView), navigationParameters);
         }
 
         #region Validation

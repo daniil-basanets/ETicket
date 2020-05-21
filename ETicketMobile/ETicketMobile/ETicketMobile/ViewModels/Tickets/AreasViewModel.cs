@@ -78,22 +78,20 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private async Task<string> GetAccessToken()
         {
-            var token = await localApi.GetTokenAsync().ConfigureAwait(false);
+            var token = await localApi.GetTokenAsync();
 
             return token.AcessJwtToken;
         }
 
         private async Task<IEnumerable<Area>> GetAreas()
         {
-            var areasDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(
-                    AreasEndpoint.Get, accessToken).ConfigureAwait(false);
+            var areasDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(AreasEndpoint.Get, accessToken);
 
             if (areasDto == null)
             {
                 accessToken = await RefreshToken();
 
-                areasDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(
-                        AreasEndpoint.Get, accessToken).ConfigureAwait(false);
+                areasDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(AreasEndpoint.Get, accessToken);
             }
 
             var areas = AutoMapperConfiguration.Mapper.Map<IEnumerable<Area>>(areasDto);
@@ -103,10 +101,10 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private async Task<string> RefreshToken()
         {
-            var refreshToken = localApi.GetTokenAsync().Result.RefreshJwtToken;
+            var refreshTokenTask = await localApi.GetTokenAsync();
+            var refreshToken = refreshTokenTask.RefreshJwtToken;
 
-            var tokenDto = await httpClient.PostAsync<string, TokenDto>(
-                    AuthorizeEndpoint.RefreshToken, refreshToken);
+            var tokenDto = await httpClient.PostAsync<string, TokenDto>(AuthorizeEndpoint.RefreshToken, refreshToken);
 
             var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
 
@@ -115,7 +113,7 @@ namespace ETicketMobile.ViewModels.Tickets
             return token.AcessJwtToken;
         }
 
-        private void OnBuy(object obj)
+        private async void OnBuy(object obj)
         {
             var selectedAreasId = Areas
                     .Where(a => a.Selected)
@@ -125,7 +123,7 @@ namespace ETicketMobile.ViewModels.Tickets
                 return;
 
             navigationParameters.Add("areas", selectedAreasId);
-            navigationService.NavigateAsync(nameof(LiqPayView), navigationParameters);
+            await navigationService.NavigateAsync(nameof(LiqPayView), navigationParameters);
         }
 
         private bool IsValid(int count)

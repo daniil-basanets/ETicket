@@ -69,13 +69,13 @@ namespace ETicketMobile.ViewModels.Registration
             this.navigationParameters = navigationParameters;
         }
 
-        private void OnNavigateToBirthDateRegistrationView(string password)
+        private async void OnNavigateToBirthDateRegistrationView(string password)
         {
             if (!IsValid(password))
                 return;
 
             navigationParameters.Add("password", password);
-            navigationService.NavigateAsync(nameof(BirthdayRegistrationView), navigationParameters);
+            await navigationService.NavigateAsync(nameof(BirthdayRegistrationView), navigationParameters);
         }
 
         #region Validation

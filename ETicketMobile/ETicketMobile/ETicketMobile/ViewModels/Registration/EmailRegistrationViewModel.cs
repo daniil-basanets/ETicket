@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Android.Util;
 using ETicketMobile.Resources;
@@ -58,28 +59,28 @@ namespace ETicketMobile.ViewModels.Registration
             httpClient = new HttpClientService();
         }
 
-        private void OnMoveToPhoneRegistrationView(string email)
+        private async void OnMoveToPhoneRegistrationView(string email)
         {
             if (!IsValid(email))
                 return;
 
-            if (CheckUserExists(email))
+            if (await CheckUserExists(email))
                 return;
 
             var navigationParams = new NavigationParameters { { "email", email } };
-            navigationService.NavigateAsync(nameof(PhoneRegistrationView), navigationParams);
+            await navigationService.NavigateAsync(nameof(PhoneRegistrationView), navigationParams);
         }
 
-        private void OnNavigateToSignInView(object obj)
+        private async void OnNavigateToSignInView(object obj)
         {
-            navigationService.NavigateAsync(nameof(LoginView));
+            await navigationService.NavigateAsync(nameof(LoginView));
         }
 
-        private bool RequestUserExists(string email)
+        private async Task<bool> RequestUserExists(string email)
         {
             var signUpRequestDto = new SignUpRequestDto { Email = email };
 
-            var isUserExists = httpClient.PostAsync<SignUpRequestDto, SignUpResponseDto>(AuthorizeEndpoint.CheckEmail, signUpRequestDto).Result;
+            var isUserExists = await httpClient.PostAsync<SignUpRequestDto, SignUpResponseDto>(AuthorizeEndpoint.CheckEmail, signUpRequestDto);
 
             return isUserExists.Succeeded;
         }
@@ -112,9 +113,9 @@ namespace ETicketMobile.ViewModels.Registration
             return true;
         }
 
-        private bool CheckUserExists(string email)
+        private async Task<bool> CheckUserExists(string email)
         {
-            var isUserExists = RequestUserExists(email);
+            var isUserExists = await RequestUserExists(email);
 
             if (isUserExists)
             {

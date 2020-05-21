@@ -115,13 +115,13 @@ namespace ETicketMobile.ViewModels.Registration
                 timer.Stop();
         }
 
-        private void OnSendActivationCode()
+        private async void OnSendActivationCode()
         {
             if (ActivationCodeTimer != 0)
                 return;
 
             var email = navigationParameters.GetValue<string>("email");
-            RequestActivationCode(email);
+            await RequestActivationCode(email);
 
             ActivationCodeTimer = 60;
 
@@ -130,7 +130,7 @@ namespace ETicketMobile.ViewModels.Registration
             TimerActivated = true;
         }
 
-        private async void RequestActivationCode(string email)
+        private async Task RequestActivationCode(string email)
         {
             await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }

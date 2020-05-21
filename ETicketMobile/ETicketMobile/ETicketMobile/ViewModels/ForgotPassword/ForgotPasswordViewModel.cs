@@ -60,7 +60,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             if (! await IsValid(email))
                 return;
 
-            RequestActivationCode(email);
+            await RequestActivationCode(email);
 
             var navigationParameters = new NavigationParameters
             {
@@ -70,9 +70,9 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             await navigationService.NavigateAsync(nameof(ConfirmForgotPasswordView), navigationParameters);
         }
 
-        private void OnCancelCommand(object obj)
+        private async void OnCancelCommand(object obj)
         {
-            navigationService.NavigateAsync(nameof(LoginView));
+            await navigationService.NavigateAsync(nameof(LoginView));
         }
 
         #region Validation
@@ -135,7 +135,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #endregion
 
-        private async void RequestActivationCode(string email)
+        private async Task RequestActivationCode(string email)
         {
             await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }

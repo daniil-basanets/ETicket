@@ -82,7 +82,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             if (!IsValid(password))
                 return;
 
-            if (!await RequestChangePassword(password))
+            if (! await RequestChangePassword(password))
                 return;
 
             await navigationService.NavigateAsync(nameof(LoginView));

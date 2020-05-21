@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Android.Util;
@@ -105,14 +105,14 @@ namespace ETicketMobile.ViewModels.Login
             PasswordPlaceHolder = AppResource.PasswordPlaceHolderDefault;
         }
 
-        private void OnNavigateToForgetPasswordView(object obj)
+        private async void OnNavigateToForgetPasswordView(object obj)
         {
-            navigationService.NavigateAsync(nameof(ForgotPasswordView));
+            await navigationService.NavigateAsync(nameof(ForgotPasswordView));
         }
 
-        private void OnNavigateToRegistrationView(object obj)
+        private async  void OnNavigateToRegistrationView(object obj)
         {
-            navigationService.NavigateAsync(nameof(EmailRegistrationView));
+            await navigationService.NavigateAsync(nameof(EmailRegistrationView));
         }
 
         private async void OnNavigateToLoginView(object obj)
