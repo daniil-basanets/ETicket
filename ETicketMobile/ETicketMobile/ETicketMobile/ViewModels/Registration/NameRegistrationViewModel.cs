@@ -26,8 +26,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToPasswordRegistrationView => navigateToPasswordRegistrationView
-            ?? (navigateToPasswordRegistrationView = new Command(OnMoveToPasswordRegistrationView));
+        public ICommand NavigateToPasswordRegistrationView => navigateToPasswordRegistrationView 
+            ??= new Command(OnMoveToPasswordRegistrationView);
 
         public string FirstNameWarning
         {

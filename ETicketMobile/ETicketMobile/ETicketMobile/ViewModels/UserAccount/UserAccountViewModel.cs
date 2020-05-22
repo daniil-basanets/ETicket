@@ -27,8 +27,8 @@ namespace ETicketMobile.ViewModels.UserAccount
             set => SetProperty(ref actions, value);
         }
 
-        public ICommand NavigateToAction => navigateToAction
-            ?? (navigateToAction = new Command<UserAction>(OnNavigateToAction));
+        public ICommand NavigateToAction => navigateToAction 
+            ??= new Command<UserAction>(OnNavigateToAction);
 
         public UserAccountViewModel(INavigationService navigationService)
             : base(navigationService)

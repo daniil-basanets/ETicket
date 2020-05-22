@@ -42,14 +42,14 @@ namespace ETicketMobile.ViewModels.Login
 
         #region Properties
 
-        public ICommand NavigateToForgetPasswordView => navigateToForgetPasswordView
-            ?? (navigateToForgetPasswordView = new Command(OnNavigateToForgetPasswordView));
+        public ICommand NavigateToForgetPasswordView => navigateToForgetPasswordView 
+            ??= new Command(OnNavigateToForgetPasswordView);
 
-        public ICommand NavigateToRegistrationView => navigateToRegistrationView
-            ?? (navigateToRegistrationView = new Command(OnNavigateToRegistrationView));
+        public ICommand NavigateToRegistrationView => navigateToRegistrationView 
+            ??= new Command(OnNavigateToRegistrationView);
 
-        public ICommand NavigateToLoginView => navigateToLoginView
-            ?? (navigateToLoginView = new Command(OnNavigateToLoginView));
+        public ICommand NavigateToLoginView => navigateToLoginView 
+            ??= new Command(OnNavigateToLoginView);
 
         public string EmailWarning
         {

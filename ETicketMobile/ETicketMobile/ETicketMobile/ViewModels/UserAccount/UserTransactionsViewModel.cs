@@ -23,7 +23,7 @@ namespace ETicketMobile.ViewModels.UserAccount
         {
             get => transactions;
             set => SetProperty(ref transactions, value);
-        }        
+        }
 
         public UserTransactionsViewModel(INavigationService navigationService) 
             : base(navigationService)
@@ -41,11 +41,6 @@ namespace ETicketMobile.ViewModels.UserAccount
             var email = navigationParameters.GetValue<string>("email");
 
             Transactions = await GetTransactionsAsync(email);
-        }
-
-        public override void OnNavigatedFrom(INavigationParameters parameters)
-        {
-            
         }
 
         private async Task<IEnumerable<Transaction>> GetTransactionsAsync(string email)

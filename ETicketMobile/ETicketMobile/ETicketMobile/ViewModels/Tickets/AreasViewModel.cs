@@ -39,8 +39,8 @@ namespace ETicketMobile.ViewModels.Tickets
 
         #region Properties
 
-        public ICommand Buy => buy
-            ?? (buy = new Command(OnBuy));
+        public ICommand Buy => buy 
+            ??= new Command(OnBuy);
 
         public IEnumerable<Area> Areas
         {

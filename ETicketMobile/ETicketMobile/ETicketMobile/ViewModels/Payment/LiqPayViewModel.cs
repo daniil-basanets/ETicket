@@ -50,8 +50,8 @@ namespace ETicketMobile.ViewModels.Payment
 
         #region Properties
 
-        public ICommand Pay => pay
-            ?? (pay = new Command(OnPay));
+        public ICommand Pay => pay 
+            ??= new Command(OnPay);
 
         public decimal Amount
         {

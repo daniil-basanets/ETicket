@@ -18,8 +18,8 @@ namespace ETicketMobile.ViewModels.Settings
 
         private IEnumerable<UserAction> settings;
 
-        public ICommand NavigateToAction => navigateToAction
-            ?? (navigateToAction = new Command<UserAction>(OnNavigateToAction));
+        public ICommand NavigateToAction => navigateToAction 
+            ??= new Command<UserAction>(OnNavigateToAction);
 
         public IEnumerable<UserAction> Settings
         {

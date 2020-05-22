@@ -40,8 +40,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #region Properties
 
-        public ICommand NavigateToSignInView => navigateToSignInView
-            ?? (navigateToSignInView = new Command<string>(OnNavigateToSignInView));
+        public ICommand NavigateToSignInView => navigateToSignInView 
+            ??= new Command<string>(OnNavigateToSignInView);
 
         public string PasswordWarning
         {

@@ -35,14 +35,14 @@ namespace ETicketMobile.ViewModels.Tickets
 
         #region Properties
 
-        public ICommand RemoveTicket => removeTicket
-            ?? (removeTicket = new Command(OnAddTicket));
+        public ICommand RemoveTicket => removeTicket 
+            ??= new Command(OnAddTicket);
 
-        public ICommand AddTicket => addTicket
-            ?? (addTicket = new Command(OnRemoveTicket));
+        public ICommand AddTicket => addTicket 
+            ??= new Command(OnRemoveTicket);
 
-        public ICommand BuyTicket => buyTicket
-            ?? (buyTicket = new Command(OnBuyTicket));
+        public ICommand BuyTicket => buyTicket 
+            ??= new Command(OnBuyTicket);
 
         public int Amount
         {

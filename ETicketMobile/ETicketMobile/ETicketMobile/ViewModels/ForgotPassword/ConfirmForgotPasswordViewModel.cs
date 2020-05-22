@@ -37,11 +37,11 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #region Properties
 
-        public ICommand NavigateToCreateNewPasswordView => navigateToCreateNewPasswordView
-            ?? (navigateToCreateNewPasswordView = new Command<string>(OnNavigateToCreateNewPasswordView));
+        public ICommand NavigateToCreateNewPasswordView => navigateToCreateNewPasswordView 
+            ??= new Command<string>(OnNavigateToCreateNewPasswordView);
 
-        public ICommand SendActivationCode => sendActivationCode
-            ?? (sendActivationCode = new Command(OnSendActivationCode));
+        public ICommand SendActivationCode => sendActivationCode 
+            ??= new Command(OnSendActivationCode);
 
         public string ConfirmEmailWarning
         {

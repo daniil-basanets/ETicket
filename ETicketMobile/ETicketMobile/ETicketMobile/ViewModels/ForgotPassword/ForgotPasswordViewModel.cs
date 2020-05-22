@@ -33,10 +33,10 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         #region Properties
 
         public ICommand NavigateToConfirmForgotPasswordView => navigateToConfirmForgotPasswordView 
-            ?? (navigateToConfirmForgotPasswordView = new Command<string>(OnNavigateToConfirmForgotPasswordView));
+            ??= new Command<string>(OnNavigateToConfirmForgotPasswordView);
 
-        public ICommand CancelCommand => cancelCommand
-            ?? (cancelCommand = new Command(OnCancelCommand));
+        public ICommand CancelCommand => cancelCommand 
+            ??= new Command(OnCancelCommand);
 
         public string EmailWarning
         {

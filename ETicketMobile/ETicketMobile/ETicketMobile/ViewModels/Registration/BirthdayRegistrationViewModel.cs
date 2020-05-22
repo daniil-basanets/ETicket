@@ -35,8 +35,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToConfirmEmailView => navigateToConfirmEmailView
-            ?? (navigateToConfirmEmailView = new Command(OnNavigateToConfirmEmailView));
+        public ICommand NavigateToConfirmEmailView => navigateToConfirmEmailView 
+            ??= new Command(OnNavigateToConfirmEmailView);
 
         public DateTime Birthday
         {

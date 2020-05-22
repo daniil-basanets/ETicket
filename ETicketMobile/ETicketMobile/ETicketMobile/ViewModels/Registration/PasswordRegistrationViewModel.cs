@@ -34,8 +34,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToBirthDateRegistrationView => navigateToBirthDateRegistrationView
-            ?? (navigateToBirthDateRegistrationView = new Command<string>(OnNavigateToBirthDateRegistrationView));
+        public ICommand NavigateToBirthDateRegistrationView => navigateToBirthDateRegistrationView 
+            ??= new Command<string>(OnNavigateToBirthDateRegistrationView);
 
         public string PasswordWarning
         {

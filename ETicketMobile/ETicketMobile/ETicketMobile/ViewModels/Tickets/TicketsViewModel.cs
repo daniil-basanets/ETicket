@@ -43,8 +43,8 @@ namespace ETicketMobile.ViewModels.Tickets
             set => SetProperty(ref tickets, value);
         }
 
-        public ICommand ChooseTicket => chooseTicket
-            ?? (chooseTicket = new Command<TicketType>(OnChooseTicket));
+        public ICommand ChooseTicket => chooseTicket 
+            ??= new Command<TicketType>(OnChooseTicket);
 
         #endregion
 

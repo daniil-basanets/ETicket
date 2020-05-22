@@ -32,8 +32,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToNameRegistrationView => navigateToNameRegistrationView
-            ?? (navigateToNameRegistrationView = new Command<string>(OnNavigateToNameRegistrationView));
+        public ICommand NavigateToNameRegistrationView => navigateToNameRegistrationView 
+            ??= new Command<string>(OnNavigateToNameRegistrationView);
 
         public string PhoneWarning
         {
