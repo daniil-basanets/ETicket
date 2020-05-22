@@ -10,26 +10,31 @@ namespace ETicketMobile.WebAccess.Network.WebService
     public class HttpClientService
     {
         private readonly HttpClient httpClient;
+        private readonly Uri serverAddress;
 
-        public HttpClientService()
+        public HttpClientService(Uri serverAddress)
         {
             var androidClientHandler = new AndroidClientHandler();
             httpClient = new HttpClient(androidClientHandler);
+
+            this.serverAddress = serverAddress;
         }
 
-        public async Task<T> GetAsync<T>(Uri endPoint, string token)
+        public async Task<T> GetAsync<T>(Uri endpoint, string token)
         {
             if (!string.IsNullOrEmpty(token))
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var httpResponse = await httpClient.GetAsync(endPoint).ConfigureAwait(false);
+            var fullEndpoint = new Uri(serverAddress, endpoint);
+
+            var httpResponse = await httpClient.GetAsync(fullEndpoint).ConfigureAwait(false);
             var responseData = await httpResponse.Content.ReadAsStringAsync();
             var response = JsonConvert.DeserializeObject<T>(responseData);
 
             return response;
         }
 
-        public async Task<TDestination> PostAsync<TSource, TDestination>(Uri endPoint, TSource item, string token = "")
+        public async Task<TDestination> PostAsync<TSource, TDestination>(Uri endpoint, TSource item, string token = "")
         {
             if (!string.IsNullOrEmpty(token))
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -38,7 +43,8 @@ namespace ETicketMobile.WebAccess.Network.WebService
             var httpContent = new StringContent(content);
             httpContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-            var httpResponse = await httpClient.PostAsync(endPoint, httpContent).ConfigureAwait(false);
+            var fullEndpoint = new Uri(serverAddress, endpoint);
+            var httpResponse = await httpClient.PostAsync(fullEndpoint, httpContent).ConfigureAwait(false);
             var response = await httpResponse.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<TDestination>(response);
