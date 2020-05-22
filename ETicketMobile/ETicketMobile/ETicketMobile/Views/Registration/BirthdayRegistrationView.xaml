@@ -12,30 +12,41 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <ControlTemplate x:Key="placeholderTemplate">
-                <Label Text="{TemplateBinding Placeholder}" 
-                    FontAttributes="Bold" 
+                <Label 
+                    Text="{TemplateBinding Placeholder}"
+                    FontAttributes="Bold"
                     TextColor="White"
-                    BackgroundColor="#B73562" 
+                    BackgroundColor="#B73562"
                     HeightRequest="50"
                     VerticalTextAlignment="Center"
                     HorizontalTextAlignment="Center">
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{TemplateBinding ToggleCommand}" />
+                        <TapGestureRecognizer Command="{TemplateBinding ToggleCommand}"/>
                     </Label.GestureRecognizers>
                 </Label>
             </ControlTemplate>
 
             <ControlTemplate x:Key="footerTemplate">
-                <StackLayout Orientation="Horizontal" Spacing="0" HorizontalOptions="FillAndExpand" BackgroundColor="#B73562">
-                    <Button Text="{TemplateBinding CancelButtonText}" 
+
+                <Grid BackgroundColor="#B73562">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button 
+                        Grid.Column="0"
+                        Text="{TemplateBinding CancelButtonText}"
                         TextColor="White"
                         BackgroundColor="Transparent"
-                        Command="{TemplateBinding CancelCommand}" />
-                    <Button Text="{TemplateBinding AcceptButtonText}" 
+                        Command="{TemplateBinding CancelCommand}"/>
+                    <Button 
+                        Grid.Column="1"
+                        Text="{TemplateBinding AcceptButtonText}"
                         TextColor="White"
                         BackgroundColor="Transparent"
-                        Command="{TemplateBinding AcceptCommand}" />
-                </StackLayout>
+                        Command="{TemplateBinding AcceptCommand}"/>
+                </Grid>
             </ControlTemplate>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -44,16 +55,16 @@
 
         <Grid Margin="10, 0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="1.5*" />
-                <RowDefinition Height="0.5*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="7*" />
+                <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="7*"/>
             </Grid.RowDefinitions>
 
             <Label
                 Grid.Row="0"
                 Text="{local:Translate EnterBirthday}"
-                Style="{StaticResource TitleLabelStyle}" />
+                Style="{StaticResource TitleLabelStyle}"/>
 
             <telerikInput:RadDateTimePicker
                 Grid.Row="1"
@@ -70,7 +81,7 @@
                 Grid.Row="2"
                 Command="{Binding NavigateToConfirmEmailView}"
                 Text="{local:Translate Next}"
-                Style="{StaticResource ActionButtonStyle}" />
+                Style="{StaticResource ActionButtonStyle}"/>
         </Grid>
 
     </ContentPage.Content>

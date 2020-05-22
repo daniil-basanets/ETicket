@@ -9,7 +9,9 @@
     x:Class="ETicketMobile.Views.Payment.TransactionCompletedView">
 
     <ContentPage.Content>
+        
         <Grid>
+            
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition Height="1*"/>
@@ -44,7 +46,9 @@
                 Text="Go to Menu"
                 Style="{StaticResource ActionButtonStyle}"
                 Margin="30"/>
+            
         </Grid>
+        
     </ContentPage.Content>
 
 </ContentPage>

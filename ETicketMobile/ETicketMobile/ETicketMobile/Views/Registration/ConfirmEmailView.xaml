@@ -16,55 +16,83 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid>
+    <Grid Margin="10, 0">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
+            <RowDefinition Height="1.2*" />
+            <RowDefinition Height="0.45*" />
+            <RowDefinition Height="0.9*" />
+            <RowDefinition Height="0.25*" />
+            <RowDefinition Height="0.45*" />
+            <RowDefinition Height="0.7*" />
+            <RowDefinition Height="3.1*" />
         </Grid.RowDefinitions>
 
-        <StackLayout Margin="10, 0">
-            <Label
-                Text="{local:Translate ConfirmEmailEmpty}"
-                Style="{StaticResource TitleLabelStyle}" />
+        <Label
+            Grid.ColumnSpan="2"
+            Grid.Row="0"
+            Text="{local:Translate ConfirmEmailEmpty}"
+            Style="{StaticResource TitleLabelStyle}" />
 
-            <Label
-                IsVisible="{Binding ConfirmEmailWarning, Converter={StaticResource StringToBooleanConverter}}"
-                Text="{Binding ConfirmEmailWarning}"
-                TextColor="Red"
-                Style="{StaticResource NormalLabelStyle}"/>
+        <Label
+            Grid.ColumnSpan="2"
+            Grid.Row="1"
+            IsVisible="{Binding ConfirmEmailWarning, Converter={StaticResource StringToBooleanConverter}}"
+            Text="{Binding ConfirmEmailWarning}"
+            TextColor="Red"
+            Style="{StaticResource NormalLabelStyle}"/>
 
-            <telerikInput:RadEntry
-                x:Name="ConfirmEmailEntry"
-                WatermarkText="{local:Translate ActivationCode}"
-                Style="{StaticResource LoginEntryStyle}" />
+        <telerikInput:RadEntry
+            Grid.ColumnSpan="2"
+            Grid.Row="2"
+            x:Name="ConfirmEmailEntry"
+            WatermarkText="{local:Translate ActivationCode}"
+            Style="{StaticResource LoginEntryStyle}" />
 
-            <StackLayout Orientation="Horizontal">
-                <Label 
-                    Style="{StaticResource NormalLabelStyle}"
-                    Text="{local:Translate ActivationCodeAgain1}"/>
-                <telerikInput:RadButton
-                    Command="{Binding SendActivationCode}"
-                    Text="{local:Translate ActivationCodeAgain2}"
-                    Style="{StaticResource SecondaryActionButtonStyle}"
-                    Margin="-25, 0, 0, 0"/>
-            </StackLayout>
-            <StackLayout
-                Orientation="Horizontal"
-                IsVisible="{Binding TimerActivated}">
-                <Label
-                    Text="{local:Translate ActivationCodeTimerText}"
-                    Style="{StaticResource NormalLabelStyle}"/>
-                <Label
-                    Text="{Binding ActivationCodeTimer}"
-                    Style="{StaticResource NormalLabelStyle}"/>
-            </StackLayout>
+        <Label
+            Grid.Column="0"
+            Grid.Row="3"
+            HorizontalTextAlignment="End"
+            Style="{StaticResource NormalLabelStyle}"
+            Text="{local:Translate ActivationCodeAgain1}"/>
 
-            <telerikInput:RadButton
-                Command="{Binding NavigateToSignInView}"
-                CommandParameter="{Binding Source={x:Reference ConfirmEmailEntry}, Path=Text}"
-                Text="{local:Translate Next}"
-                Style="{StaticResource ActionButtonStyle}" />
-        </StackLayout>
+        <telerikInput:RadButton
+            Grid.Column="1"
+            Grid.Row="3"
+            HorizontalContentAlignment="Start"
+            Margin="0, 0, 0, -5"
+            Command="{Binding SendActivationCode}"
+            Text="{local:Translate ActivationCodeAgain2}"
+            Style="{StaticResource SecondaryActionButtonStyle}"/>
+
+        <Label
+            Grid.Column="0"
+            Grid.Row="4"
+            HorizontalTextAlignment="End"
+            IsVisible="{Binding TimerActivated}"
+            Text="{local:Translate ActivationCodeTimerText}"
+            Style="{StaticResource NormalLabelStyle}"/>
+        <Label
+            Grid.Column="1"
+            Grid.Row="4"
+            HorizontalTextAlignment="Start"
+            IsVisible="{Binding TimerActivated}"
+            Text="{Binding ActivationCodeTimer}"
+            Style="{StaticResource NormalLabelStyle}"/>
+
+        <telerikInput:RadButton
+            Grid.ColumnSpan="2"
+            Grid.Row="5"
+            Command="{Binding NavigateToSignInView}"
+            CommandParameter="{Binding Source={x:Reference ConfirmEmailEntry}, Path=Text}"
+            Text="{local:Translate Next}"
+            Style="{StaticResource ActionButtonStyle}" />
+
     </Grid>
-    
+
 </ContentPage>

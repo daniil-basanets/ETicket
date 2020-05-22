@@ -29,7 +29,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <StackLayout>
+    <!--StackLayout>
         <telerikPrimitives:RadAccordion 
             CanCollapseAllItems="True"
             AnimationDuration="1500"
@@ -250,6 +250,6 @@
 
         </telerikPrimitives:RadAccordion>
 
-    </StackLayout>
+    </StackLayout>-->
 
 </ContentPage>

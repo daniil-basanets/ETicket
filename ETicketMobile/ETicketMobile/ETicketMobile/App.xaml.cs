@@ -45,7 +45,6 @@ namespace ETicketMobile
             InitializeComponent();
 
             await NavigationService.NavigateAsync(nameof(NavigationPage) + "/" + nameof(LoginView));
-            //await NavigationService.NavigateAsync(nameof(NavigationPage) + "/" + nameof(CreateNewPasswordView));
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
