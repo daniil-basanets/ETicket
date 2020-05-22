@@ -62,8 +62,8 @@ namespace ETicketMobile.ViewModels.Tickets
 
         public async override void OnAppearing()
         {
-            accessToken = await GetAccessToken();
-            Tickets = await GetTickets();
+            accessToken = await GetAccessTokenAsync();
+            Tickets = await GetTicketsAsync();
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -71,21 +71,21 @@ namespace ETicketMobile.ViewModels.Tickets
             this.navigationParameters = navigationParameters;
         }
 
-        private async Task<string> GetAccessToken()
+        private async Task<string> GetAccessTokenAsync()
         {
             var token = await localApi.GetTokenAsync();
 
             return token.AcessJwtToken;
         }
 
-        private async Task<IEnumerable<TicketType>> GetTickets()
+        private async Task<IEnumerable<TicketType>> GetTicketsAsync()
         {
             var ticketsDto = await httpClient.GetAsync<IEnumerable<TicketTypeDto>>(
                     TicketsEndpoint.GetTicketTypes, accessToken);
 
             if (ticketsDto == null)
             {
-                accessToken = await RefreshToken();
+                accessToken = await RefreshTokenAsync();
 
                 ticketsDto = await httpClient.GetAsync<IEnumerable<TicketTypeDto>>(
                     TicketsEndpoint.GetTicketTypes, accessToken);
@@ -110,7 +110,7 @@ namespace ETicketMobile.ViewModels.Tickets
             return tickets;
         }
 
-        private async Task<string> RefreshToken()
+        private async Task<string> RefreshTokenAsync()
         {
             var refreshTokenTask = await localApi.GetTokenAsync();
             var refreshToken = refreshTokenTask.RefreshJwtToken;

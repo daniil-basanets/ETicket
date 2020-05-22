@@ -69,7 +69,7 @@ namespace ETicketMobile.ViewModels.BoughtTickets
             ExpiredTickets = GetExpiredTickets();
         }
 
-        private async Task<string> GetAccessToken()
+        private async Task<string> GetAccessTokenAsync()
         {
             var token = await localApi.GetTokenAsync().ConfigureAwait(false);
 

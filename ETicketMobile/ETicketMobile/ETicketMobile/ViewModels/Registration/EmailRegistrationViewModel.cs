@@ -64,7 +64,7 @@ namespace ETicketMobile.ViewModels.Registration
             if (!IsValid(email))
                 return;
 
-            if (await CheckUserExists(email))
+            if (await CheckUserExistsAsync(email))
                 return;
 
             var navigationParams = new NavigationParameters { { "email", email } };
@@ -76,7 +76,7 @@ namespace ETicketMobile.ViewModels.Registration
             await navigationService.NavigateAsync(nameof(LoginView));
         }
 
-        private async Task<bool> RequestUserExists(string email)
+        private async Task<bool> RequestUserExistsAsync(string email)
         {
             var signUpRequestDto = new SignUpRequestDto { Email = email };
 
@@ -113,9 +113,9 @@ namespace ETicketMobile.ViewModels.Registration
             return true;
         }
 
-        private async Task<bool> CheckUserExists(string email)
+        private async Task<bool> CheckUserExistsAsync(string email)
         {
-            var isUserExists = await RequestUserExists(email);
+            var isUserExists = await RequestUserExistsAsync(email);
 
             if (isUserExists)
             {

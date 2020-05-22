@@ -88,13 +88,13 @@ namespace ETicketMobile.ViewModels.Registration
         private async void OnNavigateToConfirmEmailView()
         {
             var email = navigationParameters.GetValue<string>("email");
-            await RequestActivationCode(email);
+            await RequestActivationCodeAsync(email);
 
             navigationParameters.Add("birth", birthday.Date);
             await navigationService.NavigateAsync(nameof(ConfirmEmailView), navigationParameters);
         }
 
-        private async Task RequestActivationCode(string email)
+        private async Task RequestActivationCodeAsync(string email)
         {
             await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }

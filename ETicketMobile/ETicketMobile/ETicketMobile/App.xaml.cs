@@ -54,7 +54,7 @@ namespace ETicketMobile
             var localApi = LocalApi.GetInstance();
             var localize = DependencyService.Get<ILocalize>();
 
-            InitCulture(localApi, localize).Wait();
+            InitCultureAsync(localApi, localize).Wait();
 
             containerRegistry.RegisterInstance<ILocalApi>(localApi);
             containerRegistry.RegisterInstance<ILocalize>(localize);
@@ -84,7 +84,7 @@ namespace ETicketMobile
             containerRegistry.RegisterForNavigation<MyTicketsView, MyTicketsViewModel>();
         }
 
-        private async Task InitCulture(ILocalApi localApi, ILocalize localize)
+        private async Task InitCultureAsync(ILocalApi localApi, ILocalize localize)
         {
             var localization = await localApi.GetLocalizationAsync().ConfigureAwait(false);
 

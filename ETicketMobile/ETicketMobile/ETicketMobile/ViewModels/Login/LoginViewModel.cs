@@ -110,7 +110,7 @@ namespace ETicketMobile.ViewModels.Login
             await navigationService.NavigateAsync(nameof(ForgotPasswordView));
         }
 
-        private async  void OnNavigateToRegistrationView()
+        private async void OnNavigateToRegistrationView()
         {
             await navigationService.NavigateAsync(nameof(EmailRegistrationView));
         }

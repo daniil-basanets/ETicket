@@ -115,7 +115,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             if (ActivationCodeTimer != 0)
                 return;
 
-            await RequestActivationCode(email);
+            await RequestActivationCodeAsync(email);
 
             ActivationCodeTimer = 60;
 
@@ -124,14 +124,14 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             TimerActivated = true;
         }
 
-        private async Task RequestActivationCode(string email)
+        private async Task RequestActivationCodeAsync(string email)
         {
             await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
 
         private async void OnNavigateToCreateNewPasswordView(string code)
         {
-            if (! await IsValid(code))
+            if (! await IsValidAsync(code))
                 return;
 
             await navigationService.NavigateAsync(nameof(CreateNewPasswordView), navigationParameters);
@@ -139,7 +139,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #region Validation
 
-        private async Task<bool> IsValid(string code)
+        private async Task<bool> IsValidAsync(string code)
         {
             if (string.IsNullOrEmpty(code))
             {
@@ -150,7 +150,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
             var resetPasswordRequestDto = CreateConfirmEmailRequestDto(code);
 
-            var confirmEmailIsSucceeded = await ConfirmEmail(resetPasswordRequestDto);
+            var confirmEmailIsSucceeded = await ConfirmEmailAsync(resetPasswordRequestDto);
             if (!confirmEmailIsSucceeded)
             {
                 ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
@@ -170,7 +170,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             };
         }
 
-        private async Task<bool> ConfirmEmail(ConfirmEmailRequestDto confirmEmailRequestDto)
+        private async Task<bool> ConfirmEmailAsync(ConfirmEmailRequestDto confirmEmailRequestDto)
         {
             var response = await httpClient.PostAsync<ConfirmEmailRequestDto, ConfirmEmailResponseDto>(
                 AuthorizeEndpoint.CheckCode,

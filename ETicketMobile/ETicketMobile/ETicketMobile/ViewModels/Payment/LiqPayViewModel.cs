@@ -135,11 +135,11 @@ namespace ETicketMobile.ViewModels.Payment
             areasId = navigationParameters["areas"] as IEnumerable<int>;
             email = navigationParameters.GetValue<string>("email");
 
-            var price = await RequestGetTicketPrice();
+            var price = await RequestGetTicketPriceAsync();
             Amount = Math.Round(price.TotalPrice, 2);
         }
 
-        private async Task<GetTicketPriceResponseDto> RequestGetTicketPrice()
+        private async Task<GetTicketPriceResponseDto> RequestGetTicketPriceAsync()
         {
             var getTicketPriceRequestDto = new GetTicketPriceRequestDto
             {
@@ -183,7 +183,7 @@ namespace ETicketMobile.ViewModels.Payment
                     expirationDateDescriptor.ExpirationYear,
                     cvv2);
 
-            var response = await RequestBuyTicket(buyTicketRequestDto);
+            var response = await RequestBuyTicketAsync(buyTicketRequestDto);
 
             await navigationService.NavigateAsync(nameof(TransactionCompletedView));
         }
@@ -205,7 +205,7 @@ namespace ETicketMobile.ViewModels.Payment
             return true;
         }
 
-        private async Task<BuyTicketResponseDto> RequestBuyTicket(BuyTicketRequestDto buyTicketRequestDto)
+        private async Task<BuyTicketResponseDto> RequestBuyTicketAsync(BuyTicketRequestDto buyTicketRequestDto)
         {
             var response = await httpClient.PostAsync<BuyTicketRequestDto, BuyTicketResponseDto>(
                 TicketsEndpoint.BuyTicket, buyTicketRequestDto);

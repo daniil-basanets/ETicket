@@ -40,7 +40,7 @@ namespace ETicketMobile.ViewModels.UserAccount
 
             var email = navigationParameters.GetValue<string>("email");
 
-            Transactions = await GetTransactions(email);
+            Transactions = await GetTransactionsAsync(email);
         }
 
         public override void OnNavigatedFrom(INavigationParameters parameters)
@@ -48,7 +48,7 @@ namespace ETicketMobile.ViewModels.UserAccount
             
         }
 
-        private async Task<IEnumerable<Transaction>> GetTransactions(string email)
+        private async Task<IEnumerable<Transaction>> GetTransactionsAsync(string email)
         {
             var getTransactionsRequestDto = new GetTransactionsRequestDto { Email = email };
 

@@ -57,10 +57,10 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private async void OnNavigateToConfirmForgotPasswordView(string email)
         {
-            if (! await IsValid(email))
+            if (! await IsValidAsync(email))
                 return;
 
-            await RequestActivationCode(email);
+            await RequestActivationCodeAsync(email);
 
             var navigationParameters = new NavigationParameters
             {
@@ -77,7 +77,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #region Validation
 
-        private async Task<bool> IsValid(string email)
+        private async Task<bool> IsValidAsync(string email)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -102,7 +102,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            var userExists = await RequestUserExists(email);
+            var userExists = await RequestUserExistsAsync(email);
 
             if (!userExists)
             {
@@ -114,7 +114,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             return true;
         }
 
-        private async Task<bool> RequestUserExists(string email)
+        private async Task<bool> RequestUserExistsAsync(string email)
         {
             var signUpRequestDto = new ForgotPasswordRequestDto { Email = email };
 
@@ -137,7 +137,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #endregion
 
-        private async Task RequestActivationCode(string email)
+        private async Task RequestActivationCodeAsync(string email)
         {
             await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }

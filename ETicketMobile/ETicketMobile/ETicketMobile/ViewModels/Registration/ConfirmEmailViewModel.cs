@@ -121,7 +121,7 @@ namespace ETicketMobile.ViewModels.Registration
                 return;
 
             var email = navigationParameters.GetValue<string>("email");
-            await RequestActivationCode(email);
+            await RequestActivationCodeAsync(email);
 
             ActivationCodeTimer = 60;
 
@@ -130,7 +130,7 @@ namespace ETicketMobile.ViewModels.Registration
             TimerActivated = true;
         }
 
-        private async Task RequestActivationCode(string email)
+        private async Task RequestActivationCodeAsync(string email)
         {
             await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
@@ -140,7 +140,7 @@ namespace ETicketMobile.ViewModels.Registration
             if (!IsValid(code))
                 return;
 
-            var userCreated = await ConfirmAndCreateUser(code);
+            var userCreated = await ConfirmAndCreateUserAsync(code);
 
             if (!userCreated)
                 return;
@@ -166,9 +166,9 @@ namespace ETicketMobile.ViewModels.Registration
             return token;
         }
 
-        private async Task<bool> ConfirmAndCreateUser(string code)
+        private async Task<bool> ConfirmAndCreateUserAsync(string code)
         {
-            var confirmEmailIsSucceeded = await ConfirmEmail(code);
+            var confirmEmailIsSucceeded = await ConfirmEmailAsync(code);
             if (!confirmEmailIsSucceeded)
             {
                 ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
@@ -176,7 +176,7 @@ namespace ETicketMobile.ViewModels.Registration
                 return false;
             }
 
-            var userCreated = await CreateNewUser();
+            var userCreated = await CreateNewUserAsync();
 
             return userCreated;
         }
@@ -197,7 +197,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        private async Task<bool> ConfirmEmail(string activationCode)
+        private async Task<bool> ConfirmEmailAsync(string activationCode)
         {
             var confirmEmailRequestDto = new ConfirmEmailRequestDto
             {
@@ -226,7 +226,7 @@ namespace ETicketMobile.ViewModels.Registration
             };
         }
 
-        private async Task<bool> CreateNewUser()
+        private async Task<bool> CreateNewUserAsync()
         {
             var user = CreateUserSignUpRequest();
 
