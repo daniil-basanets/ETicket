@@ -13,6 +13,10 @@ namespace ETicket.ApplicationServices.Validation
 
             RuleFor(t => t.TransactionHistoryId)
                 .NotEmpty();
+
+            RuleFor(t => t.SelectedAreaIds)
+                .NotEmpty()
+                .WithMessage("{PropertyName} is required");
         }
     }
 }
