@@ -38,9 +38,9 @@ namespace ETicketMobile.ViewModels.Payment
         private decimal amount;
         private string description;
 
-        private string cardNumber = string.Empty;
-        private string expirationDate = string.Empty;
-        private string cvv2 = string.Empty;
+        private string cardNumber;
+        private string expirationDate;
+        private string cvv2;
 
         private bool cardNumberWarningIsVisible;
         private bool expirationDateWarningIsVisible;
@@ -109,7 +109,7 @@ namespace ETicketMobile.ViewModels.Payment
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            httpClient = new HttpClientService();
+            httpClient = new HttpClientService(ServerConfig.Address);
         }
 
         public override void OnAppearing()
@@ -122,6 +122,10 @@ namespace ETicketMobile.ViewModels.Payment
             CardNumber = string.Empty;
             ExpirationDate = string.Empty;
             CVV2 = string.Empty;
+
+            cardNumber = string.Empty;
+            expirationDate = string.Empty;
+            cvv2 = string.Empty;
         }
 
         public override async void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -159,7 +163,7 @@ namespace ETicketMobile.ViewModels.Payment
                 return;
             }
 
-            if (!IsExpirationDateCorrectLength(this.expirationDate))
+            if (!IsExpirationDateCorrectLength(expirationDate))
             {
                 CardNumberWarningIsVisible = false;
 
@@ -168,15 +172,15 @@ namespace ETicketMobile.ViewModels.Payment
                 return;
             }
 
-            var expirationDate = GetExpirationDate();
+            var expirationDateDescriptor = GetExpirationDateDescriptor();
 
             if (!IsCvvValid())
                 return;
 
             var buyTicketRequestDto = CreateBuyTicketRequestDto(
                     cardNumber,
-                    expirationDate.ExpirationMonth,
-                    expirationDate.ExpirationYear,
+                    expirationDateDescriptor.ExpirationMonth,
+                    expirationDateDescriptor.ExpirationYear,
                     cvv2);
 
             var response = await RequestBuyTicket(buyTicketRequestDto);
@@ -253,11 +257,11 @@ namespace ETicketMobile.ViewModels.Payment
 
         #endregion
 
-        private ExpirationDate GetExpirationDate()
+        private ExpirationDateDescriptor GetExpirationDateDescriptor()
         {
             var expirationDate = ExpirationDate.Split('/');
 
-            return new ExpirationDate
+            return new ExpirationDateDescriptor
             {
                 ExpirationMonth = expirationDate[0],
                 ExpirationYear = expirationDate[1]

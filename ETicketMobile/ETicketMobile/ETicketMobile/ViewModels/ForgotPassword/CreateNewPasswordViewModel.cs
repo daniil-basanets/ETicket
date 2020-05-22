@@ -69,7 +69,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            httpClient = new HttpClientService();
+            httpClient = new HttpClientService(ServerConfig.Address);
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -121,14 +121,14 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            if (!IsPasswordShort(password))
+            if (IsPasswordShort(password))
             {
                 PasswordWarning = AppResource.PasswordShort;
 
                 return false;
             }
 
-            if (!IsPasswordLong(password))
+            if (IsPasswordLong(password))
             {
                 PasswordWarning = AppResource.PasswordLong;
 
@@ -154,12 +154,12 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private bool IsPasswordShort(string password)
         {
-            return password.Length >= PasswordMinLength;
+            return password.Length < PasswordMinLength;
         }
 
         private bool IsPasswordLong(string password)
         {
-            return password.Length <= PasswordMaxLength;
+            return password.Length > PasswordMaxLength;
         }
 
         private bool IsPasswordWeak(string password)

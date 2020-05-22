@@ -56,7 +56,7 @@ namespace ETicketMobile.ViewModels.Registration
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            httpClient = new HttpClientService();
+            httpClient = new HttpClientService(ServerConfig.Address);
         }
 
         private async void OnMoveToPhoneRegistrationView(string email)

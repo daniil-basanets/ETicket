@@ -61,7 +61,7 @@ namespace ETicketMobile.ViewModels.Tickets
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
-            httpClient = new HttpClientService();
+            httpClient = new HttpClientService(ServerConfig.Address);
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)

@@ -62,7 +62,7 @@ namespace ETicketMobile.ViewModels.Tickets
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
-            httpClient = new HttpClientService();
+            httpClient = new HttpClientService(WebAccess.Network.ServerConfig.Address);
         }
 
         public async override void OnAppearing()
@@ -85,13 +85,13 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private async Task<IEnumerable<Area>> GetAreas()
         {
-            var areasDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(AreasEndpoint.Get, accessToken);
+            var areasDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(AreasEndpoint.GetAreas, accessToken);
 
             if (areasDto == null)
             {
                 accessToken = await RefreshToken();
 
-                areasDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(AreasEndpoint.Get, accessToken);
+                areasDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(AreasEndpoint.GetAreas, accessToken);
             }
 
             var areas = AutoMapperConfiguration.Mapper.Map<IEnumerable<Area>>(areasDto);

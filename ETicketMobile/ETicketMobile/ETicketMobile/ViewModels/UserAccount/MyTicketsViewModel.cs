@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
+using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
 
@@ -55,7 +56,7 @@ namespace ETicketMobile.ViewModels.BoughtTickets
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
-            httpClient = new HttpClientService();
+            httpClient = new HttpClientService(ServerConfig.Address);
         }
 
         public override void OnAppearing()

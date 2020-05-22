@@ -52,7 +52,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            httpClient = new HttpClientService();
+            httpClient = new HttpClientService(ServerConfig.Address);
         }
 
         private async void OnNavigateToConfirmForgotPasswordView(string email)
@@ -81,6 +81,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         {
             if (string.IsNullOrEmpty(email))
             {
+                //TODO incorrect
                 EmailWarning = AppResource.EmailCorrect;
 
                 return false;
@@ -93,6 +94,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
+            // TODO EmailHasCorrectLength
             if (!IsEmailConstainsCorrectLong(email))
             {
                 EmailWarning = AppResource.EmailCorrectLong;
@@ -100,9 +102,9 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            var isUserExists = await RequestUserExists(email);
+            var userExists = await RequestUserExists(email);
 
-            if (!isUserExists)
+            if (!userExists)
             {
                 EmailWarning = AppResource.EmailWrong;
 

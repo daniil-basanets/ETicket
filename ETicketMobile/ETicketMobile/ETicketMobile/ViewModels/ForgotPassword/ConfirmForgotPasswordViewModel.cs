@@ -69,7 +69,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            httpClient = new HttpClientService();
+            httpClient = new HttpClientService(ServerConfig.Address);
         }
 
         public override void OnAppearing()

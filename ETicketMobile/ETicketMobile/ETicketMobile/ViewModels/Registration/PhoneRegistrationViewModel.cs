@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
+using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
 using Xamarin.Forms;
@@ -48,7 +49,7 @@ namespace ETicketMobile.ViewModels.Registration
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            httpClient = new HttpClientService();
+            httpClient = new HttpClientService(ServerConfig.Address);
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)

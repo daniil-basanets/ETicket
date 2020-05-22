@@ -31,7 +31,7 @@ namespace ETicketMobile.ViewModels.UserAccount
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            httpClient = new HttpClientService();
+            httpClient = new HttpClientService(ServerConfig.Address);
         }
 
         public override async void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -53,7 +53,7 @@ namespace ETicketMobile.ViewModels.UserAccount
             var getTransactionsRequestDto = new GetTransactionsRequestDto { Email = email };
 
             var transacationsDto = await httpClient.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>>(
-                    TransactionsEndpoint.Post, getTransactionsRequestDto);
+                    TransactionsEndpoint.GetTransactionsByEmail, getTransactionsRequestDto);
 
             var transactions = AutoMapperConfiguration.Mapper.Map<IEnumerable<Transaction>>(transacationsDto);
 

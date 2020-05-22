@@ -78,7 +78,7 @@ namespace ETicketMobile.ViewModels.Registration
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
-            httpClient = new HttpClientService();
+            httpClient = new HttpClientService(ServerConfig.Address);
         }
 
         public override void OnAppearing()

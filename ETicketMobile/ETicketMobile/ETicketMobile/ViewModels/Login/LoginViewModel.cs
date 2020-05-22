@@ -24,7 +24,7 @@ namespace ETicketMobile.ViewModels.Login
         protected INavigationService navigationService;
         private readonly ILocalApi localApi;
 
-        private readonly HttpClientService httpClient;
+        private readonly HttpClientService httpClientService;
 
         private ICommand navigateToRegistrationView;
         private ICommand navigateToForgetPasswordView;
@@ -92,15 +92,15 @@ namespace ETicketMobile.ViewModels.Login
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
-            httpClient = new HttpClientService();
+            httpClientService = new HttpClientService(ServerConfig.Address);
         }
 
         public override void OnAppearing()
         {
-            FillProperties();
+            Init();
         }
 
-        private void FillProperties()
+        private void Init()
         {
             PasswordPlaceHolder = AppResource.PasswordPlaceHolderDefault;
         }
@@ -123,6 +123,7 @@ namespace ETicketMobile.ViewModels.Login
             var token = await GetTokenAsync();
             if (token.RefreshJwtToken == null)
             {
+                //TODO UserDoesnExists
                 EmailWarning = AppResource.EmailWarning;
 
                 Password = string.Empty;
@@ -147,7 +148,7 @@ namespace ETicketMobile.ViewModels.Login
                 Password =  password
             };
 
-            var tokenDto = await httpClient.PostAsync<UserSignInRequestDto, TokenDto>(
+            var tokenDto = await httpClientService.PostAsync<UserSignInRequestDto, TokenDto>(
                 AuthorizeEndpoint.Login, userSignIn);
 
             var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
@@ -159,14 +160,14 @@ namespace ETicketMobile.ViewModels.Login
 
         private bool IsValid(string email)
         {
-            if (IsEmpty(email))
+            if (string.IsNullOrEmpty(email))
             {
                 EmailWarning = AppResource.EmailEmpty;
 
                 return false;
             }
 
-            if (IsEmpty(password))
+            if (string.IsNullOrEmpty(password))
             {
                 Password = string.Empty;
                 PasswordPlaceHolder = AppResource.PasswordEmpty;
@@ -183,11 +184,6 @@ namespace ETicketMobile.ViewModels.Login
             }
 
             return true;
-        }
-
-        private bool IsEmpty(string field)
-        {
-            return string.IsNullOrEmpty(field);
         }
 
         private bool IsEmailValid(string email)
