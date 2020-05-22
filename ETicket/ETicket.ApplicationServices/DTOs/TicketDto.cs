@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ETicket.ApplicationServices.DTOs
 {
@@ -29,15 +30,23 @@ namespace ETicket.ApplicationServices.DTOs
         [DisplayName("User")]
         public string UserName { get; set; }
 
+        [Required]
         [DisplayName("Transaction")]
         public Guid TransactionHistoryId { get; set; }
 
         [DisplayName("Transaction")]
         public string TransactionRRN { get; set; }
 
-        public List<int> SelectedAreaIds { get; set; }
+        [Required]
+        public IList<int> SelectedAreaIds { get; set; }
 
         [DisplayName("Areas")]
         public IDictionary<int, string> Areas { get; set; }
+
+        public TicketDto()
+        {
+            SelectedAreaIds = new List<int>();
+            Areas = new Dictionary<int, string>();
+        }
     }
 }
