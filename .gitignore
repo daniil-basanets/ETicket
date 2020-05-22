@@ -220,3 +220,5 @@ __pycache__/
 # Windows thumbnail cache files
 Thumbs.db
 /ETicket/ETicketAdmin/Logs/ETicketLogs.txt
+/ETicket/ETicketAdmin/Properties/launchSettings.json
+/ETicket/ETicketWebAPI/Properties/launchSettings.json

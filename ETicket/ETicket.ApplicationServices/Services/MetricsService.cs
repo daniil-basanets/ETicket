@@ -34,7 +34,7 @@ namespace ETicket.ApplicationServices.Services
             }
 
             var data = uow.TicketVerifications.GetAll()
-                .Where(d=>d.VerificationUTCDate >= start && d.VerificationUTCDate <= end)
+                .Where(d=>d.VerificationUTCDate >= start && d.VerificationUTCDate <= end && d.IsVerified == true)
                 .Include(t => t.Ticket)
                 .ThenInclude(u => u.User)
                 .ThenInclude(p => p.Privilege)
@@ -57,7 +57,7 @@ namespace ETicket.ApplicationServices.Services
         private IQueryable<int> GetPassengerForTimePeriod(DateTime start, DateTime end)
         {
             return uow.TicketVerifications.GetAll()
-                .Where(t => (t.VerificationUTCDate > start && t.VerificationUTCDate <= end))
+                .Where(t => (t.VerificationUTCDate > start && t.VerificationUTCDate <= end && t.IsVerified == true))
                 .GroupBy(p => true)
                 .Select(g => g.Count());
         }
