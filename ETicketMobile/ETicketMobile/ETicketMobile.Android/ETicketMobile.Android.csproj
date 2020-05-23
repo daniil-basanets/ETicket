@@ -58,7 +58,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
-        <Reference Include="Telerik.Xamarin.Android.Common">
+    <Reference Include="Telerik.Xamarin.Android.Common">
       <HintPath>c:\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Android\Telerik.Xamarin.Android.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
@@ -91,8 +91,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Telerik.XamarinForms.SkiaSharp">
-      <HintPath>c:Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Android\Telerik.XamarinForms.SkiaSharp.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>c:\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Portable\Telerik.XamarinForms.SkiaSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
