@@ -34,7 +34,7 @@ namespace ETicket.ApplicationServices.Services
             }
 
             var data = uow.TicketVerifications.GetAll()
-                .Where(d=>d.VerificationUTCDate >= start && d.VerificationUTCDate <= end && d.IsVerified == true)
+                .Where(d=>d.VerificationUTCDate >= start && d.VerificationUTCDate <= end && d.IsVerified)
                 .Include(t => t.Ticket)
                 .ThenInclude(u => u.User)
                 .ThenInclude(p => p.Privilege)
