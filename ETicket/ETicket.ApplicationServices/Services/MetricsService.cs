@@ -54,14 +54,6 @@ namespace ETicket.ApplicationServices.Services
             throw new NotImplementedException();
         }
 
-        private IQueryable<int> GetPassengerForTimePeriod(DateTime start, DateTime end)
-        {
-            return uow.TicketVerifications.GetAll()
-                .Where(t => (t.VerificationUTCDate > start && t.VerificationUTCDate <= end && t.IsVerified == true))
-                .GroupBy(p => true)
-                .Select(g => g.Count());
-        }
-
         public ChartDto PassengersByTime(DateTime start, DateTime end, int routeId)
         {
             throw new NotImplementedException();
@@ -99,25 +91,23 @@ namespace ETicket.ApplicationServices.Services
             }
 
             List<DateTime> timePeriods = new List<DateTime>();
-            
-            for (DateTime d = start.Date; d <= end.AddDays(1); d = d.AddDays(1))
+
+            for (DateTime d = start.Date; d <= end; d = d.AddDays(1))
             {
                 timePeriods.Add(d);
             }
 
-            var query = GetPassengerForTimePeriod(timePeriods[0], timePeriods[1]);
-            
-            for (int i = 1; i < timePeriods.Count - 1; i++)
-            {
-                query = query.Concat(GetPassengerForTimePeriod(timePeriods[i], timePeriods[i + 1]));
-            }
-
-            var data = query.ToList();
+            var chartData = uow.TicketVerifications.GetAll()
+                .Where(t => t.IsVerified && t.VerificationUTCDate.Date >= start.Date && t.VerificationUTCDate.Date <= end.Date)
+                .GroupBy(d => d.VerificationUTCDate.Date)
+                .OrderBy(d => d.Key)
+                .Select(g => new { date = g.Key, count = g.Count()})
+                .ToDictionary(k => k.date, k => k.count);
 
             return new ChartDto()
             {
                 Labels = timePeriods.Select(d => d.ToShortDateString()).ToList(),
-                Data = data.Select(d => d.ToString()).ToList()
+                Data = timePeriods.Select(d => (chartData.ContainsKey(d) ? chartData[d] : 0).ToString()).ToList()
             };
         }
     }
