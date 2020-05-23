@@ -92,9 +92,9 @@ namespace ETicket.ApplicationServices.Services
 
             List<DateTime> timePeriods = new List<DateTime>();
 
-            for (DateTime d = start.Date; d <= end; d = d.AddDays(1))
+            for (DateTime day = start.Date; day <= end; day = day.AddDays(1))
             {
-                timePeriods.Add(d);
+                timePeriods.Add(day);
             }
 
             var chartData = uow.TicketVerifications.GetAll()
