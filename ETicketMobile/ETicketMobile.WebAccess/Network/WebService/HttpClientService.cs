@@ -22,7 +22,8 @@ namespace ETicketMobile.WebAccess.Network.WebService
             var androidClientHandler = new AndroidClientHandler();
             httpClient = new HttpClient(androidClientHandler);
 
-            this.serverAddress = serverAddress;
+            this.serverAddress = serverAddress
+                ?? throw new ArgumentNullException(nameof(serverAddress));
         }
 
         public async Task<T> GetAsync<T>(Uri endpoint, string token)
