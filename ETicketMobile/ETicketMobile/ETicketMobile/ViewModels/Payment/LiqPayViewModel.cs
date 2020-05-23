@@ -38,7 +38,6 @@ namespace ETicketMobile.ViewModels.Payment
         private decimal amount;
         private string description;
 
-        private string cardNumber;
         private string expirationDate;
         private string cvv2;
 
@@ -51,7 +50,7 @@ namespace ETicketMobile.ViewModels.Payment
         #region Properties
 
         public ICommand Pay => pay 
-            ??= new Command(OnPay);
+            ??= new Command<string>(OnPay);
 
         public decimal Amount
         {
@@ -81,12 +80,6 @@ namespace ETicketMobile.ViewModels.Payment
         {
             get => cvv2WarningIsVisible;
             set => SetProperty(ref cvv2WarningIsVisible, value);
-        }
-
-        public string CardNumber
-        {
-            get => cardNumber;
-            set => SetProperty(ref cardNumber, value);
         }
 
         public string ExpirationDate
@@ -119,11 +112,9 @@ namespace ETicketMobile.ViewModels.Payment
 
         private void Init()
         {
-            CardNumber = string.Empty;
             ExpirationDate = string.Empty;
             CVV2 = string.Empty;
 
-            cardNumber = string.Empty;
             expirationDate = string.Empty;
             cvv2 = string.Empty;
         }
@@ -153,9 +144,9 @@ namespace ETicketMobile.ViewModels.Payment
             return response;
         }
 
-        private async void OnPay()
+        private async void OnPay(string card)
         {
-            var cardNumber = GetStringWithoutMask(CardNumber);
+            var cardNumber = GetStringWithoutMask(card);
             if (!IsCardNumberCorrectLength(cardNumber))
             {
                 CardNumberWarningIsVisible = true;

@@ -68,7 +68,8 @@
 
             <telerikInput:RadDateTimePicker
                 Grid.Row="1"
-                SelectedDate="{Binding Birthday}"
+                x:Name="BirthDay"
+                DefaultDisplayDate="{Binding DefaultDisplayDate}"
                 DisplayStringFormat="dd.MM.yyyy"
                 SpinnerFormatString="yyyy MMMM dd"
                 StartDate="1990,1,1"
@@ -80,6 +81,7 @@
             <telerikInput:RadButton
                 Grid.Row="2"
                 Command="{Binding NavigateToConfirmEmailView}"
+                CommandParameter="{Binding Source={x:Reference BirthDay}, Path=SelectedDate, Mode=OneWay}"
                 Text="{local:Translate Text=Next}"
                 Style="{x:StaticResource Key=ActionButtonStyle}"/>
         </Grid>

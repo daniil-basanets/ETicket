@@ -54,8 +54,8 @@
             <telerikInput:RadEntry
                 Grid.ColumnSpan="2"
                 Grid.Row="2"
+                x:Name="Email"
                 WatermarkText="{local:Translate Text=Email}"
-                Text="{Binding Email, Mode=OneWayToSource}"
                 Style="{x:StaticResource Key=LoginEntryStyle}"
                 Keyboard="Email"/>
 
@@ -72,6 +72,7 @@
                 Grid.ColumnSpan="2"
                 Grid.Row="4"
                 Command="{Binding NavigateToLoginView, Mode=OneTime}"
+                CommandParameter="{Binding Source={x:Reference Email}, Path=Text, Mode=OneWay}"
                 Text="{local:Translate Text=SignIn}"
                 Style="{x:StaticResource Key=ActionButtonStyle}"/>
 

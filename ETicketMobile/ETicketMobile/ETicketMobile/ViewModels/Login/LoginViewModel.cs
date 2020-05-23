@@ -32,8 +32,6 @@ namespace ETicketMobile.ViewModels.Login
 
         private string emailWarning;
 
-        private string email;
-
         private string password;
         private string passwordWatermark;
         private Color passwordWatermarkColor;
@@ -49,18 +47,12 @@ namespace ETicketMobile.ViewModels.Login
             ??= new Command(OnNavigateToRegistrationView);
 
         public ICommand NavigateToLoginView => navigateToLoginView 
-            ??= new Command(OnNavigateToLoginView);
+            ??= new Command<string>(OnNavigateToLoginView);
 
         public string EmailWarning
         {
             get => emailWarning;
             set => SetProperty(ref emailWarning, value);
-        }
-
-        public string Email
-        {
-            get => email;
-            set => SetProperty(ref email, value);
         }
 
         public string Password
@@ -115,12 +107,12 @@ namespace ETicketMobile.ViewModels.Login
             await navigationService.NavigateAsync(nameof(EmailRegistrationView));
         }
 
-        private async void OnNavigateToLoginView()
+        private async void OnNavigateToLoginView(string email)
         {
             if (!IsValid(email))
                 return;
 
-            var token = await GetTokenAsync();
+            var token = await GetTokenAsync(email);
             if (token.RefreshJwtToken == null)
             {
                 //TODO UserDoesnExists
@@ -135,12 +127,12 @@ namespace ETicketMobile.ViewModels.Login
 
             await localApi.AddAsync(token);
 
-            var navigationParameters = new NavigationParameters { { "email", Email } };
+            var navigationParameters = new NavigationParameters { { "email", email } };
 
             await navigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
         }
 
-        private async Task<Token> GetTokenAsync()
+        private async Task<Token> GetTokenAsync(string email)
         {
             var userSignIn = new UserSignInRequestDto
             {

@@ -19,7 +19,6 @@ namespace ETicketMobile.ViewModels.Registration
         private string firstNameWarning;
         private string lastNameWarning;
 
-        private string firstName;
         private string lastName;
 
         #endregion
@@ -27,7 +26,13 @@ namespace ETicketMobile.ViewModels.Registration
         #region Properties
 
         public ICommand NavigateToPasswordRegistrationView => navigateToPasswordRegistrationView 
-            ??= new Command(OnMoveToPasswordRegistrationView);
+            ??= new Command<string>(OnMoveToPasswordRegistrationView);
+
+        public string LastName
+        {
+            get => lastName;
+            set => SetProperty(ref lastName, value);
+        }
 
         public string FirstNameWarning
         {
@@ -39,18 +44,6 @@ namespace ETicketMobile.ViewModels.Registration
         {
             get => lastNameWarning;
             set => SetProperty(ref lastNameWarning, value);
-        }
-
-        public string FirstName
-        {
-            get => firstName;
-            set => SetProperty(ref firstName, value);
-        }
-
-        public string LastName
-        {
-            get => lastName;
-            set => SetProperty(ref lastName, value);
         }
 
         #endregion
@@ -67,9 +60,9 @@ namespace ETicketMobile.ViewModels.Registration
             this.navigationParameters = navigationParameters;
         }
 
-        private async void OnMoveToPasswordRegistrationView()
+        private async void OnMoveToPasswordRegistrationView(string firstName)
         {
-            if (!IsValid())
+            if (!IsValid(firstName))
                 return;
 
             navigationParameters.Add("firstName", firstName);
@@ -80,7 +73,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Validation
 
-        private bool IsValid()
+        private bool IsValid(string firstName)
         {
             if (IsNameEmpty(firstName))
             {

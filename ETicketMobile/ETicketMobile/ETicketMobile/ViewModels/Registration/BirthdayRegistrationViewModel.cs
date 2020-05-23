@@ -27,7 +27,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         private readonly HttpClientService httpClient;
 
-        private DateTime birthday;
+        private DateTime defaultDisplayDate;
         private DateTime minBirthday;
         private DateTime maxBirthday;
 
@@ -36,12 +36,12 @@ namespace ETicketMobile.ViewModels.Registration
         #region Properties
 
         public ICommand NavigateToConfirmEmailView => navigateToConfirmEmailView 
-            ??= new Command(OnNavigateToConfirmEmailView);
+            ??= new Command<DateTime>(OnNavigateToConfirmEmailView);
 
-        public DateTime Birthday
+        public DateTime DefaultDisplayDate
         {
-            get => birthday;
-            set => SetProperty(ref birthday, value);
+            get => defaultDisplayDate;
+            set => SetProperty(ref defaultDisplayDate, value);
         }
 
         public DateTime MinBirthday
@@ -74,10 +74,10 @@ namespace ETicketMobile.ViewModels.Registration
 
         private void FillProperties()
         {
+            DefaultDisplayDate = DateTime.Now.Date;
+
             MinBirthday = DateTime.Today.AddYears(-MinAge);
             MaxBirthday = DateTime.Today.AddYears(-MaxAge);
-
-            Birthday = DateTime.Today.Date;
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -85,7 +85,7 @@ namespace ETicketMobile.ViewModels.Registration
             this.navigationParameters = navigationParameters;
         }
 
-        private async void OnNavigateToConfirmEmailView()
+        private async void OnNavigateToConfirmEmailView(DateTime birthday)
         {
             var email = navigationParameters.GetValue<string>("email");
             await RequestActivationCodeAsync(email);
