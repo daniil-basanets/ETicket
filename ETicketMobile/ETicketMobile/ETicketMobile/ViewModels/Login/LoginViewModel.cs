@@ -35,8 +35,8 @@ namespace ETicketMobile.ViewModels.Login
         private string email;
 
         private string password;
-        private string passwordPlaceHolder;
-        private Color passwordPlaceHolderColor;
+        private string passwordWatermark;
+        private Color passwordWatermarkColor;
 
         #endregion
 
@@ -69,16 +69,16 @@ namespace ETicketMobile.ViewModels.Login
             set => SetProperty(ref password, value);
         }
 
-        public string PasswordPlaceHolder
+        public string PasswordWatermark
         {
-            get => passwordPlaceHolder;
-            set => SetProperty(ref passwordPlaceHolder, value);
+            get => passwordWatermark;
+            set => SetProperty(ref passwordWatermark, value);
         }
 
-        public Color PasswordPlaceHolderColor
+        public Color PasswordWatermarkColor
         {
-            get => passwordPlaceHolderColor;
-            set => SetProperty(ref passwordPlaceHolderColor, value);
+            get => passwordWatermarkColor;
+            set => SetProperty(ref passwordWatermarkColor, value);
         }
 
         #endregion
@@ -102,7 +102,7 @@ namespace ETicketMobile.ViewModels.Login
 
         private void Init()
         {
-            PasswordPlaceHolder = AppResource.PasswordPlaceHolderDefault;
+            PasswordWatermark = AppResource.PasswordWatermarkDefault;
         }
 
         private async void OnNavigateToForgetPasswordView()
@@ -127,8 +127,8 @@ namespace ETicketMobile.ViewModels.Login
                 EmailWarning = AppResource.EmailWarning;
 
                 Password = string.Empty;
-                PasswordPlaceHolder = AppResource.PasswordPlaceHolderWrong;
-                PasswordPlaceHolderColor = Color.Red;
+                PasswordWatermark = AppResource.PasswordWatermarkWrong;
+                PasswordWatermarkColor = Color.Red;
 
                 return;
             }
@@ -170,8 +170,8 @@ namespace ETicketMobile.ViewModels.Login
             if (string.IsNullOrEmpty(password))
             {
                 Password = string.Empty;
-                PasswordPlaceHolder = AppResource.PasswordEmpty;
-                PasswordPlaceHolderColor = Color.Red;
+                PasswordWatermark = AppResource.PasswordEmpty;
+                PasswordWatermarkColor = Color.Red;
 
                 return false;
             }

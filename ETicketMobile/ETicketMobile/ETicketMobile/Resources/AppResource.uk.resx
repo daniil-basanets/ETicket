@@ -361,11 +361,11 @@
     <value>Використовуйте 100 символів або менше для вашого пароля</value>
     <comment>CreateNewPasswordViewModel, PasswordRegistrationViewModel</comment>
   </data>
-  <data name="PasswordPlaceHolderDefault" xml:space="preserve">
+  <data name="PasswordWatermarkDefault" xml:space="preserve">
     <value>Пароль</value>
     <comment>LoginViewModel</comment>
   </data>
-  <data name="PasswordPlaceHolderWrong" xml:space="preserve">
+  <data name="PasswordWatermarkWrong" xml:space="preserve">
     <value>або невірний пароль</value>
     <comment>LoginViewModel</comment>
   </data>
