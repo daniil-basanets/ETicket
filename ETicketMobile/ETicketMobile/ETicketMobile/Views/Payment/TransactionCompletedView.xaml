@@ -27,12 +27,14 @@
                 Text="Transaction Succesful"
                 FontSize="22"
                 FontAttributes="Bold"/>
+            
             <Image 
                 Grid.Row="2"
                 HeightRequest="80"
                 WidthRequest="80"
                 VerticalOptions="Start"
                 Source="success.png"/>
+            
             <Label
                 Grid.Row="3"
                 HorizontalOptions="Center"
@@ -42,9 +44,9 @@
 
             <telerikInput:RadButton 
                 Grid.Row="4"
-                Command="{Binding NavigateToMainMenu}"
+                Command="{Binding NavigateToMainMenu, Mode=OneTime}"
                 Text="Go to Menu"
-                Style="{StaticResource ActionButtonStyle}"
+                Style="{x:StaticResource Key=ActionButtonStyle}"
                 Margin="30"/>
             
         </Grid>

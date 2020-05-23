@@ -2,7 +2,8 @@
 <ContentPage 
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:prism="http://prismlibrary.com"
+    xmlns:prism="http://prismlibrary.com" 
+    xmlns:settings="clr-namespace:ETicketMobile.ViewModels.Settings"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Settings.LocalizationView">
 
@@ -10,10 +11,10 @@
 
         <ListView
             x:Name="Languages"
-            ItemsSource="{Binding Localizations}"
+            ItemsSource="{Binding Localizations, Mode=OneWay}"
             SeparatorVisibility="None">
             <ListView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="settings:LocalizationItemViewModel">
                     <ViewCell>
                         <Frame
                             BackgroundColor="White"
@@ -26,15 +27,15 @@
                                 </Grid.ColumnDefinitions>
 
                                 <RadioButton
-                                    Command="{Binding SelectCommand}"
-                                    CommandParameter="{Binding Language}"
+                                    Command="{Binding SelectCommand, Mode=OneTime}"
+                                    CommandParameter="{Binding Language, Mode=OneWay}"
                                     Grid.Column="0"
                                     GroupName="0"/>
 
                                 <Label
                                     x:Name="Language"
                                     Grid.Column="1"
-                                    Text="{Binding Language}"/>
+                                    Text="{Binding Language, Mode=OneWay}"/>
                             </Grid>
                         </Frame>
                     </ViewCell>

@@ -32,21 +32,21 @@
             <Label
                 Grid.Row="0"
                 VerticalTextAlignment="Start"
-                Text="{local:Translate EnterPhone}"
-                Style="{StaticResource TitleLabelStyle}"/>
+                Text="{local:Translate Text=EnterPhone}"
+                Style="{x:StaticResource Key=TitleLabelStyle}"/>
 
             <Label
                 Grid.Row="1"
                 VerticalTextAlignment="Start"
-                IsVisible="{Binding PhoneWarning, Converter={StaticResource StringToBooleanConverter}}"
-                Text="{Binding PhoneWarning}"
-                TextColor="{Binding PhoneWarning, Converter={StaticResource StringToColorConverter}}"
-                Style="{StaticResource NormalLabelStyle}"/>
+                IsVisible="{Binding PhoneWarning, Converter={x:StaticResource Key=StringToBooleanConverter}, Mode=OneWay}"
+                Text="{Binding PhoneWarning, Mode=OneWay}"
+                TextColor="{Binding PhoneWarning, Converter={x:StaticResource Key=StringToColorConverter}, Mode=OneWay}"
+                Style="{x:StaticResource Key=NormalLabelStyle}"/>
 
             <telerikInput:RadMaskedInput
                 Grid.Row="2"
                 x:Name="PhoneEntry"
-                WatermarkText="{local:Translate Phone}"
+                WatermarkText="{local:Translate Text=Phone}"
                 RejectedSymbolErrorText=""
                 Placeholder="*"
                 Mask="+380 (00)-000-00-00"
@@ -61,10 +61,10 @@
 
             <telerikInput:RadButton
                 Grid.Row="3"
-                Command="{Binding NavigateToNameRegistrationView}"
-                CommandParameter="{Binding Source={x:Reference PhoneEntry}, Path=InputValue}"
-                Text="{local:Translate Next}"
-                Style="{StaticResource ActionButtonStyle}"/>
+                Command="{Binding NavigateToNameRegistrationView, Mode=OneTime}"
+                CommandParameter="{Binding Source={x:Reference PhoneEntry}, Path=InputValue, Mode=OneWay}"
+                Text="{local:Translate Text=Next}"
+                Style="{x:StaticResource Key=ActionButtonStyle}"/>
         </Grid>
 
     </ContentPage.Content>

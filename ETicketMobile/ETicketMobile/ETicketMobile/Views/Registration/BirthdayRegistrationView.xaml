@@ -21,7 +21,7 @@
                     VerticalTextAlignment="Center"
                     HorizontalTextAlignment="Center">
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{TemplateBinding ToggleCommand}"/>
+                        <TapGestureRecognizer Command="{TemplateBinding ToggleCommand, Mode=OneTime}"/>
                     </Label.GestureRecognizers>
                 </Label>
             </ControlTemplate>
@@ -36,16 +36,16 @@
 
                     <Button 
                         Grid.Column="0"
-                        Text="{TemplateBinding CancelButtonText}"
+                        Text="{TemplateBinding CancelButtonText, Mode=OneTime}"
                         TextColor="White"
                         BackgroundColor="Transparent"
-                        Command="{TemplateBinding CancelCommand}"/>
+                        Command="{TemplateBinding CancelCommand, Mode=OneTime}"/>
                     <Button 
                         Grid.Column="1"
-                        Text="{TemplateBinding AcceptButtonText}"
+                        Text="{TemplateBinding AcceptButtonText, Mode=OneWay}"
                         TextColor="White"
                         BackgroundColor="Transparent"
-                        Command="{TemplateBinding AcceptCommand}"/>
+                        Command="{TemplateBinding AcceptCommand, Mode=OneTime}"/>
                 </Grid>
             </ControlTemplate>
         </ResourceDictionary>
@@ -63,8 +63,8 @@
 
             <Label
                 Grid.Row="0"
-                Text="{local:Translate EnterBirthday}"
-                Style="{StaticResource TitleLabelStyle}"/>
+                Text="{local:Translate Text=EnterBirthday}"
+                Style="{x:StaticResource Key=TitleLabelStyle}"/>
 
             <telerikInput:RadDateTimePicker
                 Grid.Row="1"
@@ -80,8 +80,8 @@
             <telerikInput:RadButton
                 Grid.Row="2"
                 Command="{Binding NavigateToConfirmEmailView}"
-                Text="{local:Translate Next}"
-                Style="{StaticResource ActionButtonStyle}"/>
+                Text="{local:Translate Text=Next}"
+                Style="{x:StaticResource Key=ActionButtonStyle}"/>
         </Grid>
 
     </ContentPage.Content>

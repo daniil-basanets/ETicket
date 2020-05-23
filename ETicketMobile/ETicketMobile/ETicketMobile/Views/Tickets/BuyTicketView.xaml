@@ -12,22 +12,22 @@
             <StackLayout Orientation="Horizontal">
                 <Button
                     Text="-"
-                    Command="{Binding RemoveTicket}" />
+                    Command="{Binding RemoveTicket, Mode=OneTime}" />
 
                 <Label
                     VerticalOptions="CenterAndExpand"
                     HorizontalOptions="CenterAndExpand"
-                    Text="{Binding Amount}" />
+                    Text="{Binding Amount, Mode=TwoWay}" />
 
                 <Button
                     Text="+"
-                    Command="{Binding AddTicket}"/>
+                    Command="{Binding AddTicket, Mode=OneTime}"/>
             </StackLayout>
             <StackLayout>
                 <Button
                     HorizontalOptions="EndAndExpand"
-                    Text="{local:Translate BuyButton}"
-                    Command="{Binding BuyTicket}"/>
+                    Text="{local:Translate Text=BuyButton}"
+                    Command="{Binding BuyTicket, Mode=OneTime}"/>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

@@ -57,15 +57,15 @@
                         Text="Amount"/>
                     <Entry
                         Grid.Row="1"
-                        Text="{Binding Amount}"
+                        Text="{Binding Amount, Mode=OneWay}"
                         IsReadOnly="True"
                         Placeholder="0.00"/>
                     <Label
                         Grid.Row="2"
-                        Text="{local:Translate DescriptionPayment}"/>
+                        Text="{local:Translate Text=DescriptionPayment}"/>
                     <Entry
                         Grid.Row="3"
-                        Text="{Binding Description}"
+                        Text="{Binding Description, Mode=OneWay}"
                         IsReadOnly="True"/>
                 </Grid>
             </Frame>
@@ -96,17 +96,17 @@
                     <Label
                         Grid.ColumnSpan="2"
                         Grid.Row="0"
-                        Text="{local:Translate CardNumber}"/>
+                        Text="{local:Translate Text=CardNumber}"/>
                     <Label
                         Grid.ColumnSpan="2"
                         Grid.Row="1"
-                        Text="{local:Translate CardNumberCorrect}"
+                        Text="{local:Translate Text=CardNumberCorrect}"
                         TextColor="Red"
-                        IsVisible="{Binding CardNumberWarningIsVisible}"/>
+                        IsVisible="{Binding CardNumberWarningIsVisible, Mode=OneWay}"/>
                     <Entry
                         Grid.ColumnSpan="2"
                         Grid.Row="2"
-                        Text="{Binding CardNumber}"
+                        Text="{Binding CardNumber, Mode=OneWayToSource}"
                         Placeholder="•••• •••• •••• ••••">
                         <Entry.Behaviors>
                             <behavior:EntryMaskBehavior Mask="XXXX XXXX XXXX XXXX"/>
@@ -116,18 +116,18 @@
                     <Label
                         Grid.Column="0"
                         Grid.Row="3"
-                        Text="{local:Translate Expiration}"/>
+                        Text="{local:Translate Text=Expiration}"/>
                     <Label
                         Grid.Column="0"
                         Grid.Row="4"
-                        Text="{local:Translate CardExpiration}"
+                        Text="{local:Translate Text=CardExpiration}"
                         TextColor="Red"
-                        IsVisible="{Binding ExpirationDateWarningIsVisible}"/>
+                        IsVisible="{Binding ExpirationDateWarningIsVisible, Mode=OneWay}"/>
                     <Entry
                         Grid.Column="0"
                         Grid.Row="5"
-                        Text="{Binding ExpirationDate}"
-                        Placeholder="{local:Translate ExpirationYear}">
+                        Text="{Binding ExpirationDate, Mode=OneWayToSource}"
+                        Placeholder="{local:Translate Text=ExpirationYear}">
                         <Entry.Behaviors>
                             <behavior:EntryMaskBehavior Mask="XX/XX"/>
                         </Entry.Behaviors>
@@ -139,13 +139,13 @@
                     <Label
                         Grid.Column="1"
                         Grid.Row="4"
-                        Text="{local:Translate ExpirationDateCorrect}"
+                        Text="{local:Translate Text=ExpirationDateCorrect}"
                         TextColor="Red"
-                        IsVisible="{Binding CVV2WarningIsVisible}"/>
+                        IsVisible="{Binding CVV2WarningIsVisible, Mode=OneWay}"/>
                     <Entry
                         Grid.Column="1"
                         Grid.Row="5"
-                        Text="{Binding CVV2}"
+                        Text="{Binding CVV2, Mode=OneWayToSource}"
                         Placeholder="•••">
                         <Entry.Behaviors>
                             <behavior:EntryMaskBehavior Mask="XXX"/>
@@ -155,22 +155,22 @@
                     <Label
                         Grid.ColumnSpan="2"
                         Grid.Row="6"
-                        Text="{local:Translate PayAccept}"/>
+                        Text="{local:Translate Text=PayAccept}"/>
                     <Label
                         Grid.ColumnSpan="2"
                         Grid.Row="7"
-                        Text="{local:Translate Terms}"
+                        Text="{local:Translate Text=Terms}"
                         TextColor="#a9ce9c">
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding NavigateToTermsView}"/>
+                            <TapGestureRecognizer Command="{Binding NavigateToTermsView, Mode=OneTime}"/>
                         </Label.GestureRecognizers>
                     </Label>
                     <Button
                         Grid.ColumnSpan="2"
                         Grid.Row="8"
-                        Text="{local:Translate PayButton}"
+                        Text="{local:Translate Text=PayButton}"
                         BackgroundColor="#7ab72b"
-                        Command="{Binding Pay}"/>
+                        Command="{Binding Pay, Mode=OneTime}"/>
 
                 </Grid>
             </Frame>

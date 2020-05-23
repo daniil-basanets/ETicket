@@ -58,16 +58,16 @@
                                         <StackLayout Grid.Column="0">
                                             <Label 
                                                 Text="Ticket type"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="Ticket Ref"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="Created At"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                         </StackLayout>
 
@@ -77,14 +77,14 @@
                                             <Label
                                                 Text="{Binding TicketType}"
                                                 HorizontalOptions="Start"
-                                                Style="{StaticResource NormalLabelStyle}"/>
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"/>
                                             <Label
                                                 Text="{Binding ReferenceNumber}"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="FillAndExpand"/>
                                             <Label
                                                 Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                         </StackLayout>
                                     </Grid>
@@ -117,24 +117,24 @@
                                         <StackLayout Grid.Column="0">
                                             <Label 
                                                 Text="Ticket type"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="Ticket Ref"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="Created at"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="Activated at"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="Will expire at"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                         </StackLayout>
 
@@ -144,22 +144,22 @@
                                             <Label
                                                 Text="{Binding TicketType}"
                                                 HorizontalOptions="Start"
-                                                Style="{StaticResource NormalLabelStyle}"/>
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"/>
                                             <Label
                                                 Text="{Binding ReferenceNumber}"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="FillAndExpand"/>
                                             <Label
                                                 Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="{Binding ActivatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="{Binding ExpiredAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                         </StackLayout>
 
@@ -194,24 +194,24 @@
                                         <StackLayout Grid.Column="0">
                                             <Label 
                                                 Text="Ticket type"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 VerticalOptions="Center"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="Ticket Ref"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="Created At"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="Activated At"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="Expired At"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                         </StackLayout>
 
@@ -221,22 +221,22 @@
                                             <Label
                                                 Text="{Binding TicketType}"
                                                 HorizontalOptions="Start"
-                                                Style="{StaticResource NormalLabelStyle}"/>
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"/>
                                             <Label
                                                 Text="{Binding ReferenceNumber}"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="FillAndExpand"/>
                                             <Label
                                                 Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="{Binding ActivatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                             <Label 
                                                 Text="{Binding ExpiredAt, StringFormat='{0:dd.MM.yyyy HH.mm}'}"
-                                                Style="{StaticResource NormalLabelStyle}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
                                                 HorizontalOptions="Start"/>
                                         </StackLayout>
 

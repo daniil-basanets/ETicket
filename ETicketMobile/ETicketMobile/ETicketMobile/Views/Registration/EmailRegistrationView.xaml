@@ -37,52 +37,52 @@
         <Label
             Grid.ColumnSpan="2"
             Grid.Row="0"
-            Text="{local:Translate EnterEmail}"
-            Style="{StaticResource TitleLabelStyle}"/>
+            Text="{local:Translate Text=EnterEmail}"
+            Style="{x:StaticResource Key=TitleLabelStyle}"/>
 
         <Label
             Grid.ColumnSpan="2"
             Grid.Row="1"
-            Text="{local:Translate EmailHint}"
-            Style="{StaticResource NormalLabelStyle}"/>
+            Text="{local:Translate Text=EmailHint}"
+            Style="{x:StaticResource Key=NormalLabelStyle}"/>
 
         <Label
             Grid.ColumnSpan="2"
             Grid.Row="2"
-            IsVisible="{Binding EmailWarning, Converter={StaticResource StringToBooleanConverter}}"
-            Text="{Binding EmailWarning}"
-            TextColor="{Binding EmailWarning, Converter={StaticResource StringToColorConverter}}"
-            Style="{StaticResource NormalLabelStyle}"/>
+            IsVisible="{Binding EmailWarning, Converter={x:StaticResource Key=StringToBooleanConverter}, Mode=OneWay}"
+            Text="{Binding EmailWarning, Mode=OneWay}"
+            TextColor="{Binding EmailWarning, Converter={x:StaticResource Key=StringToColorConverter}, Mode=OneWay}"
+            Style="{x:StaticResource Key=NormalLabelStyle}"/>
 
         <telerikInput:RadEntry
             Grid.ColumnSpan="2"
             Grid.Row="3"
             x:Name="EmailEntry"
-            WatermarkText="{local:Translate Email}"
-            Style="{StaticResource LoginEntryStyle}"/>
+            WatermarkText="{local:Translate Text=Email}"
+            Style="{x:StaticResource Key=LoginEntryStyle}"/>
 
         <telerikInput:RadButton
             Grid.ColumnSpan="2"
             Grid.Row="4"
-            Command="{Binding NavigateToPhoneRegistrationView}"
-            CommandParameter="{Binding Source={x:Reference EmailEntry}, Path=Text}"
-            Text="{local:Translate Next}"
-            Style="{StaticResource ActionButtonStyle}"/>
+            Command="{Binding NavigateToPhoneRegistrationView, Mode=OneTime}"
+            CommandParameter="{Binding Source={x:Reference EmailEntry}, Path=Text, Mode=OneWay}"
+            Text="{local:Translate Text=Next}"
+            Style="{x:StaticResource Key=ActionButtonStyle}"/>
 
         <Label
             Grid.Column="0"
             Grid.Row="6"
             VerticalTextAlignment="End"
-            Text="{local:Translate AlreadySignUp}"
-            Style="{StaticResource NormalLabelStyle}"/>
+            Text="{local:Translate Text=AlreadySignUp}"
+            Style="{x:StaticResource Key=NormalLabelStyle}"/>
 
         <telerikInput:RadButton
             Grid.Column="1"
             Grid.Row="6"
             VerticalContentAlignment="End"
-            Command="{Binding NavigateToSignInView}"
-            Text="{local:Translate SignIn}"
-            Style="{StaticResource SecondaryActionButtonStyle}"/>
+            Command="{Binding NavigateToSignInView, Mode=OneTime}"
+            Text="{local:Translate Text=SignIn}"
+            Style="{x:StaticResource Key=SecondaryActionButtonStyle}"/>
 
     </Grid>
 

@@ -26,7 +26,7 @@
     <ContentPage.Content>
         
         <ListView
-            ItemsSource="{Binding Transactions}"
+            ItemsSource="{Binding Transactions, Mode=OneWay}"
             SeparatorVisibility="None"
             HasUnevenRows="True"
             Margin="10"
@@ -53,32 +53,32 @@
                                 <Label
                                     Grid.Column="0"
                                     Grid.Row="0"
-                                    Text="{local:Translate Price}"/>
+                                    Text="{local:Translate Text=Price}"/>
                                 <Label
                                     Grid.Column="0"
                                     Grid.Row="1"
-                                    Style="{StaticResource Key=TransactionStyle}"
-                                    Text="{Binding TotalPrice}"/>
+                                    Style="{x:StaticResource Key=TransactionStyle}"
+                                    Text="{Binding TotalPrice, Mode=OneWay}"/>
 
                                 <Label
                                     Grid.Column="1"
                                     Grid.Row="0"
-                                    Text="{local:Translate Number}"/>
+                                    Text="{local:Translate Text=Number}"/>
                                 <Label
                                     Grid.Column="1"
                                     Grid.Row="1"
-                                    Style="{StaticResource Key=TransactionStyle}"
-                                    Text="{Binding ReferenceNumber}"/>
+                                    Style="{x:StaticResource Key=TransactionStyle}"
+                                    Text="{Binding ReferenceNumber, Mode=OneWay}"/>
 
                                 <Label
                                     Grid.Column="2"
                                     Grid.Row="0"
-                                    Text="{local:Translate TransactionDate}"/>
+                                    Text="{local:Translate Text=TransactionDate}"/>
                                 <Label
                                     Grid.Column="2"
                                     Grid.Row="1"
-                                    Style="{StaticResource Key=TransactionStyle}"
-                                    Text="{Binding Date, StringFormat='{0:dd.MM.yyyy}'}"/>
+                                    Style="{x:StaticResource Key=TransactionStyle}"
+                                    Text="{Binding Date, Mode=OneWay, StringFormat='{0:dd.MM.yyyy}'}"/>
                             </Grid>
                         </Frame>
                     </ViewCell>
