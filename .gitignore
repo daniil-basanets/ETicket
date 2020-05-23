@@ -8,7 +8,7 @@
 _build/
 _site/
 **/logs
-
+Properties/
 
 Project_Readme.html
 
@@ -220,4 +220,3 @@ __pycache__/
 # Windows thumbnail cache files
 Thumbs.db
 /ETicket/ETicketAdmin/Logs/ETicketLogs.txt
-*.json
