@@ -7,7 +7,11 @@ namespace ETicketMobile.DataAccess.Repositories
 {
     public class TokenRepository : ITokenRepository
     {
+        #region Fields
+
         private readonly SettingsRepository settingsRepository;
+
+        #endregion
 
         public TokenRepository()
         {

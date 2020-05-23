@@ -12,6 +12,8 @@ namespace ETicketMobile.ViewModels.BoughtTickets
 {
     public class MyTicketsViewModel : ViewModelBase
     {
+        #region Fields
+
         private readonly INavigationService navigationService;
         private readonly ILocalApi localApi;
 
@@ -23,6 +25,10 @@ namespace ETicketMobile.ViewModels.BoughtTickets
         private IEnumerable<Ticket> unusedTickets;
         private IEnumerable<Ticket> activatedTickets;
         private IEnumerable<Ticket> expiredTickets;
+
+        #endregion
+
+        #region Properties
 
         public IEnumerable<Ticket> Tickets
         {
@@ -46,6 +52,8 @@ namespace ETicketMobile.ViewModels.BoughtTickets
             get => expiredTickets;
             set => SetProperty(ref expiredTickets, value);
         }
+
+        #endregion
 
         public MyTicketsViewModel(INavigationService navigationService, ILocalApi localApi)
             : base(navigationService)

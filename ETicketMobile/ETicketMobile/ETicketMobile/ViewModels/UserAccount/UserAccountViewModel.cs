@@ -12,7 +12,7 @@ namespace ETicketMobile.ViewModels.UserAccount
 {
     public class UserAccountViewModel : ViewModelBase
     {
-        private string email;
+        #region Fields
 
         private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
@@ -20,6 +20,12 @@ namespace ETicketMobile.ViewModels.UserAccount
         private ICommand navigateToAction;
 
         private IEnumerable<UserAction> actions;
+
+        private string email;
+
+        #endregion
+
+        #region Properties
 
         public IEnumerable<UserAction> UserActions
         {
@@ -29,6 +35,8 @@ namespace ETicketMobile.ViewModels.UserAccount
 
         public ICommand NavigateToAction => navigateToAction 
             ??= new Command<UserAction>(OnNavigateToAction);
+
+        #endregion
 
         public UserAccountViewModel(INavigationService navigationService)
             : base(navigationService)

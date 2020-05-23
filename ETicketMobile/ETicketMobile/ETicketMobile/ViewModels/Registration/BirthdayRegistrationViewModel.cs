@@ -11,7 +11,7 @@ namespace ETicketMobile.ViewModels.Registration
 {
     public class BirthdayRegistrationViewModel : ViewModelBase
     {
-        #region Constanst
+        #region Constants
 
         private const int MinAge = 13;
         private const int MaxAge = 120;

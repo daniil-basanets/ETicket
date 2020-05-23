@@ -21,7 +21,7 @@ namespace ETicketMobile.ViewModels.Login
     {
         #region Fields
 
-        protected INavigationService navigationService;
+        private readonly INavigationService navigationService;
         private readonly ILocalApi localApi;
 
         private readonly HttpClientService httpClientService;

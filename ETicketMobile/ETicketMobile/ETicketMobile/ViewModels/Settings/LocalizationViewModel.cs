@@ -14,16 +14,24 @@ namespace ETicketMobile.ViewModels.Settings
 {
     public class LocalizationViewModel : ViewModelBase
     {
+        #region Fields
+
         private readonly ILocalApi localApi;
         private readonly ILocalize localize;
 
         private IEnumerable<LocalizationItemViewModel> localizations;
+
+        #endregion
+
+        #region Properties
 
         public IEnumerable<LocalizationItemViewModel> Localizations
         {
             get => localizations;
             set => SetProperty(ref localizations, value);
         }
+
+        #endregion
 
         public LocalizationViewModel(INavigationService navigationService, ILocalApi localApi, ILocalize localize) 
             : base(navigationService)

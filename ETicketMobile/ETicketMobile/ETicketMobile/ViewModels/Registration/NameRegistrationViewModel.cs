@@ -65,8 +65,6 @@ namespace ETicketMobile.ViewModels.Registration
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
             this.navigationParameters = navigationParameters;
-
-            base.OnNavigatedTo(navigationParameters);
         }
 
         private async void OnMoveToPasswordRegistrationView()

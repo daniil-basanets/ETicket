@@ -9,8 +9,13 @@ namespace ETicketMobile.WebAccess.Network.WebService
 {
     public class HttpClientService
     {
+        #region Fields
+
         private readonly HttpClient httpClient;
+
         private readonly Uri serverAddress;
+
+        #endregion
 
         public HttpClientService(Uri serverAddress)
         {

@@ -12,6 +12,8 @@ namespace ETicketMobile.ViewModels.UserAccount
 {
     public class UserTransactionsViewModel : ViewModelBase
     {
+        #region Fields
+
         private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
@@ -19,11 +21,17 @@ namespace ETicketMobile.ViewModels.UserAccount
 
         private IEnumerable<Transaction> transactions;
 
+        #endregion
+
+        #region Properties
+
         public IEnumerable<Transaction> Transactions
         {
             get => transactions;
             set => SetProperty(ref transactions, value);
         }
+
+        #endregion
 
         public UserTransactionsViewModel(INavigationService navigationService) 
             : base(navigationService)
