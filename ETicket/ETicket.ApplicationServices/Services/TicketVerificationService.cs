@@ -97,7 +97,7 @@ namespace ETicket.ApplicationServices.Services
                 result = new VerifyTicketResponceDto { IsValid = false, ErrorMessage = "Ticket expired" };
             }
             //Compare ticket areas with train station
-            if (!ticket.TicketArea.Any(t => t.AreaId == station.Area.Id))
+            else if (!ticket.TicketArea.Any(t => t.AreaId == station.Area.Id))
             {
                 result = new VerifyTicketResponceDto { IsValid = false, ErrorMessage = "Ticket does not contain the zone" };
             }
