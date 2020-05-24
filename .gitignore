@@ -8,7 +8,7 @@
 _build/
 _site/
 **/logs
-
+Properties/
 
 Project_Readme.html
 
