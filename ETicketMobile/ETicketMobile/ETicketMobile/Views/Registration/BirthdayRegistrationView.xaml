@@ -8,55 +8,14 @@
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Registration.BirthdayRegistrationView">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <ControlTemplate x:Key="placeholderTemplate">
-                <Label 
-                    Text="{TemplateBinding Placeholder}"
-                    FontAttributes="Bold"
-                    TextColor="White"
-                    BackgroundColor="#B73562"
-                    HeightRequest="50"
-                    VerticalTextAlignment="Center"
-                    HorizontalTextAlignment="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{TemplateBinding ToggleCommand, Mode=OneTime}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-            </ControlTemplate>
-
-            <ControlTemplate x:Key="footerTemplate">
-
-                <Grid BackgroundColor="#B73562">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Button 
-                        Grid.Column="0"
-                        Text="{TemplateBinding CancelButtonText, Mode=OneTime}"
-                        TextColor="White"
-                        BackgroundColor="Transparent"
-                        Command="{TemplateBinding CancelCommand, Mode=OneTime}"/>
-                    <Button 
-                        Grid.Column="1"
-                        Text="{TemplateBinding AcceptButtonText, Mode=OneWay}"
-                        TextColor="White"
-                        BackgroundColor="Transparent"
-                        Command="{TemplateBinding AcceptCommand, Mode=OneTime}"/>
-                </Grid>
-            </ControlTemplate>
-        </ResourceDictionary>
-    </ContentPage.Resources>
-
     <ContentPage.Content>
 
         <Grid Margin="10, 0">
+            
             <Grid.RowDefinitions>
-                <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="1.6*"/>
                 <RowDefinition Height="0.5*"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="0.9*"/>
                 <RowDefinition Height="7*"/>
             </Grid.RowDefinitions>
 
@@ -68,21 +27,22 @@
             <telerikInput:RadDateTimePicker
                 Grid.Row="1"
                 x:Name="BirthDay"
-                DefaultDisplayDate="{Binding DefaultDisplayDate}"
                 DisplayStringFormat="dd.MM.yyyy"
                 SpinnerFormatString="yyyy MMMM dd"
-                StartDate="1990,1,1"
-                EndDate="2013,1,1"
-                Placeholder="Pick a time!"
+                StartDate="1900, 1, 1"
+                EndDate="2013, 1, 1"
+                HorizontalOptions="Center"
+                Placeholder="{Binding DefaultDisplayDate, StringFormat='{0:dd.MM.yyyy}', Mode=OneWay}"
                 AreSpinnerHeadersVisible="True">
             </telerikInput:RadDateTimePicker>
 
             <telerikInput:RadButton
                 Grid.Row="2"
-                Command="{Binding NavigateToConfirmEmailView}"
+                Command="{Binding NavigateToConfirmEmailView, Mode=OneTime}"
                 CommandParameter="{Binding Source={x:Reference BirthDay}, Path=SelectedDate, Mode=OneWay}"
                 Text="{local:Translate Text=Next}"
                 Style="{x:StaticResource Key=ActionButtonStyle}"/>
+            
         </Grid>
 
     </ContentPage.Content>

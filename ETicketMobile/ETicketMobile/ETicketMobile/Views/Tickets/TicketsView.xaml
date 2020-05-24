@@ -30,13 +30,11 @@
                 x:Name="Tickets"
                 ItemsSource="{Binding Tickets, Mode=OneWay}"
                 SeparatorVisibility="None"
-                Margin="30, 10, 30, 10"
                 RowHeight="100">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="tickets:TicketType">
                         <ViewCell>
                             <Frame
-                                HorizontalOptions="FillAndExpand"
                                 BackgroundColor="White"
                                 CornerRadius="10"
                                 Margin="5"

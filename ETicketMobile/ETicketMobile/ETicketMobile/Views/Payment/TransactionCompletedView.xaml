@@ -29,9 +29,6 @@
             
             <Image 
                 Grid.Row="2"
-                HeightRequest="80"
-                WidthRequest="80"
-                VerticalOptions="Start"
                 Source="success.png"/>
             
             <Label

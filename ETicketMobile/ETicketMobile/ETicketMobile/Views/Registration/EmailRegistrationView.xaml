@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid Margin="10">
+    <Grid Margin="10, 10">
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -71,14 +71,12 @@
         <Label
             Grid.Column="0"
             Grid.Row="6"
-            VerticalTextAlignment="End"
             Text="{local:Translate Text=AlreadySignUp}"
             Style="{x:StaticResource Key=NormalLabelStyle}"/>
 
         <telerikInput:RadButton
             Grid.Column="1"
             Grid.Row="6"
-            VerticalContentAlignment="End"
             Command="{Binding NavigateToSignInView, Mode=OneTime}"
             Text="{local:Translate Text=SignIn}"
             Style="{x:StaticResource Key=SecondaryActionButtonStyle}"/>

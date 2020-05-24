@@ -26,7 +26,7 @@
                     <ViewCell>
                         <Frame
                             BackgroundColor="White"
-                            Padding="12, 12, 0, 12"
+                            Padding="12"
                             BorderColor="#F7F8FA">
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -43,9 +43,7 @@
                                 <Image
                                     Grid.Column="1"
                                     Source="RightArrow.png"
-                                    HorizontalOptions="End"
-                                    WidthRequest="50"
-                                    HeightRequest="50"/>
+                                    HorizontalOptions="End"/>
                             </Grid>
                         </Frame>
                     </ViewCell>

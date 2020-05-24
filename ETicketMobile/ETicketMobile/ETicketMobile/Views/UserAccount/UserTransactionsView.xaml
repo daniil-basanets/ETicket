@@ -29,7 +29,6 @@
         <ListView
             ItemsSource="{Binding Transactions, Mode=OneWay}"
             SeparatorVisibility="None"
-            HasUnevenRows="True"
             Margin="10"
             RowHeight="100">
             <ListView.ItemTemplate>
