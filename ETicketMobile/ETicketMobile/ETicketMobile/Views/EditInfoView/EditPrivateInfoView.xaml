@@ -1,8 +1,71 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:prism="http://prismlibrary.com"
-             prism:ViewModelLocator.AutowireViewModel="True"
-             x:Class="ETicketMobile.Views.EditInfoView.EditPrivateInfoView">
-  
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com"             
+    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile" 
+    xmlns:bindingconverters="clr-namespace:ETicketMobile.UserInterface.BindingConverters;assembly=ETicketMobile.UserInterface"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="ETicketMobile.Views.EditInfoView.EditPrivateInfoView"
+    Title="Edit your private information">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="telerikInput:RadEntry">
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+            </Style>
+            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter" />
+            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+
+        <StackLayout Margin="10, 0">
+
+            <Label 
+                VerticalOptions="Start"
+                Margin="10,10,10,10"
+                Text="Edit your Document Id"
+                Style="{StaticResource TitleLabelStyle}" />
+
+            <telerikInput:RadEntry    
+                VerticalOptions="Start"
+                Margin="10,10,10,10"
+                Text="{Binding Document, Mode=TwoWay}"    
+                WatermarkText="{local:Translate Document ID}"
+                Style="{StaticResource LoginEntryStyle}"
+                Keyboard="Email"/>
+
+            <Label 
+                VerticalOptions="Start"
+                Margin="10,10,10,10"
+                Text="Edit your Privilege"
+                Style="{StaticResource TitleLabelStyle}" />
+
+            <telerikInput:RadEntry
+                VerticalOptions="Start"
+                Margin="10,10,10,10"
+                Text="{Binding Privilege, Mode=TwoWay}"
+                WatermarkText="{local:Translate Privilege}"
+                Style="{StaticResource LoginEntryStyle}"
+                Keyboard="Email"/>
+
+            <telerikInput:RadButton
+                VerticalOptions="Start"
+                Margin="10,10,10,10"
+                Command="{Binding NavigateToSuccessfullySavedView}"
+                Text="{local:Translate Confirm}"
+                Style="{StaticResource ActionButtonStyle}" />
+            
+        </StackLayout>
+        
+    </Grid>
 </ContentPage>

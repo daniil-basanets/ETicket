@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS0006: Metadata file 'C:\Users\Evgeny\source\repos\ETicket\ETicketMobile\ETicketMobile\ETicketMobile\bin\Debug\netstandard2.1\ETicketMobile.dll' could not be found
+dotnet_diagnostic.CS0006.severity = error

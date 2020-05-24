@@ -84,7 +84,6 @@ namespace ETicketMobile
             containerRegistry.RegisterForNavigation<EditPrivateInfoView, EditPrivateInfoViewModel>();
             containerRegistry.RegisterForNavigation<SuccessfullySavedView, SuccessfullySavedViewModel>();
 
-
         }
 
         private async Task InitCulture(ILocalApi localApi, ILocalize localize)

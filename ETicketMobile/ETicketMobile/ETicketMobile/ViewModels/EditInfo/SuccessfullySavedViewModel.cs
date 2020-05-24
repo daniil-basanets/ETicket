@@ -1,16 +1,21 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ETicketMobile.ViewModels
 {
-    public class SuccessfullySavedViewModel : BindableBase
+    public class SuccessfullySavedViewModel //: ViewModelBase
     {
-        public SuccessfullySavedViewModel()
-        {
 
-        }
+
+        //private INavigationService navigationService;
+
+        //public SuccessfullySavedViewModel(INavigationService navigationService)
+        //{
+        //    this.navigationService = navigationService;
+        //}
     }
 }

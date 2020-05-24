@@ -27,7 +27,7 @@
       <HintPath>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v9.0\Mono.Android.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.XamarinForms.Common">
-      <HintPath>\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Portable\Telerik.XamarinForms.Common.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Portable\Telerik.XamarinForms.Common.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.XamarinForms.DataControls">
       <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Portable\Telerik.XamarinForms.DataControls.dll</HintPath>
@@ -45,9 +45,6 @@
       <DependentUpon>AppResource.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="Views\EditInfoView\EditPrivateInfoView.xaml.cs">
-      <DependentUpon>EditPrivateInfoView.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\ForgotPassword\ForgotPasswordView.xaml.cs">
       <DependentUpon>ForgotPasswordView.xaml</DependentUpon>
