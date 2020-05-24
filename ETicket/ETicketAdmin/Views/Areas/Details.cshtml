@@ -1,6 +1,7 @@
 @model ETicket.ApplicationServices.DTOs.AreaDto
 
 @{
+    
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -38,8 +39,8 @@
         </dd>
         <dt class="col-sm-2">Map</dt>
         <dd class="col-sm-10">
-            <button class="btn btn-google btn-block fab fa-google fa-fw btn-sm" onclick='initMap(@Json.Serialize(Model.Stations.Select(c=>new{c.Latitude,c.Longitude})))' style="width:120px">oogle Map</button>
-            <div id="GeoLocation" style="width:100%;height:400px;"></div>
+            <button class="btn btn-google btn-block fab fa-google fa-fw btn-sm" onclick='initMap(@Json.Serialize(Model.Stations.Select(c=> new {c.Latitude, c.Longitude})))' style="width:120px">oogle Map</button>
+            <div id="GeoLocation" style="width:100%;height:400px; display: none"></div>
         </dd>
     </dl>
 </div>
@@ -49,27 +50,6 @@
     <a asp-action="Index">Back to Area table</a>
 </div>
 
-
-<script>
-
-
-      var map;
-      function initMap(coords) {
-          alert(coords);
-        var marks = JSON.parse(coords);
-        alert(marks);
-        var uluru = {lat: marks[0].latitude, lng: marks[0].longitude};
-            var x = document.getElementById("GeoLocation");
-        
-            var map = new google.maps.Map(
-                document.getElementById('GeoLocation'), {zoom: 12, center: uluru});
-            
-            for (var i = 0; i<marks.length;i++)
-                {
-                    uluru = {lat: marks[i].latitude, lng: marks[i].longitude};
-                    new google.maps.Marker({position: uluru, map: map});
-                }
-      }
-    </script>
+<script src="~/js/google-map-area-display-stations.js"></script>
     
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6R62fVbZG6cb50dEJZDMle-TGT28drV4&callback=initMap"></script>
