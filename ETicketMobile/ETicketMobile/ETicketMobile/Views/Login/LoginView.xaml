@@ -7,7 +7,6 @@
     xmlns:bindingconverters="clr-namespace:ETicketMobile.UserInterface.BindingConverters;assembly=ETicketMobile.UserInterface"
     xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
     prism:ViewModelLocator.AutowireViewModel="True"
-    Title="Login"
     x:Class="ETicketMobile.Views.Login.LoginView">
 
     <ContentPage.Resources>

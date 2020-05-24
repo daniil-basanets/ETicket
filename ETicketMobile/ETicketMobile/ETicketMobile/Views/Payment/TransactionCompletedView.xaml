@@ -5,7 +5,6 @@
     xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
     xmlns:prism="http://prismlibrary.com" 
     prism:ViewModelLocator.AutowireViewModel="True"
-    Title="Complete"
     x:Class="ETicketMobile.Views.Payment.TransactionCompletedView">
 
     <ContentPage.Content>

@@ -6,7 +6,6 @@
     xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile" 
     xmlns:tickets="clr-namespace:ETicketMobile.Business.Model.Tickets;assembly=ETicketMobile.Business"
     prism:ViewModelLocator.AutowireViewModel="True"
-    Title="Areas"
     x:Class="ETicketMobile.Views.Tickets.AreasView">
 
     <ContentPage.Resources>

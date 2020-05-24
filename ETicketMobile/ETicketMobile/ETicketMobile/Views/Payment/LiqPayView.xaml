@@ -7,7 +7,6 @@
     xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Payment.LiqPayView"
-    Title="Payment"
     BackgroundColor="White">
 
     <ContentPage.Resources>
