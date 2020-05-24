@@ -69,7 +69,6 @@ namespace ETicketMobile
             containerRegistry.RegisterForNavigation<ForgotPasswordView, ForgotPasswordViewModel>();
             containerRegistry.RegisterForNavigation<TicketsView, TicketsViewModel>();
             containerRegistry.RegisterForNavigation<PhoneRegistrationView, PhoneRegistrationViewModel>();
-            containerRegistry.RegisterForNavigation<BuyTicketView, BuyTicketViewModel>();
             containerRegistry.RegisterForNavigation<ConfirmEmailView, ConfirmEmailViewModel>();
             containerRegistry.RegisterForNavigation<ConfirmForgotPasswordView, ConfirmForgotPasswordViewModel>();
             containerRegistry.RegisterForNavigation<CreateNewPasswordView, CreateNewPasswordViewModel>();
