@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Business.Mapping;
@@ -12,6 +13,7 @@ using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Tickets
@@ -22,6 +24,8 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
+
+        private readonly IPageDialogService dialogService;
 
         private readonly ILocalApi localApi;
 
@@ -48,11 +52,14 @@ namespace ETicketMobile.ViewModels.Tickets
 
         #endregion
 
-        public TicketsViewModel(INavigationService navigationService, ILocalApi localApi)
+        public TicketsViewModel(INavigationService navigationService, IPageDialogService dialogService, ILocalApi localApi)
             : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
+
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
 
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
@@ -62,8 +69,17 @@ namespace ETicketMobile.ViewModels.Tickets
 
         public async override void OnAppearing()
         {
-            accessToken = await GetAccessTokenAsync();
-            Tickets = await GetTicketsAsync();
+            try
+            {
+                accessToken = await GetAccessTokenAsync();
+                Tickets = await GetTicketsAsync();
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+
+                return;
+            }
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -92,20 +108,6 @@ namespace ETicketMobile.ViewModels.Tickets
             }
 
             var tickets = AutoMapperConfiguration.Mapper.Map<IEnumerable<TicketType>>(ticketsDto);
-
-            //var tickets = new List<TicketType>
-            //{
-            //    new TicketType { Name = "1 hour", DurationHours = 1, Amount = 1, Coefficient = 1},
-            //    new TicketType { Name = "1 hour", DurationHours = 1, Amount = 1, Coefficient = 1},
-            //    new TicketType { Name = "1 hour", DurationHours = 1, Amount = 1, Coefficient = 1},
-            //    new TicketType { Name = "1 hour", DurationHours = 1, Amount = 1, Coefficient = 1},
-            //    new TicketType { Name = "1 hour", DurationHours = 1, Amount = 1, Coefficient = 1},
-            //    new TicketType { Name = "1 hour", DurationHours = 1, Amount = 1, Coefficient = 1},
-            //    new TicketType { Name = "1 hour", DurationHours = 1, Amount = 1, Coefficient = 1},
-            //    new TicketType { Name = "1 hour", DurationHours = 1, Amount = 1, Coefficient = 1},
-            //    new TicketType { Name = "1 hour", DurationHours = 1, Amount = 1, Coefficient = 1},
-            //    new TicketType { Name = "1 hour", DurationHours = 1, Amount = 1, Coefficient = 1},
-            //};
 
             return tickets;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
@@ -11,6 +12,7 @@ using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Registration
@@ -21,6 +23,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
+
+        private readonly IPageDialogService dialogService;
 
         private readonly ILocalApi localApi;
         
@@ -69,11 +73,14 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public ConfirmEmailViewModel(INavigationService navigationService, ILocalApi localApi) 
+        public ConfirmEmailViewModel(INavigationService navigationService, IPageDialogService dialogService, ILocalApi localApi) 
             : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
+
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
 
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
@@ -121,7 +128,17 @@ namespace ETicketMobile.ViewModels.Registration
                 return;
 
             var email = navigationParameters.GetValue<string>("email");
-            await RequestActivationCodeAsync(email);
+
+            try
+            {
+                await RequestActivationCodeAsync(email);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+
+                return;
+            }
 
             ActivationCodeTimer = 60;
 
@@ -140,14 +157,23 @@ namespace ETicketMobile.ViewModels.Registration
             if (!IsValid(code))
                 return;
 
-            var userCreated = await ConfirmAndCreateUserAsync(code);
+            try
+            {
+                var userCreated = await ConfirmAndCreateUserAsync(code);
 
-            if (!userCreated)
+                if (!userCreated)
+                    return;
+
+                var token = await GetTokenAsync();
+                await localApi.AddAsync(token);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+
                 return;
-
-            var token = await GetTokenAsync();
-
-            await localApi.AddAsync(token);
+            }
+            
             await navigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
         }
         private async Task<Token> GetTokenAsync()

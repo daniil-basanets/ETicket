@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Business.Mapping;
@@ -62,13 +63,22 @@ namespace ETicketMobile.ViewModels.Tickets
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
-            httpClient = new HttpClientService(WebAccess.Network.ServerConfig.Address);
+            httpClient = new HttpClientService(ServerConfig.Address);
         }
 
         public async override void OnAppearing()
         {
-            accessToken = await GetAccessTokenAsync();
-            Areas = await GetAreasAsync();
+            try
+            {
+                accessToken = await GetAccessTokenAsync();
+                Areas = await GetAreasAsync();
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+
+                return;
+            }
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)

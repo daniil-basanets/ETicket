@@ -75,14 +75,14 @@ namespace ETicketMobile.ViewModels.Registration
 
         private bool IsValid(string firstName)
         {
-            if (IsNameEmpty(firstName))
+            if (string.IsNullOrEmpty(firstName))
             {
                 FirstNameWarning = AppResource.FirstNameEmpty;
 
                 return false;
             }
 
-            if (IsNameEmpty(lastName))
+            if (string.IsNullOrEmpty(lastName))
             {
                 LastNameWarning = AppResource.LastNameEmpty;
 
@@ -104,11 +104,6 @@ namespace ETicketMobile.ViewModels.Registration
             }
 
             return true;
-        }
-
-        private bool IsNameEmpty(string name)
-        {
-            return string.IsNullOrEmpty(name);
         }
 
         private bool IsNameValid(string name)

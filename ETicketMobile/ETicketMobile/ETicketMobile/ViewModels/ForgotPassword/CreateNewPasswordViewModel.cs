@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Resources;
@@ -8,6 +9,7 @@ using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.ForgotPassword
@@ -25,6 +27,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
+
+        private readonly IPageDialogService dialogService;
 
         private readonly HttpClientService httpClient;
 
@@ -63,11 +67,14 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #endregion
 
-        public CreateNewPasswordViewModel(INavigationService navigationService) 
+        public CreateNewPasswordViewModel(INavigationService navigationService, IPageDialogService dialogService) 
             : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
+
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
 
             httpClient = new HttpClientService(ServerConfig.Address);
         }
@@ -82,8 +89,18 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             if (!IsValid(password))
                 return;
 
-            if (! await RequestChangePasswordAsync(password))
+            try
+            {
+                if (! await RequestChangePasswordAsync(password))
+                    return;
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+
                 return;
+            }
+            
 
             await navigationService.NavigateAsync(nameof(LoginView));
         }

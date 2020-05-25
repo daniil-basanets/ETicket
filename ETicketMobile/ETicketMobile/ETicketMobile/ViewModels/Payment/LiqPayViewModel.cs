@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -9,6 +10,7 @@ using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Payment
@@ -26,6 +28,7 @@ namespace ETicketMobile.ViewModels.Payment
         #region Fields
 
         private readonly INavigationService navigationService;
+        private readonly IPageDialogService dialogService;
 
         private IEnumerable<int> areasId;
         private int ticketTypeId;
@@ -96,11 +99,14 @@ namespace ETicketMobile.ViewModels.Payment
 
         #endregion
 
-        public LiqPayViewModel(INavigationService navigationService)
+        public LiqPayViewModel(INavigationService navigationService, IPageDialogService dialogService)
             : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
+
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
 
             httpClient = new HttpClientService(ServerConfig.Address);
         }
@@ -126,8 +132,17 @@ namespace ETicketMobile.ViewModels.Payment
             areasId = navigationParameters["areas"] as IEnumerable<int>;
             email = navigationParameters.GetValue<string>("email");
 
-            var price = await RequestGetTicketPriceAsync();
-            Amount = Math.Round(price.TotalPrice, 2);
+            try
+            {
+                var price = await RequestGetTicketPriceAsync();
+                Amount = Math.Round(price.TotalPrice, 2);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+
+                return;
+            }
         }
 
         private async Task<GetTicketPriceResponseDto> RequestGetTicketPriceAsync()
@@ -174,7 +189,16 @@ namespace ETicketMobile.ViewModels.Payment
                     expirationDateDescriptor.ExpirationYear,
                     cvv2);
 
-            var response = await RequestBuyTicketAsync(buyTicketRequestDto);
+            try
+            {
+                var response = await RequestBuyTicketAsync(buyTicketRequestDto);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+
+                return;
+            }
 
             await navigationService.NavigateAsync(nameof(TransactionCompletedView));
         }

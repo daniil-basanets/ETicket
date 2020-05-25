@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Android.Util;
@@ -9,6 +10,7 @@ using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Registration
@@ -23,7 +25,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Fields
 
-        protected INavigationService navigationService;
+        private readonly INavigationService navigationService;
+        private readonly IPageDialogService dialogService;
 
         private readonly HttpClientService httpClient;
 
@@ -50,22 +53,31 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public EmailRegistrationViewModel(INavigationService navigationService) 
+        public EmailRegistrationViewModel(INavigationService navigationService, IPageDialogService dialogService) 
             : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
+
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
 
             httpClient = new HttpClientService(ServerConfig.Address);
         }
 
         private async void OnMoveToPhoneRegistrationView(string email)
         {
-            if (!IsValid(email))
-                return;
+            try
+            {
+                if (! await IsValid(email))
+                    return;
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
 
-            if (await CheckUserExistsAsync(email))
                 return;
+            }
 
             var navigationParams = new NavigationParameters { { "email", email } };
             await navigationService.NavigateAsync(nameof(PhoneRegistrationView), navigationParams);
@@ -76,18 +88,9 @@ namespace ETicketMobile.ViewModels.Registration
             await navigationService.NavigateAsync(nameof(LoginView));
         }
 
-        private async Task<bool> RequestUserExistsAsync(string email)
-        {
-            var signUpRequestDto = new SignUpRequestDto { Email = email };
-
-            var isUserExists = await httpClient.PostAsync<SignUpRequestDto, SignUpResponseDto>(AuthorizeEndpoint.CheckEmail, signUpRequestDto);
-
-            return isUserExists.Succeeded;
-        }
-
         #region Validation
 
-        private bool IsValid(string email)
+        private async Task<bool> IsValid(string email)
         {
             if (IsEmailEmpty(email))
             {
@@ -110,21 +113,16 @@ namespace ETicketMobile.ViewModels.Registration
                 return false;
             }
 
-            return true;
-        }
-
-        private async Task<bool> CheckUserExistsAsync(string email)
-        {
             var isUserExists = await RequestUserExistsAsync(email);
 
             if (isUserExists)
             {
                 EmailWarning = AppResource.EmailTaken;
 
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
 
         private bool IsEmailEmpty(string email)
@@ -140,6 +138,15 @@ namespace ETicketMobile.ViewModels.Registration
         private bool IsEmailConstainsCorrectLong(string email)
         {
             return email.Length <= EmailMaxLength;
+        }
+
+        private async Task<bool> RequestUserExistsAsync(string email)
+        {
+            var signUpRequestDto = new SignUpRequestDto { Email = email };
+
+            var isUserExists = await httpClient.PostAsync<SignUpRequestDto, SignUpResponseDto>(AuthorizeEndpoint.CheckEmail, signUpRequestDto);
+
+            return isUserExists.Succeeded;
         }
 
         #endregion

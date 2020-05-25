@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Registration
@@ -22,6 +24,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
+
+        private readonly IPageDialogService dialogService;
 
         private ICommand navigateToConfirmEmailView;
 
@@ -58,11 +62,14 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public BirthdayRegistrationViewModel(INavigationService navigationService) 
+        public BirthdayRegistrationViewModel(INavigationService navigationService, IPageDialogService dialogService) 
             : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
+
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
 
             httpClient = new HttpClientService(ServerConfig.Address);
         }
@@ -88,7 +95,17 @@ namespace ETicketMobile.ViewModels.Registration
         private async void OnNavigateToConfirmEmailView(DateTime birthday)
         {
             var email = navigationParameters.GetValue<string>("email");
-            await RequestActivationCodeAsync(email);
+
+            try
+            {
+                await RequestActivationCodeAsync(email);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+
+                return;
+            }
 
             navigationParameters.Add("birth", birthday.Date);
             await navigationService.NavigateAsync(nameof(ConfirmEmailView), navigationParameters);

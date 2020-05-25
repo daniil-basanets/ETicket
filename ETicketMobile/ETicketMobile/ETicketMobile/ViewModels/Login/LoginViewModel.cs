@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Android.Util;
@@ -13,6 +14,7 @@ using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Login
@@ -22,6 +24,8 @@ namespace ETicketMobile.ViewModels.Login
         #region Fields
 
         private readonly INavigationService navigationService;
+        private readonly IPageDialogService dialogService;
+
         private readonly ILocalApi localApi;
 
         private readonly HttpClientService httpClientService;
@@ -75,7 +79,7 @@ namespace ETicketMobile.ViewModels.Login
 
         #endregion
 
-        public LoginViewModel(INavigationService navigationService, ILocalApi localApi)
+        public LoginViewModel(INavigationService navigationService, IPageDialogService dialogService, ILocalApi localApi)
             : base(navigationService)
         {
             this.navigationService = navigationService
@@ -83,6 +87,9 @@ namespace ETicketMobile.ViewModels.Login
 
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
+
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
 
             httpClientService = new HttpClientService(ServerConfig.Address);
         }
@@ -112,7 +119,18 @@ namespace ETicketMobile.ViewModels.Login
             if (!IsValid(email))
                 return;
 
-            var token = await GetTokenAsync(email);
+            Token token = null;
+            try
+            {
+                token = await GetTokenAsync(email);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+
+                return;
+            }
+
             if (token.RefreshJwtToken == null)
             {
                 //TODO UserDoesnExists

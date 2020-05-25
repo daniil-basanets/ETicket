@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
@@ -8,6 +9,7 @@ using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.ForgotPassword
@@ -18,6 +20,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
+
+        private readonly IPageDialogService dialogService;
 
         private readonly HttpClientService httpClient;
 
@@ -37,10 +41,10 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #region Properties
 
-        public ICommand NavigateToCreateNewPasswordView => navigateToCreateNewPasswordView 
+        public ICommand NavigateToCreateNewPasswordView => navigateToCreateNewPasswordView
             ??= new Command<string>(OnNavigateToCreateNewPasswordView);
 
-        public ICommand SendActivationCode => sendActivationCode 
+        public ICommand SendActivationCode => sendActivationCode
             ??= new Command(OnSendActivationCode);
 
         public string ConfirmEmailWarning
@@ -63,11 +67,14 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #endregion
 
-        public ConfirmForgotPasswordViewModel(INavigationService navigationService)
+        public ConfirmForgotPasswordViewModel(INavigationService navigationService, IPageDialogService dialogService)
             : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
+
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
 
             httpClient = new HttpClientService(ServerConfig.Address);
         }
@@ -93,7 +100,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             ActivationCodeTimer = 0;
         }
 
-        private void TimerElapsed(object sender, ElapsedEventArgs e) 
+        private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
             ActivationCodeTimer--;
 
@@ -106,7 +113,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
             this.navigationParameters = navigationParameters;
-            
+
             email = navigationParameters.GetValue<string>("email");
         }
 
@@ -115,7 +122,16 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             if (ActivationCodeTimer != 0)
                 return;
 
-            await RequestActivationCodeAsync(email);
+            try
+            {
+                await RequestActivationCodeAsync(email);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+
+                return;
+            }
 
             ActivationCodeTimer = 60;
 
@@ -131,8 +147,17 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private async void OnNavigateToCreateNewPasswordView(string code)
         {
-            if (! await IsValidAsync(code))
+            try
+            {
+                if (!await IsValidAsync(code))
+                    return;
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+
                 return;
+            }
 
             await navigationService.NavigateAsync(nameof(CreateNewPasswordView), navigationParameters);
         }
@@ -150,7 +175,10 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
             var resetPasswordRequestDto = CreateConfirmEmailRequestDto(code);
 
+
             var confirmEmailIsSucceeded = await ConfirmEmailAsync(resetPasswordRequestDto);
+
+
             if (!confirmEmailIsSucceeded)
             {
                 ConfirmEmailWarning = AppResource.ConfirmEmailWrong;

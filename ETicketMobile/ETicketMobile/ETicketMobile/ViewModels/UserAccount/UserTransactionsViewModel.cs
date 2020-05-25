@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Model.Transactions;
@@ -7,6 +8,7 @@ using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
+using Prism.Services;
 
 namespace ETicketMobile.ViewModels.UserAccount
 {
@@ -16,6 +18,8 @@ namespace ETicketMobile.ViewModels.UserAccount
 
         private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
+
+        private readonly IPageDialogService dialogService;
 
         private readonly HttpClientService httpClient;
 
@@ -33,11 +37,14 @@ namespace ETicketMobile.ViewModels.UserAccount
 
         #endregion
 
-        public UserTransactionsViewModel(INavigationService navigationService) 
+        public UserTransactionsViewModel(INavigationService navigationService, IPageDialogService dialogService)
             : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
+
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
 
             httpClient = new HttpClientService(ServerConfig.Address);
         }
@@ -48,7 +55,16 @@ namespace ETicketMobile.ViewModels.UserAccount
 
             var email = navigationParameters.GetValue<string>("email");
 
-            Transactions = await GetTransactionsAsync(email);
+            try
+            {
+                Transactions = await GetTransactionsAsync(email);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+
+                return;
+            }
         }
 
         private async Task<IEnumerable<Transaction>> GetTransactionsAsync(string email)
