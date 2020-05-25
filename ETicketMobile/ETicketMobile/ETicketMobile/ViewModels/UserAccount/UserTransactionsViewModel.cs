@@ -16,9 +16,6 @@ namespace ETicketMobile.ViewModels.UserAccount
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
-        private INavigationParameters navigationParameters;
-
         private readonly IPageDialogService dialogService;
 
         private readonly HttpClientService httpClient;
@@ -40,9 +37,6 @@ namespace ETicketMobile.ViewModels.UserAccount
         public UserTransactionsViewModel(INavigationService navigationService, IPageDialogService dialogService)
             : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
@@ -51,8 +45,6 @@ namespace ETicketMobile.ViewModels.UserAccount
 
         public override async void OnNavigatedTo(INavigationParameters navigationParameters)
         {
-            this.navigationParameters = navigationParameters;
-
             var email = navigationParameters.GetValue<string>("email");
 
             try
