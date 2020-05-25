@@ -4,11 +4,15 @@ using Microsoft.AspNetCore.Http;
 using log4net;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace ETicket.WebAPI.Controllers
 {
     [Route("api/users")]
     [ApiController]
+    [SwaggerTag("User service")]
     public class UsersController : ControllerBase
     {
         #region Private members
@@ -28,8 +32,10 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/users/{id}/tickets
         [HttpGet("{userid}/tickets")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "Get all tickets for concrete user", Description = "Allowed: authorized user")]
+        [SwaggerResponse(200, "Ok", typeof(IEnumerable<TicketDto>))]
+        [SwaggerResponse(400, "Bad request")]
+        [SwaggerResponse(401, "Unauthorized")]
         public IActionResult GetTicketsByUser(Guid userId)
         {
             log.Info(nameof(GetTicketsByUser));
@@ -50,9 +56,11 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/users/5
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [SwaggerOperation(Summary = "Get user by id", Description = "Allowed: authorized user")]
+        [SwaggerResponse(200, "Ok", typeof(UserDto))]
+        [SwaggerResponse(400, "Bad request")]
+        [SwaggerResponse(404, "Not found")]
+        [SwaggerResponse(401, "Unauthorized")]
         public IActionResult GetUser(Guid id)
         {
             log.Info(nameof(UsersController.GetUser));
@@ -80,9 +88,11 @@ namespace ETicket.WebAPI.Controllers
 
         // PUT: api/users/5
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdateUser(Guid id, UserDto userDto)
+        [SwaggerOperation(Summary = "Update user", Description = "Allowed: authorized user")]
+        [SwaggerResponse(204, "Ok, without content")]
+        [SwaggerResponse(400, "Bad request")]
+        [SwaggerResponse(401, "Unauthorized")]
+        public IActionResult UpdateUser(Guid id, [FromBody, SwaggerRequestBody("User payload", Required = true)] UserDto userDto)
         {
             log.Info(nameof(UsersController.UpdateUser));
 
@@ -109,9 +119,10 @@ namespace ETicket.WebAPI.Controllers
 
         // POST: api/users
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CreateUser(UserDto userDto)
+        [SwaggerOperation(Summary = "Create user", Description = "Allowed: everyone")]
+        [SwaggerResponse(201, "Ok, created")]
+        [SwaggerResponse(400, "Bad request")]
+        public IActionResult CreateUser([FromBody, SwaggerRequestBody("User payload", Required = true)] UserDto userDto)
         {
             log.Info(nameof(UsersController.CreateUser));
 

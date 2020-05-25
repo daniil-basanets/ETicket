@@ -12,11 +12,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ETicket.WebAPI.Controllers
 {
-    [Route("api/Authentication")]
+    [Route("api/authentication")]
     [ApiController]
+    [SwaggerTag("Authentication service")]
     public class AuthenticationController : ControllerBase
     {
         private readonly UserManager<IdentityUser> userManager;
@@ -40,7 +42,10 @@ namespace ETicket.WebAPI.Controllers
 
         // Check if email exists
         [HttpPost("checkEmail")]
-        public IActionResult CheckEmail([FromBody] RegistrationRequest request)
+        [SwaggerOperation(Summary = "Check if email exists in data base", Description = "It is used for extra validation on client.")]
+        [SwaggerResponse(200, "Ok")]
+        [SwaggerResponse(400, "Bad request")]
+        public IActionResult CheckEmail([FromBody, SwaggerRequestBody("Check email payload", Required = true)] RegistrationRequest request)
         {
             if (ModelState.IsValid)
             {
@@ -58,7 +63,11 @@ namespace ETicket.WebAPI.Controllers
 
         // Registration user
         [HttpPost("registration")]
-        public async Task<IActionResult> Registration([FromBody] RegistrationRequest request)
+        [SwaggerOperation(Summary = "Registration")]
+        [SwaggerResponse(200, "Ok")]
+        [SwaggerResponse(400, "Bad request")]
+        [SwaggerResponse(500, "Internal server error")]
+        public async Task<IActionResult> Registration([FromBody, SwaggerRequestBody("Registration payload", Required = true)] RegistrationRequest request)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +104,10 @@ namespace ETicket.WebAPI.Controllers
 
         // Login user
         [HttpPost("login")]
-        public async Task<IActionResult> GetToken([FromBody] AuthenticationRequest request)
+        [SwaggerOperation(Summary = "Log in endpoint", Description = "Returns a pair of tokens: access token; refresh token.")]
+        [SwaggerResponse(400, "Bad request")]
+        [SwaggerResponse(500, "Internal server error")]
+        public async Task<IActionResult> GetToken([FromBody, SwaggerRequestBody("Authentication payload", Required = true)] AuthenticationRequest request)
         {
             if (ModelState.IsValid)
             {
@@ -122,7 +134,9 @@ namespace ETicket.WebAPI.Controllers
 
         // Refresh access_jwtToken
         [HttpPost("refreshUserToken")]
-        public async Task<IActionResult> RefreshUserToken([FromBody] string RefreshToken)
+        [SwaggerOperation(Summary = "Refresh access token endpoint", Description = "Returns a pair of tokens: access token; refresh token.")]
+        [SwaggerResponse(404, "Not found")]
+        public async Task<IActionResult> RefreshUserToken([FromBody, SwaggerRequestBody("Refresh token", Required = true)] string RefreshToken)
         {
             var token = await context.UserTokens.FirstOrDefaultAsync(refT => refT.Value == RefreshToken);// check if token exists
 
@@ -145,7 +159,11 @@ namespace ETicket.WebAPI.Controllers
         }
 
         [HttpPost("resetPassword")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        [SwaggerOperation(Summary = "Reset password", Description = "Calls after verifying special secret code")]
+        [SwaggerResponse(200, "Ok")]
+        [SwaggerResponse(404, "Not found")]
+        [SwaggerResponse(500, "Internal server error")]
+        public async Task<IActionResult> ResetPassword([FromBody, SwaggerRequestBody("Reset password payload", Required = true)] ResetPasswordRequest request)
         {
             var user = await userManager.FindByEmailAsync(request.Email);
             bool succeeded = false;
@@ -167,7 +185,10 @@ namespace ETicket.WebAPI.Controllers
         }
 
         [HttpPost("checkCode")]
-        public async Task<IActionResult> CheckCode([FromBody] CheckCodeRequest request)
+        [SwaggerOperation(Summary = "Check special secret code", Description = "Calls to confirm email and verify code before resetting password")]
+        [SwaggerResponse(200, "Ok")]
+        [SwaggerResponse(400, "Bad request")]
+        public async Task<IActionResult> CheckCode([FromBody, SwaggerRequestBody("Check code payload", Required = true)] CheckCodeRequest request)
         {
             var code = await codeService.Get(request.Code, request.Email);
             bool succeeded = false;
@@ -184,7 +205,8 @@ namespace ETicket.WebAPI.Controllers
         }
 
         [HttpPost("sendCode")]
-        public void SendSecretCodeToUser([FromBody] string email)
+        [SwaggerOperation(Summary = "Send special secret code", Description = "Calls to send special code to user's email. No more than 3 mails for 1 email.")]
+        public void SendSecretCodeToUser([FromBody, SwaggerRequestBody("Email to send code", Required = true)] string email)
         {
             if (codeService.Count(email) < 3)
             {

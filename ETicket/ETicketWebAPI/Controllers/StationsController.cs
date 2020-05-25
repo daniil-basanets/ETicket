@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
 using log4net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ETicket.WebAPI.Controllers
 {
     [Route("api/stations")]
     [ApiController]
+    [SwaggerTag("Station service")]
     public class StationsController : ControllerBase
     {
         #region Private members
@@ -27,8 +31,9 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/stations
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "Get all stations", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Ok", typeof(IEnumerable<Station>))]
+        [SwaggerResponse(400, "Bad request")]
         public IActionResult GetStations()
         {
             log.Info(nameof(StationsController.GetStations));
@@ -47,9 +52,10 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/stations/5
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [SwaggerOperation(Summary = "Get station by id", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Ok", typeof(StationDto))]
+        [SwaggerResponse(400, "Bad request")]
+        [SwaggerResponse(404, "Not found")]
         public IActionResult GetStation(int id)
         {
             log.Info(nameof(StationsController.GetStation));
