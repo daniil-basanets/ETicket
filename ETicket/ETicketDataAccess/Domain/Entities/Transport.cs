@@ -11,7 +11,7 @@ namespace ETicket.DataAccess.Domain.Entities
 
         [DisplayName("Number")]
         [Required]
-        public string Number { get; set; }
+        public string VehicleNumber { get; set; }
 
         [DisplayName("Carrier")]
         public int CarriersId { get; set; }
