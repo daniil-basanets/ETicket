@@ -1,8 +1,7 @@
-﻿@model ETicket.DataAccess.Domain.Entities.PriceList
+﻿@model ETicket.ApplicationServices.DTOs.PriceListDto
 
 @{
     ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Create</h1>
@@ -15,12 +14,18 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="AreaId" class="control-label"></label>
-                <select asp-for="AreaId" class ="form-control" asp-items="ViewBag.AreaId"></select>
+                @Html.DropDownListFor(model => model.AreaId, (SelectList)ViewBag.AreaId, "", new { @class = "form-control" })
+                <span asp-validation-for="AreaId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" type="datetime-local" class="form-control" step="1" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -32,4 +37,3 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
