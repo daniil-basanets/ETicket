@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.DataAccess.Domain.Repositories
 {
-    public class SecretCodeRepository
+    public class SecretCodeRepository : ISecretCodeRepository
     {
         private readonly ETicketDataContext context;
 
@@ -17,7 +18,7 @@ namespace ETicket.DataAccess.Domain.Repositories
             this.context = context;
         }
 
-        public async Task<SecretCode> Get(string code, string email)
+        public async Task<SecretCode> GetAsync(string code, string email)
         {
             return await context.SecretCodes.FirstOrDefaultAsync(c => c.Code == code && c.Email == email);
         }

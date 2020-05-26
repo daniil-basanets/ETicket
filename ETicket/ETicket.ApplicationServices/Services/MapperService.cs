@@ -25,6 +25,7 @@ namespace ETicket.ApplicationServices.Services
                 cfg.AddProfile<CarrierMapperProfile>();
                 cfg.AddProfile<AreaMapperProfile>();
                 cfg.AddProfile<StationMapperProfile>();
+                cfg.AddProfile<RouteMapperProfile>();
             });
 
             return config.CreateMapper();

@@ -18,17 +18,19 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Number)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstStationId)
+        <dt class="col-sm-2">
+            <label class="control-label">First Station</label>
+            @Html.DisplayNameFor(model => model.FirstStation.Name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstStationId)
+            @Html.DisplayFor(model => model.FirstStation.Name)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastStationId)
+        <dt class="col-sm-2">
+            <label class="control-label">Last Station</label>
+            @Html.DisplayNameFor(model => model.LastStation.Name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastStationId)
+            @Html.DisplayFor(model => model.LastStation.Name)
         </dd>
     </dl>
     
