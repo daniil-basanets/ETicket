@@ -196,13 +196,10 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
             Assert.Equal($"Length {typeName.Length} of Type name is invalid",exception.Message);
         }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData(0)]
-        [InlineData(uint.MinValue)]
-        public void Create_TicketType_ShouldFailDurationHoursShouldBeGreaterThanZero(uint hours)
+        [Fact]
+        public void Create_TicketType_ShouldFailDurationHoursShouldBeGreaterThanZero()
         {
-            ticketTypeDto.DurationHours = hours;
+            ticketTypeDto.DurationHours = 0U;
             Action action = () => ticketTypeService.Create(ticketTypeDto);
             
             Assert.Throws<ArgumentException>(action);
