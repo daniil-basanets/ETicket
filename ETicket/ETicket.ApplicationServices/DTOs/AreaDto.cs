@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.ComponentModel;
+
 namespace ETicket.ApplicationServices.DTOs
 {
     public class AreaDto
@@ -7,5 +10,8 @@ namespace ETicket.ApplicationServices.DTOs
         public string Name { get; set; }
 
         public string Description { get; set; }
+        
+        [DisplayName("Stations")]
+        public IEnumerable<StationDto> Stations { get; set; }
     }
 }

@@ -53,6 +53,8 @@ namespace ETicket.Admin
             services.AddTransient<IValidator<DocumentTypeDto>, DocumentTypeValidator>();
             services.AddTransient<IValidator<PrivilegeDto>, PrivilegeValidator>();
             services.AddTransient<IValidator<TransactionHistoryDto>, TransactionHistoryValidator>();
+            services.AddTransient<IValidator<AreaDto>, AreaValidator>();
+            services.AddTransient<IValidator<CarrierDto>, CarrierValidator>();
 
 
             services.AddTransient<ITicketService, TicketService>();

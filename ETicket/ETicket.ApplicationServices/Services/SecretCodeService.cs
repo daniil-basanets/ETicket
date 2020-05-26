@@ -30,7 +30,7 @@ namespace ETicket.ApplicationServices.Services
 
         public async Task<SecretCode> Get(string code, string email)
         {
-            return await uow.SecretCodes.Get(code, email);
+            return await uow.SecretCodes.GetAsync(code, email);
         }
 
         public void RemoveRange(string email)
