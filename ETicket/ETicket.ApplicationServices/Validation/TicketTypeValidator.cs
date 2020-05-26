@@ -11,7 +11,7 @@ namespace ETicket.ApplicationServices.Validation
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("{PropertyName} is empty")
                 .Length(2, 50).WithMessage("Length {TotalLength} of {PropertyName} is invalid")
-                .Must(BeAValidName);
+                .Must(n => n.Trim().Length >= 2);
 
             RuleFor(t => t.IsPersonal)
                 .NotNull().WithMessage("{PropertyName} should not be null");
@@ -25,15 +25,6 @@ namespace ETicket.ApplicationServices.Validation
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotNull()
                 .GreaterThanOrEqualTo(decimal.Zero).WithMessage("{PropertyName} should be greater or equal than {ComparisonValue}");
-        }
-        
-        private bool BeAValidName(string name)
-        {
-            name = name.Replace(" ", "");
-            name = name.Replace("\r", "");
-            name = name.Replace("\n", "");
-            name = name.Replace("\t", "");
-            return name.Length >= 2;
         }
     }
 }
