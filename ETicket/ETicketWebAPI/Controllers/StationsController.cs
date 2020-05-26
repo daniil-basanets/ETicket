@@ -32,7 +32,7 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/stations
         [HttpGet]
         [SwaggerOperation(Summary = "Get all stations", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Ok", typeof(IEnumerable<Station>))]
+        [SwaggerResponse(200, "Ok")]
         [SwaggerResponse(400, "Bad request")]
         public IActionResult GetStations()
         {
@@ -53,10 +53,10 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/stations/5
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get station by id", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Ok", typeof(StationDto))]
+        [SwaggerResponse(200, "Ok")]
         [SwaggerResponse(400, "Bad request")]
         [SwaggerResponse(404, "Not found")]
-        public IActionResult GetStation(int id)
+        public IActionResult GetStation([SwaggerParameter("Int", Required = true)] int id)
         {
             log.Info(nameof(StationsController.GetStation));
 

@@ -36,7 +36,7 @@ namespace ETicket.WebAPI.Controllers
         [SwaggerResponse(200, "Ok", typeof(IEnumerable<TicketDto>))]
         [SwaggerResponse(400, "Bad request")]
         [SwaggerResponse(401, "Unauthorized")]
-        public IActionResult GetTicketsByUser(Guid userId)
+        public IActionResult GetTicketsByUser([SwaggerParameter("Guid", Required = true)] Guid userId)
         {
             log.Info(nameof(GetTicketsByUser));
 
@@ -61,7 +61,7 @@ namespace ETicket.WebAPI.Controllers
         [SwaggerResponse(400, "Bad request")]
         [SwaggerResponse(404, "Not found")]
         [SwaggerResponse(401, "Unauthorized")]
-        public IActionResult GetUser(Guid id)
+        public IActionResult GetUser([SwaggerParameter("Guid", Required = true)] Guid id)
         {
             log.Info(nameof(UsersController.GetUser));
 
@@ -92,7 +92,7 @@ namespace ETicket.WebAPI.Controllers
         [SwaggerResponse(204, "Ok, without content")]
         [SwaggerResponse(400, "Bad request")]
         [SwaggerResponse(401, "Unauthorized")]
-        public IActionResult UpdateUser(Guid id, [FromBody, SwaggerRequestBody("User payload", Required = true)] UserDto userDto)
+        public IActionResult UpdateUser([SwaggerParameter("Guid", Required = true)] Guid id, [FromBody, SwaggerRequestBody("User payload", Required = true)] UserDto userDto)
         {
             log.Info(nameof(UsersController.UpdateUser));
 
