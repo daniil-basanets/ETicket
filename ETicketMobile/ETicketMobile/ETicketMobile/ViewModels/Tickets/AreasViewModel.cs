@@ -81,7 +81,7 @@ namespace ETicketMobile.ViewModels.Tickets
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
             }
@@ -146,7 +146,7 @@ namespace ETicketMobile.ViewModels.Tickets
         {
             if (!TicketChoosed(count))
             {
-                dialogService.DisplayAlertAsync("Alert", AppResource.CountTicketsWrong, "OK");
+                dialogService.DisplayAlertAsync("Error", AppResource.CountTicketsWrong, "OK");
 
                 return false;
             }

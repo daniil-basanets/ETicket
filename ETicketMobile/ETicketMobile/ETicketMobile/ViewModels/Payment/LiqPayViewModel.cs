@@ -149,7 +149,7 @@ namespace ETicketMobile.ViewModels.Payment
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
             }
@@ -195,13 +195,13 @@ namespace ETicketMobile.ViewModels.Payment
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
             }
             catch (SocketException)
             {
-                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
             }

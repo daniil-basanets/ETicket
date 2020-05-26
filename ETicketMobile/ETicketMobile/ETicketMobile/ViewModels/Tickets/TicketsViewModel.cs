@@ -80,7 +80,7 @@ namespace ETicketMobile.ViewModels.Tickets
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
             }
