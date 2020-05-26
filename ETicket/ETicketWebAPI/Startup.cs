@@ -59,6 +59,7 @@ namespace ETicket.WebAPI
             services.AddTransient<IPrivilegeService, PrivilegeService>();
             services.AddTransient<IDocumentService, DocumentService>();
             services.AddTransient<IRouteService, RouteService>();
+            services.AddTransient<IStationService, StationService>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                .AddEntityFrameworkStores<ETicketDataContext>()
