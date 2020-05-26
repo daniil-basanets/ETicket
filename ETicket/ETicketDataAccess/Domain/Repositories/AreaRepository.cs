@@ -30,7 +30,8 @@ namespace ETicket.DataAccess.Domain.Repositories
 
         public Area Get(int id)
         {
-            return context.Areas.Find(id);
+            return context.Areas.Include(s => s.Stations)
+                .FirstOrDefault(a => a.Id == id);
         }
 
         public void Create(Area area)
