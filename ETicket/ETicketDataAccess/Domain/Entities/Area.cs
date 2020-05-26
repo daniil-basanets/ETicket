@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ETicket.DataAccess.Domain.Entities
 {
@@ -13,7 +14,8 @@ namespace ETicket.DataAccess.Domain.Entities
 
         [MaxLength(250)] 
         public string Description { get; set; }
-        
+
+        //[JsonIgnore]
         public ICollection<Station> Stations { get; set; }
 
         public ICollection<TicketArea> TicketArea { get; set; }
