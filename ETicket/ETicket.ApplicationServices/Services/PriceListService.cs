@@ -24,9 +24,9 @@ namespace ETicket.ApplicationServices.Services
             mapper = new MapperService();
         }
 
-        public IEnumerable<PriceList> GetAll()
+        public IEnumerable<PriceListDto> GetAll()
         {
-            return uow.PriceList.GetAll().ToList();
+            return mapper.Map<IQueryable<PriceList>, IEnumerable<PriceListDto>>(uow.PriceList.GetAll()).ToList();
         }
 
         public PriceList Get(int id)

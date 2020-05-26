@@ -28,9 +28,9 @@ namespace ETicket.ApplicationServices.Services
             unitOfWork.Save();
         }
 
-        public IEnumerable<Route> GetRoutes()
+        public IEnumerable<RouteDto> GetRoutes()
         {
-            return unitOfWork.Routes.GetAll();
+            return mapper.Map<IQueryable<Route>, IEnumerable<RouteDto>>(unitOfWork.Routes.GetAll()).ToList();
         }       
 
         public Route GetRouteById(int id)

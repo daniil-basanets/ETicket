@@ -22,9 +22,9 @@ namespace ETicket.ApplicationServices.Services
             this.uow = uow;
             mapper = new MapperService();
         }
-        public IEnumerable<Privilege>GetPrivileges()
+        public IEnumerable<PrivilegeDto>GetPrivileges()
         {
-            return uow.Privileges.GetAll().ToList();
+            return mapper.Map<IQueryable<Privilege>, IEnumerable<PrivilegeDto>>(uow.Privileges.GetAll()).ToList();
         }
         public Privilege GetPrivilegeById(int id)
         {

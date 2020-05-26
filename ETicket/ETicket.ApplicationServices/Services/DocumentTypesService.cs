@@ -21,9 +21,9 @@ namespace ETicket.ApplicationServices.Services.DocumentTypes
             mapper = new MapperService();
         }
 
-        public IEnumerable<DocumentType> GetDocumentTypes()
+        public IEnumerable<DocumentTypeDto> GetDocumentTypes()
         {
-            return unitOfWork.DocumentTypes.GetAll().ToList();
+            return mapper.Map<IQueryable<DocumentType>, IEnumerable<DocumentTypeDto>>(unitOfWork.DocumentTypes.GetAll()).ToList();
         }
 
         public DocumentTypeDto GetDocumentTypeById(int id)

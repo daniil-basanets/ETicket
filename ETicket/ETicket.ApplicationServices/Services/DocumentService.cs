@@ -26,9 +26,9 @@ namespace ETicket.ApplicationServices.Services
             unitOfWork.Save();
         }
 
-        public IEnumerable<Document> GetDocuments()
+        public IEnumerable<DocumentDto> GetDocuments()
         {
-            return unitOfWork.Documents.GetAll().ToList();
+            return mapper.Map<IQueryable<Document>, IEnumerable<DocumentDto>>(unitOfWork.Documents.GetAll()).ToList();
         }
 
         public Document GetDocumentById(Guid id)

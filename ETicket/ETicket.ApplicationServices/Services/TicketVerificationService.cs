@@ -22,13 +22,10 @@ namespace ETicket.ApplicationServices.Services
             mapper = new MapperService();
         }
 
-        public IEnumerable<TicketVerification> GetTicketVerifications()
+        public IEnumerable<TicketVerificationDto> GetTicketVerifications()
         {
-            return unitOfWork.TicketVerifications
-                    .GetAll()
-                    .Include(x => x.Station)
-                    .Include(x => x.Ticket)
-                    .Include(x => x.Transport);
+            return mapper.Map<IQueryable<TicketVerification>, IEnumerable<TicketVerificationDto>>(unitOfWork.TicketVerifications.GetAll()).ToList();
+                    
         }
 
         public TicketVerificationDto GetTicketVerificationById(Guid id)

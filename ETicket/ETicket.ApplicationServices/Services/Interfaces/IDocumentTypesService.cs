@@ -6,7 +6,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface IDocumentTypesService
     {
-        public IEnumerable<DocumentType> GetDocumentTypes();
+        public IEnumerable<DocumentTypeDto> GetDocumentTypes();
         public DocumentTypeDto GetDocumentTypeById(int id);
 
         public void Create(DocumentTypeDto documentTypeDto);

@@ -7,7 +7,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface ITicketService
     {
-        public IEnumerable<Ticket> GetTickets();
+        public IEnumerable<TicketDto> GetTickets();
 
         public IEnumerable<TicketDto> GetTicketsByUserId(Guid userId);
 

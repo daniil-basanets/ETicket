@@ -9,7 +9,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
     {
         void AddTransaction(TransactionHistoryDto transactionDto);
 
-        IEnumerable<TransactionHistory> GetTransactions();
+        IEnumerable<TransactionHistoryDto> GetTransactions();
 
         TransactionHistoryDto GetTransactionById(Guid id);
 

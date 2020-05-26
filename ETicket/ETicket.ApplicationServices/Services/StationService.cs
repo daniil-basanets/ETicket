@@ -39,9 +39,9 @@ namespace ETicket.ApplicationServices.Services
             return mapper.Map<Station, StationDto>(station);
         }
 
-        public IEnumerable<Station> GetAll()
+        public IEnumerable<StationDto> GetAll()
         {
-            return uow.Stations.GetAll().ToList();
+            return mapper.Map<IQueryable<Station>, IEnumerable<StationDto>>(uow.Stations.GetAll()).ToList();
         }
 
         public void Update(StationDto stationDto)

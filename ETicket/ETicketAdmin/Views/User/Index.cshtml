@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ETicket.DataAccess.Domain.Entities.User>
+﻿@model IEnumerable<ETicket.ApplicationServices.DTOs.UserDto>
 
 @{
     ViewData["Title"] = "Index";
@@ -52,7 +52,7 @@
                             <th>
                                 <details onclick="makeSingleOnClickEvent()">
                                     <summary>
-                                        @Html.DisplayNameFor(model => model.Privilege)
+                                        @Html.DisplayNameFor(model => model.PrivilegeName)
                                     </summary>
                                     @Html.DropDownList("privilege-select", ViewData["PrivilegeId"] as IEnumerable<SelectListItem>, "", new { @class = "document-filter-form custom-select custom-select-sm form-control form-control-sm" })
                                 </details>
@@ -60,7 +60,7 @@
                             <th>
                                 <details onclick="makeSingleOnClickEvent()">
                                     <summary>
-                                        @Html.DisplayNameFor(model => model.Document)
+                                        @Html.DisplayNameFor(model => model.DocumentNumber)
                                     </summary>
                                     <input type="text" class="document-filter-form  form-control form-control-sm" id="document-input">
                                 </details>
@@ -82,10 +82,10 @@
                                 @Html.DisplayNameFor(model => model.DateOfBirth)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Privilege)
+                                @Html.DisplayNameFor(model => model.PrivilegeName)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Document)
+                                @Html.DisplayNameFor(model => model.DocumentNumber)
                             </th>
                             <th>
                                 Actions
@@ -108,24 +108,24 @@
                                         @item.DateOfBirth.ToString("yyyy-MM-dd")
                                     </td>
                                     <td>
-                                        @if (item.Privilege == null)
+                                        @if (item.PrivilegeName == null)
                                         {
-                                            @Html.DisplayFor(modelItem => item.Privilege.Name)
+                                            @Html.DisplayFor(modelItem => item.PrivilegeName)
                                         }
                                         else
                                         {
-                                            @Html.ActionLink(item.Privilege.Name, "Details", "Privileges", new { id = item.PrivilegeId }, null)
+                                            @Html.ActionLink(item.PrivilegeName, "Details", "Privileges", new { id = item.PrivilegeId }, null)
                                         }
 
                                     </td>
                                     <td>
-                                        @if (item.Document == null)
+                                        @if (item.DocumentNumber == null)
                                         {
-                                            @Html.DisplayFor(modelItem => item.Document.Number)
+                                            @Html.DisplayFor(modelItem => item.DocumentNumber)
                                         }
                                         else
                                         {
-                                            @Html.ActionLink(item.Document.Number, "Details", "Documents", new { id = item.DocumentId }, null)
+                                            @Html.ActionLink(item.DocumentNumber, "Details", "Documents", new { id = item.DocumentId }, null)
                                         }
                                     </td>
                                     <td>

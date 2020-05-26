@@ -32,12 +32,9 @@ namespace ETicket.ApplicationServices.Services.Transaction
             unitOfWork.Save();
         }
 
-        public IEnumerable<TransactionHistory> GetTransactions()
+        public IEnumerable<TransactionHistoryDto> GetTransactions()
         {
-            return unitOfWork
-                    .TransactionHistory
-                    .GetAll()
-                    .ToList();
+            return mapperService.Map<IQueryable<TransactionHistory>, IEnumerable<TransactionHistoryDto>>(unitOfWork.TransactionHistory.GetAll()).ToList();
         }
 
         public IEnumerable<TransactionHistory> GetTransactionsByUserId(Guid id)

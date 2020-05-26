@@ -36,7 +36,10 @@ namespace ETicket.DataAccess.Domain.Repositories
 
         public IQueryable<TicketVerification> GetAll()
         {
-            return context.TicketVerifications;
+            return context.TicketVerifications
+                .Include(x => x.Station)
+                .Include(x => x.Ticket)
+                .Include(x => x.Transport);
         }
 
         public void Update(TicketVerification item)
