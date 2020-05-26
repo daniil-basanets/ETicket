@@ -105,7 +105,7 @@
                     <Entry
                         Grid.ColumnSpan="2"
                         Grid.Row="2"
-                        x:Name="CardNumber"
+                        Text="{Binding CardNumber, Mode=OneWayToSource}"
                         Placeholder="•••• •••• •••• ••••">
                         <Entry.Behaviors>
                             <behavior:EntryMaskBehavior Mask="XXXX XXXX XXXX XXXX"/>
@@ -169,8 +169,7 @@
                         Grid.Row="8"
                         Text="{local:Translate Text=PayButton}"
                         BackgroundColor="#7ab72b"
-                        Command="{Binding Pay, Mode=OneTime}"
-                        CommandParameter="{Binding Source={x:Reference CardNumber}, Path=Text, Mode=OneWay}"/>
+                        Command="{Binding Pay, Mode=OneTime}"/>
 
                 </Grid>
             </Frame>

@@ -119,7 +119,13 @@ namespace ETicketMobile.ViewModels.Login
             if (!IsValid(email))
                 return;
 
+            await NavigateToLoginViewAsync(email);
+        }
+
+        private async Task NavigateToLoginViewAsync(string email)
+        {
             Token token = null;
+
             try
             {
                 token = await GetTokenAsync(email);

@@ -67,9 +67,14 @@ namespace ETicketMobile.ViewModels.Registration
 
         private async void OnMoveToPhoneRegistrationView(string email)
         {
+            await MoveToPhoneRegistrationViewAsync(email);
+        }
+
+        private async Task MoveToPhoneRegistrationViewAsync(string email)
+        {
             try
             {
-                if (! await IsValid(email))
+                if (!await IsValid(email))
                     return;
             }
             catch (WebException)

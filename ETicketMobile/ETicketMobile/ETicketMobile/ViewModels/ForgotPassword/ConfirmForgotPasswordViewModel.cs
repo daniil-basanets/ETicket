@@ -122,6 +122,17 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             if (ActivationCodeTimer != 0)
                 return;
 
+            await SendActivationCodeAsync();
+
+            ActivationCodeTimer = 60;
+
+            timer.Start();
+
+            TimerActivated = true;
+        }
+
+        private async Task SendActivationCodeAsync()
+        {
             try
             {
                 await RequestActivationCodeAsync(email);
@@ -132,12 +143,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
                 return;
             }
-
-            ActivationCodeTimer = 60;
-
-            timer.Start();
-
-            TimerActivated = true;
         }
 
         private async Task RequestActivationCodeAsync(string email)
@@ -146,6 +151,11 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         }
 
         private async void OnNavigateToCreateNewPasswordView(string code)
+        {
+            await NavigateToCreateNewPasswordViewAsync(code);
+        }
+
+        private async Task NavigateToCreateNewPasswordViewAsync(string code)
         {
             try
             {

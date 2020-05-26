@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
@@ -58,6 +59,11 @@ namespace ETicketMobile.ViewModels.Registration
         }
 
         private async void OnNavigateToNameRegistrationView(string phone)
+        {
+            await NavigateToNameRegistrationViewAsync(phone);
+        }
+
+        private async Task NavigateToNameRegistrationViewAsync(string phone)
         {
             var phoneNumber = GetPhoneNumber(phone);
 

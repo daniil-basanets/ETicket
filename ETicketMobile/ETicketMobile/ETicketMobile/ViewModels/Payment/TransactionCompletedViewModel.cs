@@ -23,7 +23,7 @@ namespace ETicketMobile.ViewModels.Payment
 
         #endregion
 
-        public TransactionCompletedViewModel(INavigationService navigationService) 
+        public TransactionCompletedViewModel(INavigationService navigationService)
             : base(navigationService)
         {
             this.navigationService = navigationService

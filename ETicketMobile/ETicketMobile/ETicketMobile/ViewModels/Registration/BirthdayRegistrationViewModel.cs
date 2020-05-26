@@ -94,6 +94,11 @@ namespace ETicketMobile.ViewModels.Registration
 
         private async void OnNavigateToConfirmEmailView(DateTime birthday)
         {
+            await NavigateToConfirmEmailViewAsync(birthday.Date);
+        }
+
+        private async Task NavigateToConfirmEmailViewAsync(DateTime birthday)
+        {
             var email = navigationParameters.GetValue<string>("email");
 
             try
@@ -107,7 +112,7 @@ namespace ETicketMobile.ViewModels.Registration
                 return;
             }
 
-            navigationParameters.Add("birth", birthday.Date);
+            navigationParameters.Add("birth", birthday);
             await navigationService.NavigateAsync(nameof(ConfirmEmailView), navigationParameters);
         }
 

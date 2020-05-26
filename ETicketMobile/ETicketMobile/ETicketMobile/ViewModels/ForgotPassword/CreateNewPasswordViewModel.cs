@@ -86,12 +86,17 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private async void OnNavigateToSignInView(string password)
         {
+            await NavigateToSignInViewAsync(password);
+        }
+
+        private async Task NavigateToSignInViewAsync(string password)
+        {
             if (!IsValid(password))
                 return;
 
             try
             {
-                if (! await RequestChangePasswordAsync(password))
+                if (!await RequestChangePasswordAsync(password))
                     return;
             }
             catch (WebException)
@@ -100,7 +105,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
                 return;
             }
-            
+
 
             await navigationService.NavigateAsync(nameof(LoginView));
         }

@@ -127,6 +127,17 @@ namespace ETicketMobile.ViewModels.Registration
             if (ActivationCodeTimer != 0)
                 return;
 
+            await SendActivationCodeAsync();
+
+            ActivationCodeTimer = 60;
+
+            timer.Start();
+
+            TimerActivated = true;
+        }
+
+        private async Task SendActivationCodeAsync()
+        {
             var email = navigationParameters.GetValue<string>("email");
 
             try
@@ -139,12 +150,6 @@ namespace ETicketMobile.ViewModels.Registration
 
                 return;
             }
-
-            ActivationCodeTimer = 60;
-
-            timer.Start();
-
-            TimerActivated = true;
         }
 
         private async Task RequestActivationCodeAsync(string email)
@@ -153,6 +158,11 @@ namespace ETicketMobile.ViewModels.Registration
         }
 
         private async void OnNavigateToSignInView(string code)
+        {
+            await NavigateToSignInViewAsync(code);
+        }
+
+        private async Task NavigateToSignInViewAsync(string code)
         {
             if (!IsValid(code))
                 return;
@@ -173,9 +183,10 @@ namespace ETicketMobile.ViewModels.Registration
 
                 return;
             }
-            
+
             await navigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
         }
+
         private async Task<Token> GetTokenAsync()
         {
             var userSignIn = new UserSignInRequestDto
@@ -257,10 +268,7 @@ namespace ETicketMobile.ViewModels.Registration
             var user = CreateUserSignUpRequest();
 
             var response = await httpClient
-                .PostAsync<UserSignUpRequestDto, UserSignUpResponseDto>(
-                    AuthorizeEndpoint.Registration,
-                    user
-            );
+                .PostAsync<UserSignUpRequestDto, UserSignUpResponseDto>(AuthorizeEndpoint.Registration, user);
 
             return response.Succeeded;
         }

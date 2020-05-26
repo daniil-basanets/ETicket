@@ -63,11 +63,16 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private async void OnNavigateToConfirmForgotPasswordView(string email)
         {
+            await NavigateToConfirmForgotPasswordViewAsync(email);
+        }
+
+        private async Task NavigateToConfirmForgotPasswordViewAsync(string email)
+        {
             try
             {
-                if (! await IsValidAsync(email))
+                if (!await IsValidAsync(email))
                     return;
-            
+
                 await RequestActivationCodeAsync(email);
             }
             catch (WebException)
@@ -77,11 +82,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return;
             }
 
-            var navigationParameters = new NavigationParameters
-            {
-                { "email", email }
-            };
-
+            var navigationParameters = new NavigationParameters { { "email", email } };
             await navigationService.NavigateAsync(nameof(ConfirmForgotPasswordView), navigationParameters);
         }
 

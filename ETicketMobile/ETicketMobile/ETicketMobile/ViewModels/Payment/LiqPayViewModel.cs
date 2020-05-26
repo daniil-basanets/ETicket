@@ -41,6 +41,7 @@ namespace ETicketMobile.ViewModels.Payment
         private decimal amount;
         private string description;
 
+        private string cardNumber;
         private string expirationDate;
         private string cvv2;
 
@@ -52,8 +53,7 @@ namespace ETicketMobile.ViewModels.Payment
 
         #region Properties
 
-        public ICommand Pay => pay 
-            ??= new Command<string>(OnPay);
+        public ICommand Pay => pay ??= new Command(OnPay);
 
         public decimal Amount
         {
@@ -83,6 +83,12 @@ namespace ETicketMobile.ViewModels.Payment
         {
             get => cvv2WarningIsVisible;
             set => SetProperty(ref cvv2WarningIsVisible, value);
+        }
+
+        public string CardNumber
+        {
+            get => cardNumber;
+            set => SetProperty(ref cardNumber, value);
         }
 
         public string ExpirationDate
@@ -159,29 +165,19 @@ namespace ETicketMobile.ViewModels.Payment
             return response;
         }
 
-        private async void OnPay(string card)
+        private async void OnPay()
         {
-            var cardNumber = GetStringWithoutMask(card);
-            if (!IsCardNumberCorrectLength(cardNumber))
-            {
-                CardNumberWarningIsVisible = true;
+            await PayAsync();
+        }
 
+        private async Task PayAsync()
+        {
+            var cardNumber = GetStringWithoutMask(this.cardNumber);
+
+            if (!IsValid(cardNumber))
                 return;
-            }
-
-            if (!IsExpirationDateCorrectLength(expirationDate))
-            {
-                CardNumberWarningIsVisible = false;
-
-                ExpirationDateWarningIsVisible = true;
-
-                return;
-            }
 
             var expirationDateDescriptor = GetExpirationDateDescriptor();
-
-            if (!IsCvvValid())
-                return;
 
             var buyTicketRequestDto = CreateBuyTicketRequestDto(
                     cardNumber,
@@ -199,25 +195,12 @@ namespace ETicketMobile.ViewModels.Payment
 
                 return;
             }
-
-            await navigationService.NavigateAsync(nameof(TransactionCompletedView));
-        }
-
-        private bool IsCvvValid()
-        {
-            var cvv2 = GetStringWithoutMask(CVV2);
-
-            if (cvv2 != CVV2 || !IsCVV2CorrectLength(cvv2))
+            catch (Exception ex)
             {
-                CardNumberWarningIsVisible = false;
-                ExpirationDateWarningIsVisible = false;
 
-                CVV2WarningIsVisible = true;
-
-                return false;
             }
 
-            return true;
+            await navigationService.NavigateAsync(nameof(TransactionCompletedView));
         }
 
         private async Task<BuyTicketResponseDto> RequestBuyTicketAsync(BuyTicketRequestDto buyTicketRequestDto)
@@ -248,6 +231,30 @@ namespace ETicketMobile.ViewModels.Payment
             };
         }
 
+        private bool IsValid(string cardNumber)
+        {
+            if (!IsCardNumberCorrectLength(cardNumber))
+            {
+                CardNumberWarningIsVisible = true;
+
+                return false;
+            }
+
+            if (!IsExpirationDateCorrectLength(expirationDate))
+            {
+                CardNumberWarningIsVisible = false;
+
+                ExpirationDateWarningIsVisible = true;
+
+                return false;
+            }
+
+            if (!IsCvvValid())
+                return false;
+
+            return true;
+        }
+
         private string GetStringWithoutMask(string str)
         {
             return Regex.Replace(str, @"[^\d]", string.Empty);
@@ -268,6 +275,23 @@ namespace ETicketMobile.ViewModels.Payment
         private bool IsCVV2CorrectLength(string cvv2)
         {
             return cvv2.Length == CVV2Length;
+        }
+
+        private bool IsCvvValid()
+        {
+            var cvv2 = GetStringWithoutMask(CVV2);
+
+            if (cvv2 != CVV2 || !IsCVV2CorrectLength(cvv2))
+            {
+                CardNumberWarningIsVisible = false;
+                ExpirationDateWarningIsVisible = false;
+
+                CVV2WarningIsVisible = true;
+
+                return false;
+            }
+
+            return true;
         }
 
         #endregion

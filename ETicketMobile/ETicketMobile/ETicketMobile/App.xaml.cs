@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Threading.Tasks;
 using ETicketMobile.DataAccess.Interfaces;
 using ETicketMobile.DataAccess.LocalAPI;
@@ -25,7 +24,6 @@ using ETicketMobile.Views.Settings;
 using ETicketMobile.Views.Tickets;
 using ETicketMobile.Views.UserAccount;
 using ETicketMobile.Views.UserActions;
-using Javax.Net.Ssl;
 using Prism;
 using Prism.Ioc;
 using Xamarin.Forms;
