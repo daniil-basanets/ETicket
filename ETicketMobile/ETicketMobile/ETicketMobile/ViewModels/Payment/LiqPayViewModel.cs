@@ -9,6 +9,7 @@ using ETicketMobile.Views.Payment;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
 using ETicketMobile.WebAccess.Network.WebService;
+using Java.Net;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -195,9 +196,11 @@ namespace ETicketMobile.ViewModels.Payment
 
                 return;
             }
-            catch (Exception ex)
+            catch (SocketException)
             {
+                await dialogService.DisplayAlertAsync("Alert", "Check connection with server", "OK");
 
+                return;
             }
 
             await navigationService.NavigateAsync(nameof(TransactionCompletedView));
