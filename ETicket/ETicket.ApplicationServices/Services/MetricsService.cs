@@ -26,15 +26,15 @@ namespace ETicket.ApplicationServices.Services
             this.uow = uow;
         }
 
-        public ChartDto PassengersByPrivileges(DateTime start, DateTime end)
+        public ChartDto PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod)
         {
-            if (start.CompareTo(end) == 1)
+            if (startPeriod.CompareTo(endPeriod) == 1)
             {
                 return new ChartDto() { ErrorMessage = EndLessStartError };
             }
 
             var data = uow.TicketVerifications.GetAll()
-                .Where(d=>d.VerificationUTCDate >= start && d.VerificationUTCDate <= end && d.IsVerified)
+                .Where(d=>d.VerificationUTCDate >= startPeriod && d.VerificationUTCDate <= endPeriod && d.IsVerified)
                 .Include(t => t.Ticket)
                 .ThenInclude(u => u.User)
                 .ThenInclude(p => p.Privilege)
@@ -49,25 +49,25 @@ namespace ETicket.ApplicationServices.Services
             return chartDto;
         }
 
-        public ChartDto PassengersByRoutes(DateTime start, DateTime end, int[] selectedRoutesId)
+        public ChartDto PassengersByRoutes(DateTime startPeriod, DateTime endPeriod, int[] selectedRoutesId)
         {
             throw new NotImplementedException();
         }
 
-        public ChartDto PassengersByTime(DateTime start, DateTime end, int routeId)
+        public ChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod, int routeId)
         {
             throw new NotImplementedException();
         }
 
-        public ChartDto TicketsByTicketTypes(DateTime start, DateTime end)
+        public ChartDto TicketsByTicketTypes(DateTime startPeriod, DateTime endPeriod)
         {
-            if (start.CompareTo(end) == 1)
+            if (startPeriod.CompareTo(endPeriod) == 1)
             {
                 return new ChartDto() { ErrorMessage = EndLessStartError };
             }
 
             var data = uow.Tickets.GetAll()
-                 .Where(t => t.CreatedUTCDate >= start && t.CreatedUTCDate <= end)
+                 .Where(t => t.CreatedUTCDate >= startPeriod && t.CreatedUTCDate <= endPeriod)
                  .GroupBy(t => t.TicketType.TypeName)
                  .Select(g => new { name = g.Key, count = g.Count().ToString() })
                  .ToDictionary(k => k.name, k => k.count);
@@ -79,26 +79,26 @@ namespace ETicket.ApplicationServices.Services
             return chartDto;
         }
 
-        public ChartDto PassengersByTime(DateTime start, DateTime end)
+        public ChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod)
         {
-            if (start.CompareTo(end) == 1)
+            if (startPeriod.CompareTo(endPeriod) == 1)
             {
                 return new ChartDto() { ErrorMessage = EndLessStartError };
             }
-            if ((end - start).TotalDays > MaxDaysForChart)
+            if ((endPeriod - startPeriod).TotalDays > MaxDaysForChart)
             {
                 return new ChartDto() { ErrorMessage = String.Format(MaxDaysForChartError, MaxDaysForChart) };
             }
 
             List<DateTime> timePeriods = new List<DateTime>();
 
-            for (DateTime day = start.Date; day <= end; day = day.AddDays(1))
+            for (DateTime day = startPeriod.Date; day <= endPeriod; day = day.AddDays(1))
             {
                 timePeriods.Add(day);
             }
 
             var chartData = uow.TicketVerifications.GetAll()
-                .Where(t => t.IsVerified && t.VerificationUTCDate.Date >= start.Date && t.VerificationUTCDate.Date <= end.Date)
+                .Where(t => t.IsVerified && t.VerificationUTCDate.Date >= startPeriod.Date && t.VerificationUTCDate.Date <= endPeriod.Date)
                 .GroupBy(d => d.VerificationUTCDate.Date)
                 .OrderBy(d => d.Key)
                 .Select(g => new { date = g.Key, count = g.Count()})
