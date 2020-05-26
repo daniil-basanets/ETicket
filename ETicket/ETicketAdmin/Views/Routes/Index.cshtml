@@ -60,10 +60,10 @@
                                     @Html.DisplayFor(modelItem => item.Number)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.FirstStationId)
+                                    @Html.DisplayFor(modelItem => item.FirstStation.Name)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.LastStationId)
+                                    @Html.DisplayFor(modelItem => item.LastStation.Name)
                                 </td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>

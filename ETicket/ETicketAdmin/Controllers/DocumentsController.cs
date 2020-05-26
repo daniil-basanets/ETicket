@@ -36,6 +36,7 @@ namespace ETicket.Admin.Controllers
             try
             {
                 var documentsTypes = documentTypesService.GetDocumentTypes();
+
                 ViewData["DocumentTypeId"] = new SelectList(documentsTypes, "Id", "Name");
 
                 return View();

@@ -54,6 +54,7 @@ namespace ETicket.Admin.Controllers
                 ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketTypes(), "Id", "TypeName", ticketDto?.Id);
                 ViewData["TransactionHistoryId"] = new SelectList(transactionService.GetTransactions(), "Id", "ReferenceNumber", ticketDto?.TransactionHistoryId);
                 ViewData["UserId"] = new SelectList(userService.GetUsers().Select(s => new { s.Id, Name = $"{s.LastName} {s.FirstName}" }), "Id", "Name", ticketDto?.UserId);
+                ViewData["AreaId"] = new MultiSelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name", ticketDto?.Areas);
             }
             catch (Exception e)
             {
@@ -124,17 +125,6 @@ namespace ETicket.Admin.Controllers
             ticketDto.SelectedAreaIds = new List<int>();
             InitViewDataForSelectList();
 
-            try
-            {
-                ViewData["AreaId"] = new MultiSelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name", ticketDto?.Areas);
-            }
-            catch (Exception e)
-            {
-                log.Error(e);
-
-                return BadRequest();
-            }
-
             return View(ticketDto);
         }
 
@@ -198,8 +188,7 @@ namespace ETicket.Admin.Controllers
                 foreach (var ticketArea in ticketDto.Areas)
                 {
                     ticketDto.SelectedAreaIds.Add(ticketArea.Key);
-                }
-                ViewData["AreaId"] = new MultiSelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name", ticketDto.SelectedAreaIds);
+                }             
             }
             catch (Exception e)
             {
