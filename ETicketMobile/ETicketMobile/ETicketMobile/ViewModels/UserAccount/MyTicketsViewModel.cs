@@ -4,8 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
-using ETicketMobile.WebAccess.Network.Configs;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 
 namespace ETicketMobile.ViewModels.BoughtTickets
@@ -15,9 +14,9 @@ namespace ETicketMobile.ViewModels.BoughtTickets
         #region Fields
 
         private readonly INavigationService navigationService;
-        private readonly ILocalApi localApi;
+        private readonly IHttpService httpService;
 
-        private readonly HttpClientService httpClient;
+        private readonly ILocalApi localApi;
 
         private string accessToken;
 
@@ -55,7 +54,7 @@ namespace ETicketMobile.ViewModels.BoughtTickets
 
         #endregion
 
-        public MyTicketsViewModel(INavigationService navigationService, ILocalApi localApi)
+        public MyTicketsViewModel(INavigationService navigationService, IHttpService httpService, ILocalApi localApi)
             : base(navigationService)
         {
             this.navigationService = navigationService
@@ -64,7 +63,8 @@ namespace ETicketMobile.ViewModels.BoughtTickets
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
-            httpClient = new HttpClientService(ServerConfig.Address);
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnAppearing()

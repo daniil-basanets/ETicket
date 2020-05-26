@@ -24,6 +24,9 @@ using ETicketMobile.Views.Settings;
 using ETicketMobile.Views.Tickets;
 using ETicketMobile.Views.UserAccount;
 using ETicketMobile.Views.UserActions;
+using ETicketMobile.WebAccess.Network.Configs;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
+using ETicketMobile.WebAccess.Network.WebServices;
 using Prism;
 using Prism.Ioc;
 using Xamarin.Forms;
@@ -53,6 +56,9 @@ namespace ETicketMobile
             var localize = DependencyService.Get<ILocalize>();
 
             InitCultureAsync(localApi, localize).Wait();
+
+            var httpService = new HttpService(ServerConfig.Address);
+            containerRegistry.RegisterInstance<IHttpService>(httpService);
 
             containerRegistry.RegisterInstance<ILocalApi>(localApi);
             containerRegistry.RegisterInstance<ILocalize>(localize);

@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Model.Transactions;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Configs;
 using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 
@@ -19,7 +18,7 @@ namespace ETicketMobile.ViewModels.UserAccount
 
         private readonly IPageDialogService dialogService;
 
-        private readonly HttpClientService httpClient;
+        private readonly IHttpService httpService;
 
         private IEnumerable<Transaction> transactions;
 
@@ -35,13 +34,17 @@ namespace ETicketMobile.ViewModels.UserAccount
 
         #endregion
 
-        public UserTransactionsViewModel(INavigationService navigationService, IPageDialogService dialogService)
-            : base(navigationService)
+        public UserTransactionsViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService
+        ) : base(navigationService)
         {
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
-            httpClient = new HttpClientService(ServerConfig.Address);
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override async void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -64,7 +67,7 @@ namespace ETicketMobile.ViewModels.UserAccount
         {
             var getTransactionsRequestDto = new GetTransactionsRequestDto { Email = email };
 
-            var transacationsDto = await httpClient.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>>(
+            var transacationsDto = await httpService.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>>(
                     TransactionsEndpoint.GetTransactionsByEmail, getTransactionsRequestDto);
 
             var transactions = AutoMapperConfiguration.Mapper.Map<IEnumerable<Transaction>>(transacationsDto);

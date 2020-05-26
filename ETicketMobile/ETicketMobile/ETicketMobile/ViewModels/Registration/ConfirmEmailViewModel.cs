@@ -9,9 +9,8 @@ using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.UserActions;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Configs;
 using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -26,10 +25,9 @@ namespace ETicketMobile.ViewModels.Registration
         private INavigationParameters navigationParameters;
 
         private readonly IPageDialogService dialogService;
+        private readonly IHttpService httpService;
 
         private readonly ILocalApi localApi;
-        
-        private readonly HttpClientService httpClient;
 
         private Timer timer;
 
@@ -74,8 +72,12 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public ConfirmEmailViewModel(INavigationService navigationService, IPageDialogService dialogService, ILocalApi localApi) 
-            : base(navigationService)
+        public ConfirmEmailViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService,
+            ILocalApi localApi
+        ) : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
@@ -86,7 +88,8 @@ namespace ETicketMobile.ViewModels.Registration
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
-            httpClient = new HttpClientService(ServerConfig.Address);
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnAppearing()
@@ -155,7 +158,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         private async Task RequestActivationCodeAsync(string email)
         {
-            await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
+            await httpService.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
 
         private async void OnNavigateToSignInView(string code)
@@ -196,7 +199,7 @@ namespace ETicketMobile.ViewModels.Registration
                 Password = password
             };
 
-            var tokenDto = await httpClient.PostAsync<UserSignInRequestDto, TokenDto>(
+            var tokenDto = await httpService.PostAsync<UserSignInRequestDto, TokenDto>(
                 AuthorizeEndpoint.Login, userSignIn);
 
             var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
@@ -243,7 +246,7 @@ namespace ETicketMobile.ViewModels.Registration
                 ActivationCode = activationCode
             };
 
-            var response = await httpClient.PostAsync<ConfirmEmailRequestDto, ConfirmEmailResponseDto>(
+            var response = await httpService.PostAsync<ConfirmEmailRequestDto, ConfirmEmailResponseDto>(
                 AuthorizeEndpoint.CheckCode,
                 confirmEmailRequestDto
             );
@@ -268,7 +271,7 @@ namespace ETicketMobile.ViewModels.Registration
         {
             var user = CreateUserSignUpRequest();
 
-            var response = await httpClient
+            var response = await httpService
                 .PostAsync<UserSignUpRequestDto, UserSignUpResponseDto>(AuthorizeEndpoint.Registration, user);
 
             return response.Succeeded;

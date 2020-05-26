@@ -11,9 +11,8 @@ using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.Views.UserActions;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Configs;
 using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -26,10 +25,9 @@ namespace ETicketMobile.ViewModels.Login
 
         private readonly INavigationService navigationService;
         private readonly IPageDialogService dialogService;
+        private readonly IHttpService httpService;
 
         private readonly ILocalApi localApi;
-
-        private readonly HttpClientService httpClientService;
 
         private ICommand navigateToRegistrationView;
         private ICommand navigateToForgetPasswordView;
@@ -80,8 +78,12 @@ namespace ETicketMobile.ViewModels.Login
 
         #endregion
 
-        public LoginViewModel(INavigationService navigationService, IPageDialogService dialogService, ILocalApi localApi)
-            : base(navigationService)
+        public LoginViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService,
+            ILocalApi localApi
+        ) : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
@@ -92,7 +94,8 @@ namespace ETicketMobile.ViewModels.Login
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
-            httpClientService = new HttpClientService(ServerConfig.Address);
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnAppearing()
@@ -165,7 +168,7 @@ namespace ETicketMobile.ViewModels.Login
                 Password =  password
             };
 
-            var tokenDto = await httpClientService.PostAsync<UserSignInRequestDto, TokenDto>(
+            var tokenDto = await httpService.PostAsync<UserSignInRequestDto, TokenDto>(
                 AuthorizeEndpoint.Login, userSignIn);
 
             var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);

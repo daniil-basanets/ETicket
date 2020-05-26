@@ -6,9 +6,8 @@ using System.Windows.Input;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Login;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Configs;
 using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -30,8 +29,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         private INavigationParameters navigationParameters;
 
         private readonly IPageDialogService dialogService;
-
-        private readonly HttpClientService httpClient;
+        private readonly IHttpService httpService;
 
         private ICommand navigateToSignInView;
 
@@ -68,8 +66,11 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #endregion
 
-        public CreateNewPasswordViewModel(INavigationService navigationService, IPageDialogService dialogService) 
-            : base(navigationService)
+        public CreateNewPasswordViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService
+        ) : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
@@ -77,7 +78,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
-            httpClient = new HttpClientService(ServerConfig.Address);
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -116,7 +118,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             var email = navigationParameters.GetValue<string>("email");
 
             var createNewPasswordDto = CreateNewPasswordDto(email, password);
-            var response = await httpClient.PostAsync<CreateNewPasswordRequestDto, CreateNewPasswordResponseDto>(
+            var response = await httpService.PostAsync<CreateNewPasswordRequestDto, CreateNewPasswordResponseDto>(
                     AuthorizeEndpoint.ResetPassword,
                     createNewPasswordDto
             );

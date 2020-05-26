@@ -2,12 +2,13 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Newtonsoft.Json;
 using Xamarin.Android.Net;
 
-namespace ETicketMobile.WebAccess.Network.WebService
+namespace ETicketMobile.WebAccess.Network.WebServices
 {
-    public class HttpClientService
+    public class HttpService : IHttpService
     {
         #region Fields
 
@@ -17,7 +18,7 @@ namespace ETicketMobile.WebAccess.Network.WebService
 
         #endregion
 
-        public HttpClientService(Uri serverAddress)
+        public HttpService(Uri serverAddress)
         {
             var androidClientHandler = new AndroidClientHandler();
             httpClient = new HttpClient(androidClientHandler);

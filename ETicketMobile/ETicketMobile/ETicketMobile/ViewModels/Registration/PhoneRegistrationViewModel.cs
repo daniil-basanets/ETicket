@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
-using ETicketMobile.WebAccess.Network.Configs;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Xamarin.Forms;
 
@@ -23,7 +22,7 @@ namespace ETicketMobile.ViewModels.Registration
         protected readonly INavigationService navigationService;
         protected INavigationParameters navigationParameters;
 
-        private readonly HttpClientService httpClient;
+        private readonly IHttpService httpService;
 
         private ICommand navigateToNameRegistrationView;
 
@@ -44,13 +43,14 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public PhoneRegistrationViewModel(INavigationService navigationService) 
+        public PhoneRegistrationViewModel(INavigationService navigationService, IHttpService httpService) 
             : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            httpClient = new HttpClientService(ServerConfig.Address);
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)

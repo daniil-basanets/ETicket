@@ -10,9 +10,8 @@ using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.Views.Tickets;
 using ETicketMobile.WebAccess;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Configs;
 using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -27,12 +26,11 @@ namespace ETicketMobile.ViewModels.Tickets
         private INavigationParameters navigationParameters;
 
         private readonly IPageDialogService dialogService;
+        private readonly IHttpService httpService;
 
         private readonly ILocalApi localApi;
 
         private IEnumerable<TicketType> tickets;
-
-        private readonly HttpClientService httpClient;
 
         private string accessToken;
 
@@ -53,7 +51,11 @@ namespace ETicketMobile.ViewModels.Tickets
 
         #endregion
 
-        public TicketsViewModel(INavigationService navigationService, IPageDialogService dialogService, ILocalApi localApi)
+        public TicketsViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService,
+            ILocalApi localApi)
             : base(navigationService)
         {
             this.navigationService = navigationService
@@ -65,7 +67,8 @@ namespace ETicketMobile.ViewModels.Tickets
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
-            httpClient = new HttpClientService(ServerConfig.Address);
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public async override void OnAppearing()
@@ -97,14 +100,14 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private async Task<IEnumerable<TicketType>> GetTicketsAsync()
         {
-            var ticketsDto = await httpClient.GetAsync<IEnumerable<TicketTypeDto>>(
+            var ticketsDto = await httpService.GetAsync<IEnumerable<TicketTypeDto>>(
                     TicketsEndpoint.GetTicketTypes, accessToken);
 
             if (ticketsDto == null)
             {
                 accessToken = await RefreshTokenAsync();
 
-                ticketsDto = await httpClient.GetAsync<IEnumerable<TicketTypeDto>>(
+                ticketsDto = await httpService.GetAsync<IEnumerable<TicketTypeDto>>(
                     TicketsEndpoint.GetTicketTypes, accessToken);
             }
 
@@ -118,7 +121,7 @@ namespace ETicketMobile.ViewModels.Tickets
             var refreshTokenTask = await localApi.GetTokenAsync();
             var refreshToken = refreshTokenTask.RefreshJwtToken;
 
-            var tokenDto = await httpClient.PostAsync<string, TokenDto>(
+            var tokenDto = await httpService.PostAsync<string, TokenDto>(
                 AuthorizeEndpoint.RefreshToken, refreshToken);
 
             var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);

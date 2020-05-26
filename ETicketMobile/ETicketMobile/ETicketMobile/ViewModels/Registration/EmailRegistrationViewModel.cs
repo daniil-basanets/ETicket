@@ -7,9 +7,8 @@ using ETicketMobile.Resources;
 using ETicketMobile.Views.Login;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Configs;
 using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -28,8 +27,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         private readonly INavigationService navigationService;
         private readonly IPageDialogService dialogService;
-
-        private readonly HttpClientService httpClient;
+        private readonly IHttpService httpService;
 
         private ICommand navigateToPhoneRegistrationView;
         private ICommand navigateToSignInView;
@@ -54,8 +52,11 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public EmailRegistrationViewModel(INavigationService navigationService, IPageDialogService dialogService) 
-            : base(navigationService)
+        public EmailRegistrationViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService
+        ) : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
@@ -63,7 +64,8 @@ namespace ETicketMobile.ViewModels.Registration
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
-            httpClient = new HttpClientService(ServerConfig.Address);
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         private async void OnMoveToPhoneRegistrationView(string email)
@@ -150,7 +152,7 @@ namespace ETicketMobile.ViewModels.Registration
         {
             var signUpRequestDto = new SignUpRequestDto { Email = email };
 
-            var isUserExists = await httpClient.PostAsync<SignUpRequestDto, SignUpResponseDto>(AuthorizeEndpoint.CheckEmail, signUpRequestDto);
+            var isUserExists = await httpService.PostAsync<SignUpRequestDto, SignUpResponseDto>(AuthorizeEndpoint.CheckEmail, signUpRequestDto);
 
             return isUserExists.Succeeded;
         }

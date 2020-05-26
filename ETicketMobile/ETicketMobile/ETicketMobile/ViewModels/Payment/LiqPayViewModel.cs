@@ -7,9 +7,8 @@ using System.Windows.Input;
 using ETicketMobile.Business.Model.Registration;
 using ETicketMobile.Views.Payment;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Configs;
 using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Java.Net;
 using Prism.Navigation;
 using Prism.Services;
@@ -31,12 +30,11 @@ namespace ETicketMobile.ViewModels.Payment
 
         private readonly INavigationService navigationService;
         private readonly IPageDialogService dialogService;
+        private readonly IHttpService httpService;
 
         private IEnumerable<int> areasId;
         private int ticketTypeId;
         private string email;
-
-        private readonly HttpClientService httpClient;
 
         private ICommand pay;
 
@@ -107,8 +105,11 @@ namespace ETicketMobile.ViewModels.Payment
 
         #endregion
 
-        public LiqPayViewModel(INavigationService navigationService, IPageDialogService dialogService)
-            : base(navigationService)
+        public LiqPayViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService
+        ) : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
@@ -116,7 +117,8 @@ namespace ETicketMobile.ViewModels.Payment
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
-            httpClient = new HttpClientService(ServerConfig.Address);
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnAppearing()
@@ -161,7 +163,7 @@ namespace ETicketMobile.ViewModels.Payment
                 TicketTypeId = ticketTypeId
             };
 
-            var response = await httpClient.PostAsync<GetTicketPriceRequestDto, GetTicketPriceResponseDto>(
+            var response = await httpService.PostAsync<GetTicketPriceRequestDto, GetTicketPriceResponseDto>(
                     TicketsEndpoint.GetTicketPrice, getTicketPriceRequestDto);
 
             return response;
@@ -209,7 +211,7 @@ namespace ETicketMobile.ViewModels.Payment
 
         private async Task<BuyTicketResponseDto> RequestBuyTicketAsync(BuyTicketRequestDto buyTicketRequestDto)
         {
-            var response = await httpClient.PostAsync<BuyTicketRequestDto, BuyTicketResponseDto>(
+            var response = await httpService.PostAsync<BuyTicketRequestDto, BuyTicketResponseDto>(
                 TicketsEndpoint.BuyTicket, buyTicketRequestDto);
 
             return response;

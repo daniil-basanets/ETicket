@@ -3,9 +3,8 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Views.Registration;
-using ETicketMobile.WebAccess.Network.Configs;
 using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -27,10 +26,9 @@ namespace ETicketMobile.ViewModels.Registration
         private INavigationParameters navigationParameters;
 
         private readonly IPageDialogService dialogService;
+        private readonly IHttpService httpService;
 
         private ICommand navigateToConfirmEmailView;
-
-        private readonly HttpClientService httpClient;
 
         private DateTime defaultDisplayDate;
         private DateTime minBirthday;
@@ -63,8 +61,11 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public BirthdayRegistrationViewModel(INavigationService navigationService, IPageDialogService dialogService) 
-            : base(navigationService)
+        public BirthdayRegistrationViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService
+        ) : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
@@ -72,7 +73,8 @@ namespace ETicketMobile.ViewModels.Registration
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
-            httpClient = new HttpClientService(ServerConfig.Address);
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnAppearing()
@@ -119,7 +121,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         private async Task RequestActivationCodeAsync(string email)
         {
-            await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
+            await httpService.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
     }
 }

@@ -7,9 +7,8 @@ using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Login;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Configs;
 using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -23,10 +22,10 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         private readonly INavigationService navigationService;
         private readonly IPageDialogService dialogService;
 
+        private readonly IHttpService httpService;
+
         private ICommand navigateToConfirmForgotPasswordView;
         private ICommand cancelCommand;
-
-        private readonly HttpClientService httpClient;
 
         private string emailWarning;
 
@@ -50,8 +49,11 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #endregion
 
-        public ForgotPasswordViewModel(INavigationService navigationService, IPageDialogService dialogService)
-            : base(navigationService)
+        public ForgotPasswordViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService
+        ) : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
@@ -59,7 +61,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
-            httpClient = new HttpClientService(ServerConfig.Address);
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         private async void OnNavigateToConfirmForgotPasswordView(string email)
@@ -135,7 +138,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         {
             var signUpRequestDto = new ForgotPasswordRequestDto { Email = email };
 
-            var isUserExists = await httpClient.PostAsync<ForgotPasswordRequestDto, ForgotPasswordResponseDto>(
+            var isUserExists = await httpService.PostAsync<ForgotPasswordRequestDto, ForgotPasswordResponseDto>(
                     AuthorizeEndpoint.CheckEmail, 
                     signUpRequestDto);
 
@@ -156,7 +159,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private async Task RequestActivationCodeAsync(string email)
         {
-            await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
+            await httpService.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
     }
 }
