@@ -8,6 +8,7 @@ using ETicketMobile.Business.Model.Registration;
 using ETicketMobile.Views.Payment;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
+using ETicketMobile.WebAccess.Network.Endpoints;
 using ETicketMobile.WebAccess.Network.WebService;
 using Java.Net;
 using Prism.Navigation;

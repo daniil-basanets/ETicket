@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.WebAccess.Network;
+using ETicketMobile.WebAccess.Network.Endpoints;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
 using Prism.Services;

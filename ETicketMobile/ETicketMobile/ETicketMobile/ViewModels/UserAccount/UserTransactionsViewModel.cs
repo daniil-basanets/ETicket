@@ -6,6 +6,7 @@ using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Model.Transactions;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
+using ETicketMobile.WebAccess.Network.Endpoints;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
 using Prism.Services;

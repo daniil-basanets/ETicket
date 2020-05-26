@@ -10,6 +10,7 @@ using ETicketMobile.Resources;
 using ETicketMobile.Views.UserActions;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network;
+using ETicketMobile.WebAccess.Network.Endpoints;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
 using Prism.Services;
