@@ -9,6 +9,7 @@ namespace ETicket.ApplicationServices.Mapping
         public AreaMapperProfile()
         {
             CreateMap<AreaDto, Area>().ReverseMap();
+            CreateMap<PriceListDto, PriceList>().ReverseMap();
         }
     }
 }
