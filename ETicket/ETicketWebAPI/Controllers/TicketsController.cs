@@ -9,7 +9,7 @@ namespace ETicket.WebAPI.Controllers
 {
     [Route("api/tickets")]
     [ApiController]
-    public class TicketsController : ControllerBase
+    public class TicketsController : BaseAPIController
     {
         #region Private members
 
@@ -44,7 +44,7 @@ namespace ETicket.WebAPI.Controllers
                     return NotFound();
                 }
 
-                return Ok(ticketDto);
+                return Ok(GetJson(ticketDto));
             }
             catch (Exception e)
             {
