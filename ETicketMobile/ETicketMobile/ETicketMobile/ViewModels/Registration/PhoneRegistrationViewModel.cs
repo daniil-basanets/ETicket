@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
-using ETicketMobile.WebAccess.Network;
+using ETicketMobile.WebAccess.Network.Configs;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
 using Xamarin.Forms;

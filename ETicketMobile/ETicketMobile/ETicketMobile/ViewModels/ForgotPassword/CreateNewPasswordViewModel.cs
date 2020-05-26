@@ -6,7 +6,7 @@ using System.Windows.Input;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Login;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network;
+using ETicketMobile.WebAccess.Network.Configs;
 using ETicketMobile.WebAccess.Network.Endpoints;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;

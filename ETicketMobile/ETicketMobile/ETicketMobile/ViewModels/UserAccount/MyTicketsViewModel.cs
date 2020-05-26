@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
-using ETicketMobile.WebAccess.Network;
+using ETicketMobile.WebAccess.Network.Configs;
 using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ETicketMobile.WebAccess.Network
+namespace ETicketMobile.WebAccess.Network.Configs
 {
     public static class ServerConfig
     {
