@@ -18,7 +18,7 @@ namespace ETicket.DataAccess.Domain.Repositories
             this.context = context;
         }
 
-        public async Task<SecretCode> Get(string code, string email)
+        public async Task<SecretCode> GetAsync(string code, string email)
         {
             return await context.SecretCodes.FirstOrDefaultAsync(c => c.Code == code && c.Email == email);
         }
