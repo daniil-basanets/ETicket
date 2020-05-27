@@ -33,7 +33,14 @@
             @Html.DisplayNameFor(model => model.AreaName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.AreaName)
+            @if (Model.AreaName == null)
+            {
+                @Html.DisplayFor(modelItem => Model.AreaName)
+            }
+            else
+            {
+                @Html.ActionLink(Model.AreaName, "Details", "Areas", new { id = Model.AreaId }, null)
+            }
         </dd>
         <dt class="col-sm-2">Map</dt>
         <dd class="col-sm-10">
