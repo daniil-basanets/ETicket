@@ -120,5 +120,57 @@ namespace ETicket.ApplicationServices.Services
                 Data = data.Select(d => d.ToString()).ToList()
             };
         }
+
+        public ChartDto PassengersByDaysOfWeek(DateTime startPeriod, DateTime endPeriod)
+        {
+            var daysOfWeek = new List<DayOfWeek>();
+            
+            //for(int i = 0)
+
+            foreach (DayOfWeek dayOfWeek in Enum.GetValues(typeof(DayOfWeek)))
+            {
+                daysOfWeek.Add(dayOfWeek);
+            }
+
+            if (startPeriod.CompareTo(endPeriod) == 1)
+            {
+                return new ChartDto() 
+                { 
+                    Labels = daysOfWeek.Select(t => t.ToString()).ToList(),
+                    ErrorMessage = EndLessStartError 
+                };
+            }
+            if((endPeriod - startPeriod).Days < 7)
+            {
+                return new ChartDto() 
+                { 
+                    Labels = daysOfWeek.Select(t => t.ToString()).ToList(), 
+                    ErrorMessage = "One week - minimum time period" 
+                };
+            }
+            
+
+            var chartData = uow.TicketVerifications.GetAll()
+                .Where(d => d.VerificationUTCDate >= startPeriod && d.VerificationUTCDate <= endPeriod && d.IsVerified)
+                .AsEnumerable()
+                .GroupBy(p => p.VerificationUTCDate.DayOfWeek)
+                .OrderBy(g => g.Key)
+                .Select(g => new { dayOfWeek = g.Key, count = g.Count() })
+                .ToDictionary(k => k.dayOfWeek, k => k.count);
+
+            //SqlFunctions.DatePart("weekday", o.LastUpdated)
+
+            //return new ChartDto()
+            //{
+            //    Labels = data.Keys.Select(t => t.ToString()).ToList(),
+            //    Data = data.Values.Select(t => t.ToString()).ToList()
+            //};
+
+            return new ChartDto()
+            {
+                Labels = daysOfWeek.Select(t => t.ToString()).ToList(),
+                Data = daysOfWeek.Select(d => (chartData.ContainsKey(d) ? chartData[d] : 0).ToString()).ToList()             
+            };
+        }
     }
 }
