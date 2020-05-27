@@ -25,6 +25,8 @@ namespace ETicket.Admin.Controllers
         // GET: Transport
         public IActionResult Index()
         {
+            log.Info(nameof(Index));
+
             try
             {
                 return View(transportService.GetAll());
@@ -40,6 +42,8 @@ namespace ETicket.Admin.Controllers
         // GET: Transport/Details/5
         public IActionResult Details(int? id)
         {
+            log.Info(nameof(Details));
+
             if (id == null)
             {
                 log.Warn(nameof(TransportsController.Details) + " id is null");
@@ -72,6 +76,8 @@ namespace ETicket.Admin.Controllers
         // GET: Transport/Create
         public IActionResult Create()
         {
+            log.Info(nameof(Create));
+
             return View();
         }
 
@@ -80,6 +86,8 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(TransportDto transportDto)
         {
+            log.Info(nameof(Create) + ": Post");
+
             if (ModelState.IsValid)
             {
                 try
@@ -110,7 +118,7 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, TransportDto transportDto)
         {
-            log.Info(nameof(Edit) + ":Post");
+            log.Info(nameof(Edit) + ": Post");
 
             if (id != transportDto.Id)
             {
@@ -152,7 +160,7 @@ namespace ETicket.Admin.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            log.Info(nameof(DeleteConfirmed) + ":Post");
+            log.Info(nameof(DeleteConfirmed) + ": Post");
 
             try
             {
