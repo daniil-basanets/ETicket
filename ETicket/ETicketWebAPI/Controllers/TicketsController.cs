@@ -4,11 +4,14 @@ using Microsoft.AspNetCore.Http;
 using log4net;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.WebAPI.Models.TicketVerification;
+using Swashbuckle.AspNetCore.Annotations;
+using ETicket.ApplicationServices.DTOs;
 
 namespace ETicket.WebAPI.Controllers
 {
     [Route("api/tickets")]
     [ApiController]
+    [SwaggerTag("User service")]
     public class TicketsController : ControllerBase
     {
         #region Private members
@@ -26,10 +29,12 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/tickets/5
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetTicket(Guid id)
+        [SwaggerOperation(Summary = "Get ticket by id", Description = "Allowed: authorized user")]
+        [SwaggerResponse(200, "Returns if everything was ok. Contains a Ticket", typeof(TicketDto))]
+        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(404, "Returns if ticket was not found by id")]
+        [SwaggerResponse(401, "Returns if user was unauthorized")]
+        public IActionResult GetTicket([SwaggerParameter("Guid", Required = true)] Guid id)
         {
             log.Info(nameof(GetTicket));
 
@@ -55,7 +60,11 @@ namespace ETicket.WebAPI.Controllers
         }
 
         [HttpGet("{ticketId}/verification-history")]
-        public IActionResult GetTicketVerificationHistory(Guid ticketId)
+        [SwaggerOperation(Summary = "Get ticket verification history by id", Description = "Allowed: authorized user")]
+        [SwaggerResponse(200, "Returns if everything was ok. Contains a list of ticket verifications")]
+        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(401, "Returns if user was unauthorized")]
+        public IActionResult GetTicketVerificationHistory([SwaggerParameter("Guid(ticket id)", Required = true)] Guid ticketId)
         {
             log.Info(nameof(GetTicketVerificationHistory));
 
@@ -76,9 +85,11 @@ namespace ETicket.WebAPI.Controllers
 
         // PUT: api/tickets/activate
         [HttpPut("/activate/{ticketId}")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult Activate(Guid ticketId)
+        [SwaggerOperation(Summary = "Update(activate) ticket", Description = "Allowed: authorized user")]
+        [SwaggerResponse(204, "Returns if everything was ok, without content")]
+        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(401, "Returns if user was unauthorized")]
+        public IActionResult Activate([SwaggerParameter("Guid", Required = true)] Guid ticketId)
         {
             log.Info(nameof(Activate));
 
@@ -97,7 +108,11 @@ namespace ETicket.WebAPI.Controllers
         }
 
         [HttpPost("{ticketId}/verify")]
-        public IActionResult VerifyTicket(Guid ticketId, [FromBody]VerifyTicketRequest request)
+        [SwaggerOperation(Summary = "Validate ticket endpoint", Description = "Allowed: Validator")]
+        [SwaggerResponse(200, "Returns if everything was ok. Contains a VerifyTicketResponse", typeof(VerifyTicketResponceDto))]
+        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(401, "Returns if user was unauthorized")]
+        public IActionResult VerifyTicket([SwaggerParameter("Guid", Required = true)] Guid ticketId, [FromBody, SwaggerRequestBody("Verify ticket payload", Required = true)] VerifyTicketRequest request)
         {
             log.Info(nameof(VerifyTicket));
 

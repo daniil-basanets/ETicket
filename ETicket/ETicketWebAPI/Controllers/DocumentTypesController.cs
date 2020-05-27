@@ -3,11 +3,14 @@ using log4net;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using Microsoft.AspNetCore.Http;
+using Swashbuckle.AspNetCore.Annotations;
+using ETicket.ApplicationServices.DTOs;
 
 namespace ETicket.WebAPI.Controllers
 {
     [Route("api/document-types")]
     [ApiController]
+    [SwaggerTag("Document type service")]
     public class DocumentTypesController : ControllerBase
     {
         #region Private members
@@ -24,6 +27,9 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/documenttypes
         [HttpGet]
+        [SwaggerOperation(Summary = "Get all document types", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Returns if everything was ok. Contains a list of document types")]
+        [SwaggerResponse(400, "Returns if exseption occurred")]
         public IActionResult GetAll()
         {
             log.Info(nameof(GetAll));
@@ -42,7 +48,11 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/documenttypes/5
         [HttpGet("{id}")]
-        public IActionResult GetDocumentTypeById(int id)
+        [SwaggerOperation(Summary = "Get document type by id", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Returns if everything was ok. Contains a DocumentType object", typeof(DocumentTypeDto))]
+        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(404, "Returns if document type was not found by id")]
+        public IActionResult GetDocumentTypeById([SwaggerParameter("Int", Required = true)] int id)
         {
             log.Info(nameof(GetDocumentTypeById));
 
