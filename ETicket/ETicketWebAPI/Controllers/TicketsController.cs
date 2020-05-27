@@ -12,7 +12,7 @@ namespace ETicket.WebAPI.Controllers
     [Route("api/tickets")]
     [ApiController]
     [SwaggerTag("User service")]
-    public class TicketsController : ControllerBase
+    public class TicketsController : BaseAPIController
     {
         #region Private members
 
