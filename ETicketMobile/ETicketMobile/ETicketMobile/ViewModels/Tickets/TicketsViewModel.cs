@@ -101,14 +101,14 @@ namespace ETicketMobile.ViewModels.Tickets
         private async Task<IEnumerable<TicketType>> GetTicketsAsync()
         {
             var ticketsDto = await httpService.GetAsync<IEnumerable<TicketTypeDto>>(
-                    TicketsEndpoint.GetTicketTypes, accessToken);
+                    TicketTypesEndpoint.GetTicketTypes, accessToken);
 
             if (ticketsDto == null)
             {
                 accessToken = await RefreshTokenAsync();
 
                 ticketsDto = await httpService.GetAsync<IEnumerable<TicketTypeDto>>(
-                    TicketsEndpoint.GetTicketTypes, accessToken);
+                    TicketTypesEndpoint.GetTicketTypes, accessToken);
             }
 
             var tickets = AutoMapperConfiguration.Mapper.Map<IEnumerable<TicketType>>(ticketsDto);
