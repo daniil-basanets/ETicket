@@ -8,7 +8,7 @@ namespace ETicket.WebAPI.Controllers.Payments
 {
     [Route("api/payments")]
     [ApiController]
-    public class PaymentsController : ControllerBase
+    public class PaymentsController : BaseAPIController
     {
         #region Private Members
 
