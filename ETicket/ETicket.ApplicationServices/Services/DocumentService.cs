@@ -41,9 +41,9 @@ namespace ETicket.ApplicationServices.Services
             return mapper.Map<IQueryable<Document>, IEnumerable<DocumentDto>>(documents).ToList();
         }
 
-        public Document GetDocumentById(Guid id)
+        public DocumentDto GetDocumentById(Guid id)
         {
-            return unitOfWork.Documents.Get(id);
+            return mapper.Map<Document, DocumentDto>(unitOfWork.Documents.Get(id));
         }
 
         public void Update(DocumentDto documentDto)

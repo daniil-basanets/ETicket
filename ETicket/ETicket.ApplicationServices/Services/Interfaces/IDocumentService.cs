@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using ETicket.Admin.Models.DataTables;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.PagingServices.Models;
-using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.ApplicationServices.Services.Interfaces
 {
@@ -11,7 +10,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
     {
 
         public IEnumerable<DocumentDto> GetDocuments();
-        public Document GetDocumentById(Guid Id);
+        public DocumentDto GetDocumentById(Guid Id);
         public void Create(DocumentDto documentTypeDto);
         public void Update(DocumentDto documentTypeDto);
         public void Delete(Guid id);
