@@ -29,7 +29,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet]
         [SwaggerOperation(Summary = "Get all document types", Description = "Allowed: everyone")]
         [SwaggerResponse(200, "Returns if everything was ok. Contains a list of document types")]
-        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(400, "Returns if exception occurred")]
         public IActionResult GetAll()
         {
             log.Info(nameof(GetAll));
@@ -50,7 +50,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get document type by id", Description = "Allowed: everyone")]
         [SwaggerResponse(200, "Returns if everything was ok. Contains a DocumentTypeDto object", typeof(DocumentTypeDto))]
-        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(404, "Returns if document type was not found by id")]
         public IActionResult GetDocumentTypeById([SwaggerParameter("Int", Required = true)] int id)
         {

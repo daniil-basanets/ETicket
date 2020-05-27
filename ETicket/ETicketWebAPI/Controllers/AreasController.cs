@@ -24,7 +24,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet]
         [SwaggerOperation(Summary = "Get all areas", Description = "Allowed: everyone")]
         [SwaggerResponse(200, "Returns if everything was ok. Contains a list of areas")]
-        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(400, "Returns if exception occurred")]
         public IActionResult GetAreas()
         {
             logger.Info(nameof(AreasController.GetAreas));
@@ -44,7 +44,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get area by id", Description = "Allowed: everyone")]
         [SwaggerResponse(200, "Returns if everything was ok. Contains an AreaDto object", typeof(AreaDto))]
-        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(400, "Returns if exception occurred")]
         public IActionResult GetArea([SwaggerParameter("Int", Required = true)] int id)
         {
             logger.Info(nameof(AreasController.GetArea));

@@ -123,7 +123,7 @@ namespace ETicket.WebAPI.Controllers
                     }
                 }
 
-                log.Warn(nameof(AuthenticationController.Registration) + $" Bad request");
+                log.Warn(nameof(AuthenticationController.Registration) + " Bad request");
                 return StatusCode(400, new { ModelState.IsValid });
             }
             catch (Exception e)
@@ -167,7 +167,7 @@ namespace ETicket.WebAPI.Controllers
                     return StatusCode(500, new { signInResult.Succeeded });
                 }
 
-                log.Warn(nameof(AuthenticationController.GetToken) + $" Bad request");
+                log.Warn(nameof(AuthenticationController.GetToken) + " Bad request");
                 return StatusCode(400, new { ModelState.IsValid });
             }
             catch (Exception e)
@@ -206,7 +206,7 @@ namespace ETicket.WebAPI.Controllers
                     return new JsonResult(new { access_jwtToken, refresh_jwtToken });
                 }
 
-                log.Warn(nameof(AuthenticationController.RefreshUserToken) + $" Token is null");
+                log.Warn(nameof(AuthenticationController.RefreshUserToken) + " Token is null");
                 return NotFound();
             }
             catch (Exception e)
@@ -242,11 +242,11 @@ namespace ETicket.WebAPI.Controllers
                         return Ok(new { result.Succeeded });
                     }
 
-                    log.Warn(nameof(AuthenticationController.ResetPassword) + $" Server error");
+                    log.Warn(nameof(AuthenticationController.ResetPassword) + " Server error");
                     return StatusCode(500, new { result.Succeeded });
                 }
 
-                log.Warn(nameof(AuthenticationController.ResetPassword) + $" user is null");
+                log.Warn(nameof(AuthenticationController.ResetPassword) + " user is null");
                 return NotFound(succeeded);
             }
             catch (Exception e)
@@ -261,7 +261,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost("/check-code")]
         [SwaggerOperation(Summary = "Check special secret code", Description = "Calls to confirm email and verify code before resetting password")]
         [SwaggerResponse(200, "Returns if code was verified. Contains an object with bool variable(succeeded or not)")]
-        [SwaggerResponse(404, "Returns if codel was not found. Contains an object with bool variable(succeeded or not)")]
+        [SwaggerResponse(404, "Returns if code was not found. Contains an object with bool variable(succeeded or not)")]
         public async Task<IActionResult> CheckCode([FromBody, SwaggerRequestBody("Check code payload", Required = true)] CheckCodeRequest request)
         {
             log.Info(nameof(CheckCode));
@@ -279,7 +279,7 @@ namespace ETicket.WebAPI.Controllers
                     return Ok(new { succeeded });
                 }
 
-                log.Warn(nameof(AuthenticationController.CheckCode) + $" code is null");
+                log.Warn(nameof(AuthenticationController.CheckCode) + " code is null");
                 return StatusCode(400, new { succeeded });
             }
             catch (Exception e)

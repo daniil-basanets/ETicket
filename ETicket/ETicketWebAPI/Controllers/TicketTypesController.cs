@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace ETicket.WebAPI.Controllers
 {
-    [Route("api/tickettypes")]
+    [Route("api/ticket-types")]
     [ApiController]
     [SwaggerTag("Ticket type service")]
     public class TicketTypesController : ControllerBase
@@ -24,7 +24,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet]
         [SwaggerOperation(Summary = "Get all ticket types", Description = "Allowed: everyone")]
         [SwaggerResponse(200, "Returns if everything was ok. Contains a list of ticket types")]
-        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(400, "Returns if exception occurred")]
         public IActionResult GetTicketTypes()
         {
             logger.Info(nameof(TicketTypesController.GetTicketTypes));
@@ -44,7 +44,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get ticket type by id", Description = "Allowed: everyone")]
         [SwaggerResponse(200, "Returns if everything was ok. Contains a Station object", typeof(TicketTypeDto))]
-        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(400, "Returns if exception occurred")]
         public IActionResult GetTicketType([SwaggerParameter("Int", Required = true)] int id)
         {
             logger.Info(nameof(TicketTypesController.GetTicketType));

@@ -24,7 +24,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet]
         [SwaggerOperation(Summary = "Get all privileges", Description = "Allowed: everyone")]
         [SwaggerResponse(200, "Returns if everything was ok. Contains a list of privileges")]
-        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(400, "Returns if exception occurred")]
         public IActionResult GetPrivileges()
         {
             logger.Info(nameof(PrivilegesController));
@@ -44,7 +44,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get privilege by id", Description = "Allowed: everyone")]
         [SwaggerResponse(200, "Returns if everything was ok. Contains a Privilege object", typeof(Privilege))]
-        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(404, "Returns if privilege was not found by id")]
         public IActionResult GetPrivilege([SwaggerParameter("Int", Required = true)] int id)
         {
