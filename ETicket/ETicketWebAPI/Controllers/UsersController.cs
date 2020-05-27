@@ -26,19 +26,25 @@ namespace ETicket.WebAPI.Controllers
             this.ticketService = ticketService;
         }
 
-        // GET: api/users/{id}/tickets
-        [HttpGet("{userid}/tickets")]
+        // GET: api/users/{email}/tickets
+        [HttpGet("{email}/tickets")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetTicketsByUser(Guid userId)
+        public IActionResult GetTicketsByUser(string email)
         {
             log.Info(nameof(GetTicketsByUser));
 
             try
             {
-                var tickets = ticketService.GetTicketsByUserId(userId);
+                var tickets = ticketService.GetTicketsByUserEmail(email);
 
-                return Ok(tickets);
+                if (tickets.Count() == 0)
+                {
+                    return NoContent();
+                }
+
+                return Json(tickets);
             }
             catch (Exception e)
             {

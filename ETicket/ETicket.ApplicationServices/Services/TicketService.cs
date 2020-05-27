@@ -109,13 +109,13 @@ namespace ETicket.ApplicationServices.Services
             uow.Save();
         }
 
-        public IEnumerable<TicketDto> GetTicketsByUserId(Guid userId)
+        public IEnumerable<TicketsByUserEmailDto> GetTicketsByUserEmail(string userEmail)
         {
             var query = uow.Tickets.GetAll()
-                .Where(t => t.UserId == userId)
+                .Where(t => t.User.Email == userEmail)
                 .OrderBy(t => t.CreatedUTCDate);
 
-            return mapper.ProjectTo<TicketDto>(query).ToList<TicketDto>();
+            return mapper.ProjectTo<TicketsByUserEmailDto>(query).ToList<TicketsByUserEmailDto>();
         }
     }
 }

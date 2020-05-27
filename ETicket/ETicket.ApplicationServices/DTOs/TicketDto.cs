@@ -49,4 +49,27 @@ namespace ETicket.ApplicationServices.DTOs
             Areas = new Dictionary<int, string>();
         }
     }
+
+    public class TicketsByUserEmailDto
+    {
+        public Guid Id { get; set; }
+
+        [DisplayName("Ticket type")]
+        public string TicketTypeName { get; set; }
+
+        [DisplayName("Created")]
+        public DateTime CreatedUTCDate { get; set; }
+
+        [DisplayName("Activated")]
+        public DateTime? ActivatedUTCDate { get; set; }
+
+        [DisplayName("Expiration")]
+        public DateTime? ExpirationUTCDate { get; set; }
+
+        [DisplayName("Transaction")]
+        public string TransactionRRN { get; set; }
+
+        [DisplayName("Areas")]
+        public IEnumerable<string> Areas { get; set; }
+    }
 }
