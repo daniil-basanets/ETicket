@@ -18,21 +18,21 @@ namespace ETicketMobile.ViewModels.Payment
 
         #region Properties
 
-        public ICommand NavigateToMainMenu => navigateToMainMenu
-            ?? (navigateToMainMenu = new Command(OnNavigateToMainMenu));
+        public ICommand NavigateToMainMenu => navigateToMainMenu 
+            ??= new Command(OnNavigateToMainMenu);
 
         #endregion
 
-        public TransactionCompletedViewModel(INavigationService navigationService) 
+        public TransactionCompletedViewModel(INavigationService navigationService)
             : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
         }
 
-        private void OnNavigateToMainMenu()
+        private async void OnNavigateToMainMenu()
         {
-            navigationService.NavigateAsync(nameof(MainMenuView));
+            await navigationService.NavigateAsync(nameof(MainMenuView));
         }
     }
 }

@@ -8,6 +8,7 @@ using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.WebAPI.Models.Identity;
 using ETicket.WebAPI.Models.Identity.Requests;
+using log4net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,7 @@ namespace ETicket.WebAPI.Controllers
     [SwaggerTag("Authentication service")]
     public class AuthenticationController : ControllerBase
     {
+        #region Private members
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly ETicketDataContext context;
@@ -29,6 +31,8 @@ namespace ETicket.WebAPI.Controllers
         private readonly IMailService mailService;
         private readonly IUserService ETUserService;
         private readonly ISecretCodeService codeService;
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        #endregion
 
         public AuthenticationController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ETicketDataContext context, IMailService mailService, IUserService ETUserService, ISecretCodeService codeService)
         {
@@ -41,182 +45,274 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // Check if email exists
-        [HttpPost("checkEmail")]
+        // POST: api/authentication/check-user
+        [HttpPost("/check-user")]
         [SwaggerOperation(Summary = "Check if email exists in data base", Description = "It is used for extra validation on client")]
         [SwaggerResponse(200, "Returns if model was valid. Contains an object with bool variable(exists or not)")]
         [SwaggerResponse(400, "Returns if model was not valid. Contains an object with bool variable(valid or not)")]
         public IActionResult CheckEmail([FromBody, SwaggerRequestBody("Check email payload", Required = true)] RegistrationRequest request)
         {
-            if (ModelState.IsValid)
+            log.Info(nameof(CheckEmail));
+
+            try
             {
-                bool succeeded = false;
-                if (userManager.FindByEmailAsync(request.Email).Result != null)
+                if (ModelState.IsValid)
                 {
-                    succeeded = true;
+                    bool succeeded = false;
+                    if (userManager.FindByEmailAsync(request.Email).Result != null)
+                    {
+                        succeeded = true;
+                    }
+
+                    return StatusCode(200, new { succeeded });
                 }
 
-                return StatusCode(200, new { succeeded });
+                log.Warn(nameof(AuthenticationController.CheckEmail) + " Bad request");
+                return StatusCode(400, new { ModelState.IsValid });
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return StatusCode(400, new { ModelState.IsValid });
+                return StatusCode(500, new { e.Message });
+            }
         }
 
         // Registration user
-        [HttpPost("registration")]
+        // POST: api/authentication/registration
+        [HttpPost("/registration")]
         [SwaggerOperation(Summary = "Registration")]
         [SwaggerResponse(200, "Returns if model was valid. Contains an object with bool variable(succeeded or not)")]
         [SwaggerResponse(400, "Returns if model was not valid. Contains an object with bool variable(valid or not)")]
         [SwaggerResponse(500, "Server error. Registration failed. Contains an object with bool variable(succeeded or not)")]
         public async Task<IActionResult> Registration([FromBody, SwaggerRequestBody("Registration payload", Required = true)] RegistrationRequest request)
         {
-            if (ModelState.IsValid)
+            log.Info(nameof(Registration));
+
+            try
             {
-                user = new IdentityUser()
+                if (ModelState.IsValid)
                 {
-                    UserName = request.Email,
-                    Email = request.Email
-                };
-
-                identityResult = await userManager.CreateAsync(user, request.Password);
-
-                if (identityResult.Succeeded)
-                {
-                    UserDto userDto = new UserDto
+                    user = new IdentityUser()
                     {
-                        FirstName = request.FirstName,
-                        LastName = request.LastName,
-                        Phone = request.Phone,
-                        Email = request.Email,
-                        DateOfBirth = request.DateOfBirth
+                        UserName = request.Email,
+                        Email = request.Email
                     };
-                    ETUserService.CreateUser(userDto);
 
-                    return Ok(new { identityResult.Succeeded });
+                    identityResult = await userManager.CreateAsync(user, request.Password);
+
+                    if (identityResult.Succeeded)
+                    {
+                        UserDto userDto = new UserDto
+                        {
+                            FirstName = request.FirstName,
+                            LastName = request.LastName,
+                            Phone = request.Phone,
+                            Email = request.Email,
+                            DateOfBirth = request.DateOfBirth
+                        };
+                        ETUserService.CreateUser(userDto);
+
+                        return Ok(new { identityResult.Succeeded });
+                    }
+                    else
+                    {
+                        log.Warn(nameof(AuthenticationController.Registration) + $" Identity result is {identityResult.Succeeded}");
+
+                        return StatusCode(500, new { identityResult.Succeeded });
+                    }
                 }
-                else
-                {
-                    return StatusCode(500, new { identityResult.Succeeded });
-                }
+
+                log.Warn(nameof(AuthenticationController.Registration) + $" Bad request");
+                return StatusCode(400, new { ModelState.IsValid });
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return StatusCode(400, new { ModelState.IsValid });
+                return StatusCode(500, new { e.Message });
+            }
         }
 
         // Login user
-        [HttpPost("login")]
+        // POST: api/authentication/token
+        [HttpPost("/token")]
         [SwaggerOperation(Summary = "Log in endpoint", Description = "Returns a pair of tokens: access token; refresh token.")]
         [SwaggerResponse(400, "Returns if model was not valid. Contains an object with bool variable(valid or not)")]
         [SwaggerResponse(500, "Server error. Log in failed. Contains an object with bool variable(succeeded or not)")]
         public async Task<IActionResult> GetToken([FromBody, SwaggerRequestBody("Authentication payload", Required = true)] AuthenticationRequest request)
         {
-            if (ModelState.IsValid)
+            log.Info(nameof(GetToken));
+
+            try
             {
-                var signInResult = await signInManager.PasswordSignInAsync(request.Email, request.Password, false, false);
-
-                if (signInResult.Succeeded)
+                if (ModelState.IsValid)
                 {
-                    user = await userManager.FindByNameAsync(request.Email);
+                    var signInResult = await signInManager.PasswordSignInAsync(request.Email, request.Password, false, false);
 
+                    if (signInResult.Succeeded)
+                    {
+                        user = await userManager.FindByNameAsync(request.Email);
+
+                        await userManager.RemoveAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
+                        var refresh_jwtToken = await userManager.GenerateUserTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
+                        await userManager.SetAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken", refresh_jwtToken);
+
+                        string access_jwtToken = TokenFactory.GetAccessToken(user);
+
+                        return new JsonResult(new { access_jwtToken, refresh_jwtToken });
+                    }
+
+                    log.Warn(nameof(AuthenticationController.GetToken) + $" SignIn result is {signInResult.Succeeded}");
+                    return StatusCode(500, new { signInResult.Succeeded });
+                }
+
+                log.Warn(nameof(AuthenticationController.GetToken) + $" Bad request");
+                return StatusCode(400, new { ModelState.IsValid });
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return StatusCode(500, new { e.Message });
+            }
+        }
+
+        // Refresh access_jwtToken
+        // POST: api/authentication/refresh-token
+        [HttpPost("/refresh-token")]
+        [SwaggerOperation(Summary = "Refresh access token endpoint", Description = "Returns a pair of tokens: access token; refresh token.")]
+        [SwaggerResponse(404, "Returns if refresh token was not found")]
+        public async Task<IActionResult> RefreshUserToken([FromBody, SwaggerRequestBody("Refresh token", Required = true)] string RefreshToken)
+        {
+            log.Info(nameof(RefreshUserToken));
+
+            try
+            {
+                var token = await context.UserTokens.FirstOrDefaultAsync(refT => refT.Value == RefreshToken);// check if token exists
+
+                if (token != null)
+                {
+                    user = await userManager.FindByIdAsync(token.UserId);
+
+                    // new refresh token
                     await userManager.RemoveAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
                     var refresh_jwtToken = await userManager.GenerateUserTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
                     await userManager.SetAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken", refresh_jwtToken);
 
+                    // new access token
                     string access_jwtToken = TokenFactory.GetAccessToken(user);
 
                     return new JsonResult(new { access_jwtToken, refresh_jwtToken });
                 }
 
-                return StatusCode(500, new { signInResult.Succeeded });
+                log.Warn(nameof(AuthenticationController.RefreshUserToken) + $" Token is null");
+                return NotFound();
             }
-
-            return StatusCode(400, new { ModelState.IsValid });
-        }
-
-        // Refresh access_jwtToken
-        [HttpPost("refreshUserToken")]
-        [SwaggerOperation(Summary = "Refresh access token endpoint", Description = "Returns a pair of tokens: access token; refresh token.")]
-        [SwaggerResponse(404, "Returns if refresh token was not found")]
-        public async Task<IActionResult> RefreshUserToken([FromBody, SwaggerRequestBody("Refresh token", Required = true)] string RefreshToken)
-        {
-            var token = await context.UserTokens.FirstOrDefaultAsync(refT => refT.Value == RefreshToken);// check if token exists
-
-            if (token != null)
+            catch (Exception e)
             {
-                user = await userManager.FindByIdAsync(token.UserId);
+                log.Error(e);
 
-                // new refresh token
-                await userManager.RemoveAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
-                var refresh_jwtToken = await userManager.GenerateUserTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
-                await userManager.SetAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken", refresh_jwtToken);
-
-                // new access token
-                string access_jwtToken = TokenFactory.GetAccessToken(user);
-
-                return new JsonResult(new { access_jwtToken, refresh_jwtToken });
+                return StatusCode(500, new { e.Message });
             }
-
-            return NotFound();
         }
 
-        [HttpPost("resetPassword")]
+        // POST: api/authentication/reset-password
+        [HttpPost("/reset-password")]
         [SwaggerOperation(Summary = "Reset password", Description = "Calls after verifying special secret code")]
         [SwaggerResponse(200, "Returns if password was reseted. Contains an object with bool variable(succeeded or not)")]
         [SwaggerResponse(404, "Returns if user was not found by email")]
         [SwaggerResponse(500, "Server error. Reset password operation failed. Contains an object with bool variable(succeeded or not)")]
         public async Task<IActionResult> ResetPassword([FromBody, SwaggerRequestBody("Reset password payload", Required = true)] ResetPasswordRequest request)
         {
-            var user = await userManager.FindByEmailAsync(request.Email);
-            bool succeeded = false;
+            log.Info(nameof(ResetPassword));
 
-            if (user != null)
+            try
             {
-                var resetPassToken = await userManager.GeneratePasswordResetTokenAsync(user);
-                var result = await userManager.ResetPasswordAsync(user, resetPassToken, request.NewPassword);
+                var user = await userManager.FindByEmailAsync(request.Email);
+                bool succeeded = false;
 
-                if (result.Succeeded)
+                if (user != null)
                 {
-                    return Ok(new { result.Succeeded });
+                    var resetPassToken = await userManager.GeneratePasswordResetTokenAsync(user);
+                    var result = await userManager.ResetPasswordAsync(user, resetPassToken, request.NewPassword);
+
+                    if (result.Succeeded)
+                    {
+                        return Ok(new { result.Succeeded });
+                    }
+
+                    log.Warn(nameof(AuthenticationController.ResetPassword) + $" Server error");
+                    return StatusCode(500, new { result.Succeeded });
                 }
 
-                return StatusCode(500, new { result.Succeeded });
+                log.Warn(nameof(AuthenticationController.ResetPassword) + $" user is null");
+                return NotFound(succeeded);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return NotFound(succeeded);
+                return StatusCode(500, new { e.Message });
+            }
         }
 
-        [HttpPost("checkCode")]
+        // POST: api/authentication/check-code
+        [HttpPost("/check-code")]
         [SwaggerOperation(Summary = "Check special secret code", Description = "Calls to confirm email and verify code before resetting password")]
         [SwaggerResponse(200, "Returns if code was verified. Contains an object with bool variable(succeeded or not)")]
         [SwaggerResponse(404, "Returns if codel was not found. Contains an object with bool variable(succeeded or not)")]
         public async Task<IActionResult> CheckCode([FromBody, SwaggerRequestBody("Check code payload", Required = true)] CheckCodeRequest request)
         {
-            var code = await codeService.Get(request.Code, request.Email);
-            bool succeeded = false;
+            log.Info(nameof(CheckCode));
 
-            if (code != null)
+            try
             {
-                codeService.RemoveRange(request.Email);
+                var code = await codeService.Get(request.Code, request.Email);
+                bool succeeded = false;
 
-                succeeded = true;
-                return Ok(new { succeeded });
+                if (code != null)
+                {
+                    codeService.RemoveRange(request.Email);
+
+                    succeeded = true;
+                    return Ok(new { succeeded });
+                }
+
+                log.Warn(nameof(AuthenticationController.CheckCode) + $" code is null");
+                return StatusCode(400, new { succeeded });
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return StatusCode(404, new { succeeded });
+                return StatusCode(500, new { e.Message });
+            }
         }
 
-        [HttpPost("sendCode")]
+        // POST: api/authentication/send-code
+        [HttpPost("/send-code")]
         [SwaggerOperation(Summary = "Send special secret code", Description = "Calls to send special code to user's email. No more than 3 mails for 1 email.")]
         public void SendSecretCodeToUser([FromBody, SwaggerRequestBody("Email to send code", Required = true)] string email)
         {
-            if (codeService.Count(email) < 3)
+            log.Info(nameof(SendSecretCodeToUser));
+
+            try
             {
-                var secretString = SecretString.GetSecretString();
+                if (codeService.Count(email) < 3)
+                {
+                    var secretString = SecretString.GetSecretString();
 
-                mailService.SendEmail(email, secretString, "Your personal code");
+                    mailService.SendEmail(email, secretString, "Your personal code");
 
-                var code = new SecretCode() { Code = secretString, Email = email };
+                    var code = new SecretCode() { Code = secretString, Email = email };
 
-                codeService.Add(code);
+                    codeService.Add(code);
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
             }
         }
     }

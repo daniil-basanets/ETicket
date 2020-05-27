@@ -9,7 +9,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
     {
 
         public IEnumerable<Document> GetDocuments();
-        public Document GetDocumentById(Guid Id);
+        public DocumentDto GetDocumentById(Guid Id);
         public void Create(DocumentDto documentTypeDto);
         public void Update(DocumentDto documentTypeDto);
         public void Delete(Guid id);

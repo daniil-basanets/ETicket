@@ -49,7 +49,7 @@ namespace ETicket.WebAPI.Controllers
                     return NotFound();
                 }
 
-                return Ok(ticketDto);
+                return Json(ticketDto);
             }
             catch (Exception e)
             {

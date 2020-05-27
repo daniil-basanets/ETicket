@@ -24,6 +24,9 @@ using ETicketMobile.Views.Settings;
 using ETicketMobile.Views.Tickets;
 using ETicketMobile.Views.UserAccount;
 using ETicketMobile.Views.UserActions;
+using ETicketMobile.WebAccess.Network.Configs;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
+using ETicketMobile.WebAccess.Network.WebServices;
 using Prism;
 using Prism.Ioc;
 using Xamarin.Forms;
@@ -43,7 +46,6 @@ namespace ETicketMobile
             InitializeComponent();
 
             await NavigationService.NavigateAsync(nameof(NavigationPage) + "/" + nameof(LoginView));
-            //await NavigationService.NavigateAsync(nameof(NavigationPage) + "/" + nameof(CreateNewPasswordView));
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -53,7 +55,10 @@ namespace ETicketMobile
             var localApi = LocalApi.GetInstance();
             var localize = DependencyService.Get<ILocalize>();
 
-            InitCulture(localApi, localize).Wait();
+            InitCultureAsync(localApi, localize).Wait();
+
+            var httpService = new HttpService(ServerConfig.Address);
+            containerRegistry.RegisterInstance<IHttpService>(httpService);
 
             containerRegistry.RegisterInstance<ILocalApi>(localApi);
             containerRegistry.RegisterInstance<ILocalize>(localize);
@@ -68,7 +73,6 @@ namespace ETicketMobile
             containerRegistry.RegisterForNavigation<ForgotPasswordView, ForgotPasswordViewModel>();
             containerRegistry.RegisterForNavigation<TicketsView, TicketsViewModel>();
             containerRegistry.RegisterForNavigation<PhoneRegistrationView, PhoneRegistrationViewModel>();
-            containerRegistry.RegisterForNavigation<BuyTicketView, BuyTicketViewModel>();
             containerRegistry.RegisterForNavigation<ConfirmEmailView, ConfirmEmailViewModel>();
             containerRegistry.RegisterForNavigation<ConfirmForgotPasswordView, ConfirmForgotPasswordViewModel>();
             containerRegistry.RegisterForNavigation<CreateNewPasswordView, CreateNewPasswordViewModel>();
@@ -83,7 +87,7 @@ namespace ETicketMobile
             containerRegistry.RegisterForNavigation<MyTicketsView, MyTicketsViewModel>();
         }
 
-        private async Task InitCulture(ILocalApi localApi, ILocalize localize)
+        private async Task InitCultureAsync(ILocalApi localApi, ILocalize localize)
         {
             var localization = await localApi.GetLocalizationAsync().ConfigureAwait(false);
 

@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Login;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.Endpoints;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.ForgotPassword
@@ -26,7 +28,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
-        private readonly HttpClientService httpClient;
+        private readonly IPageDialogService dialogService;
+        private readonly IHttpService httpService;
 
         private ICommand navigateToSignInView;
 
@@ -40,8 +43,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #region Properties
 
-        public ICommand NavigateToSignInView => navigateToSignInView
-            ?? (navigateToSignInView = new Command<string>(OnNavigateToSignInView));
+        public ICommand NavigateToSignInView => navigateToSignInView 
+            ??= new Command<string>(OnNavigateToSignInView);
 
         public string PasswordWarning
         {
@@ -63,13 +66,20 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #endregion
 
-        public CreateNewPasswordViewModel(INavigationService navigationService) 
-            : base(navigationService)
+        public CreateNewPasswordViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService
+        ) : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            httpClient = new HttpClientService();
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
+
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -79,21 +89,36 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private async void OnNavigateToSignInView(string password)
         {
+            await NavigateToSignInViewAsync(password);
+        }
+
+        private async Task NavigateToSignInViewAsync(string password)
+        {
             if (!IsValid(password))
                 return;
 
-            if (!await RequestChangePassword(password))
+            try
+            {
+                if (!await RequestChangePasswordAsync(password))
+                    return;
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+
                 return;
+            }
+
 
             await navigationService.NavigateAsync(nameof(LoginView));
         }
 
-        private async Task<bool> RequestChangePassword(string password)
+        private async Task<bool> RequestChangePasswordAsync(string password)
         {
             var email = navigationParameters.GetValue<string>("email");
 
             var createNewPasswordDto = CreateNewPasswordDto(email, password);
-            var response = await httpClient.PostAsync<CreateNewPasswordRequestDto, CreateNewPasswordResponseDto>(
+            var response = await httpService.PostAsync<CreateNewPasswordRequestDto, CreateNewPasswordResponseDto>(
                     AuthorizeEndpoint.ResetPassword,
                     createNewPasswordDto
             );
@@ -121,14 +146,14 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            if (!IsPasswordShort(password))
+            if (IsPasswordShort(password))
             {
                 PasswordWarning = AppResource.PasswordShort;
 
                 return false;
             }
 
-            if (!IsPasswordLong(password))
+            if (IsPasswordLong(password))
             {
                 PasswordWarning = AppResource.PasswordLong;
 
@@ -154,12 +179,12 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private bool IsPasswordShort(string password)
         {
-            return password.Length >= PasswordMinLength;
+            return password.Length < PasswordMinLength;
         }
 
         private bool IsPasswordLong(string password)
         {
-            return password.Length <= PasswordMaxLength;
+            return password.Length > PasswordMaxLength;
         }
 
         private bool IsPasswordWeak(string password)

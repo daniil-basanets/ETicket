@@ -618,18 +618,18 @@ namespace ETicketMobile.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
-        internal static string PasswordPlaceHolderDefault {
+        internal static string PasswordWatermarkDefault {
             get {
-                return ResourceManager.GetString("PasswordPlaceHolderDefault", resourceCulture);
+                return ResourceManager.GetString("PasswordWatermarkDefault", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to or wrong password.
         /// </summary>
-        internal static string PasswordPlaceHolderWrong {
+        internal static string PasswordWatermarkWrong {
             get {
-                return ResourceManager.GetString("PasswordPlaceHolderWrong", resourceCulture);
+                return ResourceManager.GetString("PasswordWatermarkWrong", resourceCulture);
             }
         }
         
