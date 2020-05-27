@@ -9,7 +9,7 @@ namespace ETicket.WebAPI.Controllers
 {
     [Route("api/carriers")]
     [ApiController]
-    public class CarriersController : ControllerBase
+    public class CarriersController : BaseAPIController
     {
         #region Private members
 

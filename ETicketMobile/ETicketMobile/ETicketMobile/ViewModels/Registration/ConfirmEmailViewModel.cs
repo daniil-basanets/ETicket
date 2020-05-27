@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
@@ -8,9 +9,10 @@ using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.UserActions;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.Endpoints;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Registration
@@ -22,9 +24,10 @@ namespace ETicketMobile.ViewModels.Registration
         private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
+        private readonly IPageDialogService dialogService;
+        private readonly IHttpService httpService;
+
         private readonly ILocalApi localApi;
-        
-        private readonly HttpClientService httpClient;
 
         private Timer timer;
 
@@ -43,11 +46,11 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToSignInView => navigateToSignInView
-            ?? (navigateToSignInView = new Command<string>(OnNavigateToSignInView));
+        public ICommand NavigateToSignInView => navigateToSignInView 
+            ??= new Command<string>(OnNavigateToSignInView);
 
-        public ICommand SendActivationCode => sendActivationCode
-            ?? (sendActivationCode = new Command(OnSendActivationCode));
+        public ICommand SendActivationCode => sendActivationCode 
+            ??= new Command(OnSendActivationCode);
 
         public string ConfirmEmailWarning
         {
@@ -69,16 +72,24 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public ConfirmEmailViewModel(INavigationService navigationService, ILocalApi localApi) 
-            : base(navigationService)
+        public ConfirmEmailViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService,
+            ILocalApi localApi
+        ) : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
+
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
-            httpClient = new HttpClientService();
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnAppearing()
@@ -115,13 +126,12 @@ namespace ETicketMobile.ViewModels.Registration
                 timer.Stop();
         }
 
-        private void OnSendActivationCode()
+        private async void OnSendActivationCode()
         {
             if (ActivationCodeTimer != 0)
                 return;
 
-            var email = navigationParameters.GetValue<string>("email");
-            RequestActivationCode(email);
+            await SendActivationCodeAsync();
 
             ActivationCodeTimer = 60;
 
@@ -130,26 +140,57 @@ namespace ETicketMobile.ViewModels.Registration
             TimerActivated = true;
         }
 
-        private async void RequestActivationCode(string email)
+        private async Task SendActivationCodeAsync()
         {
-            await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
+            var email = navigationParameters.GetValue<string>("email");
+
+            try
+            {
+                await RequestActivationCodeAsync(email);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+
+                return;
+            }
+        }
+
+        private async Task RequestActivationCodeAsync(string email)
+        {
+            await httpService.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
 
         private async void OnNavigateToSignInView(string code)
         {
+            await NavigateToSignInViewAsync(code);
+        }
+
+        private async Task NavigateToSignInViewAsync(string code)
+        {
             if (!IsValid(code))
                 return;
 
-            var userCreated = await ConfirmAndCreateUser(code);
+            try
+            {
+                var userCreated = await ConfirmAndCreateUserAsync(code);
 
-            if (!userCreated)
+                if (!userCreated)
+                    return;
+
+                var token = await GetTokenAsync();
+                await localApi.AddAsync(token);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+
                 return;
+            }
 
-            var token = await GetTokenAsync();
-
-            await localApi.AddAsync(token);
             await navigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
         }
+
         private async Task<Token> GetTokenAsync()
         {
             var userSignIn = new UserSignInRequestDto
@@ -158,7 +199,7 @@ namespace ETicketMobile.ViewModels.Registration
                 Password = password
             };
 
-            var tokenDto = await httpClient.PostAsync<UserSignInRequestDto, TokenDto>(
+            var tokenDto = await httpService.PostAsync<UserSignInRequestDto, TokenDto>(
                 AuthorizeEndpoint.Login, userSignIn);
 
             var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
@@ -166,9 +207,9 @@ namespace ETicketMobile.ViewModels.Registration
             return token;
         }
 
-        private async Task<bool> ConfirmAndCreateUser(string code)
+        private async Task<bool> ConfirmAndCreateUserAsync(string code)
         {
-            var confirmEmailIsSucceeded = await ConfirmEmail(code);
+            var confirmEmailIsSucceeded = await ConfirmEmailAsync(code);
             if (!confirmEmailIsSucceeded)
             {
                 ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
@@ -176,7 +217,7 @@ namespace ETicketMobile.ViewModels.Registration
                 return false;
             }
 
-            var userCreated = await CreateNewUser();
+            var userCreated = await CreateNewUserAsync();
 
             return userCreated;
         }
@@ -197,7 +238,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        private async Task<bool> ConfirmEmail(string activationCode)
+        private async Task<bool> ConfirmEmailAsync(string activationCode)
         {
             var confirmEmailRequestDto = new ConfirmEmailRequestDto
             {
@@ -205,7 +246,7 @@ namespace ETicketMobile.ViewModels.Registration
                 ActivationCode = activationCode
             };
 
-            var response = await httpClient.PostAsync<ConfirmEmailRequestDto, ConfirmEmailResponseDto>(
+            var response = await httpService.PostAsync<ConfirmEmailRequestDto, ConfirmEmailResponseDto>(
                 AuthorizeEndpoint.CheckCode,
                 confirmEmailRequestDto
             );
@@ -226,15 +267,12 @@ namespace ETicketMobile.ViewModels.Registration
             };
         }
 
-        private async Task<bool> CreateNewUser()
+        private async Task<bool> CreateNewUserAsync()
         {
             var user = CreateUserSignUpRequest();
 
-            var response = await httpClient
-                .PostAsync<UserSignUpRequestDto, UserSignUpResponseDto>(
-                    AuthorizeEndpoint.Registration,
-                    user
-            );
+            var response = await httpService
+                .PostAsync<UserSignUpRequestDto, UserSignUpResponseDto>(AuthorizeEndpoint.Registration, user);
 
             return response.Succeeded;
         }

@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Net;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Android.Util;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Login;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.Endpoints;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Registration
@@ -22,9 +25,9 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Fields
 
-        protected INavigationService navigationService;
-
-        private readonly HttpClientService httpClient;
+        private readonly INavigationService navigationService;
+        private readonly IPageDialogService dialogService;
+        private readonly IHttpService httpService;
 
         private ICommand navigateToPhoneRegistrationView;
         private ICommand navigateToSignInView;
@@ -36,10 +39,10 @@ namespace ETicketMobile.ViewModels.Registration
         #region Properties
 
         public ICommand NavigateToPhoneRegistrationView => navigateToPhoneRegistrationView 
-            ?? (navigateToPhoneRegistrationView = new Command<string>(OnMoveToPhoneRegistrationView));
+            ??= new Command<string>(OnMoveToPhoneRegistrationView);
 
-        public ICommand NavigateToSignInView => navigateToSignInView
-            ?? (navigateToSignInView = new Command(OnNavigateToSignInView));
+        public ICommand NavigateToSignInView => navigateToSignInView 
+            ??= new Command(OnNavigateToSignInView);
 
         public string EmailWarning
         {
@@ -49,44 +52,53 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public EmailRegistrationViewModel(INavigationService navigationService) 
-            : base(navigationService)
+        public EmailRegistrationViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService
+        ) : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            httpClient = new HttpClientService();
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
+
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
-        private void OnMoveToPhoneRegistrationView(string email)
+        private async void OnMoveToPhoneRegistrationView(string email)
         {
-            if (!IsValid(email))
-                return;
+            await MoveToPhoneRegistrationViewAsync(email);
+        }
 
-            if (CheckUserExists(email))
+        private async Task MoveToPhoneRegistrationViewAsync(string email)
+        {
+            try
+            {
+                if (!await IsValid(email))
+                    return;
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+
                 return;
+            }
 
             var navigationParams = new NavigationParameters { { "email", email } };
-            navigationService.NavigateAsync(nameof(PhoneRegistrationView), navigationParams);
+            await navigationService.NavigateAsync(nameof(PhoneRegistrationView), navigationParams);
         }
 
-        private void OnNavigateToSignInView(object obj)
+        private async void OnNavigateToSignInView()
         {
-            navigationService.NavigateAsync(nameof(LoginView));
-        }
-
-        private bool RequestUserExists(string email)
-        {
-            var signUpRequestDto = new SignUpRequestDto { Email = email };
-
-            var isUserExists = httpClient.PostAsync<SignUpRequestDto, SignUpResponseDto>(AuthorizeEndpoint.CheckEmail, signUpRequestDto).Result;
-
-            return isUserExists.Succeeded;
+            await navigationService.NavigateAsync(nameof(LoginView));
         }
 
         #region Validation
 
-        private bool IsValid(string email)
+        private async Task<bool> IsValid(string email)
         {
             if (IsEmailEmpty(email))
             {
@@ -109,21 +121,16 @@ namespace ETicketMobile.ViewModels.Registration
                 return false;
             }
 
-            return true;
-        }
-
-        private bool CheckUserExists(string email)
-        {
-            var isUserExists = RequestUserExists(email);
+            var isUserExists = await RequestUserExistsAsync(email);
 
             if (isUserExists)
             {
                 EmailWarning = AppResource.EmailTaken;
 
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
 
         private bool IsEmailEmpty(string email)
@@ -139,6 +146,15 @@ namespace ETicketMobile.ViewModels.Registration
         private bool IsEmailConstainsCorrectLong(string email)
         {
             return email.Length <= EmailMaxLength;
+        }
+
+        private async Task<bool> RequestUserExistsAsync(string email)
+        {
+            var signUpRequestDto = new SignUpRequestDto { Email = email };
+
+            var isUserExists = await httpService.PostAsync<SignUpRequestDto, SignUpResponseDto>(AuthorizeEndpoint.CheckEmail, signUpRequestDto);
+
+            return isUserExists.Succeeded;
         }
 
         #endregion

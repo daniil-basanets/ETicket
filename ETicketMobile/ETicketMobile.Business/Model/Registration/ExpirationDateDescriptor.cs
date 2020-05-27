@@ -1,6 +1,6 @@
 ﻿namespace ETicketMobile.Business.Model.Registration
 {
-    public class ExpirationDate
+    public class ExpirationDateDescriptor
     {
         public string ExpirationMonth { get; set; }
 

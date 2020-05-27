@@ -8,7 +8,7 @@ namespace ETicket.WebAPI.Controllers
 {
     [Route("api/document-types")]
     [ApiController]
-    public class DocumentTypesController : ControllerBase
+    public class DocumentTypesController : BaseAPIController
     {
         #region Private members
 

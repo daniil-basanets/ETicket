@@ -8,7 +8,11 @@ namespace ETicketMobile.DataAccess.Repositories
 {
     public class SettingsRepository
     {
+        #region Fields
+
         private SQLiteAsyncConnection database;
+
+        #endregion
 
         public void Connect()
         {

@@ -12,20 +12,28 @@ namespace ETicketMobile.ViewModels.Settings
 {
     public class SettingsViewModel : ViewModelBase
     {
+        #region Fields
+
         private readonly INavigationService navigationService;
 
         private ICommand navigateToAction;
 
         private IEnumerable<UserAction> settings;
 
-        public ICommand NavigateToAction => navigateToAction
-            ?? (navigateToAction = new Command<UserAction>(OnNavigateToAction));
+        #endregion
+
+        #region Properties
+
+        public ICommand NavigateToAction => navigateToAction 
+            ??= new Command<UserAction>(OnNavigateToAction);
 
         public IEnumerable<UserAction> Settings
         {
             get => settings;
             set => SetProperty(ref settings, value);
         }
+
+        #endregion
 
         public SettingsViewModel(INavigationService navigationService) 
             : base(navigationService)
