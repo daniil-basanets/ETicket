@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Business.Mapping;
@@ -10,8 +11,8 @@ using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Payment;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.Endpoints;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -23,11 +24,12 @@ namespace ETicketMobile.ViewModels.Tickets
         #region Fields
 
         private readonly INavigationService navigationService;
-        private readonly IPageDialogService dialogService;
         private INavigationParameters navigationParameters;
 
+        private readonly IPageDialogService dialogService;
+        private readonly IHttpService httpService;
+
         private readonly ILocalApi localApi;
-        private readonly HttpClientService httpClient;
 
         private string accessToken;
 
@@ -39,8 +41,8 @@ namespace ETicketMobile.ViewModels.Tickets
 
         #region Properties
 
-        public ICommand Buy => buy
-            ?? (buy = new Command(OnBuy));
+        public ICommand Buy => buy 
+            ??= new Command(OnBuy);
 
         public IEnumerable<Area> Areas
         {
@@ -50,8 +52,12 @@ namespace ETicketMobile.ViewModels.Tickets
 
         #endregion
 
-        public AreasViewModel(INavigationService navigationService, IPageDialogService dialogService, ILocalApi localApi)
-             : base(navigationService)
+        public AreasViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService,
+            ILocalApi localApi
+        ) : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
@@ -62,13 +68,23 @@ namespace ETicketMobile.ViewModels.Tickets
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
-            httpClient = new HttpClientService();
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public async override void OnAppearing()
         {
-            accessToken = await GetAccessToken();
-            Areas = await GetAreas();
+            try
+            {
+                accessToken = await GetAccessTokenAsync();
+                Areas = await GetAreasAsync();
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+
+                return;
+            }
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -76,24 +92,22 @@ namespace ETicketMobile.ViewModels.Tickets
             this.navigationParameters = navigationParameters;
         }
 
-        private async Task<string> GetAccessToken()
+        private async Task<string> GetAccessTokenAsync()
         {
-            var token = await localApi.GetTokenAsync().ConfigureAwait(false);
+            var token = await localApi.GetTokenAsync();
 
             return token.AcessJwtToken;
         }
 
-        private async Task<IEnumerable<Area>> GetAreas()
+        private async Task<IEnumerable<Area>> GetAreasAsync()
         {
-            var areasDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(
-                    AreasEndpoint.Get, accessToken).ConfigureAwait(false);
+            var areasDto = await httpService.GetAsync<IEnumerable<AreaDto>>(AreasEndpoint.GetAreas, accessToken);
 
             if (areasDto == null)
             {
-                accessToken = await RefreshToken();
+                accessToken = await RefreshTokenAsync();
 
-                areasDto = await httpClient.GetAsync<IEnumerable<AreaDto>>(
-                        AreasEndpoint.Get, accessToken).ConfigureAwait(false);
+                areasDto = await httpService.GetAsync<IEnumerable<AreaDto>>(AreasEndpoint.GetAreas, accessToken);
             }
 
             var areas = AutoMapperConfiguration.Mapper.Map<IEnumerable<Area>>(areasDto);
@@ -101,12 +115,12 @@ namespace ETicketMobile.ViewModels.Tickets
             return areas;
         }
 
-        private async Task<string> RefreshToken()
+        private async Task<string> RefreshTokenAsync()
         {
-            var refreshToken = localApi.GetTokenAsync().Result.RefreshJwtToken;
+            var refreshTokenTask = await localApi.GetTokenAsync();
+            var refreshToken = refreshTokenTask.RefreshJwtToken;
 
-            var tokenDto = await httpClient.PostAsync<string, TokenDto>(
-                    AuthorizeEndpoint.RefreshToken, refreshToken);
+            var tokenDto = await httpService.PostAsync<string, TokenDto>(AuthorizeEndpoint.RefreshToken, refreshToken);
 
             var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
 
@@ -115,7 +129,7 @@ namespace ETicketMobile.ViewModels.Tickets
             return token.AcessJwtToken;
         }
 
-        private void OnBuy(object obj)
+        private async void OnBuy()
         {
             var selectedAreasId = Areas
                     .Where(a => a.Selected)
@@ -125,14 +139,14 @@ namespace ETicketMobile.ViewModels.Tickets
                 return;
 
             navigationParameters.Add("areas", selectedAreasId);
-            navigationService.NavigateAsync(nameof(LiqPayView), navigationParameters);
+            await navigationService.NavigateAsync(nameof(LiqPayView), navigationParameters);
         }
 
         private bool IsValid(int count)
         {
             if (!TicketChoosed(count))
             {
-                dialogService.DisplayAlertAsync("Alert", AppResource.CountTicketsWrong, "OK");
+                dialogService.DisplayAlertAsync("Error", AppResource.CountTicketsWrong, "OK");
 
                 return false;
             }

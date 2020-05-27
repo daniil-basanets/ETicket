@@ -15,10 +15,10 @@ namespace ETicketMobile.Views.ForgotPassword
 
         public void OnNavigatedTo(INavigationParameters parameters)
         {
-            var page = Navigation.NavigationStack.Where(p => p.Title == "Login").FirstOrDefault();
-
-            if (page != null)
-                Navigation.RemovePage(page);
+            if (!(Navigation.NavigationStack[0] == this))
+            {
+                Navigation.RemovePage(Navigation.NavigationStack.First());
+            }
         }
     }
 }
