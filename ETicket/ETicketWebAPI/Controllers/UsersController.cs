@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using log4net;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Extensions;
 
 namespace ETicket.WebAPI.Controllers
 {
@@ -30,15 +31,17 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet("{userid}/tickets")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetTicketsByUser(Guid userId)
+        public IActionResult GetTicketsByUser(Guid userId, [FromQuery]int pageNumber = 1, [FromQuery]int pageSize = 10)
         {
             log.Info(nameof(GetTicketsByUser));
 
             try
             {
-                var tickets = ticketService.GetTicketsByUserId(userId);
+                var ticketPage = ticketService
+                        .GetTicketsByUserId(userId)
+                        .ToPage(pageNumber, pageSize);
 
-                return Ok(tickets);
+                return Ok(ticketPage);
             }
             catch (Exception e)
             {
