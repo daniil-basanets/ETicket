@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Http;
 using log4net;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.WebAPI.Models.TicketVerification;
+using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.WebAPI.Controllers
 {
     [Route("api/tickets")]
     [ApiController]
-    public class TicketsController : ControllerBase
+    public class TicketsController : BaseController
     {
         #region Private members
 
@@ -55,16 +56,18 @@ namespace ETicket.WebAPI.Controllers
         }
 
         [HttpGet("{ticketId}/verification-history")]
-        public IActionResult GetTicketVerificationHistory(Guid ticketId)
+        public IActionResult GetTicketVerificationHistory(Guid ticketId, [FromQuery]int pageNumber, [FromQuery]int pageSize)
         {
             log.Info(nameof(GetTicketVerificationHistory));
 
             try
             {
-                var ticketVerification = verificationService
-                     .GetVerificationHistoryByTicketId(ticketId);            
+                var ticketVerifications = verificationService
+                     .GetVerificationHistoryByTicketId(ticketId);
 
-                return Ok(ticketVerification);
+                var page = GetPage(pageNumber, pageSize, ticketVerifications);
+
+                return Ok(page);
             }
             catch (Exception e)
             {
