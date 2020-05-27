@@ -4,17 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 
 namespace ETicketMobile.ViewModels.BoughtTickets
 {
     public class MyTicketsViewModel : ViewModelBase
     {
-        private readonly INavigationService navigationService;
-        private readonly ILocalApi localApi;
+        #region Fields
 
-        private readonly HttpClientService httpClient;
+        private readonly INavigationService navigationService;
+        private readonly IHttpService httpService;
+
+        private readonly ILocalApi localApi;
 
         private string accessToken;
 
@@ -22,6 +24,10 @@ namespace ETicketMobile.ViewModels.BoughtTickets
         private IEnumerable<Ticket> unusedTickets;
         private IEnumerable<Ticket> activatedTickets;
         private IEnumerable<Ticket> expiredTickets;
+
+        #endregion
+
+        #region Properties
 
         public IEnumerable<Ticket> Tickets
         {
@@ -46,7 +52,9 @@ namespace ETicketMobile.ViewModels.BoughtTickets
             set => SetProperty(ref expiredTickets, value);
         }
 
-        public MyTicketsViewModel(INavigationService navigationService, ILocalApi localApi)
+        #endregion
+
+        public MyTicketsViewModel(INavigationService navigationService, IHttpService httpService, ILocalApi localApi)
             : base(navigationService)
         {
             this.navigationService = navigationService
@@ -55,7 +63,8 @@ namespace ETicketMobile.ViewModels.BoughtTickets
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
-            httpClient = new HttpClientService();
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnAppearing()
@@ -68,7 +77,7 @@ namespace ETicketMobile.ViewModels.BoughtTickets
             ExpiredTickets = GetExpiredTickets();
         }
 
-        private async Task<string> GetAccessToken()
+        private async Task<string> GetAccessTokenAsync()
         {
             var token = await localApi.GetTokenAsync().ConfigureAwait(false);
 

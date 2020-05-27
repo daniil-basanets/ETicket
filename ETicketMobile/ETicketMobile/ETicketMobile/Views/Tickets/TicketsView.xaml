@@ -3,47 +3,63 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:prism="http://prismlibrary.com"
-    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
+    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile" 
+    xmlns:tickets="clr-namespace:ETicketMobile.Business.Model.Tickets;assembly=ETicketMobile.Business"
     prism:ViewModelLocator.AutowireViewModel="True"
-    Title="Tickets"
     x:Class="ETicketMobile.Views.Tickets.TicketsView">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Label">
-                <Setter Property="HorizontalOptions" Value="Center" />
+                <Setter Property="HorizontalOptions" Value="Center"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout Margin="10">
+
+        <Grid Margin="10">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
             <ListView
+                Grid.Row="0"
                 x:Name="Tickets"
-                ItemsSource="{Binding Tickets}"
+                ItemsSource="{Binding Tickets, Mode=OneWay}"
                 SeparatorVisibility="None"
-                Margin="30, 10, 30, 10"
                 RowHeight="100">
                 <ListView.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="tickets:TicketType">
                         <ViewCell>
                             <Frame
-                                HorizontalOptions="FillAndExpand"
                                 BackgroundColor="White"
                                 CornerRadius="10"
                                 Margin="5"
                                 Padding="0">
-                                <StackLayout>
+                                <Grid>
+                                    
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="0.8*"/>
+                                        <RowDefinition Height="0.4*"/>
+                                        <RowDefinition Height="0.4*"/>
+                                    </Grid.RowDefinitions>
+                                    
                                     <Label
-                                        Text="{Binding Name}"
+                                        Grid.Row="0"
+                                        Text="{Binding Name, Mode=OneWay}"
                                         Margin="10"/>
                                     <Label
-                                        Text="{local:Translate Duration}"/>
+                                        Grid.Row="1"
+                                        Text="{local:Translate Text=Duration}"/>
                                     <Label
-                                        Text="{Binding DurationHours}"
+                                        Grid.Row="2"
+                                        Text="{Binding DurationHours, Mode=OneWay}"
                                         FontAttributes="Bold"
                                         TextColor="Green"/>
-                                </StackLayout>
+                                </Grid>
                             </Frame>
                         </ViewCell>
                     </DataTemplate>
@@ -51,12 +67,15 @@
             </ListView>
 
             <Button
-                Text="{local:Translate Choose}"
-                Command="{Binding ChooseTicket}"
-                CommandParameter="{Binding Source={x:Reference Tickets}, Path=SelectedItem}"
+                Grid.Row="1"
+                Text="{local:Translate Text=Choose}"
+                Command="{Binding ChooseTicket, Mode=OneTime}"
+                CommandParameter="{Binding Source={x:Reference Tickets}, Path=SelectedItem, Mode=OneWay}"
                 HorizontalOptions="EndAndExpand"
                 CornerRadius="10"/>
-        </StackLayout>
+
+        </Grid>
+
     </ContentPage.Content>
 
 </ContentPage>
