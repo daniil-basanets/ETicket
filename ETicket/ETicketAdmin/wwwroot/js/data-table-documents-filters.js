@@ -98,7 +98,7 @@ $(document).ready(function () {
             columns: [
                 {
                     name: "documentType",
-                    data: "documentType.name",
+                    data: "documentTypeName",
                 },
                 {
                     name: "number",
