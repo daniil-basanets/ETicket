@@ -46,6 +46,11 @@ $(document).ready(function () {
         //Read additional fields from server side
         .on('xhr.dt', function (e, settings, json, xhr) {
             totalRecords = json.recordsTotal;
+            //json.draw = json.drawCounter;
+            //json.recordsTotal = json.countRecords;
+            //json.recordsFiltered = json.countFiltered;
+            //json.data = json.PageData;
+            //alert(json.countRecords);
         })
         .on('page.dt', function () {
             pageNumber = table.page() + 1;
@@ -63,6 +68,15 @@ $(document).ready(function () {
             order: [[1, "desc"]],
             ajax: {
                 url: 'Documents/GetCurrentPage',
+                dataFilter: function (data) {
+                    var json = jQuery.parseJSON(data);
+                    json.draw = json.drawCounter;
+                    json.recordsTotal = json.countRecords;
+                    json.recordsFiltered = json.countFiltered;
+                    json.data = json.pageData;
+
+                    return JSON.stringify(json); // return JSON string
+                },
                 //To send an array correctly by query string
                 traditional: true,
                 type: 'GET',
