@@ -4,7 +4,12 @@ using ETicket.DataAccess.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ETicket.Admin.Models.DataTables;
+using ETicket.ApplicationServices.Services.DataTable;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.ApplicationServices.Services.PagingServices;
+using ETicket.ApplicationServices.Services.PagingServices.Models;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -12,11 +17,14 @@ namespace ETicket.ApplicationServices.Services
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly MapperService mapper;
+        private readonly IDataTableService<Document> dataTableService;
 
         public DocumentService(IUnitOfWork uow)
         {
             unitOfWork = uow;
             mapper = new MapperService();
+            var dataTablePagingService = new DocumentPagingService(unitOfWork);
+            dataTableService = new DataTableService<Document>(dataTablePagingService);
         }
 
         public void Create(DocumentDto documentDto)
@@ -54,6 +62,13 @@ namespace ETicket.ApplicationServices.Services
         public bool Exists(Guid id)
         {
             return unitOfWork.Documents.Get(id) != null;
+        }
+
+        public DataTablePage<DocumentDto> GetDocumentPage(DataTablePagingInfo pagingInfo)
+        {
+            var documentsPage = dataTableService.GetDataTablePage(pagingInfo);
+
+            return mapper.Map<DataTablePage<Document>, DataTablePage<DocumentDto>>(documentsPage);
         }
     }
 }

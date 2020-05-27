@@ -52,7 +52,7 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
         {
-            return Json(dataTableService.GetDataTablePage(pagingInfo));
+            return Json(documentService.GetDocumentPage(pagingInfo));
         }
         
         public IActionResult Details(Guid? id)

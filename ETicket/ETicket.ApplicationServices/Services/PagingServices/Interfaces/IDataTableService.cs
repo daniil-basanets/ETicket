@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ETicket.ApplicationServices.Services.PagingServices.Models;
 
 namespace ETicket.ApplicationServices.Services.DataTable.Interfaces
 {
     public interface IDataTableService<T>
     {
-        object GetDataTablePage(DataTablePagingInfo pagingInfo);
+        DataTablePage<T> GetDataTablePage(DataTablePagingInfo pagingInfo);
     }
 }

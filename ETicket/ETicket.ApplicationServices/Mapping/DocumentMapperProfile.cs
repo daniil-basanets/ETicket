@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.PagingServices.Models;
 using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.ApplicationServices.Mapping
@@ -10,6 +11,7 @@ namespace ETicket.ApplicationServices.Mapping
         {
             CreateMap<DocumentDto, Document>().ReverseMap();
             CreateMap<DocumentTypeDto, DocumentType>().ReverseMap();
+            CreateMap<DataTablePage<Document>, DataTablePage<DocumentDto>>();
         }
     }
 }
