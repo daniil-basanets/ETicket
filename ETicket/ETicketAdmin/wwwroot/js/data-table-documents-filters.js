@@ -46,11 +46,6 @@ $(document).ready(function () {
         //Read additional fields from server side
         .on('xhr.dt', function (e, settings, json, xhr) {
             totalRecords = json.recordsTotal;
-            //json.draw = json.drawCounter;
-            //json.recordsTotal = json.countRecords;
-            //json.recordsFiltered = json.countFiltered;
-            //json.data = json.PageData;
-            //alert(json.countRecords);
         })
         .on('page.dt', function () {
             pageNumber = table.page() + 1;

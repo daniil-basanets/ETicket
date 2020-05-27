@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using ETicket.Admin.Models.DataTables;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.PagingServices.Models;
 using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.ApplicationServices.Services.Interfaces
@@ -23,5 +23,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
         public User GetByEmail(string email);
 
         public void Delete(Guid id);
+
+        public DataTablePage<UserDto> GetUsersPage(DataTablePagingInfo pagingInfo);
     }
 }

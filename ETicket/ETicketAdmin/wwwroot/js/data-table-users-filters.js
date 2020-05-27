@@ -128,21 +128,21 @@ $(document).ready(function () {
                 },
                 {
                     name: "privilege",
-                    data: "privilege",
+                    data: "privilegeName",
                     defaultContent: "",
                     render: function (data, type, row) {
                         if (data != null) {
-                            return '<a href = "Privileges/Details/' + data.id + '">' + data.name + '</a>'
+                            return '<a href = "Privileges/Details/' + row.privilegeId + '">' + row.privilegeName + '</a>'
                         }
                     }
                 },
                 {
                     name: "document",
-                    data: "document",
+                    data: "documentNumber",
                     defaultContent: "",
                     render: function (data, type, row) {
                         if (data != null) {
-                            return '<a href = "Documents/Details/' + data.id + '">' + data.number + '</a>'
+                            return '<a href = "Documents/Details/' + row.documentId + '">' + row.documentNumber + '</a>'
                         }
                     }
                 },

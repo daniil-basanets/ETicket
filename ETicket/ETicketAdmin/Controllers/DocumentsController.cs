@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
 using ETicket.Admin.Models.DataTables;
 
 namespace ETicket.Admin.Controllers
@@ -18,14 +16,12 @@ namespace ETicket.Admin.Controllers
     {
         private readonly IDocumentService documentService;
         private readonly IDocumentTypesService documentTypesService;
-        private readonly IDataTableService<Document> dataTableService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public DocumentsController(IDocumentService documentService, IDocumentTypesService documentTypesService, IDataTableService<Document> dataTableService)
+        public DocumentsController(IDocumentService documentService, IDocumentTypesService documentTypesService)
         {
             this.documentService = documentService;
             this.documentTypesService = documentTypesService;
-            this.dataTableService = dataTableService;
         }
 
         [HttpGet]
