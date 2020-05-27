@@ -37,7 +37,7 @@ function refreshPassengersByPrivilege() {
 // Pie Chart Example
     var chartData;
 
-    var actionUrl = '/metrics/PassengersByPrivileges' + "?start=" + start.toISOString() + "&end=" + end.toISOString();
+    var actionUrl = '/metrics/PassengersByPrivileges' + "?startPeriod=" + start.toISOString() + "&endPeriod=" + end.toISOString();
     $.getJSON(actionUrl, function (response) {
         if (response != null) {
             chartData = response;
