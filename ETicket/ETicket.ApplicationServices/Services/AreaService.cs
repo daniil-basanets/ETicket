@@ -29,7 +29,9 @@ namespace ETicket.ApplicationServices.Services
                 
         public IEnumerable<AreaDto> GetAreas()
         {
-            return mapper.Map<IQueryable<Area>, IEnumerable<AreaDto>>(unitOfWork.Areas.GetAll()).ToList();
+            var areas = unitOfWork.Areas.GetAll();
+            
+            return mapper.Map<IQueryable<Area>, IEnumerable<AreaDto>>(areas).ToList();
         }
 
         public AreaDto GetAreaById(int id)

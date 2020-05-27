@@ -24,7 +24,9 @@ namespace ETicket.ApplicationServices.Services
         }
         public IEnumerable<PrivilegeDto>GetPrivileges()
         {
-            return mapper.Map<IQueryable<Privilege>, IEnumerable<PrivilegeDto>>(uow.Privileges.GetAll()).ToList();
+            var privileges = uow.Privileges.GetAll();
+            
+            return mapper.Map<IQueryable<Privilege>, IEnumerable<PrivilegeDto>>(privileges).ToList();
         }
         public Privilege GetPrivilegeById(int id)
         {

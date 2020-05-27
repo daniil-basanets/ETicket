@@ -49,7 +49,9 @@ namespace ETicket.ApplicationServices.Services
 
         public IEnumerable<UserDto> GetUsers()
         {
-            return mapper.Map<IQueryable<User>, IEnumerable<UserDto>>(uow.Users.GetAll()).ToList();
+            var users = uow.Users.GetAll();
+            
+            return mapper.Map<IQueryable<User>, IEnumerable<UserDto>>(users).ToList();
         }
 
         public UserDto GetUserById(Guid id)

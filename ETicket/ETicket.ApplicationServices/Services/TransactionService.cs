@@ -34,15 +34,19 @@ namespace ETicket.ApplicationServices.Services.Transaction
 
         public IEnumerable<TransactionHistoryDto> GetTransactions()
         {
-            return mapperService.Map<IQueryable<TransactionHistory>, IEnumerable<TransactionHistoryDto>>(unitOfWork.TransactionHistory.GetAll()).ToList();
+            var transactions = unitOfWork.TransactionHistory.GetAll();
+            
+            return mapperService.Map<IQueryable<TransactionHistory>, IEnumerable<TransactionHistoryDto>>(transactions).ToList();
         }
 
-        public IEnumerable<TransactionHistory> GetTransactionsByUserId(Guid id)
+        public IEnumerable<TransactionHistoryDto> GetTransactionsByUserId(Guid id)
         {
-            return unitOfWork.Tickets
-                        .GetAll()
-                        .Where(t => t.UserId == id)
-                        .Select(t => t.TransactionHistory);
+            var transactions = unitOfWork.Tickets
+                .GetAll()
+                .Where(t => t.UserId == id)
+                .Select(t => t.TransactionHistory);
+            
+            return mapperService.Map<IQueryable<TransactionHistory>, IEnumerable<TransactionHistoryDto>>(transactions).ToList();
         }
 
         public TransactionHistoryDto GetTransactionById(Guid id)

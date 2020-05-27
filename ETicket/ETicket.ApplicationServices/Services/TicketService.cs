@@ -23,7 +23,9 @@ namespace ETicket.ApplicationServices.Services
 
         IEnumerable<TicketDto> ITicketService.GetTickets()
         {
-            return mapper.Map<IQueryable<Ticket>, IEnumerable<TicketDto>>(uow.Tickets.GetAll()).ToList();
+            var tickets = uow.Tickets.GetAll();
+            
+            return mapper.Map<IQueryable<Ticket>, IEnumerable<TicketDto>>(tickets).ToList();
         }
 
         public TicketDto GetTicketById(Guid id)

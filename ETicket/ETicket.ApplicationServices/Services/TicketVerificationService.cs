@@ -24,8 +24,9 @@ namespace ETicket.ApplicationServices.Services
 
         public IEnumerable<TicketVerificationDto> GetTicketVerifications()
         {
-            return mapper.Map<IQueryable<TicketVerification>, IEnumerable<TicketVerificationDto>>(unitOfWork.TicketVerifications.GetAll()).ToList();
-                    
+            var ticketVerifications = unitOfWork.TicketVerifications.GetAll();
+            
+            return mapper.Map<IQueryable<TicketVerification>, IEnumerable<TicketVerificationDto>>(ticketVerifications).ToList();
         }
 
         public TicketVerificationDto GetTicketVerificationById(Guid id)
@@ -35,14 +36,15 @@ namespace ETicket.ApplicationServices.Services
             return mapper.Map<TicketVerification, TicketVerificationDto>(ticketVerification);
         }
 
-        public IEnumerable<TicketVerification> GetVerificationHistoryByTicketId(Guid ticketId)
+        public IEnumerable<TicketVerificationDto> GetVerificationHistoryByTicketId(Guid ticketId)
         {
             var history = unitOfWork.TicketVerifications
                     .GetAll()
                     .Where(t => t.TicketId == ticketId)
                     .OrderByDescending(t => t.VerificationUTCDate);
 
-            return history.ToList();
+            return mapper.Map<IOrderedQueryable<TicketVerification>, IEnumerable<TicketVerificationDto>>(history)
+                .ToList();
         }
 
 

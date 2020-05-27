@@ -28,7 +28,9 @@ namespace ETicket.ApplicationServices.Services
         
         public IEnumerable<TicketTypeDto> GetTicketTypes()
         {
-            return mapper.Map<IQueryable<TicketType>, IEnumerable<TicketTypeDto>>(unitOfWork.TicketTypes.GetAll()).ToList();
+            var ticketTypes = unitOfWork.TicketTypes.GetAll();
+            
+            return mapper.Map<IQueryable<TicketType>, IEnumerable<TicketTypeDto>>(ticketTypes).ToList();
         }
         
         public TicketTypeDto GetTicketTypeById(int id)

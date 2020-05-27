@@ -13,6 +13,6 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 
         TransactionHistoryDto GetTransactionById(Guid id);
 
-        IEnumerable<TransactionHistory> GetTransactionsByUserId(Guid id);
+        IEnumerable<TransactionHistoryDto> GetTransactionsByUserId(Guid id);
     }
 }

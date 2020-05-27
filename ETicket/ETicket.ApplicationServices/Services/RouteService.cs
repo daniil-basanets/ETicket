@@ -30,12 +30,16 @@ namespace ETicket.ApplicationServices.Services
 
         public IEnumerable<RouteDto> GetRoutes()
         {
-            return mapper.Map<IQueryable<Route>, IEnumerable<RouteDto>>(unitOfWork.Routes.GetAll()).ToList();
+            var routes= unitOfWork.Routes.GetAll();
+            
+            return mapper.Map<IQueryable<Route>, IEnumerable<RouteDto>>(routes).ToList();
         }       
 
-        public Route GetRouteById(int id)
+        public RouteDto GetRouteById(int id)
         {
-            return unitOfWork.Routes.Get(id);
+            var route = unitOfWork.Routes.Get(id);
+
+            return mapper.Map<Route, RouteDto>(route);
         }
 
         public void Update(RouteDto routeDto)

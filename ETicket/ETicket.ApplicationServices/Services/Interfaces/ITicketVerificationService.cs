@@ -12,7 +12,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 
         TicketVerificationDto GetTicketVerificationById(Guid id);
 
-        IEnumerable<TicketVerification> GetVerificationHistoryByTicketId(Guid ticketId);
+        IEnumerable<TicketVerificationDto> GetVerificationHistoryByTicketId(Guid ticketId);
 
         void Create(TicketVerificationDto ticketVerificationDtoDto);
 
