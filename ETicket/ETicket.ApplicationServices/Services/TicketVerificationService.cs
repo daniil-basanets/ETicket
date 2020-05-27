@@ -115,14 +115,6 @@ namespace ETicket.ApplicationServices.Services
             return result;
         }
 
-        private void ActivateTicket(Ticket ticket)
-        {
-            ticket.ActivatedUTCDate = DateTime.UtcNow;
-            ticket.ExpirationUTCDate = DateTime.UtcNow.AddHours(ticket.TicketType.DurationHours);
-            unitOfWork.Tickets.Update(ticket);
-            unitOfWork.Save();
-        }
-
         private Station GetNearestStationOnRoute(int routeId, float latitude, float longitude)
         {
             return unitOfWork

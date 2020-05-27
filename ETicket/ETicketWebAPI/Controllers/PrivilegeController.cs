@@ -8,7 +8,7 @@ namespace ETicket.WebAPI.Controllers
 {
     [Route("api/privileges")]
     [ApiController]
-    public class PrivilegesController : ControllerBase
+    public class PrivilegesController : BaseAPIController
     {
         private readonly IPrivilegeService privilegeService;
         private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);

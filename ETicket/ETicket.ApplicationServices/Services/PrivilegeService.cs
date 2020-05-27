@@ -28,9 +28,9 @@ namespace ETicket.ApplicationServices.Services
             
             return mapper.Map<IQueryable<Privilege>, IEnumerable<PrivilegeDto>>(privileges).ToList();
         }
-        public Privilege GetPrivilegeById(int id)
+        public PrivilegeDto GetPrivilegeById(int id)
         {
-            return uow.Privileges.Get(id);
+            return mapper.Map<Privilege, PrivilegeDto>(uow.Privileges.Get(id));
         }
 
         public void Create(PrivilegeDto privilegeDto)

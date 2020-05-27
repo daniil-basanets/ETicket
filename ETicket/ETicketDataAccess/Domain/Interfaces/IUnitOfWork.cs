@@ -1,42 +1,44 @@
-﻿using ETicket.DataAccess.Domain.Repositories;
+﻿using System;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Repositories;
 
 namespace ETicket.DataAccess.Domain.Interfaces
 {
     public interface IUnitOfWork
     {
-        DocumentRepository Documents { get; }
+        IRepository<Document,Guid> Documents { get; }
 
-        RouteRepository Routes { get; }
-
-        RouteStationRepository RouteStation { get; }
-
-        DocumentTypeRepository DocumentTypes { get; }
-
-        PrivilegeRepository Privileges { get; }
-
-        TicketRepository Tickets { get; }
-
-        TicketTypeRepository TicketTypes { get; }
-
-        TicketAreaRepository TicketArea { get; }
-
-        TicketVerificationRepository TicketVerifications { get; }
+        IRepository<Route,int> Routes { get; }
         
-        TransactionHistoryRepository TransactionHistory { get; }
+        IRepository<DocumentType,int> DocumentTypes { get; }
+        
+        IRepository<RouteStation, int> RouteStation { get; }
 
-        UserRepository Users { get; }
+        IRepository<Privilege,int> Privileges { get; }
 
-        CarrierRepository Carriers { get; }
+        IRepository<Ticket,Guid> Tickets { get; }
+
+        IRepository<TicketType,int> TicketTypes { get; }
+
+        IRepository<TicketArea, TicketArea> TicketArea { get; }
+
+        IRepository<TicketVerification,Guid> TicketVerifications { get; }
+        
+        IRepository<TransactionHistory,Guid> TransactionHistory { get; }
+
+        IRepository<User,Guid> Users { get; }
+
+        IRepository<Carrier,int> Carriers { get; }
 
         SecretCodeRepository SecretCodes { get; }
-
-        AreaRepository Areas { get; }
-
-        StationRepository Stations { get; }
         
-        TransportRepository Transports { get; }
+        IRepository<Area,int> Areas { get; }
         
-        PriceListRepository PriceList { get; }
+        IRepository<Station,int> Stations { get; }
+        
+        IRepository<Transport,int> Transports { get; }
+        
+        IRepository<PriceList,int> PriceList { get; }
 
         void Save();
     }

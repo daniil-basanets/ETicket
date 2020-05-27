@@ -8,7 +8,7 @@ namespace ETicket.WebAPI.Controllers
 {
     [Route("api/areas")]
     [ApiController]
-    public class AreasController : ControllerBase
+    public class AreasController : BaseAPIController
     {
         private readonly IAreaService areaService;
         private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
