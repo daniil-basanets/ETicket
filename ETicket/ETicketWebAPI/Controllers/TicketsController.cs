@@ -26,7 +26,7 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/tickets/5
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetTicket(Guid id)
@@ -44,7 +44,7 @@ namespace ETicket.WebAPI.Controllers
                     return NotFound();
                 }
 
-                return Ok(GetJson(ticketDto));
+                return Json(ticketDto);
             }
             catch (Exception e)
             {

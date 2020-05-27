@@ -8,7 +8,7 @@ namespace ETicket.WebAPI.Controllers
 {
     [Route("api/tickettypes")]
     [ApiController]
-    public class TicketTypesController : ControllerBase
+    public class TicketTypesController : BaseAPIController
     {
         private readonly ITicketTypeService ticketTypeService;
         private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);

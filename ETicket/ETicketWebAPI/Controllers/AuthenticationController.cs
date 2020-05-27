@@ -17,7 +17,7 @@ namespace ETicket.WebAPI.Controllers
 {
     [Route("api/Authentication")]
     [ApiController]
-    public class AuthenticationController : ControllerBase
+    public class AuthenticationController : BaseAPIController
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
