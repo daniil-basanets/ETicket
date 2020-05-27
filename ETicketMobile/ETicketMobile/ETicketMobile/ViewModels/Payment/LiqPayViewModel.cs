@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Business.Model.Registration;
 using ETicketMobile.Views.Payment;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.Endpoints;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
+using Java.Net;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Payment
@@ -26,21 +29,21 @@ namespace ETicketMobile.ViewModels.Payment
         #region Fields
 
         private readonly INavigationService navigationService;
+        private readonly IPageDialogService dialogService;
+        private readonly IHttpService httpService;
 
         private IEnumerable<int> areasId;
         private int ticketTypeId;
         private string email;
-
-        private readonly HttpClientService httpClient;
 
         private ICommand pay;
 
         private decimal amount;
         private string description;
 
-        private string cardNumber = string.Empty;
-        private string expirationDate = string.Empty;
-        private string cvv2 = string.Empty;
+        private string cardNumber;
+        private string expirationDate;
+        private string cvv2;
 
         private bool cardNumberWarningIsVisible;
         private bool expirationDateWarningIsVisible;
@@ -50,8 +53,7 @@ namespace ETicketMobile.ViewModels.Payment
 
         #region Properties
 
-        public ICommand Pay => pay
-            ?? (pay = new Command(OnPay));
+        public ICommand Pay => pay ??= new Command(OnPay);
 
         public decimal Amount
         {
@@ -103,13 +105,20 @@ namespace ETicketMobile.ViewModels.Payment
 
         #endregion
 
-        public LiqPayViewModel(INavigationService navigationService)
-            : base(navigationService)
+        public LiqPayViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService
+        ) : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            httpClient = new HttpClientService();
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
+
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnAppearing()
@@ -119,9 +128,11 @@ namespace ETicketMobile.ViewModels.Payment
 
         private void Init()
         {
-            CardNumber = string.Empty;
             ExpirationDate = string.Empty;
             CVV2 = string.Empty;
+
+            expirationDate = string.Empty;
+            cvv2 = string.Empty;
         }
 
         public override async void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -131,11 +142,20 @@ namespace ETicketMobile.ViewModels.Payment
             areasId = navigationParameters["areas"] as IEnumerable<int>;
             email = navigationParameters.GetValue<string>("email");
 
-            var price = await RequestGetTicketPrice();
-            Amount = Math.Round(price.TotalPrice, 2);
+            try
+            {
+                var price = await RequestGetTicketPriceAsync();
+                Amount = Math.Round(price.TotalPrice, 2);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+
+                return;
+            }
         }
 
-        private async Task<GetTicketPriceResponseDto> RequestGetTicketPrice()
+        private async Task<GetTicketPriceResponseDto> RequestGetTicketPriceAsync()
         {
             var getTicketPriceRequestDto = new GetTicketPriceRequestDto
             {
@@ -143,67 +163,55 @@ namespace ETicketMobile.ViewModels.Payment
                 TicketTypeId = ticketTypeId
             };
 
-            var response = await httpClient.PostAsync<GetTicketPriceRequestDto, GetTicketPriceResponseDto>(
+            var response = await httpService.PostAsync<GetTicketPriceRequestDto, GetTicketPriceResponseDto>(
                     TicketsEndpoint.GetTicketPrice, getTicketPriceRequestDto);
 
             return response;
         }
 
-        private async void OnPay(object obj)
+        private async void OnPay()
         {
-            var cardNumber = GetStringWithoutMask(CardNumber);
-            if (!IsCardNumberCorrectLength(cardNumber))
-            {
-                CardNumberWarningIsVisible = true;
+            await PayAsync();
+        }
 
+        private async Task PayAsync()
+        {
+            var cardNumber = GetStringWithoutMask(this.cardNumber);
+
+            if (!IsValid(cardNumber))
                 return;
-            }
 
-            if (!IsExpirationDateCorrectLength(this.expirationDate))
-            {
-                CardNumberWarningIsVisible = false;
-
-                ExpirationDateWarningIsVisible = true;
-
-                return;
-            }
-
-            var expirationDate = GetExpirationDate();
-
-            if (!IsCvvValid())
-                return;
+            var expirationDateDescriptor = GetExpirationDateDescriptor();
 
             var buyTicketRequestDto = CreateBuyTicketRequestDto(
                     cardNumber,
-                    expirationDate.ExpirationMonth,
-                    expirationDate.ExpirationYear,
+                    expirationDateDescriptor.ExpirationMonth,
+                    expirationDateDescriptor.ExpirationYear,
                     cvv2);
 
-            var response = await RequestBuyTicket(buyTicketRequestDto);
+            try
+            {
+                var response = await RequestBuyTicketAsync(buyTicketRequestDto);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+
+                return;
+            }
+            catch (SocketException)
+            {
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+
+                return;
+            }
 
             await navigationService.NavigateAsync(nameof(TransactionCompletedView));
         }
 
-        private bool IsCvvValid()
+        private async Task<BuyTicketResponseDto> RequestBuyTicketAsync(BuyTicketRequestDto buyTicketRequestDto)
         {
-            var cvv2 = GetStringWithoutMask(CVV2);
-
-            if (cvv2 != CVV2 || !IsCVV2CorrectLength(cvv2))
-            {
-                CardNumberWarningIsVisible = false;
-                ExpirationDateWarningIsVisible = false;
-
-                CVV2WarningIsVisible = true;
-
-                return false;
-            }
-
-            return true;
-        }
-
-        private async Task<BuyTicketResponseDto> RequestBuyTicket(BuyTicketRequestDto buyTicketRequestDto)
-        {
-            var response = await httpClient.PostAsync<BuyTicketRequestDto, BuyTicketResponseDto>(
+            var response = await httpService.PostAsync<BuyTicketRequestDto, BuyTicketResponseDto>(
                 TicketsEndpoint.BuyTicket, buyTicketRequestDto);
 
             return response;
@@ -229,6 +237,30 @@ namespace ETicketMobile.ViewModels.Payment
             };
         }
 
+        private bool IsValid(string cardNumber)
+        {
+            if (!IsCardNumberCorrectLength(cardNumber))
+            {
+                CardNumberWarningIsVisible = true;
+
+                return false;
+            }
+
+            if (!IsExpirationDateCorrectLength(expirationDate))
+            {
+                CardNumberWarningIsVisible = false;
+
+                ExpirationDateWarningIsVisible = true;
+
+                return false;
+            }
+
+            if (!IsCvvValid())
+                return false;
+
+            return true;
+        }
+
         private string GetStringWithoutMask(string str)
         {
             return Regex.Replace(str, @"[^\d]", string.Empty);
@@ -251,13 +283,30 @@ namespace ETicketMobile.ViewModels.Payment
             return cvv2.Length == CVV2Length;
         }
 
+        private bool IsCvvValid()
+        {
+            var cvv2 = GetStringWithoutMask(CVV2);
+
+            if (cvv2 != CVV2 || !IsCVV2CorrectLength(cvv2))
+            {
+                CardNumberWarningIsVisible = false;
+                ExpirationDateWarningIsVisible = false;
+
+                CVV2WarningIsVisible = true;
+
+                return false;
+            }
+
+            return true;
+        }
+
         #endregion
 
-        private ExpirationDate GetExpirationDate()
+        private ExpirationDateDescriptor GetExpirationDateDescriptor()
         {
             var expirationDate = ExpirationDate.Split('/');
 
-            return new ExpirationDate
+            return new ExpirationDateDescriptor
             {
                 ExpirationMonth = expirationDate[0],
                 ExpirationYear = expirationDate[1]

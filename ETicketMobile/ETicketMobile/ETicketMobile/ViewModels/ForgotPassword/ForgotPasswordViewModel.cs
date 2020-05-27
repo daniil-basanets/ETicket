@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Android.Util;
@@ -6,9 +7,10 @@ using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Login;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.Endpoints;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.ForgotPassword
@@ -18,11 +20,12 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         #region Fields
 
         private readonly INavigationService navigationService;
+        private readonly IPageDialogService dialogService;
+
+        private readonly IHttpService httpService;
 
         private ICommand navigateToConfirmForgotPasswordView;
         private ICommand cancelCommand;
-
-        private readonly HttpClientService httpClient;
 
         private string emailWarning;
 
@@ -33,10 +36,10 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         #region Properties
 
         public ICommand NavigateToConfirmForgotPasswordView => navigateToConfirmForgotPasswordView 
-            ?? (navigateToConfirmForgotPasswordView = new Command<string>(OnNavigateToConfirmForgotPasswordView));
+            ??= new Command<string>(OnNavigateToConfirmForgotPasswordView);
 
-        public ICommand CancelCommand => cancelCommand
-            ?? (cancelCommand = new Command(OnCancelCommand));
+        public ICommand CancelCommand => cancelCommand 
+            ??= new Command(OnCancelCommand);
 
         public string EmailWarning
         {
@@ -46,41 +49,59 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #endregion
 
-        public ForgotPasswordViewModel(INavigationService navigationService)
-            : base(navigationService)
+        public ForgotPasswordViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService
+        ) : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            httpClient = new HttpClientService();
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
+
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         private async void OnNavigateToConfirmForgotPasswordView(string email)
         {
-            if (! await IsValid(email))
-                return;
+            await NavigateToConfirmForgotPasswordViewAsync(email);
+        }
 
-            RequestActivationCode(email);
-
-            var navigationParameters = new NavigationParameters
+        private async Task NavigateToConfirmForgotPasswordViewAsync(string email)
+        {
+            try
             {
-                { "email", email }
-            };
+                if (!await IsValidAsync(email))
+                    return;
 
+                await RequestActivationCodeAsync(email);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+
+                return;
+            }
+
+            var navigationParameters = new NavigationParameters { { "email", email } };
             await navigationService.NavigateAsync(nameof(ConfirmForgotPasswordView), navigationParameters);
         }
 
-        private void OnCancelCommand(object obj)
+        private async void OnCancelCommand()
         {
-            navigationService.NavigateAsync(nameof(LoginView));
+            await navigationService.NavigateAsync(nameof(LoginView));
         }
 
         #region Validation
 
-        private async Task<bool> IsValid(string email)
+        private async Task<bool> IsValidAsync(string email)
         {
             if (string.IsNullOrEmpty(email))
             {
+                //TODO incorrect
                 EmailWarning = AppResource.EmailCorrect;
 
                 return false;
@@ -93,6 +114,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
+            // TODO EmailHasCorrectLength
             if (!IsEmailConstainsCorrectLong(email))
             {
                 EmailWarning = AppResource.EmailCorrectLong;
@@ -100,9 +122,9 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            var isUserExists = await RequestUserExists(email);
+            var userExists = await RequestUserExistsAsync(email);
 
-            if (!isUserExists)
+            if (!userExists)
             {
                 EmailWarning = AppResource.EmailWrong;
 
@@ -112,11 +134,11 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             return true;
         }
 
-        private async Task<bool> RequestUserExists(string email)
+        private async Task<bool> RequestUserExistsAsync(string email)
         {
             var signUpRequestDto = new ForgotPasswordRequestDto { Email = email };
 
-            var isUserExists = await httpClient.PostAsync<ForgotPasswordRequestDto, ForgotPasswordResponseDto>(
+            var isUserExists = await httpService.PostAsync<ForgotPasswordRequestDto, ForgotPasswordResponseDto>(
                     AuthorizeEndpoint.CheckEmail, 
                     signUpRequestDto);
 
@@ -135,9 +157,9 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #endregion
 
-        private async void RequestActivationCode(string email)
+        private async Task RequestActivationCodeAsync(string email)
         {
-            await httpClient.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
+            await httpService.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
     }
 }

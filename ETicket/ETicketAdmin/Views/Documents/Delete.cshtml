@@ -1,4 +1,4 @@
-﻿@model ETicket.DataAccess.Domain.Entities.Document
+﻿@model ETicket.ApplicationServices.DTOs.DocumentDto
 
 @{
     ViewData["Title"] = "Delete";
@@ -13,10 +13,10 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DocumentType)
+            @Html.DisplayNameFor(model => model.DocumentTypeName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DocumentType.Name)
+            @Html.DisplayFor(model => model.DocumentTypeName)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Number)

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Input;
 using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Model.UserAccount;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
@@ -15,16 +14,24 @@ namespace ETicketMobile.ViewModels.Settings
 {
     public class LocalizationViewModel : ViewModelBase
     {
+        #region Fields
+
         private readonly ILocalApi localApi;
         private readonly ILocalize localize;
 
         private IEnumerable<LocalizationItemViewModel> localizations;
+
+        #endregion
+
+        #region Properties
 
         public IEnumerable<LocalizationItemViewModel> Localizations
         {
             get => localizations;
             set => SetProperty(ref localizations, value);
         }
+
+        #endregion
 
         public LocalizationViewModel(INavigationService navigationService, ILocalApi localApi, ILocalize localize) 
             : base(navigationService)
@@ -57,7 +64,7 @@ namespace ETicketMobile.ViewModels.Settings
             Localizations.ToList().ForEach(x => x.SelectCommand = selectHandler);
         }
 
-        private void OnLanguageSelected(Localization localization)
+        private async void OnLanguageSelected(Localization localization)
         {
             var currentCulture = new CultureInfo(localization.Culture);
 
@@ -66,7 +73,7 @@ namespace ETicketMobile.ViewModels.Settings
 
             var localizationEntity = AutoMapperConfiguration.Mapper.Map<Data.Entities.Localization>(localization);
 
-            localApi.AddAsync(localizationEntity);
+            await localApi.AddAsync(localizationEntity);
         }
 
         private void SetLocalization(string language)
