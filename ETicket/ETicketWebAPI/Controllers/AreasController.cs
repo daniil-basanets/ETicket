@@ -43,7 +43,7 @@ namespace ETicket.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get area by id", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains an Area object", typeof(AreaDto))]
+        [SwaggerResponse(200, "Returns if everything was ok. Contains an AreaDto object", typeof(AreaDto))]
         [SwaggerResponse(400, "Returns if exseption occurred")]
         public IActionResult GetArea([SwaggerParameter("Int", Required = true)] int id)
         {

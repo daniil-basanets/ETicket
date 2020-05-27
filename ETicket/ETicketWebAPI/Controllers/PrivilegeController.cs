@@ -43,7 +43,7 @@ namespace ETicket.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get privilege by id", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a Station object", typeof(Privilege))]
+        [SwaggerResponse(200, "Returns if everything was ok. Contains a Privilege object", typeof(Privilege))]
         [SwaggerResponse(400, "Returns if exseption occurred")]
         [SwaggerResponse(404, "Returns if privilege was not found by id")]
         public IActionResult GetPrivilege([SwaggerParameter("Int", Required = true)] int id)

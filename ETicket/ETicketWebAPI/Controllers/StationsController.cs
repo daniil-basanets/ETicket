@@ -53,7 +53,7 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/stations/5
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get station by id", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a Station object", typeof(StationDto))]
+        [SwaggerResponse(200, "Returns if everything was ok. Contains a StationDto object", typeof(StationDto))]
         [SwaggerResponse(400, "Returns if exseption occurred")]
         [SwaggerResponse(404, "Returns if station was not found by id")]
         public IActionResult GetStation([SwaggerParameter("Int", Required = true)] int id)

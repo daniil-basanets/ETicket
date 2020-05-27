@@ -30,7 +30,7 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/tickets/5
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get ticket by id", Description = "Allowed: authorized user")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a Ticket", typeof(TicketDto))]
+        [SwaggerResponse(200, "Returns if everything was ok. Contains a TicketDto", typeof(TicketDto))]
         [SwaggerResponse(400, "Returns if exseption occurred")]
         [SwaggerResponse(404, "Returns if ticket was not found by id")]
         [SwaggerResponse(401, "Returns if user was unauthorized")]
@@ -109,7 +109,7 @@ namespace ETicket.WebAPI.Controllers
 
         [HttpPost("{ticketId}/verify")]
         [SwaggerOperation(Summary = "Validate ticket endpoint", Description = "Allowed: Validator")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a VerifyTicketResponse", typeof(VerifyTicketResponceDto))]
+        [SwaggerResponse(200, "Returns if everything was ok. Contains a VerifyTicketResponseDto", typeof(VerifyTicketResponceDto))]
         [SwaggerResponse(400, "Returns if exseption occurred")]
         [SwaggerResponse(401, "Returns if user was unauthorized")]
         public IActionResult VerifyTicket([SwaggerParameter("Guid", Required = true)] Guid ticketId, [FromBody, SwaggerRequestBody("Verify ticket payload", Required = true)] VerifyTicketRequest request)

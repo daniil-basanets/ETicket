@@ -49,7 +49,7 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/Carriers/5
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get carrier by id", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a Carrier object", typeof(CarrierDto))]
+        [SwaggerResponse(200, "Returns if everything was ok. Contains a CarrierDto object", typeof(CarrierDto))]
         [SwaggerResponse(400, "Returns if exseption occurred")]
         [SwaggerResponse(404, "Returns if carrier was not found by id")]
         public IActionResult GetCarrierById([SwaggerParameter("Int", Required = true)] int id)

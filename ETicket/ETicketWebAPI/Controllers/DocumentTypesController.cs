@@ -49,7 +49,7 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/documenttypes/5
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get document type by id", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a DocumentType object", typeof(DocumentTypeDto))]
+        [SwaggerResponse(200, "Returns if everything was ok. Contains a DocumentTypeDto object", typeof(DocumentTypeDto))]
         [SwaggerResponse(400, "Returns if exseption occurred")]
         [SwaggerResponse(404, "Returns if document type was not found by id")]
         public IActionResult GetDocumentTypeById([SwaggerParameter("Int", Required = true)] int id)
