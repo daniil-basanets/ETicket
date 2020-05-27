@@ -6,11 +6,13 @@ using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ETicket.WebAPI.Controllers.TransactionHistory
 {
     [Route("api/transactionhistory")]
     [ApiController]
+    [SwaggerTag("Transaction service")]
     public class TransactionHistoryController : ControllerBase
     {
         #region Private Members
@@ -32,7 +34,11 @@ namespace ETicket.WebAPI.Controllers.TransactionHistory
 
         [HttpPost]
         [Route("transactions")]
-        public IActionResult GetTransactions(GetTransactionsRequest request)
+        [SwaggerOperation(Summary = "Get all transactions", Description = "Allowed: authorized user")]
+        [SwaggerResponse(200, "Returns if everything was ok. Contains a list of transactions")]
+        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(401, "Returns if user was unauthorized")]
+        public IActionResult GetTransactions([FromBody, SwaggerRequestBody("Get transactions payload", Required = true)] GetTransactionsRequest request)
         {
             logger.Info(nameof(TransactionHistoryController.GetTransactions));
 
@@ -62,7 +68,11 @@ namespace ETicket.WebAPI.Controllers.TransactionHistory
 
         [HttpPost]
         [Route("transaction")]
-        public IActionResult CreateTransaction(TransactionHistoryDto transactionHistoryDto)
+        [SwaggerOperation(Summary = "Create new transaction", Description = "Allowed: authorized user")]
+        [SwaggerResponse(200, "Returns if everything was ok")]
+        [SwaggerResponse(400, "Returns if exseption occurred")]
+        [SwaggerResponse(401, "Returns if user was unauthorized")]
+        public IActionResult CreateTransaction([FromBody, SwaggerRequestBody("Transaction history payload", Required = true)] TransactionHistoryDto transactionHistoryDto)
         {
             logger.Info(nameof(TransactionHistoryController.CreateTransaction));
 
