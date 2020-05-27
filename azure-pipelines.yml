@@ -33,8 +33,3 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: XUnitTests@3
-  inputs:
-    command: test
-    projects: '**/*Tests.csproj'
-    configuration: '$(buildConfiguration)'
