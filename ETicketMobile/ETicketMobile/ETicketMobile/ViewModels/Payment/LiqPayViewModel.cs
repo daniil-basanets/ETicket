@@ -164,7 +164,7 @@ namespace ETicketMobile.ViewModels.Payment
             };
 
             var response = await httpService.PostAsync<GetTicketPriceRequestDto, GetTicketPriceResponseDto>(
-                    TicketsEndpoint.GetTicketPrice, getTicketPriceRequestDto);
+                    TicketTypesEndpoint.GetTicketPrice, getTicketPriceRequestDto);
 
             return response;
         }
