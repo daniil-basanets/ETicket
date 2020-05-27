@@ -34,7 +34,10 @@ namespace ETicket.DataAccess.Domain.Repositories
 
         public Transport Get(int id)
         {
-            return context.Transports.FirstOrDefault(t => t.Id == id);
+            return context.Transports
+                .Include(r => r.Route)
+                .Include(c => c.Carriers)
+                .FirstOrDefault(t => t.Id == id);
         }
 
         public IQueryable<Transport> GetAll()

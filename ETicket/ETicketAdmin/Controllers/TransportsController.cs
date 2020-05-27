@@ -45,36 +45,36 @@ namespace ETicket.Admin.Controllers
         // GET: Transport/Details/5
         public IActionResult Details(int? id)
         {
-            ViewData["RouteId"] = new SelectList(routeService.GetRoutes(), "Id", "Number");
-            ViewData["CarrierId"] = new SelectList(carrierService.GetAll(), "Id", "Name");
+            log.Info(nameof(Details));
 
             if (id == null)
             {
-                log.Warn(nameof(TransportsController.Details) + " id is null");
+                log.Warn(nameof(Details) + " id is null");
 
                 return NotFound();
             }
+
+            TransportDto transportDto;
+
             try
             {
-                var transport = transportService.Get((Int32)id);
-
-                if (transport == null)
-                {
-                    log.Warn(nameof(TransportsController.Details) + " transport is null");
-
-                    return NotFound();
-                }
-                else
-                {
-                    return View(transport);
-                }
+               transportDto = transportService.Get((int)id);
             }
             catch (Exception e)
             {
                 log.Error(e);
 
+                return BadRequest();
+            }
+
+            if (transportDto == null)
+            {
+                log.Warn(nameof(Details) + " transportDto is null");
+
                 return NotFound();
             }
+
+            return View(transportDto);
         }
 
         // GET: Transport/Create
@@ -107,6 +107,7 @@ namespace ETicket.Admin.Controllers
                     return BadRequest();
                 }
             }
+
             return View(transportDto);
         }
         // GET: Transport/Edit/5
@@ -156,45 +157,16 @@ namespace ETicket.Admin.Controllers
             }
         }
 
-        // GET: Transport/Delete/5
+        // GET: Transports/Delete/5
         [HttpGet]
         public IActionResult Delete(int? id)
         {
-            ViewData["RouteId"] = new SelectList(routeService.GetRoutes(), "Id", "Number");
-            ViewData["CarrierId"] = new SelectList(carrierService.GetAll(), "Id", "Name");
-            log.Info(nameof(TransportsController.Delete));
+            log.Info(nameof(Delete));
 
-            if (id == null)
-            {
-                log.Warn(nameof(TransportsController.Delete) + " id is null");
-
-                return NotFound();
-            }
-
-            try
-            {
-                var transport = transportService.Get(id.Value);
-
-                if (transport == null)
-                {
-                    log.Warn(nameof(TransportsController.Delete) + " transport is null");
-
-                    return NotFound();
-                }
-                else
-                {
-                    return View(transport);
-                }
-            }
-            catch (Exception e)
-            {
-                log.Error(e);
-
-                return BadRequest();
-            }
+            return Details(id);
         }
 
-        // POST: Transport/Delete/5
+        // POST: Transports/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
@@ -203,7 +175,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                transportService.Delete(id);
+               transportService.Delete(id);
             }
             catch (Exception e)
             {
