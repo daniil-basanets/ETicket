@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Xamarin.Forms;
 
@@ -21,7 +22,7 @@ namespace ETicketMobile.ViewModels.Registration
         protected readonly INavigationService navigationService;
         protected INavigationParameters navigationParameters;
 
-        private readonly HttpClientService httpClient;
+        private readonly IHttpService httpService;
 
         private ICommand navigateToNameRegistrationView;
 
@@ -31,8 +32,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToNameRegistrationView => navigateToNameRegistrationView
-            ?? (navigateToNameRegistrationView = new Command<string>(OnNavigateToNameRegistrationView));
+        public ICommand NavigateToNameRegistrationView => navigateToNameRegistrationView 
+            ??= new Command<string>(OnNavigateToNameRegistrationView);
 
         public string PhoneWarning
         {
@@ -42,13 +43,14 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public PhoneRegistrationViewModel(INavigationService navigationService) 
+        public PhoneRegistrationViewModel(INavigationService navigationService, IHttpService httpService) 
             : base(navigationService)
         {
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
-            httpClient = new HttpClientService();
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -56,7 +58,12 @@ namespace ETicketMobile.ViewModels.Registration
             this.navigationParameters = navigationParameters;
         }
 
-        private void OnNavigateToNameRegistrationView(string phone)
+        private async void OnNavigateToNameRegistrationView(string phone)
+        {
+            await NavigateToNameRegistrationViewAsync(phone);
+        }
+
+        private async Task NavigateToNameRegistrationViewAsync(string phone)
         {
             var phoneNumber = GetPhoneNumber(phone);
 
@@ -64,7 +71,7 @@ namespace ETicketMobile.ViewModels.Registration
                 return;
 
             navigationParameters.Add("phone", phoneNumber);
-            navigationService.NavigateAsync(nameof(NameRegistrationView), navigationParameters);
+            await navigationService.NavigateAsync(nameof(NameRegistrationView), navigationParameters);
         }
 
         #region Validation

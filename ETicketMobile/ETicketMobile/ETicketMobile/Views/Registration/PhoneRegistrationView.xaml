@@ -7,36 +7,45 @@
     xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile" 
     xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
     prism:ViewModelLocator.AutowireViewModel="True"
-    Title="Phone"
     x:Class="ETicketMobile.Views.Registration.PhoneRegistrationView">
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter" />
-            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter"/>
+            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
+    <ContentPage.Content>
 
-        <StackLayout Margin="10, 0">
-            <Label
-                Text="{local:Translate EnterPhone}"
-                Style="{StaticResource TitleLabelStyle}"/>
+        <Grid Margin="10, 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1.75*"/>
+                <RowDefinition Height="0.75*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
             <Label
-                IsVisible="{Binding PhoneWarning, Converter={StaticResource StringToBooleanConverter}}"
-                Text="{Binding PhoneWarning}"
-                TextColor="{Binding PhoneWarning, Converter={StaticResource StringToColorConverter}}"
-                Style="{StaticResource NormalLabelStyle}"/>
+                Grid.Row="0"
+                VerticalTextAlignment="Start"
+                Text="{local:Translate Text=EnterPhone}"
+                Style="{x:StaticResource Key=TitleLabelStyle}"/>
+
+            <Label
+                Grid.Row="1"
+                VerticalTextAlignment="Start"
+                IsVisible="{Binding PhoneWarning, Converter={x:StaticResource Key=StringToBooleanConverter}, Mode=OneWay}"
+                Text="{Binding PhoneWarning, Mode=OneWay}"
+                TextColor="{Binding PhoneWarning, Converter={x:StaticResource Key=StringToColorConverter}, Mode=OneWay}"
+                Style="{x:StaticResource Key=NormalLabelStyle}"/>
 
             <telerikInput:RadMaskedInput
+                Grid.Row="2"
                 x:Name="PhoneEntry"
-                WatermarkText="{local:Translate Phone}"
+                WatermarkText="{local:Translate Text=Phone}"
                 RejectedSymbolErrorText=""
                 Placeholder="*"
                 Mask="+380 (00)-000-00-00"
@@ -50,11 +59,13 @@
             </telerikInput:RadMaskedInput>
 
             <telerikInput:RadButton
-                Command="{Binding NavigateToNameRegistrationView}"
-                CommandParameter="{Binding Source={x:Reference PhoneEntry}, Path=InputValue}"
-                Text="{local:Translate Next}"
-                Style="{StaticResource ActionButtonStyle}" />
-        </StackLayout>
-    </Grid>
+                Grid.Row="3"
+                Command="{Binding NavigateToNameRegistrationView, Mode=OneTime}"
+                CommandParameter="{Binding Source={x:Reference PhoneEntry}, Path=InputValue, Mode=OneWay}"
+                Text="{local:Translate Text=Next}"
+                Style="{x:StaticResource Key=ActionButtonStyle}"/>
+        </Grid>
+
+    </ContentPage.Content>
 
 </ContentPage>

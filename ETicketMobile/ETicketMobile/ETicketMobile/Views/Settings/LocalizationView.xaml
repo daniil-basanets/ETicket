@@ -2,47 +2,47 @@
 <ContentPage 
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:prism="http://prismlibrary.com"
+    xmlns:prism="http://prismlibrary.com" 
+    xmlns:settings="clr-namespace:ETicketMobile.ViewModels.Settings"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Settings.LocalizationView">
 
     <ContentPage.Content>
 
-        <StackLayout>
-            <ListView 
-                x:Name="Languages"
-                ItemsSource="{Binding Localizations}"
-                SeparatorVisibility="None">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Frame 
-                                BackgroundColor="White"
-                                Padding="12, 12, 0, 12"
-                                BorderColor="#F7F8FA">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="1*"/>
-                                        <ColumnDefinition Width="9*"/>
-                                    </Grid.ColumnDefinitions>
+        <ListView
+            x:Name="Languages"
+            ItemsSource="{Binding Localizations, Mode=OneWay}"
+            SeparatorVisibility="None">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="settings:LocalizationItemViewModel">
+                    <ViewCell>
+                        <Frame
+                            BackgroundColor="White"
+                            Padding="12"
+                            BorderColor="#F7F8FA">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="9*"/>
+                                </Grid.ColumnDefinitions>
 
-                                    <RadioButton
-                                        Command="{Binding SelectCommand}"
-                                        CommandParameter="{Binding Language}"
-                                        Grid.Column="0"
-                                        GroupName="0"/>
+                                <RadioButton
+                                    Command="{Binding SelectCommand, Mode=OneTime}"
+                                    CommandParameter="{Binding Language, Mode=OneWay}"
+                                    Grid.Column="0"
+                                    GroupName="0"/>
 
-                                    <Label
-                                        x:Name="Language"
-                                        Grid.Column="1"
-                                        Text="{Binding Language}"/>
-                                </Grid>
-                            </Frame>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </StackLayout>
+                                <Label
+                                    x:Name="Language"
+                                    Grid.Column="1"
+                                    Text="{Binding Language, Mode=OneWay}"/>
+                            </Grid>
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
     </ContentPage.Content>
 
 </ContentPage>

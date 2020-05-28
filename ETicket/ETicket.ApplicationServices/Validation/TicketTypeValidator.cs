@@ -10,10 +10,11 @@ namespace ETicket.ApplicationServices.Validation
             RuleFor(t => t.TypeName)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("{PropertyName} is empty")
-                .Length(2, 50).WithMessage("Length {TotalLength} of {PropertyName} is Invalid");
+                .Length(2, 50).WithMessage("Length {TotalLength} of {PropertyName} is invalid")
+                .Must(n => n.Trim().Length >= 2);
 
             RuleFor(t => t.IsPersonal)
-                .NotNull();
+                .NotNull().WithMessage("{PropertyName} should not be null");
 
             RuleFor(t => t.DurationHours)
                 .Cascade(CascadeMode.StopOnFirstFailure)
@@ -23,7 +24,7 @@ namespace ETicket.ApplicationServices.Validation
             RuleFor(t => t.Coefficient)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotNull()
-                .GreaterThan(decimal.Zero).WithMessage("{PropertyName} should be greater than {ComparisonValue}");
+                .GreaterThanOrEqualTo(decimal.Zero).WithMessage("{PropertyName} should be greater or equal than {ComparisonValue}");
         }
     }
 }

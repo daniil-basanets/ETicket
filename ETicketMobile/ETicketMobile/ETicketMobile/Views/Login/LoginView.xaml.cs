@@ -11,24 +11,16 @@ namespace ETicketMobile.Views.Login
             InitializeComponent();
         }
 
-        public void OnNavigatedFrom(INavigationParameters parameters)
-        {
-        }
+        public void OnNavigatedFrom(INavigationParameters parameters) { }
 
         public void OnNavigatedTo(INavigationParameters parameters)
         {
-            var pages = Navigation.NavigationStack
-                .Where(p =>
-                    p.Title == "Email"
-                 || p.Title == "Confirm"
-                 || p.Title == "Reset password"
-                 || p.Title == "Confirm Email"
-                 || p.Title == "Main menu")
-                .ToList();
-
-            foreach (var page in pages)
+            if (!Navigation.NavigationStack.Any(p => p.GetType() == typeof(Page)))
             {
-                Navigation.RemovePage(page);
+                Navigation.NavigationStack
+                        .Take(Navigation.NavigationStack.Count - 1)
+                        .ToList()
+                        .ForEach(page => Navigation.RemovePage(page));
             }
         }
     }

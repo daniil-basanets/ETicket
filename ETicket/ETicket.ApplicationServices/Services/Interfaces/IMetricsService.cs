@@ -7,11 +7,11 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface IMetricsService
     {
-        ChartDto PassengersByTime(DateTime start, DateTime end);
-        ChartDto PassengersByTime(DateTime start, DateTime end, int routeId);
-        ChartDto PassengersByRoutes(DateTime start, DateTime end, int[] selectedRoutesId);
-        ChartDto PassengersByPrivileges(DateTime start, DateTime end);
-        ChartDto TicketsByTicketTypes(DateTime start, DateTime end);
+        ChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod);
+        ChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod, int routeId);
+        ChartDto PassengersByRoutes(DateTime startPeriod, DateTime endPeriod, int[] selectedRoutesId);
+        ChartDto PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod);
+        ChartDto TicketsByTicketTypes(DateTime startPeriod, DateTime endPeriod);
         ChartDto PassengersByDaysOfWeek(DateTime startPeriod, DateTime endPeriod);
     }
 }

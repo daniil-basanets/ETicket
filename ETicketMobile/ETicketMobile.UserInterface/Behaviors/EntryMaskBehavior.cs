@@ -5,9 +5,15 @@ namespace ETicketMobile.UserInterface.Behaviors
 {
     public class EntryMaskBehavior : Behavior<Entry>
     {
+        #region Fields
+
         private IDictionary<int, char> positions;
 
         private string mask = string.Empty;
+
+        #endregion
+
+        #region Properties
 
         public string Mask
         {
@@ -18,6 +24,8 @@ namespace ETicketMobile.UserInterface.Behaviors
                 SetPositions();
             }
         }
+
+        #endregion
 
         protected override void OnAttachedTo(Entry entry)
         {

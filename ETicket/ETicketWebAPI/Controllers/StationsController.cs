@@ -11,7 +11,7 @@ namespace ETicket.WebAPI.Controllers
 {
     [Route("api/stations")]
     [ApiController]
-    public class StationsController : ControllerBase
+    public class StationsController : BaseAPIController
     {
         #region Private members
 

@@ -59,7 +59,7 @@ function refreshChart() {
         return;
     }
    
-    var actionUrl = '/metrics/PassengersByTime' + "?start=" + start.toISOString() + "&end=" + end.toISOString();
+    var actionUrl = '/metrics/PassengersByTime' + "?startPeriod=" + start.toISOString() + "&endPeriod=" + end.toISOString();
     $.getJSON(actionUrl, function (response) {
         if (response != null) {
             chartData = response;

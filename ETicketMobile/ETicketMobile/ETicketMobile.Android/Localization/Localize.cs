@@ -8,7 +8,14 @@ namespace ETicketMobile.Droid.Localization
 {
     public class Localize : ILocalize
     {
+        #region Fields
+
         private CultureInfo currentCulture;
+
+        #endregion
+
+        #region Properties
+
         public CultureInfo CurrentCulture
         {
             get
@@ -23,6 +30,8 @@ namespace ETicketMobile.Droid.Localization
                 currentCulture = value;
             }
         }
+
+        #endregion
 
         private CultureInfo GetSystemCultureInfo()
         {
