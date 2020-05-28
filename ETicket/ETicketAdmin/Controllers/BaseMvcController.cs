@@ -6,7 +6,7 @@ namespace ETicket.Admin.Controllers
 {
     public class BaseMvcController : Controller
     {
-        protected virtual IActionResult Json(object dtoObject, int statusCode = StatusCodes.Status200OK)
+        protected IActionResult Json(object dtoObject, int statusCode = StatusCodes.Status200OK)
         {
             var jsonString = JsonConvert.SerializeObject(dtoObject, Formatting.Indented);
             var result = new ObjectResult(jsonString)

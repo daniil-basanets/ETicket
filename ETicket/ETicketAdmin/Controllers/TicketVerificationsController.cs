@@ -4,8 +4,6 @@ using System;
 using System.Reflection;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.Admin.Models.DataTables;
-using ETicket.ApplicationServices.Services.DataTable.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.Admin.Controllers
 {
@@ -13,16 +11,14 @@ namespace ETicket.Admin.Controllers
     {
         #region Private members
 
-        private readonly IDataTableService<TicketVerification> dataTableService;
         private readonly ITicketVerificationService ticketVerificationService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 
-        public TicketVerificationsController(ITicketVerificationService service, IDataTableService<TicketVerification> dataTableService)
+        public TicketVerificationsController(ITicketVerificationService service)
         {
             this.ticketVerificationService = service;
-            this.dataTableService = dataTableService;
         }
 
         // GET: TicketVerifications

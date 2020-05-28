@@ -8,9 +8,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using ETicket.Admin.Models.DataTables;
 using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.Admin.Controllers
 {
@@ -25,16 +23,14 @@ namespace ETicket.Admin.Controllers
         private readonly ITransactionService transactionService;
         private readonly IAreaService areaService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private readonly IDataTableService<Ticket> dataTableService;
 
         #endregion
 
-        public TicketController(ITransactionService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService, IAreaService areaService, IDataTableService<Ticket> dataTableService)
+        public TicketController(ITransactionService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService, IAreaService areaService)
         {
             this.ticketService = ticketService;
             this.ticketTypeService = ticketTypeService;
             this.userService = userService;
-            this.dataTableService = dataTableService;
             this.transactionService = transactionAppService;
             this.areaService = areaService;
         }

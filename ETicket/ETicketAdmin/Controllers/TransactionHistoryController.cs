@@ -1,9 +1,7 @@
 using System;
 using System.Reflection;
 using ETicket.Admin.Models.DataTables;
-using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,16 +14,14 @@ namespace ETicket.Admin.Controllers
         #region Private Members
 
         private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        private readonly IDataTableService<TransactionHistory> dataTableService;
+        
         private readonly ITransactionService transactionService;
 
         #endregion
 
-        public TransactionHistoryController(ITransactionService transactionService, IDataTableService<TransactionHistory> dataTableService)
+        public TransactionHistoryController(ITransactionService transactionService)
         {
             this.transactionService = transactionService;
-            this.dataTableService = dataTableService;
         }
 
         public IActionResult Index()
