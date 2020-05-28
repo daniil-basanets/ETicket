@@ -115,7 +115,7 @@ namespace ETicket.ApplicationServices.Services
                 .Where(t => t.UserId == userId)
                 .OrderBy(t => t.CreatedUTCDate);
 
-            return mapper.ProjectTo<TicketDto>(query).ToList<TicketDto>();
+            return mapper.ProjectTo<TicketDto>(tickets).ToList<TicketDto>();
         }
 
         public IEnumerable<TicketApiDto> GetTicketsByUserEmail(string userEmail)
