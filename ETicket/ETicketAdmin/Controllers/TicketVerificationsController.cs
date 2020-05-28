@@ -49,7 +49,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                return Json(dataTableService.GetDataTablePage(pagingInfo));
+                return Json(ticketVerificationService.GetVerificationsPage(pagingInfo));
             }
             catch (Exception e)
             {

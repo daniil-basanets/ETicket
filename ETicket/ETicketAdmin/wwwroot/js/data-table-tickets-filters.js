@@ -109,10 +109,10 @@ $(document).ready(function () {
             columns: [
                 {
                     name: "ticketType",
-                    data: "ticketType",
+                    data: "ticketTypeName",
                     render: function (data, type, row) {
                         if (data != null) {
-                            return '<a href = "TicketType/Details/' + data.id + '">' + data.typeName + '</a>'
+                            return '<a href = "TicketType/Details/' + row.ticketTypeId + '">' + row.ticketTypeName + '</a>'
                         }
                     }
                 },
@@ -150,11 +150,11 @@ $(document).ready(function () {
                 },
                 {
                     name: "user",
-                    data: "user",
+                    data: "userName",
                     defaultContent: "",
                     render: function (data, type, row) {
                         if (data != null) {
-                            return '<a href = "User/Details/' + data.id + '">' + data.firstName + ' ' + data.lastName + '</a>'
+                            return '<a href = "User/Details/' + row.userId + '">' + row.userName + '</a>'
                         }
                     }
                 },

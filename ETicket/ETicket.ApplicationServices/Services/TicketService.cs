@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using ETicket.Admin.Models.DataTables;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.DataTable;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
+using ETicket.ApplicationServices.Services.PagingServices;
+using ETicket.ApplicationServices.Services.PagingServices.Models;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -12,13 +17,15 @@ namespace ETicket.ApplicationServices.Services
     {
         private readonly IUnitOfWork uow;
         private readonly MapperService mapper;
-        private readonly ITicketTypeService ticketTypeService;
+        private readonly IDataTableService<Ticket> dataTableService;
 
-        public TicketService(IUnitOfWork uow, ITicketTypeService ticketTypeService)
+        public TicketService(IUnitOfWork uow)
         {
             this.uow = uow;
-            this.ticketTypeService = ticketTypeService;
             mapper = new MapperService();
+            
+            var dataTablePagingService = new TicketPagingService(uow);
+            dataTableService = new DataTableService<Ticket>(dataTablePagingService);
         }
 
         IEnumerable<TicketDto> ITicketService.GetTickets()
@@ -109,6 +116,13 @@ namespace ETicket.ApplicationServices.Services
             ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(ticket.TicketType.DurationHours);
             uow.Tickets.Update(ticket);
             uow.Save();
+        }
+
+        public DataTablePage<TicketDto> GetTicketsPage(DataTablePagingInfo pagingInfo)
+        {
+            var ticketsPage = dataTableService.GetDataTablePage(pagingInfo);
+
+            return mapper.Map<DataTablePage<Ticket>, DataTablePage<TicketDto>>(ticketsPage);
         }
 
         public IEnumerable<TicketDto> GetTicketsByUserId(Guid userId)

@@ -108,10 +108,10 @@ $(document).ready(function () {
             columns: [
                 {
                     name: "ticket",
-                    data: "ticket",
+                    data: "ticketId",
                     render: function (data, type, row) {
                         if (data != null) {
-                            return '<a href = "Ticket/Details/' + data.id + '">' + data.id + '</a>'
+                            return '<a href = "Ticket/Details/' + row.ticketId + '">' + row.ticketId + '</a>'
                         }
                     }
                 },
@@ -127,20 +127,20 @@ $(document).ready(function () {
                 },
                 {
                     name: "station",
-                    data: "station",
+                    data: "stationName",
                     render: function (data, type, row) {
                         if (data != null) {
-                            return '<a href = "Station/Details/' + data.id + '">' + data.name + '</a>'
+                            return '<a href = "Station/Details/' + row.stationId + '">' + row.stationName + '</a>'
                         }
                     }
                 },
                 {
                     name: "transport",
-                    data: "transport",
+                    data: "TransportNumber",
                     defaultContent: "",
                     render: function (data, type, row) {
                         if (data != null) {
-                            return '<a href = "Transports/Details/' + data.id + '">' + data.number + '</a>'
+                            return '<a href = "Transports/Details/' + row.transportId + '">' + row.transportNumber + '</a>'
                         }
                     }
                 },

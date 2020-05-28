@@ -15,7 +15,7 @@ using ETicket.DataAccess.Domain.Entities;
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
-    public class TicketController : Controller
+    public class TicketController : BaseMvcController
     {
         #region Private members
 
@@ -42,7 +42,7 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
         {
-            return Json(dataTableService.GetDataTablePage(pagingInfo));          
+            return Json(ticketService.GetTicketsPage(pagingInfo));    
         }
 
         private void InitViewDataForSelectList(TicketDto ticketDto = null)

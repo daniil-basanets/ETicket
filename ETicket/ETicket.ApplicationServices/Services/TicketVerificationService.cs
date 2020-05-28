@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ETicket.Admin.Models.DataTables;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.DataTable;
+using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.ApplicationServices.Services.PagingServices;
+using ETicket.ApplicationServices.Services.PagingServices.Models;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +19,15 @@ namespace ETicket.ApplicationServices.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly ITicketService ticketService;
         private readonly MapperService mapper;
+        private readonly IDataTableService<TicketVerification> dataTableService;
 
         public TicketVerificationService(IUnitOfWork unitOfWork, ITicketService ticketService)
         {
             this.unitOfWork = unitOfWork;
             this.ticketService = ticketService;
             mapper = new MapperService();
+            var dataTablePagingService = new TicketVerificationPagingService(unitOfWork);
+            dataTableService = new DataTableService<TicketVerification>(dataTablePagingService);
         }
 
         public IEnumerable<TicketVerificationDto> GetTicketVerifications()
@@ -113,6 +121,13 @@ namespace ETicket.ApplicationServices.Services
             Create(ticketVerificationDto);
 
             return result;
+        }
+
+        public DataTablePage<TicketVerificationDto> GetVerificationsPage(DataTablePagingInfo pagingInfo)
+        {
+            var verificationsPage = dataTableService.GetDataTablePage(pagingInfo);
+
+            return mapper.Map<DataTablePage<TicketVerification>, DataTablePage<TicketVerificationDto>>(verificationsPage);
         }
 
         private Station GetNearestStationOnRoute(int routeId, float latitude, float longitude)
