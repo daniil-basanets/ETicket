@@ -23,7 +23,6 @@ namespace ETicketMobile.ViewModels.Login
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private readonly IPageDialogService dialogService;
         private readonly IHttpService httpService;
 
@@ -85,9 +84,6 @@ namespace ETicketMobile.ViewModels.Login
             ILocalApi localApi
         ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
@@ -110,18 +106,18 @@ namespace ETicketMobile.ViewModels.Login
 
         private async void OnNavigateToForgetPasswordView()
         {
-            await navigationService.NavigateAsync(nameof(ForgotPasswordView));
+            await NavigationService.NavigateAsync(nameof(ForgotPasswordView));
         }
 
         private async void OnNavigateToRegistrationView()
         {
-            await navigationService.NavigateAsync(nameof(EmailRegistrationView));
+            await NavigationService.NavigateAsync(nameof(EmailRegistrationView));
         }
 
         private async void OnNavigateToLoginView(string email)
         {
-            if (!IsValid(email))
-                return;
+            //if (!IsValid(email))
+               // return;
 
             await NavigateToLoginViewAsync(email);
         }
@@ -155,17 +151,19 @@ namespace ETicketMobile.ViewModels.Login
 
             await localApi.AddAsync(token);
 
+            email = "bot@gmail.com";
+
             var navigationParameters = new NavigationParameters { { "email", email } };
 
-            await navigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
+            await NavigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
         }
 
         private async Task<Token> GetTokenAsync(string email)
         {
             var userSignIn = new UserSignInRequestDto
             {
-                Email = email,
-                Password = password
+                Email = "bot@gmail.com", // email,
+                Password = "qwerty12" // password
             };
 
             var tokenDto = await httpService.PostAsync<UserSignInRequestDto, TokenDto>(

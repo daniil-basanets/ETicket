@@ -16,10 +16,10 @@ namespace ETicketMobile.ViewModels.Settings
     {
         #region Fields
 
+        private IEnumerable<LocalizationItemViewModel> localizations;
+
         private readonly ILocalApi localApi;
         private readonly ILocalize localize;
-
-        private IEnumerable<LocalizationItemViewModel> localizations;
 
         #endregion
 

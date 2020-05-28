@@ -14,7 +14,6 @@ namespace ETicketMobile.ViewModels.Registration
     {
         #region Fields
 
-        protected readonly INavigationService navigationService;
         protected INavigationParameters navigationParameters;
 
         private readonly IHttpService httpService;
@@ -41,9 +40,6 @@ namespace ETicketMobile.ViewModels.Registration
         public PhoneRegistrationViewModel(INavigationService navigationService, IHttpService httpService) 
             : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.httpService = httpService
                 ?? throw new ArgumentNullException(nameof(httpService));
         }
@@ -66,7 +62,7 @@ namespace ETicketMobile.ViewModels.Registration
                 return;
 
             navigationParameters.Add("phone", phoneNumber);
-            await navigationService.NavigateAsync(nameof(NameRegistrationView), navigationParameters);
+            await NavigationService.NavigateAsync(nameof(NameRegistrationView), navigationParameters);
         }
 
         #region Validation

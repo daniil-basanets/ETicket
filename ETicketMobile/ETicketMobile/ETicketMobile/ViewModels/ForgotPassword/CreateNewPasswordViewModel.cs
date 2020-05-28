@@ -18,7 +18,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
         private readonly IPageDialogService dialogService;
@@ -65,9 +64,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             IHttpService httpService
         ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
@@ -103,7 +99,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             }
 
 
-            await navigationService.NavigateAsync(nameof(LoginView));
+            await NavigationService.NavigateAsync(nameof(LoginView));
         }
 
         private async Task<bool> RequestChangePasswordAsync(string password)

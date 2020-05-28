@@ -24,7 +24,6 @@ namespace ETicketMobile.ViewModels.Tickets
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
         private readonly IPageDialogService dialogService;
@@ -60,9 +59,6 @@ namespace ETicketMobile.ViewModels.Tickets
             ILocalApi localApi
         ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
@@ -132,15 +128,15 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private async void OnBuy()
         {
-            var selectedAreasId = Areas
-                    .Where(a => a.Selected)
-                    .Select(a => a.Id);
+            var selectedAreasId = Areas;
+                    //.Where(a => a.Selected)
+                    //.Select(a => a.Id);
 
             if (!IsValid(selectedAreasId.Count()))
                 return;
 
             navigationParameters.Add("areas", selectedAreasId);
-            await navigationService.NavigateAsync(nameof(LiqPayView), navigationParameters);
+            await NavigationService.NavigateAsync(nameof(LiqPayView), navigationParameters);
         }
 
         private bool IsValid(int count)

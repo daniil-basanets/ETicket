@@ -21,7 +21,6 @@ namespace ETicketMobile.ViewModels.Registration
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
         private readonly IPageDialogService dialogService;
@@ -79,9 +78,6 @@ namespace ETicketMobile.ViewModels.Registration
             ILocalApi localApi
         ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
@@ -188,7 +184,7 @@ namespace ETicketMobile.ViewModels.Registration
                 return;
             }
 
-            await navigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
+            await NavigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
         }
 
         private async Task<Token> GetTokenAsync()

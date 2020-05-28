@@ -18,7 +18,6 @@ namespace ETicketMobile.ViewModels.Registration
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private readonly IPageDialogService dialogService;
         private readonly IHttpService httpService;
 
@@ -54,9 +53,6 @@ namespace ETicketMobile.ViewModels.Registration
             IUserValidator userValidator
         ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
@@ -87,12 +83,12 @@ namespace ETicketMobile.ViewModels.Registration
             }
 
             var navigationParams = new NavigationParameters { { "email", email } };
-            await navigationService.NavigateAsync(nameof(PhoneRegistrationView), navigationParams);
+            await NavigationService.NavigateAsync(nameof(PhoneRegistrationView), navigationParams);
         }
 
         private async void OnNavigateToSignInView()
         {
-            await navigationService.NavigateAsync(nameof(LoginView));
+            await NavigationService.NavigateAsync(nameof(LoginView));
         }
 
         #region Validation

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using ETicketMobile.Views.UserActions;
 using Prism.Navigation;
 using Xamarin.Forms;
@@ -9,8 +8,6 @@ namespace ETicketMobile.ViewModels.Payment
     public class TransactionCompletedViewModel : ViewModelBase
     {
         #region Fields
-
-        private readonly INavigationService navigationService;
 
         private ICommand navigateToMainMenu;
 
@@ -26,13 +23,11 @@ namespace ETicketMobile.ViewModels.Payment
         public TransactionCompletedViewModel(INavigationService navigationService)
             : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
         }
 
         private async void OnNavigateToMainMenu()
         {
-            await navigationService.NavigateAsync(nameof(MainMenuView));
+            await NavigationService.NavigateAsync(nameof(MainMenuView));
         }
     }
 }

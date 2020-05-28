@@ -20,7 +20,6 @@ namespace ETicketMobile.ViewModels.BoughtTickets
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private readonly IPageDialogService dialogService;
         private readonly IHttpService httpService;
 
@@ -70,9 +69,6 @@ namespace ETicketMobile.ViewModels.BoughtTickets
             ILocalApi localApi
         ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 

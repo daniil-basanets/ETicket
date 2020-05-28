@@ -21,7 +21,6 @@ namespace ETicketMobile.ViewModels.Payment
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private readonly IPageDialogService dialogService;
         private readonly IHttpService httpService;
 
@@ -104,9 +103,6 @@ namespace ETicketMobile.ViewModels.Payment
             IHttpService httpService
         ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
@@ -199,7 +195,7 @@ namespace ETicketMobile.ViewModels.Payment
                 return;
             }
 
-            await navigationService.NavigateAsync(nameof(TransactionCompletedView));
+            await NavigationService.NavigateAsync(nameof(TransactionCompletedView));
         }
 
         private async Task<BuyTicketResponseDto> RequestBuyTicketAsync(BuyTicketRequestDto buyTicketRequestDto)

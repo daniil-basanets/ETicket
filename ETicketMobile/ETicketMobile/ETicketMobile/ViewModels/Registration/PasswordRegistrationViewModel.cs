@@ -12,7 +12,6 @@ namespace ETicketMobile.ViewModels.Registration
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
         private ICommand navigateToBirthDateRegistrationView;
@@ -53,8 +52,6 @@ namespace ETicketMobile.ViewModels.Registration
         public PasswordRegistrationViewModel(INavigationService navigationService)
             : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -68,7 +65,7 @@ namespace ETicketMobile.ViewModels.Registration
                 return;
 
             navigationParameters.Add("password", password);
-            await navigationService.NavigateAsync(nameof(BirthdayRegistrationView), navigationParameters);
+            await NavigationService.NavigateAsync(nameof(BirthdayRegistrationView), navigationParameters);
         }
 
         #region Validation
