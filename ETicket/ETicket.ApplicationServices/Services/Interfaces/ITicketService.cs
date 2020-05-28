@@ -13,6 +13,8 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 
         public IEnumerable<TicketDto> GetTicketsByUserId(Guid userId);
 
+        public IEnumerable<TicketApiDto> GetTicketsByUserEmail(string userEmail);
+
         public TicketDto GetTicketById(Guid id);
 
         public void Create(TicketDto ticketDto);

@@ -6,6 +6,7 @@ using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
+using System.Collections.ObjectModel;
 using ETicket.ApplicationServices.Services.DataTable;
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.PagingServices;
@@ -72,24 +73,23 @@ namespace ETicket.ApplicationServices.Services
 
         public void Update(TicketDto ticketDto)
         {
-            var ticket = mapper.Map<TicketDto, Ticket>(ticketDto);
+            Ticket ticketToUpdate = uow.Tickets.Get(ticketDto.Id);
+            mapper.Map(ticketDto, ticketToUpdate);
 
-            if (ticket.TicketArea == null)
+            var ticketAreas = uow.TicketArea.GetAll().Where(t => t.TicketId == ticketToUpdate.Id).ToList();
+
+            foreach (var ticketArea in ticketAreas)
             {
-                var ticketAreas = uow.TicketArea.GetAll().Where(t => t.TicketId == ticket.Id).ToList();
-
-                foreach (var ticketArea in ticketAreas)
-                {
-                    uow.TicketArea.Delete(ticketArea);
-                }
+                uow.TicketArea.Delete(ticketArea);
             }
 
             foreach (var areaId in ticketDto.SelectedAreaIds)
             {
-                uow.TicketArea.Create(new TicketArea() { TicketId = ticket.Id, AreaId = areaId });
+                uow.TicketArea.Create(new TicketArea() { TicketId = ticketToUpdate.Id, AreaId = areaId });
             }
+            uow.Save();
 
-            uow.Tickets.Update(ticket);
+            uow.Tickets.Update(ticketToUpdate);
             uow.Save();
         }
 
@@ -127,11 +127,20 @@ namespace ETicket.ApplicationServices.Services
 
         public IEnumerable<TicketDto> GetTicketsByUserId(Guid userId)
         {
-            var query = uow.Tickets.GetAll()
+            var tickets = uow.Tickets.GetAll()
                 .Where(t => t.UserId == userId)
                 .OrderBy(t => t.CreatedUTCDate);
 
-            return mapper.ProjectTo<TicketDto>(query).ToList<TicketDto>();
+            return mapper.ProjectTo<TicketDto>(tickets).ToList<TicketDto>();
+        }
+
+        public IEnumerable<TicketApiDto> GetTicketsByUserEmail(string userEmail)
+        {
+            var tickets = uow.Tickets.GetAll()
+                .Where(t => t.User.Email == userEmail)
+                .OrderBy(t => t.CreatedUTCDate);
+
+            return mapper.ProjectTo<TicketApiDto>(tickets).ToList();
         }
     }
 }
