@@ -58,7 +58,7 @@ namespace ETicket.Admin.Controllers
                     return NotFound();
                 }
 
-                return Json(dataTableService.GetDataTablePage(pagingInfo));
+                return Json(transactionService.GetTransactionsPage(pagingInfo));
             }
             catch (Exception ex)
             {
