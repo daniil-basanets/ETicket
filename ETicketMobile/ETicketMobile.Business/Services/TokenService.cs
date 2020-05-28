@@ -28,6 +28,22 @@ namespace ETicketMobile.Business.Services
                 ?? throw new ArgumentNullException(nameof(localApi));
         }
 
+        public async Task<Token> GetTokenAsync(string email, string password)
+        {
+            var userSignIn = new UserSignInRequestDto
+            {
+                Email = "bot@gmail.com", // email,
+                Password = "qwerty12" // password
+            };
+
+            var tokenDto = await httpService.PostAsync<UserSignInRequestDto, TokenDto>(
+                AuthorizeEndpoint.Login, userSignIn);
+
+            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
+
+            return token;
+        }
+
         public async Task<string> GetAccessTokenAsync()
         {
             var token = await localApi.GetTokenAsync();

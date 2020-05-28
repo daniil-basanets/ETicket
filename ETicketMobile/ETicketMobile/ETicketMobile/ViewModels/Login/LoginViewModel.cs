@@ -2,7 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using ETicketMobile.Business.Mapping;
+using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Business.Validators;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
@@ -10,8 +10,6 @@ using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.Views.UserActions;
-using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Endpoints;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
@@ -24,6 +22,7 @@ namespace ETicketMobile.ViewModels.Login
         #region Fields
 
         private readonly IPageDialogService dialogService;
+        private readonly ITokenService tokenService;
         private readonly IHttpService httpService;
 
         private readonly ILocalApi localApi;
@@ -80,6 +79,7 @@ namespace ETicketMobile.ViewModels.Login
         public LoginViewModel(
             INavigationService navigationService,
             IPageDialogService dialogService,
+            ITokenService tokenService,
             IHttpService httpService,
             ILocalApi localApi
         ) : base(navigationService)
@@ -89,6 +89,9 @@ namespace ETicketMobile.ViewModels.Login
 
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
+
+            this.tokenService = tokenService
+                ?? throw new ArgumentNullException(nameof(tokenService));
 
             this.httpService = httpService
                 ?? throw new ArgumentNullException(nameof(httpService));
@@ -128,7 +131,7 @@ namespace ETicketMobile.ViewModels.Login
 
             try
             {
-                token = await GetTokenAsync(email);
+                token = await tokenService.GetTokenAsync(email, password);
             }
             catch (WebException)
             {
@@ -156,22 +159,6 @@ namespace ETicketMobile.ViewModels.Login
             var navigationParameters = new NavigationParameters { { "email", email } };
 
             await NavigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
-        }
-
-        private async Task<Token> GetTokenAsync(string email)
-        {
-            var userSignIn = new UserSignInRequestDto
-            {
-                Email = "bot@gmail.com", // email,
-                Password = "qwerty12" // password
-            };
-
-            var tokenDto = await httpService.PostAsync<UserSignInRequestDto, TokenDto>(
-                AuthorizeEndpoint.Login, userSignIn);
-
-            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
-
-            return token;
         }
 
         #region Validation
