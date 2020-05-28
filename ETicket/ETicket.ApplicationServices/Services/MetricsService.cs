@@ -123,14 +123,18 @@ namespace ETicket.ApplicationServices.Services
 
         public ChartDto PassengersByDaysOfWeek(DateTime startPeriod, DateTime endPeriod)
         {
-            var daysOfWeek = new List<DayOfWeek>();
-            
-            //for(int i = 0)
-
-            foreach (DayOfWeek dayOfWeek in Enum.GetValues(typeof(DayOfWeek)))
-            {
-                daysOfWeek.Add(dayOfWeek);
-            }
+            //This array is needed to establish the order of days on the chart.
+            //And to fill in the gaps, if there were no passengers for a certain day 
+            var daysOfWeek = new DayOfWeek[] 
+            { 
+                DayOfWeek.Monday
+                , DayOfWeek.Tuesday
+                , DayOfWeek.Wednesday
+                , DayOfWeek.Thursday
+                , DayOfWeek.Friday
+                , DayOfWeek.Saturday
+                , DayOfWeek.Sunday          
+            };
 
             if (startPeriod.CompareTo(endPeriod) == 1)
             {
@@ -147,8 +151,7 @@ namespace ETicket.ApplicationServices.Services
                     Labels = daysOfWeek.Select(t => t.ToString()).ToList(), 
                     ErrorMessage = "One week - minimum time period" 
                 };
-            }
-            
+            }         
 
             var chartData = uow.TicketVerifications.GetAll()
                 .Where(d => d.VerificationUTCDate >= startPeriod && d.VerificationUTCDate <= endPeriod && d.IsVerified)
@@ -157,14 +160,6 @@ namespace ETicket.ApplicationServices.Services
                 .OrderBy(g => g.Key)
                 .Select(g => new { dayOfWeek = g.Key, count = g.Count() })
                 .ToDictionary(k => k.dayOfWeek, k => k.count);
-
-            //SqlFunctions.DatePart("weekday", o.LastUpdated)
-
-            //return new ChartDto()
-            //{
-            //    Labels = data.Keys.Select(t => t.ToString()).ToList(),
-            //    Data = data.Values.Select(t => t.ToString()).ToList()
-            //};
 
             return new ChartDto()
             {
