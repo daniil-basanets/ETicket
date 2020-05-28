@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using ETicketMobile.Business.Validators;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
 using Prism.Navigation;
@@ -96,14 +97,14 @@ namespace ETicketMobile.ViewModels.Registration
                 return false;
             }
 
-            if (!IsNameValid(firstName))
+            if (!Validator.IsNameValid(firstName))
             {
                 FirstNameWarning = AppResource.FirstNameValid;
 
                 return false;
             }
 
-            if (!IsNameValid(lastName))
+            if (!Validator.IsNameValid(lastName))
             {
                 LastNameWarning = AppResource.LastNameValid;
 
@@ -111,13 +112,6 @@ namespace ETicketMobile.ViewModels.Registration
             }
 
             return true;
-        }
-
-        private bool IsNameValid(string name)
-        {
-            name ??= string.Empty;
-
-            return name.Length >= 2 && name.Length <= 25;
         }
 
         #endregion

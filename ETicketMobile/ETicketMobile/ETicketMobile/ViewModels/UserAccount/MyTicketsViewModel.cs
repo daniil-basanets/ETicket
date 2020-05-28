@@ -7,7 +7,6 @@ using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
-using ETicketMobile.WebAccess;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.Endpoints;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ETicketMobile.Business.Validators;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Login;
 using ETicketMobile.WebAccess.DTO;
@@ -16,13 +16,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 {
     public class CreateNewPasswordViewModel : ViewModelBase
     {
-        #region Constants
-
-        private const int PasswordMinLength = 8;
-        private const int PasswordMaxLength = 100;
-
-        #endregion
-
         #region Fields
 
         private readonly INavigationService navigationService;
@@ -146,28 +139,28 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            if (IsPasswordShort(password))
+            if (Validator.IsPasswordShort(password))
             {
                 PasswordWarning = AppResource.PasswordShort;
 
                 return false;
             }
 
-            if (IsPasswordLong(password))
+            if (Validator.IsPasswordLong(password))
             {
                 PasswordWarning = AppResource.PasswordLong;
 
                 return false;
             }
 
-            if (IsPasswordWeak(password))
+            if (Validator.IsPasswordWeak(password))
             {
                 PasswordWarning = AppResource.PasswordStrong;
 
                 return false;
             }
 
-            if (!PasswordsMatched(password))
+            if (!Validator.PasswordsMatched(password, ConfirmPassword))
             {
                 ConfirmPasswordWarning = AppResource.PasswordsMatch;
 
@@ -175,26 +168,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             }
 
             return true;
-        }
-
-        private bool IsPasswordShort(string password)
-        {
-            return password.Length < PasswordMinLength;
-        }
-
-        private bool IsPasswordLong(string password)
-        {
-            return password.Length > PasswordMaxLength;
-        }
-
-        private bool IsPasswordWeak(string password)
-        {
-            return password.All(ch => char.IsDigit(ch));
-        }
-
-        private bool PasswordsMatched(string password)
-        {
-            return string.Equals(password, ConfirmPassword);
         }
 
         #endregion

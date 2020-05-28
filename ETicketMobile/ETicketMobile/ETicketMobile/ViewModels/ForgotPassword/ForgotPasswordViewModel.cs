@@ -2,11 +2,11 @@
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Android.Util;
+using ETicketMobile.Business.Validators;
+using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Login;
-using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.Endpoints;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
@@ -23,6 +23,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         private readonly IPageDialogService dialogService;
 
         private readonly IHttpService httpService;
+
+        private readonly IUserValidator userValidator;
 
         private ICommand navigateToConfirmForgotPasswordView;
         private ICommand cancelCommand;
@@ -52,7 +54,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         public ForgotPasswordViewModel(
             INavigationService navigationService,
             IPageDialogService dialogService,
-            IHttpService httpService
+            IHttpService httpService,
+            IUserValidator userValidator
         ) : base(navigationService)
         {
             this.navigationService = navigationService
@@ -63,6 +66,9 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
             this.httpService = httpService
                 ?? throw new ArgumentNullException(nameof(httpService));
+
+            this.userValidator = userValidator
+                ?? throw new ArgumentNullException(nameof(userValidator));
         }
 
         private async void OnNavigateToConfirmForgotPasswordView(string email)
@@ -107,7 +113,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            if (!IsEmailValid(email))
+            if (!Validator.IsEmailValid(email))
             {
                 EmailWarning = AppResource.EmailInvalid;
 
@@ -115,16 +121,14 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             }
 
             // TODO EmailHasCorrectLength
-            if (!IsEmailConstainsCorrectLong(email))
+            if (!Validator.HasEmailCorrectLength(email))
             {
                 EmailWarning = AppResource.EmailCorrectLong;
 
                 return false;
             }
 
-            var userExists = await RequestUserExistsAsync(email);
-
-            if (!userExists)
+            if (! await userValidator.UserExistsAsync(email))
             {
                 EmailWarning = AppResource.EmailWrong;
 
@@ -132,27 +136,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             }
 
             return true;
-        }
-
-        private async Task<bool> RequestUserExistsAsync(string email)
-        {
-            var signUpRequestDto = new ForgotPasswordRequestDto { Email = email };
-
-            var isUserExists = await httpService.PostAsync<ForgotPasswordRequestDto, ForgotPasswordResponseDto>(
-                    AuthorizeEndpoint.CheckEmail, 
-                    signUpRequestDto);
-
-            return isUserExists.Succeeded;
-        }
-
-        private bool IsEmailValid(string email)
-        {
-            return Patterns.EmailAddress.Matcher(email).Matches();
-        }
-
-        private bool IsEmailConstainsCorrectLong(string email)
-        {
-            return email.Length <= EmailMaxLength;
         }
 
         #endregion

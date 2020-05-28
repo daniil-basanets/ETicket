@@ -188,9 +188,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
             var resetPasswordRequestDto = CreateConfirmEmailRequestDto(code);
 
-
             var confirmEmailIsSucceeded = await ConfirmEmailAsync(resetPasswordRequestDto);
-
 
             if (!confirmEmailIsSucceeded)
             {

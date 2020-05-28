@@ -2,8 +2,8 @@
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Android.Util;
 using ETicketMobile.Business.Mapping;
+using ETicketMobile.Business.Validators;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.Resources;
@@ -165,7 +165,7 @@ namespace ETicketMobile.ViewModels.Login
             var userSignIn = new UserSignInRequestDto
             {
                 Email = email,
-                Password =  password
+                Password = password
             };
 
             var tokenDto = await httpService.PostAsync<UserSignInRequestDto, TokenDto>(
@@ -196,7 +196,7 @@ namespace ETicketMobile.ViewModels.Login
                 return false;
             }
 
-            if (!IsEmailValid(email))
+            if (!Validator.IsEmailValid(email))
             {
                 EmailWarning = AppResource.EmailInvalid;
 
@@ -204,11 +204,6 @@ namespace ETicketMobile.ViewModels.Login
             }
 
             return true;
-        }
-
-        private bool IsEmailValid(string email)
-        {
-            return Patterns.EmailAddress.Matcher(email).Matches();
         }
 
         #endregion

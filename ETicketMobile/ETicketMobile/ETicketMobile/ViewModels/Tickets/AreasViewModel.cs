@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Model.Tickets;
+using ETicketMobile.Business.Validators;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.Resources;
@@ -144,7 +145,7 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private bool IsValid(int count)
         {
-            if (!TicketChoosed(count))
+            if (!Validator.TicketChoosed(count))
             {
                 dialogService.DisplayAlertAsync("Error", AppResource.CountTicketsWrong, "OK");
 
@@ -152,11 +153,6 @@ namespace ETicketMobile.ViewModels.Tickets
             }
 
             return true;
-        }
-
-        private bool TicketChoosed(int count)
-        {
-            return count != 0;
         }
     }
 }

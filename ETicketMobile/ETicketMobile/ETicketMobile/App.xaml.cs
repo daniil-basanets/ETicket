@@ -31,6 +31,8 @@ using Prism;
 using Prism.Ioc;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using ETicketMobile.Business.Validators;
+using ETicketMobile.Business.Validators.Interfaces;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace ETicketMobile
@@ -62,6 +64,9 @@ namespace ETicketMobile
 
             containerRegistry.RegisterInstance<ILocalApi>(localApi);
             containerRegistry.RegisterInstance<ILocalize>(localize);
+
+            var userValidator = new UserValidator(httpService);
+            containerRegistry.RegisterInstance<IUserValidator>(userValidator);
 
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainView, MainViewModel>();

@@ -2,12 +2,11 @@
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Android.Util;
+using ETicketMobile.Business.Validators;
+using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Login;
 using ETicketMobile.Views.Registration;
-using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Endpoints;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
@@ -17,12 +16,6 @@ namespace ETicketMobile.ViewModels.Registration
 {
     public class EmailRegistrationViewModel : ViewModelBase
     {
-        #region Constants
-
-        private const int EmailMaxLength = 50;
-
-        #endregion
-
         #region Fields
 
         private readonly INavigationService navigationService;
@@ -31,6 +24,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         private ICommand navigateToPhoneRegistrationView;
         private ICommand navigateToSignInView;
+
+        private readonly IUserValidator userValidator;
 
         private string emailWarning;
 
@@ -55,7 +50,8 @@ namespace ETicketMobile.ViewModels.Registration
         public EmailRegistrationViewModel(
             INavigationService navigationService,
             IPageDialogService dialogService,
-            IHttpService httpService
+            IHttpService httpService,
+            IUserValidator userValidator
         ) : base(navigationService)
         {
             this.navigationService = navigationService
@@ -66,6 +62,9 @@ namespace ETicketMobile.ViewModels.Registration
 
             this.httpService = httpService
                 ?? throw new ArgumentNullException(nameof(httpService));
+
+            this.userValidator = userValidator
+                ?? throw new ArgumentNullException(nameof(userValidator));
         }
 
         private async void OnMoveToPhoneRegistrationView(string email)
@@ -100,30 +99,28 @@ namespace ETicketMobile.ViewModels.Registration
 
         private async Task<bool> IsValid(string email)
         {
-            if (IsEmailEmpty(email))
+            if (string.IsNullOrEmpty(email))
             {
                 EmailWarning = AppResource.EmailCorrect;
 
                 return false;
             }
 
-            if (!IsEmailValid(email))
+            if (!Validator.IsEmailValid(email))
             {
                 EmailWarning = AppResource.EmailInvalid;
 
                 return false;
             }
 
-            if (!IsEmailConstainsCorrectLong(email))
+            if (!Validator.HasEmailCorrectLength(email))
             {
                 EmailWarning = AppResource.EmailCorrectLong;
 
                 return false;
             }
 
-            var isUserExists = await RequestUserExistsAsync(email);
-
-            if (isUserExists)
+            if (await userValidator.UserExistsAsync(email))
             {
                 EmailWarning = AppResource.EmailTaken;
 
@@ -131,30 +128,6 @@ namespace ETicketMobile.ViewModels.Registration
             }
 
             return true;
-        }
-
-        private bool IsEmailEmpty(string email)
-        {
-            return string.IsNullOrEmpty(email);
-        }
-
-        private bool IsEmailValid(string email)
-        {
-            return Patterns.EmailAddress.Matcher(email).Matches();
-        }
-
-        private bool IsEmailConstainsCorrectLong(string email)
-        {
-            return email.Length <= EmailMaxLength;
-        }
-
-        private async Task<bool> RequestUserExistsAsync(string email)
-        {
-            var signUpRequestDto = new SignUpRequestDto { Email = email };
-
-            var isUserExists = await httpService.PostAsync<SignUpRequestDto, SignUpResponseDto>(AuthorizeEndpoint.CheckEmail, signUpRequestDto);
-
-            return isUserExists.Succeeded;
         }
 
         #endregion

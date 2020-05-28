@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Business.Model.Registration;
+using ETicketMobile.Business.Validators;
 using ETicketMobile.Views.Payment;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.Endpoints;
@@ -18,14 +19,6 @@ namespace ETicketMobile.ViewModels.Payment
 {
     public class LiqPayViewModel : ViewModelBase
     {
-        #region Constants
-
-        private const int CardNumberLength = 16;
-        private const int ExpirationDateLength = 5;
-        private const int CVV2Length = 3;
-
-        #endregion
-
         #region Fields
 
         private readonly INavigationService navigationService;
@@ -237,16 +230,19 @@ namespace ETicketMobile.ViewModels.Payment
             };
         }
 
+
+        #region Validation
+
         private bool IsValid(string cardNumber)
         {
-            if (!IsCardNumberCorrectLength(cardNumber))
+            if (!Validator.HasCardNumberCorrectLength(cardNumber))
             {
                 CardNumberWarningIsVisible = true;
 
                 return false;
             }
 
-            if (!IsExpirationDateCorrectLength(expirationDate))
+            if (!Validator.HasExpirationDateCorrectLength(expirationDate))
             {
                 CardNumberWarningIsVisible = false;
 
@@ -255,39 +251,9 @@ namespace ETicketMobile.ViewModels.Payment
                 return false;
             }
 
-            if (!IsCvvValid())
-                return false;
-
-            return true;
-        }
-
-        private string GetStringWithoutMask(string str)
-        {
-            return Regex.Replace(str, @"[^\d]", string.Empty);
-        }
-
-        #region Validation
-
-        private bool IsCardNumberCorrectLength(string cardNumber)
-        {
-            return cardNumber.Length == CardNumberLength;
-        }
-
-        private bool IsExpirationDateCorrectLength(string expirationDate)
-        {
-            return expirationDate.Length == ExpirationDateLength;
-        }
-
-        private bool IsCVV2CorrectLength(string cvv2)
-        {
-            return cvv2.Length == CVV2Length;
-        }
-
-        private bool IsCvvValid()
-        {
             var cvv2 = GetStringWithoutMask(CVV2);
 
-            if (cvv2 != CVV2 || !IsCVV2CorrectLength(cvv2))
+            if (cvv2 != CVV2 || !Validator.HasCVV2CorrectLength(cvv2))
             {
                 CardNumberWarningIsVisible = false;
                 ExpirationDateWarningIsVisible = false;
@@ -301,6 +267,11 @@ namespace ETicketMobile.ViewModels.Payment
         }
 
         #endregion
+
+        private string GetStringWithoutMask(string str)
+        {
+            return Regex.Replace(str, @"[^\d]", string.Empty);
+        }
 
         private ExpirationDateDescriptor GetExpirationDateDescriptor()
         {
