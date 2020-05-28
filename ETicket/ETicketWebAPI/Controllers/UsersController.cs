@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using log4net;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
+using System.Linq;
 
 namespace ETicket.WebAPI.Controllers
 {
