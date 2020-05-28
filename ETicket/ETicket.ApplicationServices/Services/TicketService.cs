@@ -111,7 +111,7 @@ namespace ETicket.ApplicationServices.Services
 
         public IEnumerable<TicketDto> GetTicketsByUserId(Guid userId)
         {
-            var query = uow.Tickets.GetAll()
+            var tickets = uow.Tickets.GetAll()
                 .Where(t => t.UserId == userId)
                 .OrderBy(t => t.CreatedUTCDate);
 
