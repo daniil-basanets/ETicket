@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Model.Tickets;
-using ETicketMobile.Data.Entities;
+using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.Views.Tickets;
 using ETicketMobile.WebAccess;
@@ -18,21 +19,32 @@ using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Tickets
 {
-    public class TicketsViewModel : ViewModelBase
+    public class TicketsViewModel : ViewModelBase, INotifyPropertyChanged
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
         private readonly IPageDialogService dialogService;
+        private readonly ITokenService tokenService;
         private readonly IHttpService httpService;
 
         private readonly ILocalApi localApi;
 
         private IEnumerable<TicketType> tickets;
+        private IEnumerable<Area> areas;
+
+        private TicketType ticketSelected;
+        private string selectedTicket;
+
+        private Area areaSelected;
+        private string selectedArea;
 
         private string accessToken;
+
+        private decimal totalPrice;
+
+        private bool selected;
 
         private ICommand chooseTicket;
 
@@ -40,43 +52,102 @@ namespace ETicketMobile.ViewModels.Tickets
 
         #region Properties
 
+        public ICommand ChooseTicket => chooseTicket
+            ??= new Command(OnChooseTicket);
+
         public IEnumerable<TicketType> Tickets
         {
             get => tickets;
             set => SetProperty(ref tickets, value);
         }
 
-        public ICommand ChooseTicket => chooseTicket 
-            ??= new Command<TicketType>(OnChooseTicket);
+        public IEnumerable<Area> Areas
+        {
+            get => areas;
+            set => SetProperty(ref areas, value);
+        }
+
+        public TicketType TicketSelected
+        {
+            get => ticketSelected;
+            set
+            {
+                SelectedTicket = value.Name;
+
+                SetProperty(ref ticketSelected, value);
+            }
+        }
+
+        public string SelectedTicket
+        {
+            get => selectedTicket;
+            set => SetProperty(ref selectedTicket, value);
+        }
+
+        public Area AreaSelected
+        {
+            get => areaSelected;
+            set
+            {
+                SelectedArea = value.Name;
+
+                SetProperty(ref areaSelected, value);
+            }
+        }
+
+        public string SelectedArea
+        {
+            get => selectedArea;
+            set => SetProperty(ref selectedArea, value);
+        }
+
+        public bool Selected
+        {
+            get { return selected; }
+            set
+            {
+                SetProperty(ref selected, value);
+            }
+        }
+
+        public decimal TotalPrice
+        {
+            get => totalPrice;
+            set => SetProperty(ref totalPrice, value);
+        }
 
         #endregion
 
         public TicketsViewModel(
             INavigationService navigationService,
             IPageDialogService dialogService,
+            ITokenService tokenService,
             IHttpService httpService,
-            ILocalApi localApi)
-            : base(navigationService)
+            ILocalApi localApi
+        ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
-            this.localApi = localApi
-                ?? throw new ArgumentNullException(nameof(localApi));
+            this.tokenService = tokenService
+                ?? throw new ArgumentNullException(nameof(tokenService));
 
             this.httpService = httpService
                 ?? throw new ArgumentNullException(nameof(httpService));
+
+            this.localApi = localApi
+                ?? throw new ArgumentNullException(nameof(localApi));
         }
 
         public async override void OnAppearing()
         {
+            Init();
+
             try
             {
-                accessToken = await GetAccessTokenAsync();
+                accessToken = await tokenService.GetAccessTokenAsync();
                 Tickets = await GetTicketsAsync();
+                Areas = await GetAreasAsync();
             }
             catch (WebException)
             {
@@ -86,16 +157,14 @@ namespace ETicketMobile.ViewModels.Tickets
             }
         }
 
+        private void Init()
+        {
+            TotalPrice = 0.00M;
+        }
+
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
             this.navigationParameters = navigationParameters;
-        }
-
-        private async Task<string> GetAccessTokenAsync()
-        {
-            var token = await localApi.GetTokenAsync();
-
-            return token.AcessJwtToken;
         }
 
         private async Task<IEnumerable<TicketType>> GetTicketsAsync()
@@ -105,7 +174,7 @@ namespace ETicketMobile.ViewModels.Tickets
 
             if (ticketsDto == null)
             {
-                accessToken = await RefreshTokenAsync();
+                accessToken = await tokenService.RefreshTokenAsync();
 
                 ticketsDto = await httpService.GetAsync<IEnumerable<TicketTypeDto>>(
                     TicketTypesEndpoint.GetTicketTypes, accessToken);
@@ -116,29 +185,30 @@ namespace ETicketMobile.ViewModels.Tickets
             return tickets;
         }
 
-        private async Task<string> RefreshTokenAsync()
+        private async Task<IEnumerable<Area>> GetAreasAsync()
         {
-            var refreshTokenTask = await localApi.GetTokenAsync();
-            var refreshToken = refreshTokenTask.RefreshJwtToken;
+            var areasDto = await httpService.GetAsync<IEnumerable<AreaDto>>(AreasEndpoint.GetAreas, accessToken);
 
-            var tokenDto = await httpService.PostAsync<string, TokenDto>(
-                AuthorizeEndpoint.RefreshToken, refreshToken);
+            if (areasDto == null)
+            {
+                accessToken = await tokenService.RefreshTokenAsync();
 
-            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
+                areasDto = await httpService.GetAsync<IEnumerable<AreaDto>>(AreasEndpoint.GetAreas, accessToken);
+            }
 
-            await localApi.AddAsync(token);
+            var areas = AutoMapperConfiguration.Mapper.Map<IEnumerable<Area>>(areasDto);
 
-            return token.AcessJwtToken;
+            return areas;
         }
 
-        private async void OnChooseTicket(TicketType ticket)
+        private async void OnChooseTicket()
         {
-            navigationParameters.Add("ticketId", ticket.Id);
-            navigationParameters.Add("durationHours", ticket.DurationHours);
-            navigationParameters.Add("name", ticket.Name);
-            navigationParameters.Add("coefficient", ticket.Coefficient);
+            //navigationParameters.Add("ticketId", ticket.Id);
+            //navigationParameters.Add("durationHours", ticket.DurationHours);
+            //navigationParameters.Add("name", ticket.Name);
+            //navigationParameters.Add("coefficient", ticket.Coefficient);
 
-            await navigationService.NavigateAsync(nameof(AreasView), navigationParameters);
+            await NavigationService.NavigateAsync(nameof(AreasView), navigationParameters);
         }
     }
 }

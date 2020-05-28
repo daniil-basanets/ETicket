@@ -4,14 +4,24 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:prism="http://prismlibrary.com"
     xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile" 
-    xmlns:tickets="clr-namespace:ETicketMobile.Business.Model.Tickets;assembly=ETicketMobile.Business"
+    xmlns:tickets="clr-namespace:ETicketMobile.Business.Model.Tickets;assembly=ETicketMobile.Business" 
+    xmlns:telerikPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Tickets.TicketsView">
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style TargetType="Label">
-                <Setter Property="HorizontalOptions" Value="Center"/>
+            <Style TargetType="telerikPrimitives:AccordionItemHeader">
+                <Setter Property="IndicatorColor" Value="Blue"/>
+                <Setter Property="IndicatorFontSize" Value="16"/>
+                <Setter Property="IndicatorLocation" Value="End"/>
+                <Setter Property="BorderColor" Value="LightBlue"/>
+                <Setter Property="BorderThickness" Value="2"/>
+            </Style>
+
+            <Style TargetType="telerikPrimitives:AccordionItem">
+                <Setter Property="BorderColor" Value="LightBlue"/>
+                <Setter Property="BorderThickness" Value="2"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -19,63 +29,196 @@
     <ContentPage.Content>
 
         <Grid Margin="10">
-
             <Grid.RowDefinitions>
                 <RowDefinition Height="8*"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="0.3*"/>
+                <RowDefinition Height="0.8*"/>
             </Grid.RowDefinitions>
 
-            <ListView
+            <telerikPrimitives:RadAccordion
                 Grid.Row="0"
-                x:Name="Tickets"
-                ItemsSource="{Binding Tickets, Mode=OneWay}"
-                SeparatorVisibility="None"
-                RowHeight="100">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="tickets:TicketType">
-                        <ViewCell>
-                            <Frame
-                                BackgroundColor="White"
-                                CornerRadius="10"
-                                Margin="5"
-                                Padding="0">
-                                <Grid>
-                                    
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="0.8*"/>
-                                        <RowDefinition Height="0.4*"/>
-                                        <RowDefinition Height="0.4*"/>
-                                    </Grid.RowDefinitions>
-                                    
-                                    <Label
-                                        Grid.Row="0"
-                                        Text="{Binding Name, Mode=OneWay}"
-                                        Margin="10"/>
-                                    <Label
-                                        Grid.Row="1"
-                                        Text="{local:Translate Text=Duration}"/>
-                                    <Label
-                                        Grid.Row="2"
-                                        Text="{Binding DurationHours, Mode=OneWay}"
-                                        FontAttributes="Bold"
-                                        TextColor="Green"/>
-                                </Grid>
-                            </Frame>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                CanCollapseAllItems="True"
+                AnimationDuration="1500"
+                AnimationEasing="SpringOut"
+                Spacing="5">
+
+                <telerikPrimitives:AccordionItem>
+                    <telerikPrimitives:AccordionItem.Header>
+                        <telerikPrimitives:AccordionItemHeader>
+                            <Grid Margin="8">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.5*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label
+                                    Grid.Column="0"
+                                    Text="Tickets"/>
+                                <Label
+                                    Grid.Column="1"
+                                    Text="{Binding SelectedTicket, Mode=TwoWay}"/>
+
+                            </Grid>
+                        </telerikPrimitives:AccordionItemHeader>
+                    </telerikPrimitives:AccordionItem.Header>
+                    <telerikPrimitives:AccordionItem.Content>
+                        <ListView
+                            x:Name="Tickets"
+                            RowHeight="80"
+                            ItemsSource="{Binding Tickets, Mode=TwoWay}"
+                            SelectedItem="{Binding TicketSelected, Mode=TwoWay}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <Frame
+                                            BackgroundColor="White"
+                                            CornerRadius="10"
+                                            Margin="5"
+                                            Padding="0">
+                                            <Grid>
+
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="1*"/>
+                                                    <RowDefinition Height="1*"/>
+                                                    <RowDefinition Height="1*"/>
+                                                </Grid.RowDefinitions>
+
+                                                <Label
+                                                    Grid.Row="0"
+                                                    Text="{Binding Name, Mode=OneWay}"
+                                                    HorizontalTextAlignment="Center"/>
+                                                <Label
+                                                    Grid.Row="1"
+                                                    Text="{local:Translate Text=Duration}"
+                                                    HorizontalTextAlignment="Center"/>
+                                                <Label
+                                                    Grid.Row="2"
+                                                    Text="{Binding DurationHours, Mode=OneWay}"
+                                                    HorizontalTextAlignment="Center"
+                                                    FontAttributes="Bold"
+                                                    TextColor="Green"/>
+                                            </Grid>
+                                        </Frame>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </telerikPrimitives:AccordionItem.Content>
+                </telerikPrimitives:AccordionItem>
+
+                <telerikPrimitives:AccordionItem IsExpanded="True">
+                    <telerikPrimitives:AccordionItem.Header>
+                        <telerikPrimitives:AccordionItemHeader>
+                            <Grid Margin="8">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.5*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label
+                                    Grid.Column="0"
+                                    Text="Areas"/>
+                                <Label
+                                    Grid.Column="1"
+                                    Text="{Binding SelectedArea, Mode=TwoWay}"/>
+
+                            </Grid>
+                        </telerikPrimitives:AccordionItemHeader>
+                    </telerikPrimitives:AccordionItem.Header>
+                    <telerikPrimitives:AccordionItem.Content>
+                        <ListView
+                            x:Name="Areas"
+                            RowHeight="60"
+                            ItemsSource="{Binding Areas, Mode=TwoWay}"
+                            SelectedItem="{Binding AreaSelected, Mode=TwoWay}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <ViewCell>
+                                        <Frame
+                                            BackgroundColor="White"
+                                            CornerRadius="10"
+                                            Margin="5"
+                                            Padding="0">
+
+                                            <Grid>
+
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="0.55*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="1*"/>
+                                                    <RowDefinition Height="1*"/>
+                                                </Grid.RowDefinitions>
+
+                                                <CheckBox
+                                                    Grid.Column="0"
+                                                    Grid.RowSpan="2"
+                                                    IsChecked="{Binding Selected, Mode=TwoWay}"/>
+                                                <Label
+                                                    Grid.Column="1"
+                                                    Grid.RowSpan="2"
+                                                    Text="{local:Translate Text=Choose}"
+                                                    VerticalTextAlignment="Center"/>
+                                                <Label
+                                                    Grid.Column="2"
+                                                    Grid.Row="0"
+                                                    Text="{local:Translate Text=Area}"/>
+                                                <Label
+                                                    Grid.Column="2"
+                                                    Grid.Row="1"
+                                                    Text="{Binding Name, Mode=OneWay}"/>
+                                                <Label
+                                                    Grid.Column="3"
+                                                    Grid.Row="0"
+                                                    Text="{local:Translate Text=Description}"/>
+                                                <Label
+                                                    Grid.Column="3"
+                                                    Grid.Row="1"
+                                                    Text="{Binding Description, Mode=OneWay}"
+                                                    FontAttributes="Bold"
+                                                    TextColor="Green"/>
+                                            </Grid>
+                                        </Frame>
+                                    </ViewCell>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </telerikPrimitives:AccordionItem.Content>
+                </telerikPrimitives:AccordionItem>
+
+            </telerikPrimitives:RadAccordion>
+
+            <Grid
+                Grid.Row="1"
+                HorizontalOptions="Start">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label
+                    Grid.Column="0"
+                    Text="Total Price:"/>
+                <Label
+                    Grid.Column="1"
+                    Text="{Binding TotalPrice, Mode=TwoWay}"/>
+            </Grid>
 
             <Button
-                Grid.Row="1"
-                Text="{local:Translate Text=Choose}"
-                Command="{Binding ChooseTicket, Mode=OneTime}"
-                CommandParameter="{Binding Source={x:Reference Tickets}, Path=SelectedItem, Mode=OneWay}"
+                Grid.Row="2"
+                Text="{local:Translate Text=Buy}"
                 HorizontalOptions="EndAndExpand"
                 CornerRadius="10"/>
 
         </Grid>
-
+        
     </ContentPage.Content>
 
 </ContentPage>
