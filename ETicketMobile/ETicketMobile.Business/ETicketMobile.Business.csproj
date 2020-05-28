@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ETicketMobile.DataAccess\ETicketMobile.DataAccess.csproj" />
     <ProjectReference Include="..\ETicketMobile.Data\ETicketMobile.Data.csproj" />
     <ProjectReference Include="..\ETicketMobile.WebAccess\ETicketMobile.WebAccess.csproj" />
   </ItemGroup>

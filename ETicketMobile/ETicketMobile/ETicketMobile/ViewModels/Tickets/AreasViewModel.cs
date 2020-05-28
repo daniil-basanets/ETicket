@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Model.Tickets;
+using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Business.Validators;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
@@ -27,6 +28,7 @@ namespace ETicketMobile.ViewModels.Tickets
         private INavigationParameters navigationParameters;
 
         private readonly IPageDialogService dialogService;
+        private readonly ITokenService tokenService;
         private readonly IHttpService httpService;
 
         private readonly ILocalApi localApi;
@@ -55,12 +57,16 @@ namespace ETicketMobile.ViewModels.Tickets
         public AreasViewModel(
             INavigationService navigationService,
             IPageDialogService dialogService,
+            ITokenService tokenService,
             IHttpService httpService,
             ILocalApi localApi
         ) : base(navigationService)
         {
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
+
+            this.tokenService = tokenService
+                ?? throw new ArgumentNullException(nameof(tokenService));
 
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
@@ -73,7 +79,7 @@ namespace ETicketMobile.ViewModels.Tickets
         {
             try
             {
-                accessToken = await GetAccessTokenAsync();
+                accessToken = await tokenService.GetAccessTokenAsync();
                 Areas = await GetAreasAsync();
             }
             catch (WebException)
@@ -89,20 +95,13 @@ namespace ETicketMobile.ViewModels.Tickets
             this.navigationParameters = navigationParameters;
         }
 
-        private async Task<string> GetAccessTokenAsync()
-        {
-            var token = await localApi.GetTokenAsync();
-
-            return token.AcessJwtToken;
-        }
-
         private async Task<IEnumerable<Area>> GetAreasAsync()
         {
             var areasDto = await httpService.GetAsync<IEnumerable<AreaDto>>(AreasEndpoint.GetAreas, accessToken);
 
             if (areasDto == null)
             {
-                accessToken = await RefreshTokenAsync();
+                accessToken = await tokenService.RefreshTokenAsync();
 
                 areasDto = await httpService.GetAsync<IEnumerable<AreaDto>>(AreasEndpoint.GetAreas, accessToken);
             }
@@ -110,20 +109,6 @@ namespace ETicketMobile.ViewModels.Tickets
             var areas = AutoMapperConfiguration.Mapper.Map<IEnumerable<Area>>(areasDto);
 
             return areas;
-        }
-
-        private async Task<string> RefreshTokenAsync()
-        {
-            var refreshTokenTask = await localApi.GetTokenAsync();
-            var refreshToken = refreshTokenTask.RefreshJwtToken;
-
-            var tokenDto = await httpService.PostAsync<string, TokenDto>(AuthorizeEndpoint.RefreshToken, refreshToken);
-
-            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
-
-            await localApi.AddAsync(token);
-
-            return token.AcessJwtToken;
         }
 
         private async void OnBuy()

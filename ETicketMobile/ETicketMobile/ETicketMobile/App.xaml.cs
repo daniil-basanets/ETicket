@@ -33,6 +33,8 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ETicketMobile.Business.Validators;
 using ETicketMobile.Business.Validators.Interfaces;
+using ETicketMobile.Business.Services;
+using ETicketMobile.Business.Services.Interfaces;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace ETicketMobile
@@ -67,6 +69,9 @@ namespace ETicketMobile
 
             var userValidator = new UserValidator(httpService);
             containerRegistry.RegisterInstance<IUserValidator>(userValidator);
+
+            var tokenService = new TokenService(httpService, localApi);
+            containerRegistry.RegisterInstance<ITokenService>(tokenService);
 
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
