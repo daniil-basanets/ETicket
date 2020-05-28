@@ -10,6 +10,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
     public interface IUserService
     {
         public IEnumerable<UserDto> GetUsers();
+        
         public UserDto GetUserById(Guid id);
 
         public void CreateUser(UserDto user);
