@@ -37,8 +37,8 @@ namespace ETicket.WebAPI.Controllers
             try
             {
                 var stationPage = stationService
-                        .GetAll();
-                        //.ToPage(pageNumber, pageSize);
+                        .GetAll()
+                        .ToPage(pageNumber, pageSize);
 
                 return Ok(stationPage);
             }
