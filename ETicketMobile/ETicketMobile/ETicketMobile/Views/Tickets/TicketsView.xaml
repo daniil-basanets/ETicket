@@ -28,6 +28,7 @@
     <ContentPage.Content>
 
         <Grid Margin="10">
+            
             <Grid.RowDefinitions>
                 <RowDefinition Height="8*"/>
                 <RowDefinition Height="0.3*"/>
@@ -208,6 +209,7 @@
                 <Label
                     Grid.Column="1"
                     Text="{Binding TotalPrice, Mode=TwoWay}"/>
+                
             </Grid>
 
             <Button

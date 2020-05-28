@@ -20,7 +20,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         #region Fields
 
         private readonly IPageDialogService dialogService;
-
         private readonly IHttpService httpService;
 
         private readonly IUserValidator userValidator;
@@ -30,7 +29,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private string emailWarning;
 
-        private const int EmailMaxLength = 50;
+        private bool isDataLoad;
 
         #endregion
 
@@ -46,6 +45,12 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         {
             get => emailWarning;
             set => SetProperty(ref emailWarning, value);
+        }
+
+        public bool IsDataLoad
+        {
+            get => isDataLoad;
+            set => SetProperty(ref isDataLoad, value);
         }
 
         #endregion
@@ -79,10 +84,14 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 if (!await IsValidAsync(email))
                     return;
 
+                IsDataLoad = true;
+
                 await RequestActivationCodeAsync(email);
             }
             catch (WebException)
             {
+                IsDataLoad = false;
+
                 await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
@@ -90,6 +99,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
             var navigationParameters = new NavigationParameters { { "email", email } };
             await NavigationService.NavigateAsync(nameof(ConfirmForgotPasswordView), navigationParameters);
+
+            IsDataLoad = false;
         }
 
         private async void OnCancelCommand()

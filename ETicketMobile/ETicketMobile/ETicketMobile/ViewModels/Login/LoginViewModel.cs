@@ -37,6 +37,8 @@ namespace ETicketMobile.ViewModels.Login
         private string passwordWatermark;
         private Color passwordWatermarkColor;
 
+        private bool isDataLoad;
+
         #endregion
 
         #region Properties
@@ -72,6 +74,12 @@ namespace ETicketMobile.ViewModels.Login
         {
             get => passwordWatermarkColor;
             set => SetProperty(ref passwordWatermarkColor, value);
+        }
+
+        public bool IsDataLoad
+        {
+            get => isDataLoad;
+            set => SetProperty(ref isDataLoad, value);
         }
 
         #endregion
@@ -131,10 +139,14 @@ namespace ETicketMobile.ViewModels.Login
 
             try
             {
+                IsDataLoad = true;
+
                 token = await tokenService.GetTokenAsync(email, password);
             }
             catch (WebException)
             {
+                IsDataLoad = false;
+
                 await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
@@ -157,8 +169,9 @@ namespace ETicketMobile.ViewModels.Login
             email = "bot@gmail.com";
 
             var navigationParameters = new NavigationParameters { { "email", email } };
-
             await NavigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
+
+            IsDataLoad = false;
         }
 
         #region Validation

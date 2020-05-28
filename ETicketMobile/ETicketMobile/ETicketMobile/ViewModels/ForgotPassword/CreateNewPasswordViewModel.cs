@@ -27,9 +27,10 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private string passwordWarning;
 
+        private string confirmPassword;
         private string confirmPasswordWarning;
 
-        private string confirmPassword;
+        private bool isDataLoad;
 
         #endregion
 
@@ -44,16 +45,22 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             set => SetProperty(ref passwordWarning, value);
         }
 
+        public string ConfirmPassword
+        {
+            get => confirmPassword;
+            set => SetProperty(ref confirmPassword, value);
+        }
+
         public string ConfirmPasswordWarning
         {
             get => confirmPasswordWarning;
             set => SetProperty(ref confirmPasswordWarning, value);
         }
 
-        public string ConfirmPassword
+        public bool IsDataLoad
         {
-            get => confirmPassword;
-            set => SetProperty(ref confirmPassword, value);
+            get => isDataLoad;
+            set => SetProperty(ref isDataLoad, value);
         }
 
         #endregion
@@ -88,18 +95,23 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
             try
             {
+                IsDataLoad = true;
+
                 if (!await RequestChangePasswordAsync(password))
                     return;
             }
             catch (WebException)
             {
+                IsDataLoad = false;
+
                 await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
             }
 
-
             await NavigationService.NavigateAsync(nameof(LoginView));
+
+            IsDataLoad = false;
         }
 
         private async Task<bool> RequestChangePasswordAsync(string password)

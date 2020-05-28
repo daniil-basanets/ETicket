@@ -3,8 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
-using ETicketMobile.Business.Mapping;
-using ETicketMobile.Data.Entities;
+using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.UserActions;
@@ -24,6 +23,7 @@ namespace ETicketMobile.ViewModels.Registration
         private INavigationParameters navigationParameters;
 
         private readonly IPageDialogService dialogService;
+        private readonly ITokenService tokenService;
         private readonly IHttpService httpService;
 
         private readonly ILocalApi localApi;
@@ -40,6 +40,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         private string email;
         private string password;
+
+        private bool isDataLoad;
 
         #endregion
 
@@ -69,17 +71,27 @@ namespace ETicketMobile.ViewModels.Registration
             set => SetProperty(ref activationCodeTimer, value);
         }
 
+        public bool IsDataLoad
+        {
+            get => isDataLoad;
+            set => SetProperty(ref isDataLoad, value);
+        }
+
         #endregion
 
         public ConfirmEmailViewModel(
             INavigationService navigationService,
             IPageDialogService dialogService,
+            ITokenService tokenService,
             IHttpService httpService,
             ILocalApi localApi
         ) : base(navigationService)
         {
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
+
+            this.tokenService = tokenService
+                ?? throw new ArgumentNullException(nameof(tokenService));
 
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
@@ -174,33 +186,23 @@ namespace ETicketMobile.ViewModels.Registration
                 if (!userCreated)
                     return;
 
-                var token = await GetTokenAsync();
+                IsDataLoad = true;
+
+                var token = await tokenService.GetTokenAsync(email, password);
                 await localApi.AddAsync(token);
             }
             catch (WebException)
             {
+                IsDataLoad = false;
+
                 await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
             }
 
             await NavigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
-        }
 
-        private async Task<Token> GetTokenAsync()
-        {
-            var userSignIn = new UserSignInRequestDto
-            {
-                Email = email,
-                Password = password
-            };
-
-            var tokenDto = await httpService.PostAsync<UserSignInRequestDto, TokenDto>(
-                AuthorizeEndpoint.Login, userSignIn);
-
-            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
-
-            return token;
+            IsDataLoad = false;
         }
 
         private async Task<bool> ConfirmAndCreateUserAsync(string code)
