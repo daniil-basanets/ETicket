@@ -6,7 +6,6 @@ using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
-using System.Collections.ObjectModel;
 using ETicket.ApplicationServices.Services.DataTable;
 using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.PagingServices;
