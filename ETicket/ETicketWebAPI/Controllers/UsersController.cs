@@ -42,9 +42,14 @@ namespace ETicket.WebAPI.Controllers
 
             try
             {
-                var tickets = ticketService.GetTicketsByUserId(userId);
+                var tickets = ticketService.GetTicketsByUserEmail(email);
 
-                return Ok(tickets);
+                if (tickets.Count() == 0)
+                {
+                    return NoContent();
+                }
+
+                return Json(tickets);
             }
             catch (Exception e)
             {
