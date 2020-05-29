@@ -127,8 +127,8 @@ namespace ETicketMobile.ViewModels.Login
 
         private async void OnNavigateToLoginView(string email)
         {
-            //if (!IsValid(email))
-               // return;
+            if (!IsValid(email))
+                return;
 
             await NavigateToLoginViewAsync(email);
         }
@@ -165,8 +165,6 @@ namespace ETicketMobile.ViewModels.Login
             }
 
             await localApi.AddAsync(token);
-
-            email = "bot@gmail.com";
 
             var navigationParameters = new NavigationParameters { { "email", email } };
             await NavigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);

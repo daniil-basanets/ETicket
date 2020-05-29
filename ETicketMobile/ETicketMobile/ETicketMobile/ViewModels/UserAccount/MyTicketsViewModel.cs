@@ -131,97 +131,6 @@ namespace ETicketMobile.ViewModels.BoughtTickets
             var tickets = AutoMapperConfiguration.Mapper.Map<IEnumerable<Ticket>>(ticketsDto);
 
             return tickets;
-
-
-            //return new List<Ticket>
-            //{
-            //    new Ticket
-            //    {
-            //        TicketType = "1 hour",
-            //        ReferenceNumber = $"{Guid.NewGuid()}",
-            //        TicketAreas = new List<string>{ "A", "S"},
-            //        CreatedAt = DateTime.Now.AddDays(-3),
-            //        ActivatedAt = DateTime.Now.AddDays(-3),
-            //        ExpiredAt = DateTime.Now.AddDays(-3).AddHours(1)
-            //    },
-            //    new Ticket
-            //    {
-            //        TicketType = "5 hour",
-            //        ReferenceNumber = $"{Guid.NewGuid()}",
-            //        TicketAreas = new List<string>{ "A", "B", "C"},
-            //        CreatedAt = DateTime.Now.AddDays(-2),
-            //        ActivatedAt = DateTime.Now.AddDays(-2),
-            //        ExpiredAt = DateTime.Now.AddDays(-2).AddHours(5)
-            //    },
-            //    new Ticket
-            //    {
-            //        TicketType = "1 Day",
-            //        ReferenceNumber = $"{Guid.NewGuid()}",
-            //        TicketAreas = new List<string>{ "P" },
-            //        CreatedAt = DateTime.Now.AddDays(-2),
-            //        ActivatedAt = DateTime.Now.AddDays(-2),
-            //        ExpiredAt = DateTime.Now.AddDays(-1)
-            //    },
-            //    new Ticket
-            //    {
-            //        TicketType = "1 Day",
-            //        ReferenceNumber = $"{Guid.NewGuid()}",
-            //        TicketAreas = new List<string>{ "P" },
-            //        CreatedAt = DateTime.Now.AddDays(-2),
-            //        ActivatedAt = DateTime.Now.AddDays(-2),
-            //        ExpiredAt = DateTime.Now.AddDays(-1)
-            //    },
-            //    new Ticket
-            //    {
-            //        TicketType = "1 Day",
-            //        ReferenceNumber = $"{Guid.NewGuid()}",
-            //        TicketAreas = new List<string>{ "P" },
-            //        CreatedAt = DateTime.Now.AddDays(-2),
-            //        ActivatedAt = DateTime.Now.AddDays(-2),
-            //        ExpiredAt = DateTime.Now.AddDays(-1)
-            //    },
-            //    new Ticket
-            //    {
-            //        TicketType = "1 Week",
-            //        ReferenceNumber = $"{Guid.NewGuid()}",
-            //        TicketAreas = new List<string>{ "U", "I" },
-            //        CreatedAt = DateTime.Now.AddDays(-7)
-            //    },
-            //    new Ticket
-            //    {
-            //        TicketType = "1 Month",
-            //        ReferenceNumber = $"{Guid.NewGuid()}",
-            //        TicketAreas = new List<string>{ "P", "M" },
-            //        CreatedAt = DateTime.Now.AddDays(-30)
-            //    },
-            //    new Ticket
-            //    {
-            //        TicketType = "3 Days",
-            //        ReferenceNumber = $"{Guid.NewGuid()}",
-            //        TicketAreas = new List<string>{ "M", "N" },
-            //        CreatedAt = DateTime.Now.AddDays(-1),
-            //        ActivatedAt = DateTime.Now.AddDays(-1).AddHours(1),
-            //        ExpiredAt = DateTime.Now.AddDays(3).AddHours(1)
-            //    },
-            //    new Ticket
-            //    {
-            //        TicketType = "5 Days",
-            //        ReferenceNumber = $"{Guid.NewGuid()}",
-            //        TicketAreas = new List<string>{ "H", "R" },
-            //        CreatedAt = DateTime.Now.AddDays(-2),
-            //        ActivatedAt = DateTime.Now.AddDays(-1).AddHours(2).AddMinutes(3),
-            //        ExpiredAt = DateTime.Now.AddDays(5).AddHours(2).AddMinutes(3)
-            //    },
-            //    new Ticket
-            //    {
-            //        TicketType = "6 Days",
-            //        ReferenceNumber = $"{Guid.NewGuid()}",
-            //        TicketAreas = new List<string>{ "H", "M" },
-            //        CreatedAt = DateTime.Now.AddDays(-10),
-            //        ActivatedAt = DateTime.Now.AddDays(-1).AddHours(2).AddMinutes(3),
-            //        ExpiredAt = DateTime.Now.AddDays(6).AddHours(2).AddMinutes(3)
-            //    },
-            //};
         }
 
         private async Task<string> RefreshTokenAsync()
@@ -248,16 +157,16 @@ namespace ETicketMobile.ViewModels.BoughtTickets
 
         private IEnumerable<Ticket> GetActivatedTickets()
         {
-            var unusedTickets = Tickets.Where(t => t.ExpiredAt > DateTime.Now);
+            var activatedTickets = Tickets.Where(t => t.ExpiredAt > DateTime.Now);
 
-            return unusedTickets;
+            return activatedTickets;
         }
 
         private IEnumerable<Ticket> GetExpiredTickets()
         {
-            var unusedTickets = Tickets.Where(t => t.ExpiredAt <= DateTime.Now);
+            var expiredTickets = Tickets.Where(t => t.ExpiredAt <= DateTime.Now);
 
-            return unusedTickets;
+            return expiredTickets;
         }
     }
 }

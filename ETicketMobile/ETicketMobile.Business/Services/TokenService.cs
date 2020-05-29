@@ -32,8 +32,8 @@ namespace ETicketMobile.Business.Services
         {
             var userSignIn = new UserSignInRequestDto
             {
-                Email = "bot@gmail.com", // email,
-                Password = "qwerty12" // password
+                Email = email,
+                Password = password
             };
 
             var tokenDto = await httpService.PostAsync<UserSignInRequestDto, TokenDto>(
