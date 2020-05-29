@@ -15,10 +15,7 @@ namespace ETicket.ApplicationServices.Services
         #region Private members
 
         private readonly IUnitOfWork uow;
-        private const int MaxDaysForChart = 366;
         private const string EndLessStartError = "End date cannot be less than start date";
-        private const string MaxDaysForChartError = "The period of time cannot be more than {0} days";
-
         #endregion
 
         public MetricsService(IUnitOfWork uow)
@@ -67,10 +64,10 @@ namespace ETicket.ApplicationServices.Services
             }
 
             var data = uow.Tickets.GetAll()
-                 .Where(t => t.CreatedUTCDate >= startPeriod && t.CreatedUTCDate <= endPeriod)
-                 .GroupBy(t => t.TicketType.TypeName)
-                 .Select(g => new { name = g.Key, count = g.Count().ToString() })
-                 .ToDictionary(k => k.name, k => k.count);
+                                  .Where(t => t.CreatedUTCDate >= startPeriod && t.CreatedUTCDate <= endPeriod)
+                                  .GroupBy(t => t.TicketType.TypeName)
+                                  .Select(g => new { name = g.Key, count = g.Count().ToString() })
+                                  .ToDictionary(k => k.name, k => k.count);
 
             ChartDto chartDto = new ChartDto();
             chartDto.Labels = data.Keys.ToArray();
@@ -79,35 +76,65 @@ namespace ETicket.ApplicationServices.Services
             return chartDto;
         }
 
-        public ChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod)
+        public enum ChartScale
+        {
+            ByDays = 1,
+            ByWeeks = 7,
+            ByMonths = 30
+        }
+
+        public ChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod, ChartScale chartScale)
         {
             if (startPeriod.CompareTo(endPeriod) == 1)
             {
                 return new ChartDto() { ErrorMessage = EndLessStartError };
             }
-            if ((endPeriod - startPeriod).TotalDays > MaxDaysForChart)
+
+            List<string> timeLabels = new List<string>();
+
+            if (chartScale == ChartScale.ByDays || chartScale == ChartScale.ByWeeks)
             {
-                return new ChartDto() { ErrorMessage = String.Format(MaxDaysForChartError, MaxDaysForChart) };
+                for (DateTime timePoint = startPeriod.Date; timePoint.Date < endPeriod.Date; timePoint = timePoint.AddDays((double)chartScale))
+                {
+                    timeLabels.Add(timePoint.ToShortDateString());
+                }
+                timeLabels.Add(endPeriod.ToShortDateString());
+            }
+            if(chartScale == ChartScale.ByMonths)
+            {
+                for (DateTime timePoint = startPeriod.Date; timePoint.Month <= endPeriod.Month || timePoint.Year < endPeriod.Year; timePoint = timePoint.AddMonths(1))
+                {
+                    timeLabels.Add(timePoint.ToString("MMMM"));
+                }
             }
 
-            List<DateTime> timePeriods = new List<DateTime>();
-
-            for (DateTime day = startPeriod.Date; day <= endPeriod; day = day.AddDays(1))
-            {
-                timePeriods.Add(day);
-            }
-
-            var chartData = uow.TicketVerifications.GetAll()
+            var whereQuery = uow.TicketVerifications.GetAll()
                 .Where(t => t.IsVerified && t.VerificationUTCDate.Date >= startPeriod.Date && t.VerificationUTCDate.Date <= endPeriod.Date)
-                .GroupBy(d => d.VerificationUTCDate.Date)
-                .OrderBy(d => d.Key)
-                .Select(g => new { date = g.Key, count = g.Count()})
-                .ToDictionary(k => k.date, k => k.count);
+                .AsEnumerable();
+
+            var groupByQuery = chartScale switch
+            {
+                ChartScale.ByDays => whereQuery.GroupBy(d => (d.VerificationUTCDate.Date - startPeriod.Date).Days),
+                ChartScale.ByWeeks => whereQuery.GroupBy(w => (w.VerificationUTCDate.Date - startPeriod.Date).Days / (int)ChartScale.ByWeeks),
+                ChartScale.ByMonths => whereQuery.GroupBy(m => (m.VerificationUTCDate.Year - startPeriod.Year) * 12 + m.VerificationUTCDate.Month - startPeriod.Month),
+                _ => whereQuery.GroupBy(d => (d.VerificationUTCDate.Date - startPeriod.Date).Days)
+            };
+
+            var queryResult = groupByQuery.OrderBy(d => d.Key)
+                .Select(g => new { Date = g.Key, Count = g.Count()})
+                .ToDictionary(k => k.Date, k => k.Count);
+
+            var chartData = new Dictionary<int, int>(); 
+
+            for(int i = 0; i < timeLabels.Count; i++)
+            {
+                chartData.Add(i, queryResult.ContainsKey(i) ? queryResult[i] : 0);
+            }
 
             return new ChartDto()
             {
-                Labels = timePeriods.Select(d => d.ToShortDateString()).ToList(),
-                Data = timePeriods.Select(d => (chartData.ContainsKey(d) ? chartData[d] : 0).ToString()).ToList()
+                Labels = timeLabels,
+                Data = chartData.Values.Select(d => d.ToString()).ToList()
             };
         }
     }

@@ -4,6 +4,7 @@ using ETicket.ApplicationServices.Charts.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
+using static ETicket.ApplicationServices.Services.MetricsService;
 
 namespace ETicket.Admin.Controllers
 {
@@ -55,13 +56,13 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult PassengersByTime(DateTime startPeriod, DateTime endPeriod)
+        public IActionResult PassengersByTime(DateTime startPeriod, DateTime endPeriod, ChartScale scale)
         {
             log.Info(nameof(MetricsController.PassengersByTime));
 
             try
             {
-                ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByTime(startPeriod, endPeriod);
+                ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByTime(startPeriod, endPeriod, scale);
 
                 return Json(chartDtoTicketsByTicketTypes);
             }

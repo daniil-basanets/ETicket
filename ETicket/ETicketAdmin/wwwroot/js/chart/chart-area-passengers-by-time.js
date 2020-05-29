@@ -35,6 +35,12 @@ function yyyy_mm_dd(date) {
     return '' + y + "-" + (m < 10 ? '0' : '') + m + "-" + (d < 10 ? '0' : '') + d;
 }
 
+function yyyy_mm(date) {
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    return '' + y + "-" + (m < 10 ? '0' : '') + m;
+}
+
 $(document).ready(function () {
     var dateStart = new Date(new Date().setMonth(new Date().getMonth() - 1));
     var dateEnd = new Date();
@@ -49,8 +55,52 @@ $('#passengers-by-time-start').change(function () {
 $('#passengers-by-time-end').change(function () {
     refreshChart();
 })
+$('#passengers-by-time-by-days').change(function () {
+    chartScale = 1;
+    ToDatePicker();
+    refreshChart();
+})
+$('#passengers-by-time-by-weeks').change(function () {
+    chartScale = 7;
+    ToDatePicker();
+    refreshChart();
+})
+$('#passengers-by-time-by-months').change(function () {
+    chartScale = 30;
+    ToMonthDatePicker();
+    refreshChart();
+})
 
+var isMonthDatePick = false;
+function ToDatePicker() {
+    isMonthDatePick = false;
+
+    var start = new Date($('#passengers-by-time-start').val());
+    var end = new Date($('#passengers-by-time-end').val());
+    end = new Date(end.getFullYear(), end.getMonth() + 1, 0);
+
+    $('#passengers-by-time-start').attr('type', 'date');
+    $('#passengers-by-time-end').attr('type', 'date');
+
+    $('#passengers-by-time-start').val(yyyy_mm_dd(start));
+    $('#passengers-by-time-end').val(yyyy_mm_dd(end));
+}
+
+function ToMonthDatePicker() {
+    isMonthDatePick = true;
+    var start = new Date($('#passengers-by-time-start').val());
+    var end = new Date($('#passengers-by-time-end').val());
+
+    $('#passengers-by-time-start').attr('type', 'month');
+    $('#passengers-by-time-end').attr('type', 'month');
+
+    $('#passengers-by-time-start').val(yyyy_mm(start));
+    $('#passengers-by-time-end').val(yyyy_mm(end));
+}
+
+var chartScale = 1;
 var passengerByTimeChart = null;
+
 function refreshChart() {
     var start = new Date($('#passengers-by-time-start').val());
     var end = new Date($('#passengers-by-time-end').val());
@@ -58,8 +108,11 @@ function refreshChart() {
     if (isNaN(start.valueOf()) || isNaN(end.valueOf())) {
         return;
     }
+    if (isMonthDatePick) {
+        end = new Date(end.getFullYear(), end.getMonth() + 1, 0);
+    }
    
-    var actionUrl = '/metrics/PassengersByTime' + "?startPeriod=" + start.toISOString() + "&endPeriod=" + end.toISOString();
+    var actionUrl = '/metrics/PassengersByTime' + "?startPeriod=" + start.toISOString() + "&endPeriod=" + end.toISOString() + "&scale=" + chartScale;
     $.getJSON(actionUrl, function (response) {
         if (response != null) {
             chartData = response;
