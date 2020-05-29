@@ -1,9 +1,10 @@
 ﻿using ETicket.DataAccess.Domain.Entities;
 using System.Linq;
+using ETicket.DataAccess.Domain.Interfaces;
 
 namespace ETicket.DataAccess.Domain.Repositories
 {
-    public class TransportRepository
+    public class TransportRepository : IRepository<Transport,int>
     {
         #region
 

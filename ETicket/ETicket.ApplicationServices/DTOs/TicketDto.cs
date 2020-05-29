@@ -5,12 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ETicket.ApplicationServices.DTOs
 {
-    public class TicketDto
+    public abstract class TickeBaseDto
     {
         public Guid Id { get; set; }
-
-        [DisplayName("Ticket type")]
-        public int TicketTypeId { get; set; }
 
         [DisplayName("Ticket type")]
         public string TicketTypeName { get; set; }
@@ -24,6 +21,15 @@ namespace ETicket.ApplicationServices.DTOs
         [DisplayName("Expiration")]
         public DateTime? ExpirationUTCDate { get; set; }
 
+        [DisplayName("Transaction")]
+        public string TransactionRRN { get; set; }
+    }
+
+    public class TicketDto : TickeBaseDto
+    {
+        [DisplayName("Ticket type")]
+        public int TicketTypeId { get; set; }
+
         [DisplayName("User")]
         public Guid? UserId { get; set; }
 
@@ -33,9 +39,6 @@ namespace ETicket.ApplicationServices.DTOs
         [Required]
         [DisplayName("Transaction")]
         public Guid TransactionHistoryId { get; set; }
-
-        [DisplayName("Transaction")]
-        public string TransactionRRN { get; set; }
 
         [Required]
         public IList<int> SelectedAreaIds { get; set; }
@@ -48,5 +51,10 @@ namespace ETicket.ApplicationServices.DTOs
             SelectedAreaIds = new List<int>();
             Areas = new Dictionary<int, string>();
         }
+    }
+
+    public class TicketApiDto : TickeBaseDto
+    {
+        public IEnumerable<string> Areas { get; set; }
     }
 }
