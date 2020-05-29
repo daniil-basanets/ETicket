@@ -7,13 +7,14 @@ using ETicket.ApplicationServices.DTOs;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ETicket.WebAPI.Controllers
 {
     [Route("api/users")]
     [ApiController]
     [SwaggerTag("User service")]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseAPIController
     {
         #region Private members
 
@@ -36,7 +37,7 @@ namespace ETicket.WebAPI.Controllers
         [SwaggerResponse(200, "Returns if everything was ok. Contains a list of user's tickets")]
         [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(401, "Returns if user was unauthorized")]
-        public IActionResult GetTicketsByUser([SwaggerParameter("Guid", Required = true)] Guid userId)
+        public IActionResult GetTicketsByUser([SwaggerParameter("Email", Required = true)] string email)
         {
             log.Info(nameof(GetTicketsByUser));
 
