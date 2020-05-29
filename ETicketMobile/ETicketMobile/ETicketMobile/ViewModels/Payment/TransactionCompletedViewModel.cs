@@ -9,6 +9,8 @@ namespace ETicketMobile.ViewModels.Payment
     {
         #region Fields
 
+        private INavigationParameters navigationParameters;
+
         private ICommand navigateToMainMenu;
 
         #endregion
@@ -25,9 +27,14 @@ namespace ETicketMobile.ViewModels.Payment
         {
         }
 
+        public override void OnNavigatedTo(INavigationParameters navigationParameters)
+        {
+            this.navigationParameters = navigationParameters;
+        }
+
         private async void OnNavigateToMainMenu()
         {
-            await NavigationService.NavigateAsync(nameof(MainMenuView));
+            await NavigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
         }
     }
 }

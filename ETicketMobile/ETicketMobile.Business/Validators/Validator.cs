@@ -84,5 +84,10 @@ namespace ETicketMobile.Business.Validators
         {
             return count != 0;
         }
+
+        public static bool AreaChoosed(int count)
+        {
+            return count != 0;
+        }
     }
 }

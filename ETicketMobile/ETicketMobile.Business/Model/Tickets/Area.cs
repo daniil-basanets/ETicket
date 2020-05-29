@@ -6,7 +6,7 @@ namespace ETicketMobile.Business.Model.Tickets
     {
         public int Id { get; set; }
 
-        public ICommand Selected { get; set; }
+        public bool IsChecked { get; set; }
 
         public string Name { get; set; }
 

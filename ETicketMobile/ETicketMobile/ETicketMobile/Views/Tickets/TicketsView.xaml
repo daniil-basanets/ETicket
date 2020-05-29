@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:prism="http://prismlibrary.com"
     xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
-    xmlns:telerikPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
+    xmlns:telerikPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives" xmlns:tickets="clr-namespace:ETicketMobile.Business.Model.Tickets;assembly=ETicketMobile.Business"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Tickets.TicketsView">
 
@@ -31,7 +31,7 @@
             
             <Grid.RowDefinitions>
                 <RowDefinition Height="8*"/>
-                <RowDefinition Height="0.3*"/>
+                <RowDefinition Height="0.4*"/>
                 <RowDefinition Height="0.8*"/>
             </Grid.RowDefinitions>
 
@@ -42,7 +42,7 @@
                 AnimationEasing="SpringOut"
                 Spacing="5">
 
-                <telerikPrimitives:AccordionItem>
+                <telerikPrimitives:AccordionItem IsExpanded="True">
                     <telerikPrimitives:AccordionItem.Header>
                         <telerikPrimitives:AccordionItemHeader>
                             <Grid Margin="8">
@@ -66,10 +66,11 @@
                         <ListView
                             x:Name="Tickets"
                             RowHeight="80"
+                            CachingStrategy="RecycleElement"
                             ItemsSource="{Binding Tickets, Mode=TwoWay}"
                             SelectedItem="{Binding TicketSelected, Mode=TwoWay}">
                             <ListView.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="tickets:TicketType">
                                     <ViewCell>
                                         <Frame
                                             BackgroundColor="White"
@@ -107,7 +108,7 @@
                     </telerikPrimitives:AccordionItem.Content>
                 </telerikPrimitives:AccordionItem>
 
-                <telerikPrimitives:AccordionItem IsExpanded="True">
+                <telerikPrimitives:AccordionItem>
                     <telerikPrimitives:AccordionItem.Header>
                         <telerikPrimitives:AccordionItemHeader>
                             <Grid Margin="8">
@@ -122,7 +123,7 @@
                                     Text="Areas"/>
                                 <Label
                                     Grid.Column="1"
-                                    Text="{Binding SelectedArea, Mode=TwoWay}"/>
+                                    Text="{Binding SelectedAreas, Mode=TwoWay}"/>
 
                             </Grid>
                         </telerikPrimitives:AccordionItemHeader>
@@ -131,8 +132,8 @@
                         <ListView
                             x:Name="Areas"
                             RowHeight="60"
-                            ItemsSource="{Binding Areas, Mode=TwoWay}"
-                            SelectedItem="{Binding AreaSelected, Mode=TwoWay}">
+                            CachingStrategy="RecycleElement"
+                            ItemsSource="{Binding Areas, Mode=TwoWay}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <ViewCell>
@@ -205,16 +206,20 @@
 
                 <Label
                     Grid.Column="0"
-                    Text="Total Price:"/>
+                    Text="Total Price:"
+                    VerticalOptions="End"/>
                 <Label
                     Grid.Column="1"
-                    Text="{Binding TotalPrice, Mode=TwoWay}"/>
+                    Text="{Binding TotalPrice, Mode=TwoWay}"
+                    TextColor="Green"
+                    FontSize="18"/>
                 
             </Grid>
 
             <Button
                 Grid.Row="2"
                 Text="{local:Translate Text=Buy}"
+                Command="{Binding ChooseTicket}"
                 HorizontalOptions="EndAndExpand"
                 CornerRadius="10"/>
 

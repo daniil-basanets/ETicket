@@ -41,8 +41,6 @@ namespace ETicketMobile.ViewModels.Payment
         private bool expirationDateWarningIsVisible;
         private bool cvv2WarningIsVisible;
 
-        private bool isDataLoad;
-
         #endregion
 
         #region Properties
@@ -98,12 +96,6 @@ namespace ETicketMobile.ViewModels.Payment
             set => SetProperty(ref cvv2, value);
         }
 
-        public bool IsDataLoad
-        {
-            get => isDataLoad;
-            set => SetProperty(ref isDataLoad, value);
-        }
-
         #endregion
 
         public LiqPayViewModel(
@@ -133,30 +125,14 @@ namespace ETicketMobile.ViewModels.Payment
             cvv2 = string.Empty;
         }
 
-        public override async void OnNavigatedTo(INavigationParameters navigationParameters)
+        public override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
-            Description = navigationParameters.GetValue<string>("name");
+            Description = navigationParameters.GetValue<string>("ticketName");
             ticketTypeId = navigationParameters.GetValue<int>("ticketId");
             areasId = navigationParameters["areas"] as IEnumerable<int>;
             email = navigationParameters.GetValue<string>("email");
 
-            try
-            {
-                IsDataLoad = true;
-
-                var price = await RequestGetTicketPriceAsync();
-                Amount = Math.Round(price.TotalPrice, 2);
-            }
-            catch (WebException)
-            {
-                IsDataLoad = false;
-
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
-
-                return;
-            }
-
-            IsDataLoad = false;
+            Amount = navigationParameters.GetValue<decimal>("totalPrice");
         }
 
         private async Task<GetTicketPriceResponseDto> RequestGetTicketPriceAsync()
@@ -195,30 +171,23 @@ namespace ETicketMobile.ViewModels.Payment
 
             try
             {
-                IsDataLoad = true;
-
                 var response = await RequestBuyTicketAsync(buyTicketRequestDto);
             }
             catch (WebException)
             {
-                IsDataLoad = false;
-
                 await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
             }
             catch (SocketException)
             {
-                IsDataLoad = false;
-
                 await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
             }
 
-            await NavigationService.NavigateAsync(nameof(TransactionCompletedView));
-
-            IsDataLoad = false;
+            var navigationParameters = new NavigationParameters { { "email", email } };
+            await NavigationService.NavigateAsync(nameof(TransactionCompletedView), navigationParameters);
         }
 
         private async Task<BuyTicketResponseDto> RequestBuyTicketAsync(BuyTicketRequestDto buyTicketRequestDto)

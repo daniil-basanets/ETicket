@@ -86,7 +86,6 @@ namespace ETicketMobile
             containerRegistry.RegisterForNavigation<ConfirmEmailView, ConfirmEmailViewModel>();
             containerRegistry.RegisterForNavigation<ConfirmForgotPasswordView, ConfirmForgotPasswordViewModel>();
             containerRegistry.RegisterForNavigation<CreateNewPasswordView, CreateNewPasswordViewModel>();
-            containerRegistry.RegisterForNavigation<AreasView, AreasViewModel>();
             containerRegistry.RegisterForNavigation<LiqPayView, LiqPayViewModel>();
             containerRegistry.RegisterForNavigation<TransactionCompletedView, TransactionCompletedViewModel>();
             containerRegistry.RegisterForNavigation<MainMenuView, MainMenuViewModel>();
