@@ -39,15 +39,15 @@ namespace ETicket.WebAPI.Controllers
 
             try
             {
-                var tickets = ticketService.GetTicketsByUserEmail(email)
-                                           .ToPage(pageNumber, pageSize);
+                var ticketPage = ticketService.GetTicketsByUserEmail(email)
+                                              .ToPage(pageNumber, pageSize);
 
-                if (tickets.Count() == 0)
+                if (ticketPage.TotalRowsCount == 0)
                 {
                     return NoContent();
                 }
 
-                return Json(tickets);
+                return Json(ticketPage);
             }
             catch (Exception e)
             {
