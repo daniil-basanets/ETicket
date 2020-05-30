@@ -5,74 +5,112 @@
     xmlns:prism="http://prismlibrary.com" 
     xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
     xmlns:bindingconverters="clr-namespace:ETicketMobile.UserInterface.BindingConverters;assembly=ETicketMobile.UserInterface"
-    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
+    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile" 
+    xmlns:primitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Login.LoginView">
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter" />
-            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+            <bindingconverters:StringToColorConverter x:Key="StringToColorConverter"/>
+            <bindingconverters:StringToBooleanConverter x:Key="StringToBooleanConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <ContentPage.Content>
 
-        <StackLayout Margin="10, 0">
-            <Label 
-                Text="Log Into Your Account"
-                Style="{StaticResource TitleLabelStyle}" />
+        <primitives:RadBusyIndicator
+            AnimationType="Animation4"
+            IsBusy="{Binding IsDataLoad}"
+            AnimationContentHeightRequest="50"
+            AnimationContentWidthRequest="50">
+            <primitives:RadBusyIndicator.Content>
 
-            <Label
-                IsVisible="{Binding EmailWarning, Converter={StaticResource StringToBooleanConverter}}"
-                Text="{Binding EmailWarning}"
-                TextColor="{Binding EmailWarning, Converter={StaticResource StringToColorConverter}}"/>
+                <Grid Margin="10, 0">
 
-            <telerikInput:RadEntry
-                WatermarkText="{local:Translate Email}"
-                Text="{Binding Email, Mode=TwoWay}"
-                Style="{StaticResource LoginEntryStyle}"
-                Keyboard="Email"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
 
-            <telerikInput:RadEntry
-                Text="{Binding Password, Mode=TwoWay}"
-                WatermarkText="{Binding PasswordPlaceHolder, Mode=TwoWay}"
-                WatermarkTextColor="{Binding PasswordPlaceHolderColor}"
-                Style="{StaticResource LoginEntryStyle}"
-                IsPassword="True"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2.45*"/>
+                        <RowDefinition Height="0.45*"/>
+                        <RowDefinition Height="1.8*"/>
+                        <RowDefinition Height="1.8*"/>
+                        <RowDefinition Height="1.4*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="0.2*"/>
+                    </Grid.RowDefinitions>
 
-            <telerikInput:RadButton
-                Command="{Binding NavigateToRegistrationView}"
-                Text="{local:Translate SignIn}"
-                Style="{StaticResource ActionButtonStyle}" />
+                    <Label
+                        Grid.ColumnSpan="2"
+                        Grid.Row="0"
+                        Text="Log Into Your Account"
+                        Style="{x:StaticResource Key=TitleLabelStyle}"/>
 
-            <telerikInput:RadButton
-                Command="{Binding NavigateToForgetPasswordView}"
-                Text="{local:Translate ForgotPassword}"
-                Style="{StaticResource SecondaryActionButtonStyle}"
-                FontAttributes="None" />
-        </StackLayout>
+                    <Label
+                        Grid.ColumnSpan="2"
+                        Grid.Row="1"
+                        Margin="0, -5, 0, 0"
+                        IsVisible="{Binding EmailWarning, Converter={x:StaticResource Key=StringToBooleanConverter}, Mode=OneWay}"
+                        Text="{Binding EmailWarning, Mode=OneWay}"
+                        TextColor="{Binding EmailWarning, Converter={x:StaticResource Key=StringToColorConverter}, Mode=OneWay}"/>
 
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+                    <telerikInput:RadEntry
+                        Grid.ColumnSpan="2"
+                        Grid.Row="2"
+                        x:Name="Email"
+                        WatermarkText="{local:Translate Text=Email}"
+                        Style="{x:StaticResource Key=LoginEntryStyle}"
+                        Keyboard="Email"/>
 
-            <Label 
-                Text="{local:Translate RegistrationHint}"
-                Style="{StaticResource NormalLabelStyle}"/>
+                    <telerikInput:RadEntry
+                        Grid.ColumnSpan="2"
+                        Grid.Row="3"
+                        Text="{Binding Password, Mode=TwoWay}"
+                        WatermarkText="{Binding PasswordWatermark, Mode=OneWay}"
+                        WatermarkTextColor="{Binding PasswordWatermarkColor, Mode=OneWay}"
+                        Style="{x:StaticResource Key=LoginEntryStyle}"
+                        IsPassword="True"/>
 
-            <telerikInput:RadButton
-                Command="{Binding NavigateToRegistrationView}"
-                Text="{local:Translate SignUp}"
-                Style="{StaticResource SecondaryActionButtonStyle}"
-                Grid.Column="1" />
-        </Grid>
-    </Grid>
+                    <telerikInput:RadButton
+                        Grid.ColumnSpan="2"
+                        Grid.Row="4"
+                        Command="{Binding NavigateToLoginView, Mode=OneTime}"
+                        CommandParameter="{Binding Source={x:Reference Email}, Path=Text, Mode=OneWay}"
+                        Text="{local:Translate Text=SignIn}"
+                        Style="{x:StaticResource Key=ActionButtonStyle}"/>
+
+                    <telerikInput:RadButton
+                        Grid.ColumnSpan="2"
+                        Grid.Row="5"
+                        Command="{Binding NavigateToForgetPasswordView, Mode=OneTime}"
+                        Text="{local:Translate Text=ForgotPassword}"
+                        Style="{x:StaticResource Key=SecondaryActionButtonStyle}"
+                        FontAttributes="None"/>
+
+                    <Label
+                        Grid.Column="0"
+                        Grid.Row="6"
+                        HorizontalTextAlignment="Start"
+                        VerticalTextAlignment="End"
+                        Text="{local:Translate Text=RegistrationHint}"
+                        Style="{x:StaticResource Key=NormalLabelStyle}"/>
+
+                    <telerikInput:RadButton
+                        Grid.Column="1"
+                        Grid.Row="6"
+                        VerticalContentAlignment="End"
+                        Command="{Binding NavigateToRegistrationView, Mode=OneTime}"
+                        Text="{local:Translate Text=SignUp}"
+                        Style="{x:StaticResource Key=SecondaryActionButtonStyle}"/>
+                </Grid>
+
+            </primitives:RadBusyIndicator.Content>
+        </primitives:RadBusyIndicator>
+
+    </ContentPage.Content>
+
 </ContentPage>

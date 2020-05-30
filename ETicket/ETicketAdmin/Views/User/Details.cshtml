@@ -1,4 +1,4 @@
-﻿@model ETicket.DataAccess.Domain.Entities.User
+﻿@model ETicket.ApplicationServices.DTOs.UserDto
 
 @{
     ViewData["Title"] = "Details";
@@ -41,16 +41,30 @@
             @(Model.DateOfBirth.ToString("yyyy-MM-dd"))
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Privilege)
+            @Html.DisplayNameFor(model => model.PrivilegeName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Privilege.Name)
+            @if (Model.PrivilegeName == null)
+            {
+                @Html.DisplayFor(modelItem => Model.PrivilegeName)
+            }
+            else
+            {
+                @Html.ActionLink(Model.PrivilegeName, "Details", "Privileges", new { id = Model.PrivilegeId }, null)
+            }
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Document)
+            @Html.DisplayNameFor(model => model.DocumentNumber)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Document.Number)
+            @if (Model.DocumentNumber == null)
+            {
+                @Html.DisplayFor(modelItem => Model.DocumentNumber)
+            }
+            else
+            {
+                @Html.ActionLink(Model.DocumentNumber, "Details", "Documents", new { id = Model.DocumentId }, null)
+            }
         </dd>
     </dl>
 </div>

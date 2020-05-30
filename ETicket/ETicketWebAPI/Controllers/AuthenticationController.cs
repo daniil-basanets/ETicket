@@ -8,7 +8,7 @@ using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.WebAPI.Models.Identity;
 using ETicket.WebAPI.Models.Identity.Requests;
-using ETicket.WebAPI.Services;
+using log4net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +18,7 @@ namespace ETicket.WebAPI.Controllers
 {
     [Route("api/authentication")]
     [ApiController]
-    public class AuthenticationController : ControllerBase
+    public class AuthenticationController : BaseAPIController
     {
         #region Private members
         private readonly UserManager<IdentityUser> userManager;
@@ -29,6 +29,7 @@ namespace ETicket.WebAPI.Controllers
         private readonly IMailService mailService;
         private readonly IUserService ETUserService;
         private readonly ISecretCodeService codeService;
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         #endregion
 
         public AuthenticationController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ETicketDataContext context, IMailService mailService, IUserService ETUserService, ISecretCodeService codeService)
@@ -46,18 +47,30 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost("/check-user")]
         public IActionResult CheckEmail([FromBody] RegistrationRequest request)
         {
-            if (ModelState.IsValid)
+            log.Info(nameof(CheckEmail));
+
+            try
             {
-                bool succeeded = false;
-                if (userManager.FindByEmailAsync(request.Email).Result != null)
+                if (ModelState.IsValid)
                 {
-                    succeeded = true;
+                    bool succeeded = false;
+                    if (userManager.FindByEmailAsync(request.Email).Result != null)
+                    {
+                        succeeded = true;
+                    }
+
+                    return StatusCode(200, new { succeeded });
                 }
 
-                return StatusCode(200, new { succeeded });
+                log.Warn(nameof(AuthenticationController.CheckEmail) + " Bad request");
+                return StatusCode(400, new { ModelState.IsValid });
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return StatusCode(400, new { ModelState.IsValid });
+                return StatusCode(500, new { e.Message });
+            }
         }
 
         // Registration user
@@ -65,37 +78,51 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost("/registration")]
         public async Task<IActionResult> Registration([FromBody] RegistrationRequest request)
         {
-            if (ModelState.IsValid)
+            log.Info(nameof(Registration));
+
+            try
             {
-                user = new IdentityUser()
+                if (ModelState.IsValid)
                 {
-                    UserName = request.Email,
-                    Email = request.Email
-                };
-
-                identityResult = await userManager.CreateAsync(user, request.Password);
-
-                if (identityResult.Succeeded)
-                {
-                    UserDto userDto = new UserDto
+                    user = new IdentityUser()
                     {
-                        FirstName = request.FirstName,
-                        LastName = request.LastName,
-                        Phone = request.Phone,
-                        Email = request.Email,
-                        DateOfBirth = request.DateOfBirth
+                        UserName = request.Email,
+                        Email = request.Email
                     };
-                    ETUserService.CreateUser(userDto);
 
-                    return Ok(new { identityResult.Succeeded });
+                    identityResult = await userManager.CreateAsync(user, request.Password);
+
+                    if (identityResult.Succeeded)
+                    {
+                        UserDto userDto = new UserDto
+                        {
+                            FirstName = request.FirstName,
+                            LastName = request.LastName,
+                            Phone = request.Phone,
+                            Email = request.Email,
+                            DateOfBirth = request.DateOfBirth
+                        };
+                        ETUserService.CreateUser(userDto);
+
+                        return Ok(new { identityResult.Succeeded });
+                    }
+                    else
+                    {
+                        log.Warn(nameof(AuthenticationController.Registration) + $" Identity result is {identityResult.Succeeded}");
+
+                        return StatusCode(500, new { identityResult.Succeeded });
+                    }
                 }
-                else
-                {
-                    return StatusCode(500, new { identityResult.Succeeded });
-                }
+
+                log.Warn(nameof(AuthenticationController.Registration) + $" Bad request");
+                return StatusCode(400, new { ModelState.IsValid });
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return StatusCode(400, new { ModelState.IsValid });
+                return StatusCode(500, new { e.Message });
+            }
         }
 
         // Login user
@@ -103,27 +130,40 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost("/token")]
         public async Task<IActionResult> GetToken([FromBody] AuthenticationRequest request)
         {
-            if (ModelState.IsValid)
+            log.Info(nameof(GetToken));
+
+            try
             {
-                var signInResult = await signInManager.PasswordSignInAsync(request.Email, request.Password, false, false);
-
-                if (signInResult.Succeeded)
+                if (ModelState.IsValid)
                 {
-                    user = await userManager.FindByNameAsync(request.Email);
+                    var signInResult = await signInManager.PasswordSignInAsync(request.Email, request.Password, false, false);
 
-                    await userManager.RemoveAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
-                    var refresh_jwtToken = await userManager.GenerateUserTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
-                    await userManager.SetAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken", refresh_jwtToken);
+                    if (signInResult.Succeeded)
+                    {
+                        user = await userManager.FindByNameAsync(request.Email);
 
-                    string access_jwtToken = TokenFactory.GetAccessToken(user);
+                        await userManager.RemoveAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
+                        var refresh_jwtToken = await userManager.GenerateUserTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
+                        await userManager.SetAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken", refresh_jwtToken);
 
-                    return new JsonResult(new { access_jwtToken, refresh_jwtToken });
+                        string access_jwtToken = TokenFactory.GetAccessToken(user);
+
+                        return new JsonResult(new { access_jwtToken, refresh_jwtToken });
+                    }
+
+                    log.Warn(nameof(AuthenticationController.GetToken) + $" SignIn result is {signInResult.Succeeded}");
+                    return StatusCode(500, new { signInResult.Succeeded });
                 }
 
-                return StatusCode(500, new { signInResult.Succeeded });
+                log.Warn(nameof(AuthenticationController.GetToken) + $" Bad request");
+                return StatusCode(400, new { ModelState.IsValid });
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return StatusCode(400, new { ModelState.IsValid });
+                return StatusCode(500, new { e.Message });
+            }
         }
 
         // Refresh access_jwtToken
@@ -131,80 +171,126 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost("/refresh-token")]
         public async Task<IActionResult> RefreshUserToken([FromBody] string RefreshToken)
         {
-            var token = await context.UserTokens.FirstOrDefaultAsync(refT => refT.Value == RefreshToken);// check if token exists
+            log.Info(nameof(RefreshUserToken));
 
-            if (token != null)
+            try
             {
-                user = await userManager.FindByIdAsync(token.UserId);
+                var token = await context.UserTokens.FirstOrDefaultAsync(refT => refT.Value == RefreshToken);// check if token exists
 
-                // new refresh token
-                await userManager.RemoveAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
-                var refresh_jwtToken = await userManager.GenerateUserTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
-                await userManager.SetAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken", refresh_jwtToken);
+                if (token != null)
+                {
+                    user = await userManager.FindByIdAsync(token.UserId);
 
-                // new access token
-                string access_jwtToken = TokenFactory.GetAccessToken(user);
+                    // new refresh token
+                    await userManager.RemoveAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
+                    var refresh_jwtToken = await userManager.GenerateUserTokenAsync(user, AuthOptions.ISSUER, "RefreshToken");
+                    await userManager.SetAuthenticationTokenAsync(user, AuthOptions.ISSUER, "RefreshToken", refresh_jwtToken);
 
-                return new JsonResult(new { access_jwtToken, refresh_jwtToken });
+                    // new access token
+                    string access_jwtToken = TokenFactory.GetAccessToken(user);
+
+                    return new JsonResult(new { access_jwtToken, refresh_jwtToken });
+                }
+
+                log.Warn(nameof(AuthenticationController.RefreshUserToken) + $" Token is null");
+                return NotFound();
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return NotFound();
+                return StatusCode(500, new { e.Message });
+            }
         }
 
         // POST: api/authentication/reset-password
         [HttpPost("/reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
-            var user = await userManager.FindByEmailAsync(request.Email);
-            bool succeeded = false;
+            log.Info(nameof(ResetPassword));
 
-            if (user != null)
+            try
             {
-                var resetPassToken = await userManager.GeneratePasswordResetTokenAsync(user);
-                var result = await userManager.ResetPasswordAsync(user, resetPassToken, request.NewPassword);
+                var user = await userManager.FindByEmailAsync(request.Email);
+                bool succeeded = false;
 
-                if (result.Succeeded)
+                if (user != null)
                 {
-                    return Ok(new { result.Succeeded });
+                    var resetPassToken = await userManager.GeneratePasswordResetTokenAsync(user);
+                    var result = await userManager.ResetPasswordAsync(user, resetPassToken, request.NewPassword);
+
+                    if (result.Succeeded)
+                    {
+                        return Ok(new { result.Succeeded });
+                    }
+
+                    log.Warn(nameof(AuthenticationController.ResetPassword) + $" Server error");
+                    return StatusCode(500, new { result.Succeeded });
                 }
 
-                return StatusCode(500, new { result.Succeeded });
+                log.Warn(nameof(AuthenticationController.ResetPassword) + $" user is null");
+                return NotFound(succeeded);
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return NotFound(succeeded);
+                return StatusCode(500, new { e.Message });
+            }
         }
 
         // POST: api/authentication/check-code
         [HttpPost("/check-code")]
         public async Task<IActionResult> CheckCode([FromBody] CheckCodeRequest request)
         {
-            var code = await codeService.Get(request.Code, request.Email);
-            bool succeeded = false;
+            log.Info(nameof(CheckCode));
 
-            if (code != null)
+            try
             {
-                codeService.RemoveRange(request.Email);
+                var code = await codeService.Get(request.Code, request.Email);
+                bool succeeded = false;
 
-                succeeded = true;
-                return Ok(new { succeeded });
+                if (code != null)
+                {
+                    codeService.RemoveRange(request.Email);
+
+                    succeeded = true;
+                    return Ok(new { succeeded });
+                }
+
+                log.Warn(nameof(AuthenticationController.CheckCode) + $" code is null");
+                return StatusCode(400, new { succeeded });
             }
+            catch (Exception e)
+            {
+                log.Error(e);
 
-            return StatusCode(400, new { succeeded });
+                return StatusCode(500, new { e.Message });
+            }
         }
 
         // POST: api/authentication/send-code
         [HttpPost("/send-code")]
         public void SendSecretCodeToUser([FromBody] string email)
         {
-            if (codeService.Count(email) < 3)
+            log.Info(nameof(SendSecretCodeToUser));
+
+            try
             {
-                var secretString = SecretString.GetSecretString();
+                if (codeService.Count(email) < 3)
+                {
+                    var secretString = SecretString.GetSecretString();
 
-                mailService.SendEmail(email, secretString, "Your personal code");
+                    mailService.SendEmail(email, secretString, "Your personal code");
 
-                var code = new SecretCode() { Code = secretString, Email = email };
+                    var code = new SecretCode() { Code = secretString, Email = email };
 
-                codeService.Add(code);
+                    codeService.Add(code);
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
             }
         }
     }

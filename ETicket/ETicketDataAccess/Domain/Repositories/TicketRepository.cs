@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
@@ -35,6 +34,8 @@ namespace ETicket.DataAccess.Domain.Repositories
             return context.Tickets.Include(t => t.TicketType)
                 .Include(t => t.TransactionHistory)
                 .Include(t => t.User)
+                .Include(t => t.TicketArea)
+                .ThenInclude(t => t.Area)
                 .FirstOrDefault(m => m.Id == id);
         }
 

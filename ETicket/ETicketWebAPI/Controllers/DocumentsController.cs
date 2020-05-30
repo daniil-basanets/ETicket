@@ -10,7 +10,7 @@ namespace ETicket.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/documents")]
-    public class DocumentsController : ControllerBase
+    public class DocumentsController : BaseAPIController
     {
         IDocumentService documentService;
 

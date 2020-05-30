@@ -14,7 +14,7 @@ namespace ETicket.DataAccess.Domain.Entities
 
         [Required]
         [MaxLength(20)]
-        [DisplayName("Rout Number")]
+        [DisplayName("Route number")]
         public string Number { get; set; }
 
         [Required]

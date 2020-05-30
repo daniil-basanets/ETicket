@@ -40,11 +40,7 @@
     <EnableLLVM>false</EnableLLVM>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <BundleAssemblies>false</BundleAssemblies>
-    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
-    <AndroidEnableMultiDex>false</AndroidEnableMultiDex>
-    <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
-    <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
-    <AndroidSupportedAbis>x86;x86_64;arm64-v8a</AndroidSupportedAbis>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,11 +51,6 @@
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
-    <AotAssemblies>false</AotAssemblies>
-    <EnableLLVM>false</EnableLLVM>
-    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
-    <BundleAssemblies>false</BundleAssemblies>
-    <AndroidSupportedAbis>x86;x86_64;arm64-v8a</AndroidSupportedAbis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -68,45 +59,44 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
     <Reference Include="Telerik.Xamarin.Android.Common">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Android\Telerik.Xamarin.Android.Common.dll</HintPath>
+      <HintPath>c:\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Android\Telerik.Xamarin.Android.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Telerik.Xamarin.Android.Data">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Android\Telerik.Xamarin.Android.Data.dll</HintPath>
+      <HintPath>c:\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Android\Telerik.Xamarin.Android.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Telerik.Xamarin.Android.Input">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Android\Telerik.Xamarin.Android.Input.dll</HintPath>
+      <HintPath>c:\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Android\Telerik.Xamarin.Android.Input.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Telerik.Xamarin.Android.List">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Android\Telerik.Xamarin.Android.List.dll</HintPath>
+      <HintPath>c:\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Android\Telerik.Xamarin.Android.List.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Telerik.Xamarin.Android.Primitives">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Android\Telerik.Xamarin.Android.Primitives.dll</HintPath>
+      <HintPath>c:\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Android\Telerik.Xamarin.Android.Primitives.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Telerik.XamarinForms.Common">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Android\Telerik.XamarinForms.Common.dll</HintPath>
+      <HintPath>c:\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Android\Telerik.XamarinForms.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Telerik.XamarinForms.Input">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Android\Telerik.XamarinForms.Input.dll</HintPath>
+      <HintPath>c:\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Android\Telerik.XamarinForms.Input.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Telerik.XamarinForms.Primitives">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Android\Telerik.XamarinForms.Primitives.dll</HintPath>
+      <HintPath>c:\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Android\Telerik.XamarinForms.Primitives.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Telerik.XamarinForms.SkiaSharp">
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for Xamarin R2 2020\Binaries\Android\Telerik.XamarinForms.SkiaSharp.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>c:\Program Files (x86)\Progress\Telerik UI for Xamarin R1 2020\Binaries\Portable\Telerik.XamarinForms.SkiaSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SkiaSharp.Views.Forms">
-      <Version>1.68.2.1</Version>
+      <Version>1.68.3</Version>
     </PackageReference>
     <PackageReference Include="sqlite-net-pcl">
       <Version>1.7.335</Version>
@@ -114,7 +104,7 @@
     <PackageReference Include="Xamarin.Essentials">
       <Version>1.5.3.2</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="4.6.0.772" />
+    <PackageReference Include="Xamarin.Forms" Version="4.6.0.800" />
     <PackageReference Include="Xamarin.Android.Support.CustomTabs" Version="28.0.0.3" />
     <PackageReference Include="Xamarin.Android.Support.Design" Version="28.0.0.3" />
     <PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.3" />
@@ -171,6 +161,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\User.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\Success.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

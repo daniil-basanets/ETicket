@@ -9,6 +9,9 @@ namespace ETicket.ApplicationServices.DTOs
 
         [DisplayName("Document Type")]
         public int DocumentTypeId { get; set; }
+        
+        [DisplayName("Document type")]
+        public string DocumentTypeName { get; set; }
 
         public string Number { get; set; }
 

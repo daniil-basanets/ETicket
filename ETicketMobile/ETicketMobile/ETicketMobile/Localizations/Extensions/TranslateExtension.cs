@@ -10,10 +10,18 @@ namespace ETicketMobile.Localizations.Extensions
     [ContentProperty("Text")]
     public class TranslateExtension : IMarkupExtension
     {
+        #region Fields
+
         private readonly ILocalize localize;
         private const string ResourceId = "ETicketMobile.Resources.AppResource";
 
+        #endregion
+
+        #region Properties
+
         public string Text { get; set; }
+
+        #endregion
 
         public TranslateExtension()
         {

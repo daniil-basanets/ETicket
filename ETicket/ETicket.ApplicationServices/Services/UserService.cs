@@ -5,6 +5,7 @@ using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -60,7 +61,12 @@ namespace ETicket.ApplicationServices.Services
 
         public User GetByEmail(string email)
         {
-            return uow.Users.GetByEmail(email);
+            var user = uow.Users.GetAll()
+                .Include(u=> uow.Documents)
+                .Include(u=>uow.Privileges)
+                .FirstOrDefault(m => m.Email == email);
+            
+            return user;
         }
 
         public void SendMessage(Guid id, string message)

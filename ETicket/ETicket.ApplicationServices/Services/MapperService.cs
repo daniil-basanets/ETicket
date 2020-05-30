@@ -17,17 +17,18 @@ namespace ETicket.ApplicationServices.Services
 
         private IMapper ConfigureMapper()
         {
-            //var config = new MapperConfiguration(cfg =>
-            //{
-            //    cfg.AddProfile<TicketMapperProfile>();
-            //    cfg.AddProfile<DocumentMapperProfile>();
-            //    cfg.AddProfile<PrivilegeMapperProfile>();
-            //    cfg.AddProfile<UserMapperProfile>();
-            //    cfg.AddProfile<TransactionHistoryMapperProfile>();
-            //    cfg.AddProfile<CarrierMapperProfile>();
-            //    cfg.AddProfile<AreaMapperProfile>();
-            //});
-            var config = new MapperConfiguration(cfg =>  cfg.AddProfile<MapperProfile>());
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<TicketMapperProfile>();
+                cfg.AddProfile<DocumentMapperProfile>();
+                cfg.AddProfile<PrivilegeMapperProfile>();
+                cfg.AddProfile<UserMapperProfile>();
+                cfg.AddProfile<TransactionHistoryMapperProfile>();
+                cfg.AddProfile<CarrierMapperProfile>();
+                cfg.AddProfile<AreaMapperProfile>();
+                cfg.AddProfile<StationMapperProfile>();
+                cfg.AddProfile<RouteMapperProfile>();
+            });
 
             return config.CreateMapper();
         }
@@ -35,6 +36,11 @@ namespace ETicket.ApplicationServices.Services
         public TDestination Map<TSource, TDestination>(TSource source)
         {
             return mapper.Map<TSource, TDestination>(source);
+        }
+
+        public TDestination Map<TSource, TDestination>(TSource source, TDestination destination)
+        {
+            return mapper.Map(source, destination);
         }
 
         public IQueryable<TDestination> ProjectTo<TDestination>(IQueryable source)

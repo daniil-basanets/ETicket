@@ -31,9 +31,9 @@ namespace ETicket.ApplicationServices.Services
             return unitOfWork.Documents.GetAll().ToList();
         }
 
-        public Document GetDocumentById(Guid id)
+        public DocumentDto GetDocumentById(Guid id)
         {
-            return unitOfWork.Documents.Get(id);
+            return mapper.Map<Document, DocumentDto>(unitOfWork.Documents.Get(id));
         }
 
         public void Update(DocumentDto documentDto)

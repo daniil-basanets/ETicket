@@ -38,20 +38,13 @@ namespace ETicket.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var merchantId = Configuration["Merchant:MerchantId"];
-            var password = Configuration["Merchant:Password"];
+            var publicKey = Configuration["Merchant:Public_Key"];
+            var privateKey = Configuration["Merchant:Private_Key"];
 
             IMerchant merchant = new Merchant
             {
-                MerchantId = int.Parse(merchantId),
-                Password = password
-            };
-
-            var cardNumber = Configuration["MerchantSettings:CardNumber"];
-
-            IMerchantSettings merchantSettings = new MerchantSettings
-            {
-                CardNumber = cardNumber
+                PublicKey = publicKey,
+                PrivateKey = privateKey
             };
 
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
@@ -64,6 +57,13 @@ namespace ETicket.WebAPI
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IDocumentTypesService, DocumentTypesService>();
             services.AddTransient<ITransactionService, TransactionService>();
+            services.AddTransient<IPriceListService, PriceListService>();
+            services.AddTransient<IAreaService, AreaService>();
+            services.AddTransient<ITicketVerificationService, TicketVerificationService>();
+            services.AddTransient<IPrivilegeService, PrivilegeService>();
+            services.AddTransient<IDocumentService, DocumentService>();
+            services.AddTransient<IRouteService, RouteService>();
+            services.AddTransient<IStationService, StationService>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                .AddEntityFrameworkStores<ETicketDataContext>()
@@ -105,7 +105,6 @@ namespace ETicket.WebAPI
 
             services.AddControllers();
             services.AddSingleton<IMerchant>(merchant);
-            services.AddSingleton<IMerchantSettings>(merchantSettings);
 
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IUserService, UserService>();

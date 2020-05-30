@@ -152,19 +152,21 @@ namespace ETicket.Admin.Controllers
 
                 return NotFound();
             }
-
-            if (ModelState.IsValid)
+            
+            if (!ModelState.IsValid)
+            {                
+                return View(ticketTypeDto);
+            }
+            
+            try
             {
-                try
-                {
-                    ticketTypeService.Update(ticketTypeDto);
-                }
-                catch (Exception exception)
-                {
-                    logger.Error(exception);
+                ticketTypeService.Update(ticketTypeDto);                
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception);
 
-                    return BadRequest();
-                }
+                return BadRequest();
             }
             
             return RedirectToAction(nameof(Index));
