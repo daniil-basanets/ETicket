@@ -11,7 +11,7 @@ namespace ETicket.WebAPI.Controllers
     [Route("api/document-types")]
     [ApiController]
     [SwaggerTag("Document type service")]
-    public class DocumentTypesController : ControllerBase
+    public class DocumentTypesController : BaseAPIController
     {
         #region Private members
 
@@ -28,7 +28,7 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/documenttypes
         [HttpGet]
         [SwaggerOperation(Summary = "Get all document types", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a list of document types")]
+        [SwaggerResponse(200, "Returns if everything was right. Contains a list of document types")]
         [SwaggerResponse(400, "Returns if exception occurred")]
         public IActionResult GetAll()
         {
@@ -49,7 +49,7 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/documenttypes/5
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get document type by id", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a DocumentTypeDto object", typeof(DocumentTypeDto))]
+        [SwaggerResponse(200, "Returns if everything was right. Contains a DocumentType object", typeof(DocumentTypeDto))]
         [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(404, "Returns if document type was not found by id")]
         public IActionResult GetDocumentTypeById([SwaggerParameter("Int", Required = true)] int id)

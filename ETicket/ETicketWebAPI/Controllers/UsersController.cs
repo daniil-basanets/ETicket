@@ -34,7 +34,7 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/users/{id}/tickets
         [HttpGet("{userid}/tickets")]
         [SwaggerOperation(Summary = "Get all tickets for concrete user", Description = "Allowed: authorized user")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a list of user's tickets")]
+        [SwaggerResponse(200, "Returns if everything was right. Contains a list of user's tickets")]
         [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(401, "Returns if user was unauthorized")]
         public IActionResult GetTicketsByUser([SwaggerParameter("Email", Required = true)] string email)
@@ -63,7 +63,7 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/users/5
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get user by id", Description = "Allowed: authorized user")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a UserDto", typeof(UserDto))]
+        [SwaggerResponse(200, "Returns if everything was right. Contains a User object", typeof(UserDto))]
         [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(404, "Returns if user was not found by id")]
         [SwaggerResponse(401, "Returns if user was unauthorized")]
@@ -95,7 +95,7 @@ namespace ETicket.WebAPI.Controllers
         // PUT: api/users/5
         [HttpPut("{id}")]
         [SwaggerOperation(Summary = "Update user", Description = "Allowed: authorized user")]
-        [SwaggerResponse(204, "Returns if everything was ok, without content")]
+        [SwaggerResponse(204, "Returns if everything was right, without content")]
         [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(401, "Returns if user was unauthorized")]
         public IActionResult UpdateUser([SwaggerParameter("Guid", Required = true)] Guid id, [FromBody, SwaggerRequestBody("User payload", Required = true)] UserDto userDto)

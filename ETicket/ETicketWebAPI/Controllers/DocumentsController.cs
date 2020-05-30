@@ -12,7 +12,7 @@ namespace ETicket.WebAPI.Controllers
     [ApiController]
     [Route("api/documents")]
     [SwaggerTag("Document service")]
-    public class DocumentsController : ControllerBase
+    public class DocumentsController : BaseAPIController
     {
         IDocumentService documentService;
 
@@ -25,7 +25,7 @@ namespace ETicket.WebAPI.Controllers
 
         [HttpGet]
         [SwaggerOperation(Summary = "Get all documents", Description = "Allowed: Admin")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a list of documents")]
+        [SwaggerResponse(200, "Returns if everything was right. Contains a list of documents")]
         [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(401, "Returns if user was unauthorized")]
         public IActionResult GetDocuments()
@@ -37,7 +37,7 @@ namespace ETicket.WebAPI.Controllers
                 
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get document by id", Description = "Allowed: Admin")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a Document", typeof(Document))]
+        [SwaggerResponse(200, "Returns if everything was right. Contains a Document", typeof(Document))]
         [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(404, "Returns if document was not found by id")]
         [SwaggerResponse(401, "Returns if user was unauthorized")]
@@ -66,7 +66,7 @@ namespace ETicket.WebAPI.Controllers
                
         [HttpPut("{id}")]
         [SwaggerOperation(Summary = "Update document", Description = "Allowed: authorized user")]
-        [SwaggerResponse(200, "Returns if everything was ok", typeof(DocumentDto))]
+        [SwaggerResponse(200, "Returns if everything was right", typeof(DocumentDto))]
         [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(401, "Returns if user was unauthorized")]
         public  IActionResult UpdateDocument([SwaggerParameter("Guid", Required = true)] Guid id, [FromBody, SwaggerRequestBody("Document payload", Required = true)] DocumentDto documentDto)

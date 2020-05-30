@@ -34,7 +34,7 @@ namespace ETicket.WebAPI.Controllers.Payments
         [HttpPost]
         [Route("ticketprice")]
         [SwaggerOperation(Summary = "Get price for ticket", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains an object with total price")]
+        [SwaggerResponse(200, "Returns if everything was right. Contains an object with total price")]
         public IActionResult GetTicketPrice([FromBody, SwaggerRequestBody("Get ticket price payload", Required = true)] GetTicketPriceRequest request)
         {
             var totalPrice = paymentsService.GetTicketPrice(request.AreasId, request.TicketTypeId);
@@ -45,7 +45,7 @@ namespace ETicket.WebAPI.Controllers.Payments
         [HttpPost]
         [Route("buy")]
         [SwaggerOperation(Summary = "Buy ticket", Description = "Allowed: authorized user")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a BuyTicketResponse")]
+        [SwaggerResponse(200, "Returns if everything was right. Contains a BuyTicketResponse")]
         public async Task<IActionResult> Buy([FromBody, SwaggerRequestBody("Buy ticket payload", Required = true)] BuyTicketRequest request)
         {
             var response = await paymentsService.MakePayment(

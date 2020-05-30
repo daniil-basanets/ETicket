@@ -20,7 +20,7 @@ namespace ETicket.WebAPI.Controllers
     [Route("api/authentication")]
     [ApiController]
     [SwaggerTag("Authentication service")]
-    public class AuthenticationController : ControllerBase
+    public class AuthenticationController : BaseAPIController
     {
         #region Private members
         private readonly UserManager<IdentityUser> userManager;
@@ -47,9 +47,9 @@ namespace ETicket.WebAPI.Controllers
         // Check if email exists
         // POST: api/authentication/check-user
         [HttpPost("/check-user")]
-        [SwaggerOperation(Summary = "Check if email exists in data base", Description = "It is used for extra validation on client")]
-        [SwaggerResponse(200, "Returns if model was valid. Contains an object with bool variable(exists or not)")]
-        [SwaggerResponse(400, "Returns if model was not valid. Contains an object with bool variable(valid or not)")]
+        [SwaggerOperation(Summary = "Check if email exists in the data base", Description = "It is used for an extra validation on the client")]
+        [SwaggerResponse(200, "Returns if model is valid. Contains an object with a bool variable(exists or not)")]
+        [SwaggerResponse(400, "Returns if model is not valid. Contains an object with a bool variable(valid or not)")]
         public IActionResult CheckEmail([FromBody, SwaggerRequestBody("Check email payload", Required = true)] RegistrationRequest request)
         {
             log.Info(nameof(CheckEmail));
@@ -82,9 +82,9 @@ namespace ETicket.WebAPI.Controllers
         // POST: api/authentication/registration
         [HttpPost("/registration")]
         [SwaggerOperation(Summary = "Registration")]
-        [SwaggerResponse(200, "Returns if model was valid. Contains an object with bool variable(succeeded or not)")]
-        [SwaggerResponse(400, "Returns if model was not valid. Contains an object with bool variable(valid or not)")]
-        [SwaggerResponse(500, "Server error. Registration failed. Contains an object with bool variable(succeeded or not)")]
+        [SwaggerResponse(200, "Returns if model is valid. Contains an object with a bool variable(succeeded or not)")]
+        [SwaggerResponse(400, "Returns if model is not valid. Contains an object with a bool variable(valid or not)")]
+        [SwaggerResponse(500, "Server error. Registration failed. Contains an object with a bool variable(succeeded or not)")]
         public async Task<IActionResult> Registration([FromBody, SwaggerRequestBody("Registration payload", Required = true)] RegistrationRequest request)
         {
             log.Info(nameof(Registration));
@@ -138,8 +138,8 @@ namespace ETicket.WebAPI.Controllers
         // POST: api/authentication/token
         [HttpPost("/token")]
         [SwaggerOperation(Summary = "Log in endpoint", Description = "Returns a pair of tokens: access token; refresh token.")]
-        [SwaggerResponse(400, "Returns if model was not valid. Contains an object with bool variable(valid or not)")]
-        [SwaggerResponse(500, "Server error. Log in failed. Contains an object with bool variable(succeeded or not)")]
+        [SwaggerResponse(400, "Returns if model is not valid. Contains an object with a bool variable(valid or not)")]
+        [SwaggerResponse(500, "Server error. Log in failed. Contains an object with a bool variable(succeeded or not)")]
         public async Task<IActionResult> GetToken([FromBody, SwaggerRequestBody("Authentication payload", Required = true)] AuthenticationRequest request)
         {
             log.Info(nameof(GetToken));
@@ -220,9 +220,9 @@ namespace ETicket.WebAPI.Controllers
         // POST: api/authentication/reset-password
         [HttpPost("/reset-password")]
         [SwaggerOperation(Summary = "Reset password", Description = "Calls after verifying special secret code")]
-        [SwaggerResponse(200, "Returns if password was reseted. Contains an object with bool variable(succeeded or not)")]
+        [SwaggerResponse(200, "Returns if password was reseted. Contains an object with a bool variable(succeeded or not)")]
         [SwaggerResponse(404, "Returns if user was not found by email")]
-        [SwaggerResponse(500, "Server error. Reset password operation failed. Contains an object with bool variable(succeeded or not)")]
+        [SwaggerResponse(500, "Server error. Reset password operation failed. Contains an object with a bool variable(succeeded or not)")]
         public async Task<IActionResult> ResetPassword([FromBody, SwaggerRequestBody("Reset password payload", Required = true)] ResetPasswordRequest request)
         {
             log.Info(nameof(ResetPassword));
@@ -260,8 +260,8 @@ namespace ETicket.WebAPI.Controllers
         // POST: api/authentication/check-code
         [HttpPost("/check-code")]
         [SwaggerOperation(Summary = "Check special secret code", Description = "Calls to confirm email and verify code before resetting password")]
-        [SwaggerResponse(200, "Returns if code was verified. Contains an object with bool variable(succeeded or not)")]
-        [SwaggerResponse(404, "Returns if code was not found. Contains an object with bool variable(succeeded or not)")]
+        [SwaggerResponse(200, "Returns if code was verified. Contains an object with a bool variable(succeeded or not)")]
+        [SwaggerResponse(404, "Returns if code was not found. Contains an object with a bool variable(succeeded or not)")]
         public async Task<IActionResult> CheckCode([FromBody, SwaggerRequestBody("Check code payload", Required = true)] CheckCodeRequest request)
         {
             log.Info(nameof(CheckCode));

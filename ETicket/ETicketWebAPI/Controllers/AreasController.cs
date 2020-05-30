@@ -11,7 +11,7 @@ namespace ETicket.WebAPI.Controllers
     [Route("api/areas")]
     [ApiController]
     [SwaggerTag("Area service")]
-    public class AreasController : ControllerBase
+    public class AreasController : BaseAPIController
     {
         private readonly IAreaService areaService;
         private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -23,7 +23,7 @@ namespace ETicket.WebAPI.Controllers
         
         [HttpGet]
         [SwaggerOperation(Summary = "Get all areas", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a list of areas")]
+        [SwaggerResponse(200, "Returns if everything was right. Contains a list of areas")]
         [SwaggerResponse(400, "Returns if exception occurred")]
         public IActionResult GetAreas()
         {
@@ -43,7 +43,7 @@ namespace ETicket.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get area by id", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains an AreaDto object", typeof(AreaDto))]
+        [SwaggerResponse(200, "Returns if everything was right. Contains an Area object", typeof(AreaDto))]
         [SwaggerResponse(400, "Returns if exception occurred")]
         public IActionResult GetArea([SwaggerParameter("Int", Required = true)] int id)
         {

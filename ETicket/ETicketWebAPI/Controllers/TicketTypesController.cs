@@ -11,7 +11,7 @@ namespace ETicket.WebAPI.Controllers
     [Route("api/ticket-types")]
     [ApiController]
     [SwaggerTag("Ticket type service")]
-    public class TicketTypesController : ControllerBase
+    public class TicketTypesController : BaseAPIController
     {
         private readonly ITicketTypeService ticketTypeService;
         private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -23,7 +23,7 @@ namespace ETicket.WebAPI.Controllers
         
         [HttpGet]
         [SwaggerOperation(Summary = "Get all ticket types", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a list of ticket types")]
+        [SwaggerResponse(200, "Returns if everything was right. Contains a list of ticket types")]
         [SwaggerResponse(400, "Returns if exception occurred")]
         public IActionResult GetTicketTypes()
         {
@@ -43,7 +43,7 @@ namespace ETicket.WebAPI.Controllers
 
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get ticket type by id", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was ok. Contains a Station object", typeof(TicketTypeDto))]
+        [SwaggerResponse(200, "Returns if everything was right. Contains a TicketType object", typeof(TicketTypeDto))]
         [SwaggerResponse(400, "Returns if exception occurred")]
         public IActionResult GetTicketType([SwaggerParameter("Int", Required = true)] int id)
         {
