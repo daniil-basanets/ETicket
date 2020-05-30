@@ -85,9 +85,11 @@ namespace ETicket.ApplicationServices.Services
 
         public ChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod, ChartScale chartScale)
         {
+            string errorMessage = null;
+
             if (startPeriod.CompareTo(endPeriod) == 1)
             {
-                return new ChartDto() { ErrorMessage = EndLessStartError };
+                errorMessage = EndLessStartError;
             }
 
             var timeLabels = new List<string>();
@@ -109,33 +111,37 @@ namespace ETicket.ApplicationServices.Services
                 }
             }
 
-            var passengerTraffic = uow.TicketVerifications.GetAll()
-                .Where(t => t.IsVerified && t.VerificationUTCDate.Date >= startPeriod.Date && t.VerificationUTCDate.Date <= endPeriod.Date)
-                .AsEnumerable();
+            var chartData = new Dictionary<int, int>();
 
-            var groupedTraffic = chartScale switch
+            if (errorMessage == null)
             {
-                ChartScale.ByDays => passengerTraffic.GroupBy(d => (d.VerificationUTCDate.Date - startPeriod.Date).Days),
-                ChartScale.ByWeeks => passengerTraffic.GroupBy(w => (w.VerificationUTCDate.Date - startPeriod.Date).Days / (int)ChartScale.ByWeeks),
-                ChartScale.ByMonths => passengerTraffic.GroupBy(m => (m.VerificationUTCDate.Year - startPeriod.Year) * 12 + m.VerificationUTCDate.Month - startPeriod.Month),
-                _ => passengerTraffic.GroupBy(d => (d.VerificationUTCDate.Date - startPeriod.Date).Days)
-            };
+                var passengerTraffic = uow.TicketVerifications.GetAll()
+                    .Where(t => t.IsVerified && t.VerificationUTCDate.Date >= startPeriod.Date && t.VerificationUTCDate.Date <= endPeriod.Date)
+                    .AsEnumerable();
 
-            var trafficStatistics = groupedTraffic.OrderBy(d => d.Key)
-                .Select(g => new { Date = g.Key, Count = g.Count()})
-                .ToDictionary(k => k.Date, k => k.Count);
+                var groupedTraffic = chartScale switch
+                {
+                    ChartScale.ByDays => passengerTraffic.GroupBy(d => (d.VerificationUTCDate.Date - startPeriod.Date).Days),
+                    ChartScale.ByWeeks => passengerTraffic.GroupBy(w => (w.VerificationUTCDate.Date - startPeriod.Date).Days / (int)ChartScale.ByWeeks),
+                    ChartScale.ByMonths => passengerTraffic.GroupBy(m => (m.VerificationUTCDate.Year - startPeriod.Year) * 12 + m.VerificationUTCDate.Month - startPeriod.Month),
+                    _ => passengerTraffic.GroupBy(d => (d.VerificationUTCDate.Date - startPeriod.Date).Days)
+                };
 
-            var chartData = new Dictionary<int, int>(); 
+                var trafficStatistics = groupedTraffic.OrderBy(d => d.Key)
+                    .Select(g => new { Date = g.Key, Count = g.Count() })
+                    .ToDictionary(k => k.Date, k => k.Count);
 
-            for(int i = 0; i < timeLabels.Count; i++)
-            {
-                chartData.Add(i, trafficStatistics.ContainsKey(i) ? trafficStatistics[i] : 0);
+                for (int i = 0; i < timeLabels.Count; i++)
+                {
+                    chartData.Add(i, trafficStatistics.ContainsKey(i) ? trafficStatistics[i] : 0);
+                }
             }
 
             return new ChartDto()
             {
                 Labels = timeLabels,
-                Data = chartData.Values.Select(d => d.ToString()).ToList()
+                Data = chartData.Values.Select(d => d.ToString()).ToList(),
+                ErrorMessage = errorMessage
             };
         }
     }
