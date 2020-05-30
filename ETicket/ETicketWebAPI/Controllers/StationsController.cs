@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ETicket.ApplicationServices.Extensions;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Http;
@@ -29,13 +30,17 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetStations()
+        public IActionResult GetStations([FromQuery]int pageNumber = 1, [FromQuery]int pageSize = 10)
         {
             log.Info(nameof(StationsController.GetStations));
 
             try
             {
-                return Ok(stationService.GetAll());
+                var stationPage = stationService
+                        .GetAll()
+                        .ToPage(pageNumber, pageSize);
+
+                return Ok(stationPage);
             }
             catch (Exception e)
             {
