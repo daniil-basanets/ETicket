@@ -90,7 +90,7 @@ namespace ETicket.ApplicationServices.Services
                 return new ChartDto() { ErrorMessage = EndLessStartError };
             }
 
-            List<string> timeLabels = new List<string>();
+            var timeLabels = new List<string>();
 
             if (chartScale == ChartScale.ByDays || chartScale == ChartScale.ByWeeks)
             {
@@ -98,6 +98,7 @@ namespace ETicket.ApplicationServices.Services
                 {
                     timeLabels.Add(timePoint.ToShortDateString());
                 }
+                //Add the rest of the week, in case the interval is not divided by weeks
                 timeLabels.Add(endPeriod.ToShortDateString());
             }
             if(chartScale == ChartScale.ByMonths)
@@ -108,19 +109,19 @@ namespace ETicket.ApplicationServices.Services
                 }
             }
 
-            var whereQuery = uow.TicketVerifications.GetAll()
+            var passengerTraffic = uow.TicketVerifications.GetAll()
                 .Where(t => t.IsVerified && t.VerificationUTCDate.Date >= startPeriod.Date && t.VerificationUTCDate.Date <= endPeriod.Date)
                 .AsEnumerable();
 
-            var groupByQuery = chartScale switch
+            var groupedTraffic = chartScale switch
             {
-                ChartScale.ByDays => whereQuery.GroupBy(d => (d.VerificationUTCDate.Date - startPeriod.Date).Days),
-                ChartScale.ByWeeks => whereQuery.GroupBy(w => (w.VerificationUTCDate.Date - startPeriod.Date).Days / (int)ChartScale.ByWeeks),
-                ChartScale.ByMonths => whereQuery.GroupBy(m => (m.VerificationUTCDate.Year - startPeriod.Year) * 12 + m.VerificationUTCDate.Month - startPeriod.Month),
-                _ => whereQuery.GroupBy(d => (d.VerificationUTCDate.Date - startPeriod.Date).Days)
+                ChartScale.ByDays => passengerTraffic.GroupBy(d => (d.VerificationUTCDate.Date - startPeriod.Date).Days),
+                ChartScale.ByWeeks => passengerTraffic.GroupBy(w => (w.VerificationUTCDate.Date - startPeriod.Date).Days / (int)ChartScale.ByWeeks),
+                ChartScale.ByMonths => passengerTraffic.GroupBy(m => (m.VerificationUTCDate.Year - startPeriod.Year) * 12 + m.VerificationUTCDate.Month - startPeriod.Month),
+                _ => passengerTraffic.GroupBy(d => (d.VerificationUTCDate.Date - startPeriod.Date).Days)
             };
 
-            var queryResult = groupByQuery.OrderBy(d => d.Key)
+            var trafficStatistics = groupedTraffic.OrderBy(d => d.Key)
                 .Select(g => new { Date = g.Key, Count = g.Count()})
                 .ToDictionary(k => k.Date, k => k.Count);
 
@@ -128,7 +129,7 @@ namespace ETicket.ApplicationServices.Services
 
             for(int i = 0; i < timeLabels.Count; i++)
             {
-                chartData.Add(i, queryResult.ContainsKey(i) ? queryResult[i] : 0);
+                chartData.Add(i, trafficStatistics.ContainsKey(i) ? trafficStatistics[i] : 0);
             }
 
             return new ChartDto()
