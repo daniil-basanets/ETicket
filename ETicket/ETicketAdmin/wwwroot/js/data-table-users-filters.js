@@ -66,6 +66,15 @@ $(document).ready(function () {
             order: [[1, "desc"]],
             ajax: {
                 url: 'User/GetCurrentPage',
+                dataFilter: function (data) {
+                    var json = jQuery.parseJSON(data);
+                    json.draw = json.drawCounter;
+                    json.recordsTotal = json.countRecords;
+                    json.recordsFiltered = json.countFiltered;
+                    json.data = json.pageData;
+
+                    return JSON.stringify(json); // return JSON string
+                },
                 //To send an array correctly by query string
                 traditional: true,
                 type: 'GET',
@@ -119,21 +128,21 @@ $(document).ready(function () {
                 },
                 {
                     name: "privilege",
-                    data: "privilege",
+                    data: "privilegeName",
                     defaultContent: "",
                     render: function (data, type, row) {
                         if (data != null) {
-                            return '<a href = "Privileges/Details/' + data.id + '">' + data.name + '</a>'
+                            return '<a href = "Privileges/Details/' + row.privilegeId + '">' + row.privilegeName + '</a>'
                         }
                     }
                 },
                 {
                     name: "document",
-                    data: "document",
+                    data: "documentNumber",
                     defaultContent: "",
                     render: function (data, type, row) {
                         if (data != null) {
-                            return '<a href = "Documents/Details/' + data.id + '">' + data.number + '</a>'
+                            return '<a href = "Documents/Details/' + row.documentId + '">' + row.documentNumber + '</a>'
                         }
                     }
                 },

@@ -11,6 +11,12 @@ namespace ETicket.ApplicationServices.DTOs
 
         [DisplayName("First station")]
         public int FirstStationId { get; set; }
+        
+        [DisplayName("First station")]
+        public string FirstStationName { get; set; }
+        
+        [DisplayName("Last station")]
+        public string LastStationName { get; set; }
 
         [DisplayName("Last station")]
         public int LastStationId { get; set; }
