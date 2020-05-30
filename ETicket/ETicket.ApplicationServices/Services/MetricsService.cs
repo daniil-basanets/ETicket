@@ -16,8 +16,8 @@ namespace ETicket.ApplicationServices.Services
 
         private readonly IUnitOfWork uow;
         private const int MaxDaysForChart = 366;
-        private const string EndLessStartError = "End date cannot be less than start date";
-        private const string MaxDaysForChartError = "The period of time cannot be more than {0} days";
+        private const string EndLessStartError = "End date cannot be less than start date;";
+        private const string MaxDaysForChartError = "The period of time cannot be more than {0} days;";
 
         #endregion
 
@@ -126,35 +126,37 @@ namespace ETicket.ApplicationServices.Services
                 , DayOfWeek.Sunday          
             };
 
+            StringBuilder errorMessageBuilder = new StringBuilder();
+
             if (startPeriod.CompareTo(endPeriod) == 1)
             {
-                return new ChartDto() 
-                { 
-                    Labels = daysOfWeek.Select(t => t.ToString()).ToList(),
-                    ErrorMessage = EndLessStartError 
-                };
+                errorMessageBuilder.AppendLine(EndLessStartError);
             }
             if((endPeriod - startPeriod).Days < 7)
             {
-                return new ChartDto() 
-                { 
-                    Labels = daysOfWeek.Select(t => t.ToString()).ToList(), 
-                    ErrorMessage = "One week - minimum time period" 
-                };
-            }         
+                errorMessageBuilder.AppendLine("One week - minimum time period;");
+            }
 
-            var chartData = uow.TicketVerifications.GetAll()
-                .Where(d => d.VerificationUTCDate >= startPeriod && d.VerificationUTCDate <= endPeriod && d.IsVerified)
-                .AsEnumerable()
-                .GroupBy(p => p.VerificationUTCDate.DayOfWeek)
-                .OrderBy(g => g.Key)
-                .Select(g => new { dayOfWeek = g.Key, count = g.Count() })
-                .ToDictionary(k => k.dayOfWeek, k => k.count);
+            var chartData = new List<string>();
+
+            if (errorMessageBuilder.Length == 0)
+            {
+                var passengerTraffic = uow.TicketVerifications.GetAll()
+                    .Where(d => d.VerificationUTCDate >= startPeriod && d.VerificationUTCDate <= endPeriod && d.IsVerified)
+                    .AsEnumerable()
+                    .GroupBy(p => p.VerificationUTCDate.DayOfWeek)
+                    .OrderBy(g => g.Key)
+                    .Select(g => new { dayOfWeek = g.Key, count = g.Count() })
+                    .ToDictionary(k => k.dayOfWeek, k => k.count);
+
+                chartData = daysOfWeek.Select(d => (passengerTraffic.ContainsKey(d) ? passengerTraffic[d] : 0).ToString()).ToList();
+            }
 
             return new ChartDto()
             {
                 Labels = daysOfWeek.Select(t => t.ToString()).ToList(),
-                Data = daysOfWeek.Select(d => (chartData.ContainsKey(d) ? chartData[d] : 0).ToString()).ToList()             
+                Data = chartData,
+                ErrorMessage = errorMessageBuilder.ToString()
             };
         }
     }
