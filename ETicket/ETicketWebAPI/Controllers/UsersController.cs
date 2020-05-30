@@ -5,6 +5,7 @@ using log4net;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Extensions;
+using System.Linq;
 
 namespace ETicket.WebAPI.Controllers
 {
@@ -27,21 +28,26 @@ namespace ETicket.WebAPI.Controllers
             this.ticketService = ticketService;
         }
 
-        // GET: api/users/{id}/tickets
-        [HttpGet("{userid}/tickets")]
+        // GET: api/users/{email}/tickets
+        [HttpGet("{email}/tickets")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetTicketsByUser(Guid userId, [FromQuery]int pageNumber = 1, [FromQuery]int pageSize = 10)
+        public IActionResult GetTicketsByUser(string email, [FromQuery]int pageNumber = 1, [FromQuery]int pageSize = 10)
         {
             log.Info(nameof(GetTicketsByUser));
 
             try
             {
-                var ticketPage = ticketService
-                        .GetTicketsByUserId(userId)
-                        .ToPage(pageNumber, pageSize);
+                var tickets = ticketService.GetTicketsByUserEmail(email)
+                                           .ToPage(pageNumber, pageSize);
 
-                return Ok(ticketPage);
+                if (tickets.Count() == 0)
+                {
+                    return NoContent();
+                }
+
+                return Json(tickets);
             }
             catch (Exception e)
             {

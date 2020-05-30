@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ETicketMobile.Business.Validators;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Login;
 using ETicketMobile.WebAccess.DTO;
@@ -16,16 +16,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 {
     public class CreateNewPasswordViewModel : ViewModelBase
     {
-        #region Constants
-
-        private const int PasswordMinLength = 8;
-        private const int PasswordMaxLength = 100;
-
-        #endregion
-
         #region Fields
 
-        private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
         private readonly IPageDialogService dialogService;
@@ -35,9 +27,10 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private string passwordWarning;
 
+        private string confirmPassword;
         private string confirmPasswordWarning;
 
-        private string confirmPassword;
+        private bool isDataLoad;
 
         #endregion
 
@@ -52,16 +45,22 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             set => SetProperty(ref passwordWarning, value);
         }
 
+        public string ConfirmPassword
+        {
+            get => confirmPassword;
+            set => SetProperty(ref confirmPassword, value);
+        }
+
         public string ConfirmPasswordWarning
         {
             get => confirmPasswordWarning;
             set => SetProperty(ref confirmPasswordWarning, value);
         }
 
-        public string ConfirmPassword
+        public bool IsDataLoad
         {
-            get => confirmPassword;
-            set => SetProperty(ref confirmPassword, value);
+            get => isDataLoad;
+            set => SetProperty(ref isDataLoad, value);
         }
 
         #endregion
@@ -72,9 +71,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             IHttpService httpService
         ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
@@ -99,18 +95,23 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
             try
             {
+                IsDataLoad = true;
+
                 if (!await RequestChangePasswordAsync(password))
                     return;
             }
             catch (WebException)
             {
+                IsDataLoad = false;
+
                 await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
             }
 
+            await NavigationService.NavigateAsync(nameof(LoginView));
 
-            await navigationService.NavigateAsync(nameof(LoginView));
+            IsDataLoad = false;
         }
 
         private async Task<bool> RequestChangePasswordAsync(string password)
@@ -146,28 +147,28 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            if (IsPasswordShort(password))
+            if (Validator.IsPasswordShort(password))
             {
                 PasswordWarning = AppResource.PasswordShort;
 
                 return false;
             }
 
-            if (IsPasswordLong(password))
+            if (Validator.IsPasswordLong(password))
             {
                 PasswordWarning = AppResource.PasswordLong;
 
                 return false;
             }
 
-            if (IsPasswordWeak(password))
+            if (Validator.IsPasswordWeak(password))
             {
                 PasswordWarning = AppResource.PasswordStrong;
 
                 return false;
             }
 
-            if (!PasswordsMatched(password))
+            if (!Validator.PasswordsMatched(password, ConfirmPassword))
             {
                 ConfirmPasswordWarning = AppResource.PasswordsMatch;
 
@@ -175,26 +176,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             }
 
             return true;
-        }
-
-        private bool IsPasswordShort(string password)
-        {
-            return password.Length < PasswordMinLength;
-        }
-
-        private bool IsPasswordLong(string password)
-        {
-            return password.Length > PasswordMaxLength;
-        }
-
-        private bool IsPasswordWeak(string password)
-        {
-            return password.All(ch => char.IsDigit(ch));
-        }
-
-        private bool PasswordsMatched(string password)
-        {
-            return string.Equals(password, ConfirmPassword);
         }
 
         #endregion

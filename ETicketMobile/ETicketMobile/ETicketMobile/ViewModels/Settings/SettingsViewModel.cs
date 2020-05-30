@@ -14,8 +14,6 @@ namespace ETicketMobile.ViewModels.Settings
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
-
         private ICommand navigateToAction;
 
         private IEnumerable<UserAction> settings;
@@ -38,8 +36,6 @@ namespace ETicketMobile.ViewModels.Settings
         public SettingsViewModel(INavigationService navigationService) 
             : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
         }
 
         public override void OnAppearing()
@@ -58,7 +54,7 @@ namespace ETicketMobile.ViewModels.Settings
 
         private async void OnNavigateToAction(UserAction action)
         {
-            await navigationService.NavigateAsync(action.View);
+            await NavigationService.NavigateAsync(action.View);
         }
     }
 }

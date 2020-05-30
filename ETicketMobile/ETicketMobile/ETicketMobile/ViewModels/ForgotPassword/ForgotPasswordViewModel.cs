@@ -2,11 +2,11 @@
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Android.Util;
+using ETicketMobile.Business.Validators;
+using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Login;
-using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.Endpoints;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
@@ -19,17 +19,17 @@ namespace ETicketMobile.ViewModels.ForgotPassword
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private readonly IPageDialogService dialogService;
-
         private readonly IHttpService httpService;
+
+        private readonly IUserValidator userValidator;
 
         private ICommand navigateToConfirmForgotPasswordView;
         private ICommand cancelCommand;
 
         private string emailWarning;
 
-        private const int EmailMaxLength = 50;
+        private bool isDataLoad;
 
         #endregion
 
@@ -47,22 +47,29 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             set => SetProperty(ref emailWarning, value);
         }
 
+        public bool IsDataLoad
+        {
+            get => isDataLoad;
+            set => SetProperty(ref isDataLoad, value);
+        }
+
         #endregion
 
         public ForgotPasswordViewModel(
             INavigationService navigationService,
             IPageDialogService dialogService,
-            IHttpService httpService
+            IHttpService httpService,
+            IUserValidator userValidator
         ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
             this.httpService = httpService
                 ?? throw new ArgumentNullException(nameof(httpService));
+
+            this.userValidator = userValidator
+                ?? throw new ArgumentNullException(nameof(userValidator));
         }
 
         private async void OnNavigateToConfirmForgotPasswordView(string email)
@@ -77,22 +84,28 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 if (!await IsValidAsync(email))
                     return;
 
+                IsDataLoad = true;
+
                 await RequestActivationCodeAsync(email);
             }
             catch (WebException)
             {
+                IsDataLoad = false;
+
                 await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
             }
 
             var navigationParameters = new NavigationParameters { { "email", email } };
-            await navigationService.NavigateAsync(nameof(ConfirmForgotPasswordView), navigationParameters);
+            await NavigationService.NavigateAsync(nameof(ConfirmForgotPasswordView), navigationParameters);
+
+            IsDataLoad = false;
         }
 
         private async void OnCancelCommand()
         {
-            await navigationService.NavigateAsync(nameof(LoginView));
+            await NavigationService.NavigateAsync(nameof(LoginView));
         }
 
         #region Validation
@@ -107,7 +120,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            if (!IsEmailValid(email))
+            if (!Validator.IsEmailValid(email))
             {
                 EmailWarning = AppResource.EmailInvalid;
 
@@ -115,16 +128,14 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             }
 
             // TODO EmailHasCorrectLength
-            if (!IsEmailConstainsCorrectLong(email))
+            if (!Validator.HasEmailCorrectLength(email))
             {
                 EmailWarning = AppResource.EmailCorrectLong;
 
                 return false;
             }
 
-            var userExists = await RequestUserExistsAsync(email);
-
-            if (!userExists)
+            if (! await userValidator.UserExistsAsync(email))
             {
                 EmailWarning = AppResource.EmailWrong;
 
@@ -132,27 +143,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             }
 
             return true;
-        }
-
-        private async Task<bool> RequestUserExistsAsync(string email)
-        {
-            var signUpRequestDto = new ForgotPasswordRequestDto { Email = email };
-
-            var isUserExists = await httpService.PostAsync<ForgotPasswordRequestDto, ForgotPasswordResponseDto>(
-                    AuthorizeEndpoint.CheckEmail, 
-                    signUpRequestDto);
-
-            return isUserExists.Succeeded;
-        }
-
-        private bool IsEmailValid(string email)
-        {
-            return Patterns.EmailAddress.Matcher(email).Matches();
-        }
-
-        private bool IsEmailConstainsCorrectLong(string email)
-        {
-            return email.Length <= EmailMaxLength;
         }
 
         #endregion
