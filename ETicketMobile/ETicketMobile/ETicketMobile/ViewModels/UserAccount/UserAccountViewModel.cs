@@ -4,6 +4,7 @@ using System.Windows.Input;
 using ETicketMobile.Business.Model.UserAccount;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Tickets;
+using ETicketMobile.Views.UserAccount;
 using ETicketMobile.Views.UserActions;
 using Prism.Navigation;
 using Xamarin.Forms;
@@ -14,7 +15,6 @@ namespace ETicketMobile.ViewModels.UserAccount
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
         private ICommand navigateToAction;
@@ -41,8 +41,6 @@ namespace ETicketMobile.ViewModels.UserAccount
         public UserAccountViewModel(INavigationService navigationService)
             : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
         }
 
         public override void OnAppearing()
@@ -55,8 +53,8 @@ namespace ETicketMobile.ViewModels.UserAccount
             UserActions = new List<UserAction>
             {
                 new UserAction { Name = AppResource.BuyTicket, View = nameof(TicketsView) },
-                new UserAction { Name = AppResource.TransactionHistory, View = nameof(UserTransactionsView) }
-                //new UserAction { Name = AppResource.MyTickets, View = nameof(MyTicketsView) }
+                new UserAction { Name = AppResource.TransactionHistory, View = nameof(UserTransactionsView) },
+                new UserAction { Name = AppResource.MyTickets, View = nameof(MyTicketsView) }
             };
         }
 
@@ -72,7 +70,7 @@ namespace ETicketMobile.ViewModels.UserAccount
 
         private async void OnNavigateToAction(UserAction action)
         {
-            await navigationService.NavigateAsync(action.View, navigationParameters);
+            await NavigationService.NavigateAsync(action.View, navigationParameters);
         }
     }
 }
