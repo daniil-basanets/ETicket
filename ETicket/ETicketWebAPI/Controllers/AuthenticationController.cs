@@ -44,7 +44,7 @@ namespace ETicket.WebAPI.Controllers
 
         // Check if email exists
         // POST: api/authentication/check-user
-        [HttpPost("/check-user")]
+        [HttpPost("check-user")]
         public IActionResult CheckEmail([FromBody] RegistrationRequest request)
         {
             log.Info(nameof(CheckEmail));
@@ -75,7 +75,7 @@ namespace ETicket.WebAPI.Controllers
 
         // Registration user
         // POST: api/authentication/registration
-        [HttpPost("/registration")]
+        [HttpPost("registration")]
         public async Task<IActionResult> Registration([FromBody] RegistrationRequest request)
         {
             log.Info(nameof(Registration));
@@ -127,7 +127,7 @@ namespace ETicket.WebAPI.Controllers
 
         // Login user
         // POST: api/authentication/token
-        [HttpPost("/token")]
+        [HttpPost("token")]
         public async Task<IActionResult> GetToken([FromBody] AuthenticationRequest request)
         {
             log.Info(nameof(GetToken));
@@ -168,7 +168,7 @@ namespace ETicket.WebAPI.Controllers
 
         // Refresh access_jwtToken
         // POST: api/authentication/refresh-token
-        [HttpPost("/refresh-token")]
+        [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshUserToken([FromBody] string RefreshToken)
         {
             log.Info(nameof(RefreshUserToken));
@@ -204,7 +204,7 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // POST: api/authentication/reset-password
-        [HttpPost("/reset-password")]
+        [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
             log.Info(nameof(ResetPassword));
@@ -240,7 +240,7 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // POST: api/authentication/check-code
-        [HttpPost("/check-code")]
+        [HttpPost("check-code")]
         public async Task<IActionResult> CheckCode([FromBody] CheckCodeRequest request)
         {
             log.Info(nameof(CheckCode));
@@ -270,7 +270,7 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // POST: api/authentication/send-code
-        [HttpPost("/send-code")]
+        [HttpPost("send-code")]
         public void SendSecretCodeToUser([FromBody] string email)
         {
             log.Info(nameof(SendSecretCodeToUser));
