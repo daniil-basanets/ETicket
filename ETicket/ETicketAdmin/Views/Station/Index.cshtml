@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ETicket.DataAccess.Domain.Entities.Station>
+﻿@model IEnumerable<ETicket.ApplicationServices.DTOs.StationDto>
 
 @{
     ViewData["Title"] = "Index";
@@ -33,7 +33,7 @@
                                 @Html.DisplayNameFor(model => model.Longitude)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayNameFor(model => model.Area)
+                                @Html.DisplayNameFor(model => model.AreaName)
                             </th>
                             <th>
                                 Actions
@@ -52,7 +52,7 @@
                                 @Html.DisplayNameFor(model => model.Longitude)
                             </th>
                             <th class="table-action">
-                                @Html.DisplayNameFor(model => model.Area)
+                                @Html.DisplayNameFor(model => model.AreaName)
                             </th>
                             <th>
                                 Actions
@@ -73,13 +73,13 @@
                                     @Html.DisplayFor(modelItem => item.Longitude)
                                 </td>
                                 <td>
-                                    @if (item.Area == null)
+                                    @if (item.AreaName == null)
                                     {
-                                        @Html.DisplayFor(modelItem => item.Area.Name)
+                                        @Html.DisplayFor(modelItem => item.AreaName)
                                     }
                                     else
                                     {
-                                        @Html.ActionLink(item.Area.Name, "Details", "Areas", new { id = item.AreaId }, null)
+                                        @Html.ActionLink(item.AreaName, "Details", "Areas", new { id = item.AreaId }, null)
                                     }
                                 </td>
                                 <td class="table-static">

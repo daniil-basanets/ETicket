@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Extensions;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using log4net;
@@ -34,13 +34,17 @@ namespace ETicket.WebAPI.Controllers
         [SwaggerOperation(Summary = "Get all stations", Description = "Allowed: everyone")]
         [SwaggerResponse(200, "Returns if everything was right. Contains a list of stations")]
         [SwaggerResponse(400, "Returns if exception occurred")]
-        public IActionResult GetStations()
+        public IActionResult GetStations([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             log.Info(nameof(StationsController.GetStations));
 
             try
             {
-                return Ok(stationService.GetAll());
+                var stationPage = stationService
+                        .GetAll()
+                        .ToPage(pageNumber, pageSize);
+
+                return Ok(stationPage);
             }
             catch (Exception e)
             {

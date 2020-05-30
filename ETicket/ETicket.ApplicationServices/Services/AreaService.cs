@@ -27,9 +27,11 @@ namespace ETicket.ApplicationServices.Services
 
         #endregion
                 
-        public IEnumerable<Area> GetAreas()
+        public IEnumerable<AreaDto> GetAreas()
         {
-            return unitOfWork.Areas.GetAll().ToList();
+            var areas = unitOfWork.Areas.GetAll();
+            
+            return mapper.Map<IQueryable<Area>, IEnumerable<AreaDto>>(areas).ToList();
         }
 
         public AreaDto GetAreaById(int id)

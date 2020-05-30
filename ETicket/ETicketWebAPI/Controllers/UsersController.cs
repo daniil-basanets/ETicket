@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using log4net;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Extensions;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,26 +32,27 @@ namespace ETicket.WebAPI.Controllers
             this.ticketService = ticketService;
         }
 
-        // GET: api/users/{id}/tickets
-        [HttpGet("{userid}/tickets")]
+        // GET: api/users/{email}/tickets
+        [HttpGet("{email}/tickets")]
         [SwaggerOperation(Summary = "Get all tickets for concrete user", Description = "Allowed: authorized user")]
         [SwaggerResponse(200, "Returns if everything was right. Contains a list of user's tickets")]
         [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(401, "Returns if user was unauthorized")]
-        public IActionResult GetTicketsByUser([SwaggerParameter("Email", Required = true)] string email)
+        public IActionResult GetTicketsByUser(string email, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             log.Info(nameof(GetTicketsByUser));
 
             try
             {
-                var tickets = ticketService.GetTicketsByUserEmail(email);
+                var ticketPage = ticketService.GetTicketsByUserEmail(email)
+                                              .ToPage(pageNumber, pageSize);
 
-                if (tickets.Count() == 0)
+                if (ticketPage.TotalRowsCount == 0)
                 {
                     return NoContent();
                 }
 
-                return Json(tickets);
+                return Json(ticketPage);
             }
             catch (Exception e)
             {

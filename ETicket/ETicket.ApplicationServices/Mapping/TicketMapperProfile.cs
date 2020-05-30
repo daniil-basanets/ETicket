@@ -2,6 +2,7 @@
 using System.Linq;
 using AutoMapper;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.PagingServices.Models;
 using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.ApplicationServices.Mapping
@@ -21,13 +22,15 @@ namespace ETicket.ApplicationServices.Mapping
                        .ForMember(d => d.TransactionRRN, d => d.MapFrom(s => s.TransactionHistory.ReferenceNumber))
                        .ForMember(d => d.Areas, d => d.MapFrom(s => s.TicketArea.Select(x => x.Area.Name)))
                        .ReverseMap();
+            CreateMap<DataTablePage<Ticket>, DataTablePage<TicketDto>>();
 
             CreateMap<TicketTypeDto, TicketType>().ReverseMap();
+            
             CreateMap<TicketVerificationDto, TicketVerification>()
                 .ReverseMap()
                 .ForMember(d => d.TransportNumber, d => d.MapFrom(x => x.Transport.Number))
                 .ForMember(d => d.StationName, d => d.MapFrom(x => x.Station.Name));
-
+            CreateMap<DataTablePage<TicketVerification>, DataTablePage<TicketVerificationDto>>();
         }
     }
 }

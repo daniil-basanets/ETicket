@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ETicket.DataAccess.Domain.Entities.PriceList>
+﻿@model IEnumerable<ETicket.ApplicationServices.DTOs.PriceListDto>
 
 @{
     ViewData["Title"] = "Index";
@@ -24,7 +24,7 @@
                                     @Html.DisplayNameFor(model => model.StartDate)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Area)
+                                    @Html.DisplayNameFor(model => model.AreaName)
                                 </th>
                                 <th>
                                     <a asp-action="Create" class="btn btn-success btn-sm">Create</a>
@@ -40,7 +40,7 @@
                                     @Html.DisplayNameFor(model => model.StartDate)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Area)
+                                    @Html.DisplayNameFor(model => model.AreaName)
                                 </th>
                                 <th>
                                     Actions
@@ -58,7 +58,7 @@
                                     @Html.DisplayFor(modelItem => item.StartDate)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Area.Name)
+                                    @Html.DisplayFor(modelItem => item.AreaName)
                                 </td>
                             </tr>
                             }

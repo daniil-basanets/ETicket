@@ -46,7 +46,7 @@ namespace ETicket.WebAPI.Controllers
 
         // Check if email exists
         // POST: api/authentication/check-user
-        [HttpPost("/check-user")]
+        [HttpPost("check-user")]
         [SwaggerOperation(Summary = "Check if email exists in the data base", Description = "It is used for an extra validation on the client")]
         [SwaggerResponse(200, "Returns if model is valid. Contains an object with a bool variable(exists or not)")]
         [SwaggerResponse(400, "Returns if model is not valid. Contains an object with a bool variable(valid or not)")]
@@ -80,7 +80,7 @@ namespace ETicket.WebAPI.Controllers
 
         // Registration user
         // POST: api/authentication/registration
-        [HttpPost("/registration")]
+        [HttpPost("registration")]
         [SwaggerOperation(Summary = "Registration")]
         [SwaggerResponse(200, "Returns if model is valid. Contains an object with a bool variable(succeeded or not)")]
         [SwaggerResponse(400, "Returns if model is not valid. Contains an object with a bool variable(valid or not)")]
@@ -136,7 +136,7 @@ namespace ETicket.WebAPI.Controllers
 
         // Login user
         // POST: api/authentication/token
-        [HttpPost("/token")]
+        [HttpPost("token")]
         [SwaggerOperation(Summary = "Log in endpoint", Description = "Returns a pair of tokens: access token; refresh token.")]
         [SwaggerResponse(400, "Returns if model is not valid. Contains an object with a bool variable(valid or not)")]
         [SwaggerResponse(500, "Server error. Log in failed. Contains an object with a bool variable(succeeded or not)")]
@@ -180,7 +180,7 @@ namespace ETicket.WebAPI.Controllers
 
         // Refresh access_jwtToken
         // POST: api/authentication/refresh-token
-        [HttpPost("/refresh-token")]
+        [HttpPost("refresh-token")]
         [SwaggerOperation(Summary = "Refresh access token endpoint", Description = "Returns a pair of tokens: access token; refresh token.")]
         [SwaggerResponse(404, "Returns if refresh token was not found")]
         public async Task<IActionResult> RefreshUserToken([FromBody, SwaggerRequestBody("Refresh token", Required = true)] string RefreshToken)
@@ -218,7 +218,7 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // POST: api/authentication/reset-password
-        [HttpPost("/reset-password")]
+        [HttpPost("reset-password")]
         [SwaggerOperation(Summary = "Reset password", Description = "Calls after verifying special secret code")]
         [SwaggerResponse(200, "Returns if password was reseted. Contains an object with a bool variable(succeeded or not)")]
         [SwaggerResponse(404, "Returns if user was not found by email")]
@@ -258,7 +258,7 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // POST: api/authentication/check-code
-        [HttpPost("/check-code")]
+        [HttpPost("check-code")]
         [SwaggerOperation(Summary = "Check special secret code", Description = "Calls to confirm email and verify code before resetting password")]
         [SwaggerResponse(200, "Returns if code was verified. Contains an object with a bool variable(succeeded or not)")]
         [SwaggerResponse(404, "Returns if code was not found. Contains an object with a bool variable(succeeded or not)")]
@@ -291,7 +291,7 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // POST: api/authentication/send-code
-        [HttpPost("/send-code")]
+        [HttpPost("send-code")]
         [SwaggerOperation(Summary = "Send special secret code", Description = "Calls to send special code to user's email. No more than 3 mails for 1 email.")]
         public void SendSecretCodeToUser([FromBody, SwaggerRequestBody("Email to send code", Required = true)] string email)
         {

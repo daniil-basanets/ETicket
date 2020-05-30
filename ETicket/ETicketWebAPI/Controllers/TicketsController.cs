@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using log4net;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.WebAPI.Models.TicketVerification;
+using ETicket.ApplicationServices.Extensions;
 using Swashbuckle.AspNetCore.Annotations;
 using ETicket.ApplicationServices.DTOs;
 
@@ -64,16 +65,17 @@ namespace ETicket.WebAPI.Controllers
         [SwaggerResponse(200, "Returns if everything was right. Contains a list of ticket verifications")]
         [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(401, "Returns if user was unauthorized")]
-        public IActionResult GetTicketVerificationHistory([SwaggerParameter("Guid(ticket id)", Required = true)] Guid ticketId)
+        public IActionResult GetTicketVerificationHistory(Guid ticketId, [FromQuery]int pageNumber = 1, [FromQuery]int pageSize = 10)
         {
             log.Info(nameof(GetTicketVerificationHistory));
 
             try
             {
-                var ticketVerification = verificationService
-                     .GetVerificationHistoryByTicketId(ticketId);            
+                var ticketVerificationPage = verificationService
+                     .GetVerificationHistoryByTicketId(ticketId)
+                     .ToPage(pageNumber, pageSize);            
 
-                return Ok(ticketVerification);
+                return Ok(ticketVerificationPage);
             }
             catch (Exception e)
             {
