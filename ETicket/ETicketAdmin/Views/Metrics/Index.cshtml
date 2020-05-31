@@ -12,61 +12,31 @@
 
 <!-- Content Row -->
 <div class="row">
-
     <div class="col-xl-8 col-lg-7">
-
-        <!-- Bar TicketsByTicketTypes -->
         <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Tickets by ticket types</h6>
-                From: <input type="date" id="tickets-by-types-start" class="form-control form-control-sm">
-                To: <input type="date" id="tickets-by-types-end" class="form-control form-control-sm">
-            </div>
             <div class="card-body">
-                <div class="chart-bar">
-                    <canvas id="tickets-by-types"></canvas>
-                </div>
-                <hr />
-                <span id="tickets-by-types-error" class="text-danger"></span>
+                <h5>Choose charts</h5>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="TicketsByTicketTypesChartCheckbox" onchange="ManageTicketsByTicketTypesChart()"> Tickets by ticket types
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="PassengerByTimeChartCheckbox" onchange="ManagePassengerByTimeChart()"> Passenger by time
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="PassengersByPrivilegeChartCheckbox" onchange="ManagePassengersByPrivilegeChart()"> Passengers by privilege
+                </label>
             </div>
         </div>
 
-        <!-- Passengers by time -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Passenger by time</h6>        
-                From: <input type="date" id="passengers-by-time-start" class="form-control form-control-sm">
-                To: <input type="date" id="passengers-by-time-end" class="form-control form-control-sm">
-            </div>
-            <div class="card-body">
-                <div class="chart-area">
-                    <canvas id="passengers-by-time"></canvas>
-                </div>
-                <hr>
-                <span id="passengers-by-time-error" class="text-danger"></span>
-            </div>
-        </div>
+        <div id="TicketsByTicketTypesChartPlace"></div>
+
+        <div id="PassengerByTimeChartPlace"></div>
     </div>
 
-    <!-- Donut Chart -->
     <div class="col-xl-4 col-lg-5">
-        <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Passengers by privilege</h6>
-                From: <input type="date" id="passengers-by-privilege-start" class="form-control form-control-sm">
-                To: <input type="date" id="passengers-by-privilege-end" class="form-control form-control-sm">
-            </div>
-            <!-- Card Body -->
-            <div class="card-body">
-                <div class="chart-pie">
-                    <canvas id="passengers-by-privilege"></canvas>
-                </div>
-                <hr>
-                <span id="passengers-by-privilege-error" class="text-danger"></span>
-            </div>
-        </div>
+        <div id="PassengersByPrivilegeChartPlace"></div>
     </div>
+
 </div>
 
 <!-- Bootstrap core JavaScript-->
@@ -79,6 +49,4 @@
 <script src="~/vendor/chart.js/Chart.min.js"></script>
 
 <!-- Page level custom scripts -->
-<script src="~/js/chart/chart-bar-tickets-by-types.js"></script>
-<script src="~/js/chart/chart-area-passengers-by-time.js"></script>
-<script src="~/js/chart/chart-pie-passengers-by-privileges.js"></script>
+<script src="~/js/chart/chart-selector.js"></script>

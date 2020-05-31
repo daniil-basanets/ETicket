@@ -38,6 +38,23 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
+        public IActionResult PassengersByPrivilegesChart(DateTime startPeriod, DateTime endPeriod)
+        {
+            log.Info(nameof(MetricsController.PassengersByPrivilegesChart));
+
+            try
+            {
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
         public IActionResult PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod)
         {
             log.Info(nameof(MetricsController.PassengersByTime));
@@ -55,6 +72,23 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
+        public IActionResult PassengersByTimeChart(DateTime startPeriod, DateTime endPeriod)
+        {
+            log.Info(nameof(MetricsController.PassengersByTimeChart));
+
+            try
+            {
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }     
+
+        [HttpGet]
         public IActionResult PassengersByTime(DateTime startPeriod, DateTime endPeriod)
         {
             log.Info(nameof(MetricsController.PassengersByTime));
@@ -64,6 +98,23 @@ namespace ETicket.Admin.Controllers
                 ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByTime(startPeriod, endPeriod);
 
                 return Json(chartDtoTicketsByTicketTypes);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult TicketsByTicketTypesChart(DateTime startPeriod, DateTime endPeriod)
+        {
+            log.Info(nameof(MetricsController.TicketsByTicketTypesChart));
+
+            try
+            {
+                return View();
             }
             catch (Exception e)
             {
