@@ -4,7 +4,6 @@ using ETicket.ApplicationServices.Charts.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
-using static ETicket.ApplicationServices.Services.MetricsService;
 
 namespace ETicket.Admin.Controllers
 {

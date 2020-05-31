@@ -76,13 +76,6 @@ namespace ETicket.ApplicationServices.Services
             return chartDto;
         }
 
-        public enum ChartScale
-        {
-            ByDays = 1,
-            ByWeeks = 7,
-            ByMonths = 30
-        }
-
         public ChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod, ChartScale chartScale)
         {
             string errorMessage = null;
