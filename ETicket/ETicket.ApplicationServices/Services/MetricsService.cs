@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -109,6 +110,38 @@ namespace ETicket.ApplicationServices.Services
                 Labels = timePeriods.Select(d => d.ToShortDateString()).ToList(),
                 Data = timePeriods.Select(d => (chartData.ContainsKey(d) ? chartData[d] : 0).ToString()).ToList()
             };
+        }
+
+        public ChartTableDto PassengersByHoursByRoutes(DateTime selectedDay, int [] selectedRoutesId)
+        {
+            var chartData = uow.TicketVerifications.GetAll()
+                               .Include(t => t.Transport)
+                               .ThenInclude(r => r.Route)
+                               .Where(t => t.IsVerified && t.VerificationUTCDate.Date == selectedDay.Date)
+                               .GroupBy(x => new { x.Transport.Route.Number, x.VerificationUTCDate.Hour })
+                               .Select(g => new { g.Key.Number, g.Key.Hour, PassengersCount = g.Count()}).ToList();
+
+            ChartTableDto chartTableDto = new ChartTableDto();
+            var routesCount = chartData.GroupBy(t => t.Number).Count();
+            var maxPassengers = chartData.Max(m => m.PassengersCount);
+            chartTableDto.MaxPassengersByRoute = maxPassengers;
+            chartTableDto.Data = new string[24, routesCount];
+
+            for (int i = 0; i < 24; i++)
+            {
+                var temp = chartData.Where(t => t.Hour == i);
+                int j = 0;
+
+                foreach (var item in temp)
+                {
+                    chartTableDto.Data[i, j++] = item.PassengersCount.ToString();
+                }                
+            }
+
+            var labels = chartData.Select(t => t.Number).Distinct();
+            chartTableDto.Labels = labels.ToList();
+
+            return chartTableDto;
         }
     }
 }

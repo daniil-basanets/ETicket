@@ -4,6 +4,7 @@ using ETicket.ApplicationServices.Charts.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace ETicket.Admin.Controllers
 {
@@ -76,12 +77,35 @@ namespace ETicket.Admin.Controllers
         public IActionResult GetTicketsByTicketTypes(DateTime startPeriod, DateTime endPeriod)
         {
             log.Info(nameof(MetricsController.GetTicketsByTicketTypes));
-
+        
             try
             {
                 ChartDto chartDtoTicketsByTicketTypes = metricsService.TicketsByTicketTypes(startPeriod, endPeriod);
 
                 return Json(chartDtoTicketsByTicketTypes);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        public IActionResult GetPassengersByHoursByRoutes(DateTime selectedDate)
+        {
+            log.Info(nameof(MetricsController.GetTicketsByTicketTypes));
+
+            try
+            {
+                ChartTableDto chartDtoTicketsByTicketTypes = metricsService.PassengersByHoursByRoutes(selectedDate, null);
+
+                var jsonString = JsonConvert.SerializeObject(chartDtoTicketsByTicketTypes, Formatting.Indented);
+
+                var result = new ObjectResult(jsonString);
+                result.StatusCode = Microsoft.AspNetCore.Http.StatusCodes.Status200OK;
+
+                return result;
             }
             catch (Exception e)
             {

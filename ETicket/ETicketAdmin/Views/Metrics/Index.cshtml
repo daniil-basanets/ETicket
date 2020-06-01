@@ -46,6 +46,23 @@
                 <span id="passengers-by-time-error" class="text-danger"></span>
             </div>
         </div>
+
+        <!-- horizontalBar Chart -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Passengers by hours by routes</h6>
+                Date: <input type="date" id="passengers-by-hours-by-routes-date" class="form-control form-control-sm">
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="chart-bar">
+                    <canvas id="passengers-by-hours-by-routes"></canvas>
+                </div>
+                <hr>
+                <span id="passengers-by-hours-by-routes-error" class="text-danger"></span>
+            </div>
+
+        </div>
     </div>
 
     <!-- Donut Chart -->
@@ -82,3 +99,4 @@
 <script src="~/js/chart/chart-bar-tickets-by-types.js"></script>
 <script src="~/js/chart/chart-area-passengers-by-time.js"></script>
 <script src="~/js/chart/chart-pie-passengers-by-privileges.js"></script>
+<script src="~/js/chart/chart-passengers-by-hours-by-routes.js"></script>
