@@ -1,4 +1,4 @@
-﻿@model ETicket.DataAccess.Domain.Entities.Ticket
+﻿@model ETicket.ApplicationServices.DTOs.TicketDto
 
 @{
     ViewData["Title"] = "Details";
@@ -17,10 +17,10 @@
             @Html.DisplayFor(model => model.Id)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TicketType)
+            @Html.DisplayNameFor(model => model.TicketTypeId)
         </dt>
         <dd class="col-sm-10">
-            @Html.ActionLink(@Model.TicketType.TypeName, "Details", "TicketType", new { id = @Model.TicketTypeId }, null)
+            @Html.ActionLink(@Model.TicketTypeName, "Details", "TicketType", new { id = @Model.TicketTypeId }, null)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CreatedUTCDate)
@@ -41,19 +41,28 @@
             @Model.ExpirationUTCDate?.ToString("yyyy-MM-dd hh:mm")
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.User)
+            @Html.DisplayNameFor(model => model.Areas)
         </dt>
         <dd class="col-sm-10">
-            @if (@Model.User != null)
-            { 
-                @Html.ActionLink(@Model.User.LastName + " " + Model.User.FirstName, "Details", "User", new { id = @Model.UserId }, null)
+            @foreach (var area in Model.Areas)
+            {
+                @Html.ActionLink(@area.Value, "Details", "Areas", new { id = area.Key }, null);<text>&nbsp;</text>
             }
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TransactionHistory)
+            @Html.DisplayNameFor(model => model.UserId)
         </dt>
         <dd class="col-sm-10">
-            @Html.ActionLink(@Model.TransactionHistory.ReferenceNumber, "Details", "TransactionHistory", new { id = @Model.TransactionHistoryId }, null)
+            @if (@Model.UserId != null)
+            {
+                @Html.ActionLink(@Model.UserName, "Details", "User", new { id = @Model.UserId }, null)
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TransactionRRN)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.ActionLink(@Model.TransactionRRN, "Details", "TransactionHistory", new { id = @Model.TransactionHistoryId }, null)
         </dd>
     </dl>
 </div>

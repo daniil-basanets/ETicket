@@ -7,7 +7,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
     public interface IPrivilegeService
     {
         public IEnumerable<Privilege> GetPrivileges();
-        public Privilege GetPrivilegeById(int id);
+        public PrivilegeDto GetPrivilegeById(int id);
         public void Create(PrivilegeDto privilegeDto);
         public void Update(PrivilegeDto privilegeDto);
         public void Delete(int id);

@@ -9,6 +9,7 @@ namespace ETicket.ApplicationServices.Mapping
         public TransactionHistoryMapperProfile()
         {
             CreateMap<TransactionHistoryDto, TransactionHistory>();
+            CreateMap<PriceListDto, PriceList>().ReverseMap();
         }
     }
 }

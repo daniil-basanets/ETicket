@@ -5,7 +5,6 @@ using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
-using AutoMapper.QueryableExtensions;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -42,14 +41,20 @@ namespace ETicket.ApplicationServices.Services
             ticket.Id = Guid.NewGuid();
             ticket.CreatedUTCDate = DateTime.UtcNow;
 
-            if (ticket.TicketType == null)
-            {
-                ticket.TicketType = uow.TicketTypes.Get(ticket.TicketTypeId);
-            }
+            ticket.TicketType = uow.TicketTypes.Get(ticket.TicketTypeId);
+            ticket.TransactionHistory = null;
 
             if (ticket.ActivatedUTCDate != null)
             {
                 ticket.ExpirationUTCDate = ticket.ActivatedUTCDate?.AddHours(ticket.TicketType.DurationHours);
+            }
+
+            ticket.TicketArea = new List<TicketArea>();
+
+            foreach (var areaId in ticketDto.SelectedAreaIds)
+            {
+                TicketArea ticketArea = new TicketArea() { TicketId = ticket.Id, AreaId = areaId };
+                ticket.TicketArea.Add(ticketArea);
             }
 
             uow.Tickets.Create(ticket);
@@ -59,6 +64,21 @@ namespace ETicket.ApplicationServices.Services
         public void Update(TicketDto ticketDto)
         {
             var ticket = mapper.Map<TicketDto, Ticket>(ticketDto);
+
+            if (ticket.TicketArea == null)
+            {
+                var ticketAreas = uow.TicketArea.GetAll().Where(t => t.TicketId == ticket.Id).ToList();
+
+                foreach (var ticketArea in ticketAreas)
+                {
+                    uow.TicketArea.Delete(ticketArea);
+                }
+            }
+
+            foreach (var areaId in ticketDto.SelectedAreaIds)
+            {
+                uow.TicketArea.Create(new TicketArea() { TicketId = ticket.Id, AreaId = areaId });
+            }
 
             uow.Tickets.Update(ticket);
             uow.Save();

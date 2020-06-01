@@ -16,8 +16,4 @@
     <ProjectReference Include="..\ETicketDataAccess\ETicket.DataAccess.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\DataTable\" />
-  </ItemGroup>
-
 </Project>

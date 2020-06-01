@@ -8,7 +8,6 @@ using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.WebAPI.Models.Identity;
 using ETicket.WebAPI.Models.Identity.Requests;
-using ETicket.WebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

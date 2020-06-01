@@ -1,4 +1,5 @@
-﻿using ETicket.DataAccess.Domain.Repositories;
+﻿using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Repositories;
 
 namespace ETicket.DataAccess.Domain.Interfaces
 {
@@ -8,13 +9,17 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         RouteRepository Routes { get; }
 
+        RouteStationRepository RouteStation { get; }
+
         DocumentTypeRepository DocumentTypes { get; }
 
         PrivilegeRepository Privileges { get; }
 
         TicketRepository Tickets { get; }
 
-        TicketTypeRepository TicketTypes { get; }
+        IRepository<TicketType,int> TicketTypes { get; }
+
+        TicketAreaRepository TicketArea { get; }
 
         TicketVerificationRepository TicketVerifications { get; }
         
@@ -25,6 +30,7 @@ namespace ETicket.DataAccess.Domain.Interfaces
         CarrierRepository Carriers { get; }
 
         SecretCodeRepository SecretCodes { get; }
+
         AreaRepository Areas { get; }
 
         StationRepository Stations { get; }

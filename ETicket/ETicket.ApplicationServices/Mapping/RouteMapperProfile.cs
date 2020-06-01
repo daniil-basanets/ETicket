@@ -11,7 +11,7 @@ namespace ETicket.ApplicationServices.Mapping
     {
         public RouteMapperProfile()
         {
-            CreateMap<RouteDto, Route>();
+            CreateMap<RouteDto, Route>().ReverseMap();
         }        
     }
 }

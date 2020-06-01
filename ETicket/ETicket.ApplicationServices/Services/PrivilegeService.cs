@@ -26,9 +26,11 @@ namespace ETicket.ApplicationServices.Services
         {
             return uow.Privileges.GetAll().ToList();
         }
-        public Privilege GetPrivilegeById(int id)
+        public PrivilegeDto GetPrivilegeById(int id)
         {
-            return uow.Privileges.Get(id);
+            var privilege = uow.Privileges.Get(id);
+
+            return mapper.Map<Privilege, PrivilegeDto>(privilege);
         }
 
         public void Create(PrivilegeDto privilegeDto)
