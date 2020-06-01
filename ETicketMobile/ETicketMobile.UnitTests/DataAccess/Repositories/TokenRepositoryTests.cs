@@ -1,0 +1,121 @@
+﻿using System;
+using System.Threading.Tasks;
+using ETicketMobile.Data.Entities;
+using ETicketMobile.DataAccess.Interfaces;
+using ETicketMobile.DataAccess.Repositories;
+using Moq;
+using Xunit;
+
+namespace ETicketMobile.UnitTests.DataAccess.Repositories
+{
+    public class TokenRepositoryTests
+    {
+        #region Fields
+
+        private readonly Mock<ISettingsRepository> settingsRepositoryMock;
+
+        private TokenRepository tokenRepository;
+        private readonly Token token;
+
+        #endregion
+
+        public TokenRepositoryTests()
+        {
+            settingsRepositoryMock = new Mock<ISettingsRepository>();
+
+            token = new Token
+            {
+                AcessJwtToken = "AccessToken",
+                RefreshJwtToken = "RefreshToken"
+            };
+        }
+        
+        [Fact]
+        public void Ctor()
+        {
+            // Act
+            var exception = Record.Exception(() => new TokenRepository());
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void CtorWithParameters_Positive()
+        {
+            // Assert
+            Assert.Throws<ArgumentNullException>(() => new TokenRepository(null));
+        }
+
+        [Fact]
+        public void CtorWithParameters_Negative()
+        {
+            // Arrange
+            var settingsRepository = new SettingsRepository();
+
+            // Act
+            var tokenRepository = new TokenRepository(settingsRepository);
+
+            // Assert
+            Assert.IsNotType<ArgumentNullException>(tokenRepository);
+        }
+
+        [Fact]
+        public async Task GetTokenAsync_Positive()
+        {
+            // Arrange
+            var value = "{\"AcessJwtToken\":\"AccessToken\"," +
+                        "\"RefreshJwtToken\":\"RefreshToken\"}";
+
+            settingsRepositoryMock
+                    .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
+                    .ReturnsAsync(value);
+
+            tokenRepository = new TokenRepository(settingsRepositoryMock.Object);
+
+            // Act
+            var actualToken = await tokenRepository.GetTokenAsync();
+
+            // Assert
+            Assert.Equal(token.AcessJwtToken, actualToken.AcessJwtToken);
+            Assert.Equal(token.RefreshJwtToken, actualToken.RefreshJwtToken);
+        }
+
+        [Fact]
+        public async Task GetTokenAsync_Negative()
+        {
+            // Arrange
+            string value = null;
+
+            settingsRepositoryMock
+                    .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
+                    .ReturnsAsync(value);
+
+            tokenRepository = new TokenRepository(settingsRepositoryMock.Object);
+
+            // Act
+            var actualToken = await tokenRepository.GetTokenAsync();
+
+            // Assert
+            Assert.Null(actualToken);
+        }
+
+        [Fact]
+        public async Task SaveTokenAsync()
+        {
+            // Arrange
+            var value = "{\"AcessJwtToken\":\"AccessToken\"," +
+                        "\"RefreshJwtToken\":\"RefreshToken\"}";
+
+            settingsRepositoryMock.Setup(sr => sr.SaveAsync(It.IsAny<string>(), It.IsAny<string>()));
+
+            tokenRepository = new TokenRepository(settingsRepositoryMock.Object);
+
+            // Act
+            await tokenRepository.SaveTokenAsync(token);            
+
+            // Assert
+            settingsRepositoryMock.Verify(t => t.SaveAsync("Token", value));
+        }
+    }
+}
