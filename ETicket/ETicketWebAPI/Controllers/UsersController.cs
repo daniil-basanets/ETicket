@@ -35,9 +35,9 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/users/{email}/tickets
         [HttpGet("{email}/tickets")]
         [SwaggerOperation(Summary = "Get all tickets for concrete user", Description = "Allowed: authorized user")]
-        [SwaggerResponse(200, "Returns if everything was correct. Contains a list of user's tickets")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a list of user's tickets")]
         [SwaggerResponse(400, "Returns if exception occurred")]
-        [SwaggerResponse(401, "Returns if user was unauthorized")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult GetTicketsByUser(string email, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             log.Info(nameof(GetTicketsByUser));
@@ -65,10 +65,10 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/users/5
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get user by id", Description = "Allowed: authorized user")]
-        [SwaggerResponse(200, "Returns if everything was correct. Contains a User object", typeof(UserDto))]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a User object", typeof(UserDto))]
         [SwaggerResponse(400, "Returns if exception occurred")]
-        [SwaggerResponse(404, "Returns if user was not found by id")]
-        [SwaggerResponse(401, "Returns if user was unauthorized")]
+        [SwaggerResponse(404, "Returns if user is not found by id")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult GetUser([SwaggerParameter("Guid", Required = true)] Guid id)
         {
             log.Info(nameof(UsersController.GetUser));
@@ -97,9 +97,9 @@ namespace ETicket.WebAPI.Controllers
         // PUT: api/users/5
         [HttpPut("{id}")]
         [SwaggerOperation(Summary = "Update user", Description = "Allowed: authorized user")]
-        [SwaggerResponse(204, "Returns if everything was correct, without content")]
+        [SwaggerResponse(204, "Returns if everything is correct, without content")]
         [SwaggerResponse(400, "Returns if exception occurred")]
-        [SwaggerResponse(401, "Returns if user was unauthorized")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult UpdateUser([SwaggerParameter("Guid", Required = true)] Guid id, [FromBody, SwaggerRequestBody("User payload", Required = true)] UserDto userDto)
         {
             log.Info(nameof(UsersController.UpdateUser));
@@ -128,7 +128,7 @@ namespace ETicket.WebAPI.Controllers
         // POST: api/users
         [HttpPost]
         [SwaggerOperation(Summary = "Create user", Description = "Allowed: everyone")]
-        [SwaggerResponse(201, "Returns if user was created")]
+        [SwaggerResponse(201, "Returns if user is created")]
         [SwaggerResponse(400, "Returns if exception occurred")]
         public IActionResult CreateUser([FromBody, SwaggerRequestBody("User payload", Required = true)] UserDto userDto)
         {
