@@ -27,6 +27,14 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     return s.join(dec);
 }
 
+var ChartScale = {
+    ByDays : 1,
+    ByMonths : 2,
+    ByYears : 3
+}
+
+var chartScale = ChartScale.ByDays;
+
 function yyyy_mm_dd(date) {
     //var now = new Date();
     var y = date.getFullYear();
@@ -56,60 +64,89 @@ $('#passengers-by-time-end').change(function () {
     refreshChart();
 })
 $('#passengers-by-time-by-days').change(function () {
-    chartScale = 1;
-    ToDatePicker();
-    refreshChart();
-})
-$('#passengers-by-time-by-weeks').change(function () {
-    chartScale = 7;
     ToDatePicker();
     refreshChart();
 })
 $('#passengers-by-time-by-months').change(function () {
-    chartScale = 30;
-    ToMonthDatePicker();
+    ToMonthPicker();
+    refreshChart();
+})
+$('#passengers-by-time-by-years').change(function () {
+    ToYearPicker();
     refreshChart();
 })
 
 var isMonthDatePick = false;
 function ToDatePicker() {
-    isMonthDatePick = false;
-
     var start = new Date($('#passengers-by-time-start').val());
     var end = new Date($('#passengers-by-time-end').val());
-    end = new Date(end.getFullYear(), end.getMonth() + 1, 0);
+
+    if (chartScale = ChartScale.ByMonths) {
+        end = new Date(end.getFullYear(), end.getMonth() + 1, 0);
+    }
+
+    if (chartScale = ChartScale.ByYears) {
+        start = new Date(start.getFullYear(), 0, 1);
+        end = new Date(end.getFullYear() + 1, 0, 0);
+    }
 
     $('#passengers-by-time-start').attr('type', 'date');
     $('#passengers-by-time-end').attr('type', 'date');
 
     $('#passengers-by-time-start').val(yyyy_mm_dd(start));
     $('#passengers-by-time-end').val(yyyy_mm_dd(end));
+
+    chartScale = ChartScale.ByDays;
 }
 
-function ToMonthDatePicker() {
-    isMonthDatePick = true;
+function ToMonthPicker() {
     var start = new Date($('#passengers-by-time-start').val());
     var end = new Date($('#passengers-by-time-end').val());
+
+    if (chartScale = ChartScale.ByYears) {
+        start = new Date(start.getFullYear(), 0, 1);
+        end = new Date(end.getFullYear() + 1, 0, 0);
+    }
 
     $('#passengers-by-time-start').attr('type', 'month');
     $('#passengers-by-time-end').attr('type', 'month');
 
     $('#passengers-by-time-start').val(yyyy_mm(start));
     $('#passengers-by-time-end').val(yyyy_mm(end));
+
+    chartScale = ChartScale.ByMonths;
 }
 
-var chartScale = 1;
+function ToYearPicker() {
+    var start = new Date($('#passengers-by-time-start').val());
+    var end = new Date($('#passengers-by-time-end').val());
+
+    $('#passengers-by-time-start').attr('type', 'number');
+    $('#passengers-by-time-end').attr('type', 'number');
+    $('#passengers-by-time-start').attr('min', '2000');
+    $('#passengers-by-time-start').attr('max', '2100');
+    $('#passengers-by-time-end').attr('min', '2000');
+    $('#passengers-by-time-end').attr('max', '2100');
+
+    $('#passengers-by-time-start').val(start.getFullYear());
+    $('#passengers-by-time-end').val(end.getFullYear());
+
+    chartScale = ChartScale.ByYears;
+}
+
 var passengerByTimeChart = null;
 
 function refreshChart() {
     var start = new Date($('#passengers-by-time-start').val());
     var end = new Date($('#passengers-by-time-end').val());
-
     if (isNaN(start.valueOf()) || isNaN(end.valueOf())) {
         return;
     }
-    if (isMonthDatePick) {
+    if (chartScale == ChartScale.ByMonths) {
         end = new Date(end.getFullYear(), end.getMonth() + 1, 0);
+    }
+    if (chartScale == ChartScale.ByYears) {
+        end = new Date(end.getFullYear() + 1, 0, 0);
     }
    
     var actionUrl = '/metrics/PassengersByTime' + "?startPeriod=" + start.toISOString() + "&endPeriod=" + end.toISOString() + "&scale=" + chartScale;
