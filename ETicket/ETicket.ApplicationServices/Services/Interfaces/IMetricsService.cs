@@ -11,6 +11,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
         ChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod, int routeId);
         ChartDto PassengersByRoutes(DateTime startPeriod, DateTime endPeriod, int[] selectedRoutesId);
         ChartDto PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod);
+        ChartDto PassengersByPrivilegesByRoute(DateTime startPeriod, DateTime endPeriod, int routeId);
         ChartDto TicketsByTicketTypes(DateTime startPeriod, DateTime endPeriod);
     }
 }

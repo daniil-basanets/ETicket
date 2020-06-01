@@ -49,6 +49,29 @@ namespace ETicket.ApplicationServices.Services
             return chartDto;
         }
 
+        public ChartDto PassengersByPrivilegesByRoute(DateTime startPeriod, DateTime endPeriod, int routeId)
+        {
+            if (startPeriod.CompareTo(endPeriod) == 1)
+            {
+                return new ChartDto() { ErrorMessage = EndLessStartError };
+            }
+            
+            var data = uow.TicketVerifications.GetAll()
+                .Where(d=>d.VerificationUTCDate >= startPeriod && d.VerificationUTCDate <= endPeriod && d.IsVerified && d.Transport.RouteId == routeId)
+                .Include(t => t.Ticket)
+                .ThenInclude(u => u.User)
+                .ThenInclude(p => p.Privilege)
+                .Select(n => n.Ticket.User.Privilege)
+                .GroupBy(p => p.Name)
+                .Select(g => new { name = g.Key ?? "No privilege", count = g.Count().ToString() })
+                .ToDictionary( k => k.name, k => k.count);
+
+
+            var chartDto = new ChartDto {Labels = data.Keys.ToArray(), Data = data.Values.ToArray()};
+
+            return chartDto;
+        }
+
         public ChartDto PassengersByRoutes(DateTime startPeriod, DateTime endPeriod, int[] selectedRoutesId)
         {
             throw new NotImplementedException();

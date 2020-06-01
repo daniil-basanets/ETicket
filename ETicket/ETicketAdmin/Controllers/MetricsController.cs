@@ -4,6 +4,7 @@ using ETicket.ApplicationServices.Charts.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ETicket.Admin.Controllers
 {
@@ -13,12 +14,14 @@ namespace ETicket.Admin.Controllers
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private readonly IMetricsService metricsService;
+        private readonly IRouteService routeService;
 
         #endregion
 
-        public MetricsController(IMetricsService metricsService)
+        public MetricsController(IMetricsService metricsService, IRouteService routeService)
         {
             this.metricsService = metricsService;
+            this.routeService = routeService;
         }
 
         public IActionResult Index()
@@ -45,6 +48,25 @@ namespace ETicket.Admin.Controllers
             try
             {
                 return Json(metricsService.PassengersByPrivileges(startPeriod, endPeriod));
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+        
+        [HttpGet]
+        public IActionResult PassengersByPrivilegesByRoute(DateTime startPeriod, DateTime endPeriod, int routeId = 3)
+        {
+            log.Info(nameof(MetricsController.PassengersByPrivilegesByRoute));
+            
+            ViewData["RouteId"] = new SelectList(routeService.GetRoutes(), "Id", "Number");
+            
+            try
+            {
+                return Json(metricsService.PassengersByPrivilegesByRoute(startPeriod, endPeriod, routeId));
             }
             catch (Exception e)
             {
