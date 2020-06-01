@@ -1,4 +1,4 @@
-﻿using ETicket.ApplicationServices.Charts.DTOs;
+﻿using ETicket.ApplicationServices.DTOs.Charts;
 using System;
 using System.Collections.Generic;
 using System.Text;

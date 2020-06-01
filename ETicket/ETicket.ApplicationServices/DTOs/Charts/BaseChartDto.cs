@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ETicket.ApplicationServices.Charts.DTOs
+namespace ETicket.ApplicationServices.DTOs.Charts
 {
     public abstract class BaseChartDto
     {

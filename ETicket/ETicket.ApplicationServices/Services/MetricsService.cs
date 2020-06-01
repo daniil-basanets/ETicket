@@ -1,4 +1,4 @@
-﻿using ETicket.ApplicationServices.Charts.DTOs;
+﻿using ETicket.ApplicationServices.DTOs.Charts;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
