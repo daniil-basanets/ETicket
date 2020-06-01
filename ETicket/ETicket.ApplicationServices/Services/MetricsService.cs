@@ -1,12 +1,11 @@
 ﻿using ETicket.ApplicationServices.Charts.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
+using ETicket.ApplicationServices.Enums;
 
 namespace ETicket.ApplicationServices.Services
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using ETicket.ApplicationServices.Charts.DTOs;
+using ETicket.ApplicationServices.Enums;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
