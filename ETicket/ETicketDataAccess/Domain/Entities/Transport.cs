@@ -11,7 +11,7 @@ namespace ETicket.DataAccess.Domain.Entities
 
         [DisplayName("Vehicle number")]
         [Required]
-        public string Number { get; set; }
+        public string VehicleNumber { get; set; }
         public int CarriersId { get; set; }
 
         [ForeignKey("CarriersId")]

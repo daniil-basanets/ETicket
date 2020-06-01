@@ -35,7 +35,7 @@ namespace ETicket.ApplicationServices.Services.PagingServices
                 "ticket" => (t => t.Ticket.Id.ToString().StartsWith(filterValue)),
                 "verificationUTCDate" => (t => t.VerificationUTCDate.Date == filterValue.ParseToDate()),
                 "station" => (t => t.Station.Name.StartsWith(filterValue)),
-                "transport" => (t => t.Transport.Number.StartsWith(filterValue)),
+                "transport" => (t => t.Transport.VehicleNumber.StartsWith(filterValue)),
                 "isVerified" => (t => t.IsVerified == filterValue.ParseToBoolean()),
                 _ => (t => true)
             };
@@ -60,7 +60,7 @@ namespace ETicket.ApplicationServices.Services.PagingServices
                 (t => t.Ticket.Id.ToString().StartsWith(searchValue)),
                 (t => t.VerificationUTCDate.Date.ToString().Contains(searchValue)),
                 (t => t.Station.Name.StartsWith(searchValue)),
-                (t => t.Transport.Number.StartsWith(searchValue))
+                (t => t.Transport.VehicleNumber.StartsWith(searchValue))
             };
         }
 
@@ -71,7 +71,7 @@ namespace ETicket.ApplicationServices.Services.PagingServices
                 { "ticket", (t => t.Ticket.Id) },
                 { "verificationUTCDate", (t => t.VerificationUTCDate.Date) },
                 { "station", (t => t.Station.Name) },
-                { "transport", (t => t.Transport.Number) },
+                { "transport", (t => t.Transport.VehicleNumber) },
                 { "isVerified", (t => t.IsVerified) }
             };
         }

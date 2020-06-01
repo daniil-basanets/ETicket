@@ -43,8 +43,8 @@ namespace ETicket.DataAccess.Domain.Repositories
         public IQueryable<Transport> GetAll()
         {
             return context.Transports
-                .Include(c=>c.Carriers)
-                .Include(r=>r.Route);
+                .Include(c => c.Carriers)
+                .Include(r => r.Route);
         }
 
         public void Update(Transport item)
