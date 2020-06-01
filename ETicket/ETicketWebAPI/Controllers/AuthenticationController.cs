@@ -220,9 +220,9 @@ namespace ETicket.WebAPI.Controllers
         // POST: api/authentication/reset-password
         [HttpPost("reset-password")]
         [SwaggerOperation(Summary = "Reset password", Description = "Calls after verifying special secret code")]
-        [SwaggerResponse(200, "Returns if password is reseted. Contains an object with a bool variable(succeeded or not)")]
+        [SwaggerResponse(200, "Returns if password is reset. Contains an object with a bool variable(succeeded or not)")]
         [SwaggerResponse(404, "Returns if user is not found by email")]
-        [SwaggerResponse(500, "Server error. Reset password operation is failed. Contains an object with a bool variable(succeeded or not)")]
+        [SwaggerResponse(500, "Server error. Reset password operation failed. Contains an object with a bool variable(succeeded or not)")]
         public async Task<IActionResult> ResetPassword([FromBody, SwaggerRequestBody("Reset password payload", Required = true)] ResetPasswordRequest request)
         {
             log.Info(nameof(ResetPassword));
