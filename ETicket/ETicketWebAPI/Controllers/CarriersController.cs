@@ -28,7 +28,7 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/Carriers
         [HttpGet]
         [SwaggerOperation(Summary = "Get all carriers", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was right. Contains a list of carriers")]
+        [SwaggerResponse(200, "Returns if everything was correct. Contains a list of carriers")]
         [SwaggerResponse(400, "Returns if exception occurred")]
         public IActionResult GetAll()
         {
@@ -49,7 +49,7 @@ namespace ETicket.WebAPI.Controllers
         // GET: api/Carriers/5
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get carrier by id", Description = "Allowed: everyone")]
-        [SwaggerResponse(200, "Returns if everything was right. Contains a Carrier object", typeof(CarrierDto))]
+        [SwaggerResponse(200, "Returns if everything was correct. Contains a Carrier object", typeof(CarrierDto))]
         [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(404, "Returns if carrier was not found by id")]
         public IActionResult GetCarrierById([SwaggerParameter("Int", Required = true)] int id)
@@ -80,7 +80,7 @@ namespace ETicket.WebAPI.Controllers
         // PUT: api/Carriers/5
         [HttpPut("{id}")]
         [SwaggerOperation(Summary = "Update carrier", Description = "Allowed: Admin")]
-        [SwaggerResponse(204, "Returns if everything was right, without content")]
+        [SwaggerResponse(204, "Returns if everything was correct, without content")]
         [SwaggerResponse(400, "Returns if exception occurred")]
         [SwaggerResponse(401, "Returns if user was unauthorized")]
         public IActionResult UpdateCarrier([SwaggerParameter("Int", Required = true)] int id, [FromBody, SwaggerRequestBody("Carrier payload", Required = true)] CarrierDto carrierDto)
