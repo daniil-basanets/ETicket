@@ -34,7 +34,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet]
         [SwaggerOperation(Summary = "Get all stations", Description = "Allowed: everyone")]
         [SwaggerResponse(200, "Returns if everything is correct. Contains a list of stations")]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         public IActionResult GetStations([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             log.Info(nameof(StationsController.GetStations));
@@ -59,7 +59,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get station by id", Description = "Allowed: everyone")]
         [SwaggerResponse(200, "Returns if everything is correct. Contains a Station object", typeof(StationDto))]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         [SwaggerResponse(404, "Returns if station is not found by id")]
         public IActionResult GetStation([SwaggerParameter("Int", Required = true)] int id)
         {

@@ -32,7 +32,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get ticket by id", Description = "Allowed: authorized user")]
         [SwaggerResponse(200, "Returns if everything is correct. Contains a Ticket object", typeof(TicketDto))]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         [SwaggerResponse(404, "Returns if ticket is not found by id")]
         [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult GetTicket([SwaggerParameter("Guid", Required = true)] Guid id)
@@ -63,7 +63,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet("{ticketId}/verification-history")]
         [SwaggerOperation(Summary = "Get ticket verification history by id", Description = "Allowed: authorized user")]
         [SwaggerResponse(200, "Returns if everything is correct. Contains a list of ticket verifications")]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult GetTicketVerificationHistory(Guid ticketId, [FromQuery]int pageNumber = 1, [FromQuery]int pageSize = 10)
         {
@@ -89,7 +89,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpPut("/activate/{ticketId}")]
         [SwaggerOperation(Summary = "Update(activate) ticket", Description = "Allowed: authorized user")]
         [SwaggerResponse(204, "Returns if everything is correct, without content")]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult Activate([SwaggerParameter("Guid", Required = true)] Guid ticketId)
         {
@@ -112,7 +112,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost("{ticketId}/verify")]
         [SwaggerOperation(Summary = "Validate ticket endpoint", Description = "Allowed: Validator")]
         [SwaggerResponse(200, "Returns if everything is correct. Contains a VerifyTicketResponse", typeof(VerifyTicketResponceDto))]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult VerifyTicket([SwaggerParameter("Guid", Required = true)] Guid ticketId, [FromBody, SwaggerRequestBody("Verify ticket payload", Required = true)] VerifyTicketRequest request)
         {

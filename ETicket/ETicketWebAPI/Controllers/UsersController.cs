@@ -36,7 +36,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet("{email}/tickets")]
         [SwaggerOperation(Summary = "Get all tickets for concrete user", Description = "Allowed: authorized user")]
         [SwaggerResponse(200, "Returns if everything is correct. Contains a list of user's tickets")]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult GetTicketsByUser(string email, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
@@ -66,7 +66,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get user by id", Description = "Allowed: authorized user")]
         [SwaggerResponse(200, "Returns if everything is correct. Contains a User object", typeof(UserDto))]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         [SwaggerResponse(404, "Returns if user is not found by id")]
         [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult GetUser([SwaggerParameter("Guid", Required = true)] Guid id)
@@ -98,7 +98,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpPut("{id}")]
         [SwaggerOperation(Summary = "Update user", Description = "Allowed: authorized user")]
         [SwaggerResponse(204, "Returns if everything is correct, without content")]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult UpdateUser([SwaggerParameter("Guid", Required = true)] Guid id, [FromBody, SwaggerRequestBody("User payload", Required = true)] UserDto userDto)
         {
@@ -129,7 +129,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost]
         [SwaggerOperation(Summary = "Create user", Description = "Allowed: everyone")]
         [SwaggerResponse(201, "Returns if user is created")]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         public IActionResult CreateUser([FromBody, SwaggerRequestBody("User payload", Required = true)] UserDto userDto)
         {
             log.Info(nameof(UsersController.CreateUser));

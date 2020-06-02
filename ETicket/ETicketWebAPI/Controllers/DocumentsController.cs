@@ -26,7 +26,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet]
         [SwaggerOperation(Summary = "Get all documents", Description = "Allowed: Admin")]
         [SwaggerResponse(200, "Returns if everything is correct. Contains a list of documents")]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult GetDocuments()
         {
@@ -38,7 +38,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get document by id", Description = "Allowed: Admin")]
         [SwaggerResponse(200, "Returns if everything is correct. Contains a Document object", typeof(Document))]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         [SwaggerResponse(404, "Returns if document is not found by id")]
         [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult GetDocument([SwaggerParameter("Guid", Required = true)] Guid id)
@@ -67,7 +67,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpPut("{id}")]
         [SwaggerOperation(Summary = "Update document", Description = "Allowed: authorized user")]
         [SwaggerResponse(200, "Returns if everything is correct", typeof(DocumentDto))]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         [SwaggerResponse(401, "Returns if user is unauthorized")]
         public  IActionResult UpdateDocument([SwaggerParameter("Guid", Required = true)] Guid id, [FromBody, SwaggerRequestBody("Document payload", Required = true)] DocumentDto documentDto)
         {
@@ -100,7 +100,7 @@ namespace ETicket.WebAPI.Controllers
         [HttpPost]
         [SwaggerOperation(Summary = "Create document", Description = "Allowed: authorized user")]
         [SwaggerResponse(200, "Returns if document is created", typeof(DocumentDto))]
-        [SwaggerResponse(400, "Returns if exception occurred")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult PostDocument([FromBody, SwaggerRequestBody("Document payload", Required = true)] DocumentDto documentDto)
         {
