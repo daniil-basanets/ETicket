@@ -69,7 +69,11 @@ function refreshPassengersByRoutesByHoursChart() {
         return;
     }
 
-    var actionUrl = '/metrics/GetPassengersByHoursByRoutes' + "?selectedDate=" + start.toISOString() + '&selectedRoutesId=' + selectedRoutesPassengersByRoutesByHoursChart;
+    var selectedRoutesUrl = ""; 
+    for (var key in selectedRoutesPassengersByRoutesByHoursChart) {
+        selectedRoutesUrl += "selectedRoutesId=" + selectedRoutesPassengersByRoutesByHoursChart[key] + "&";
+    }
+    var actionUrl = '/metrics/GetPassengersByHoursByRoutes' + "?selectedDate=" + start.toISOString() + '&' + selectedRoutesUrl;
     $.getJSON(actionUrl, function (response) {
         if (response != null) {
             rawData = response;
@@ -144,7 +148,7 @@ function refreshPassengersByRoutesByHoursChart() {
                     }
                 }
             });
-            PassengersByRoutesByHoursChart.canvas.parentNode.style.height = "" + (rawData.Labels.length * 30) + "px";
+            PassengersByRoutesByHoursChart.canvas.parentNode.style.height = "" + (rawData.Labels.length * 30 + 200) + "px";
         }
     })
 };

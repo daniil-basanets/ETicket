@@ -117,7 +117,7 @@ namespace ETicket.ApplicationServices.Services
             var chartData = uow.TicketVerifications.GetAll()
                                .Include(t => t.Transport)
                                .ThenInclude(r => r.Route)
-                               .Where(t => t.IsVerified && t.VerificationUTCDate.Date == selectedDay.Date)
+                               .Where(t => t.IsVerified && t.VerificationUTCDate.Date == selectedDay.Date && selectedRoutesId.Contains(t.Transport.RouteId))
                                .GroupBy(x => new { x.Transport.Route.Number, x.VerificationUTCDate.Hour })
                                .Select(g => new { g.Key.Number, g.Key.Hour, PassengersCount = g.Count()}).ToList();
 

@@ -92,7 +92,7 @@ namespace ETicket.Admin.Controllers
             }
         }
 
-        public IActionResult GetPassengersByHoursByRoutes(DateTime selectedDate, int [] selectedRoutesId)
+        public IActionResult GetPassengersByHoursByRoutes(DateTime selectedDate, [FromQuery] int [] selectedRoutesId)
         {
             log.Info(nameof(MetricsController.GetTicketsByTicketTypes));
 
