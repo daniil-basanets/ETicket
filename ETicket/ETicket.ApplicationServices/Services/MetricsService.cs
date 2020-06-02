@@ -84,20 +84,42 @@ namespace ETicket.ApplicationServices.Services
                 errorMessage = EndLessStartError;
             }
 
+            var timeLabels = GetTimeLabels(startPeriod, endPeriod, chartScale);
+
+            var chartData = new Dictionary<int, int>();
+
+            if (errorMessage == null)
+            {
+                var passengerTraffic = GetPassengerTraffic(startPeriod, endPeriod, chartScale);
+
+                for (int i = 0; i < timeLabels.Count; i++)
+                {
+                    chartData.Add(i, passengerTraffic.ContainsKey(i) ? passengerTraffic[i] : 0);
+                }
+            }
+
+            return new ChartDto()
+            {
+                Labels = timeLabels,
+                Data = chartData.Values.Select(d => d.ToString()).ToList(),
+                ErrorMessage = errorMessage
+            };
+        }
+
+        private List<string> GetTimeLabels(DateTime startPeriod, DateTime endPeriod, ChartScale chartScale)
+        {
             var timeLabels = new List<string>();
 
             if (chartScale == ChartScale.ByDays)
             {
-                for (DateTime timePoint = startPeriod.Date; timePoint.Date < endPeriod.Date; timePoint = timePoint.AddDays((double)chartScale))
+                for (DateTime timePoint = startPeriod.Date; timePoint.Date <= endPeriod.Date; timePoint = timePoint.AddDays(1))
                 {
                     timeLabels.Add(timePoint.ToShortDateString());
                 }
-                //Add the rest of the week, in case the interval is not divided by weeks
-                timeLabels.Add(endPeriod.ToShortDateString());
             }
-            if(chartScale == ChartScale.ByMonths)
+            if (chartScale == ChartScale.ByMonths)
             {
-                for (DateTime timePoint = startPeriod.Date; timePoint.Month <= endPeriod.Month && timePoint.Year <= endPeriod.Year; timePoint = timePoint.AddMonths(1))
+                for (DateTime timePoint = startPeriod.Date; timePoint.Month <= endPeriod.Month || timePoint.Year < endPeriod.Year; timePoint = timePoint.AddMonths(1))
                 {
                     timeLabels.Add(timePoint.ToString("MMMM, yyyy"));
                 }
@@ -110,37 +132,25 @@ namespace ETicket.ApplicationServices.Services
                 }
             }
 
-            var chartData = new Dictionary<int, int>();
+            return timeLabels;
+        }
 
-            if (errorMessage == null)
-            {
-                var passengerTraffic = uow.TicketVerifications.GetAll()
+        private Dictionary<int, int> GetPassengerTraffic(DateTime startPeriod, DateTime endPeriod, ChartScale chartScale)
+        {
+            var passengerTraffic = uow.TicketVerifications.GetAll()
                    .Where(t => t.IsVerified && t.VerificationUTCDate.Date >= startPeriod.Date && t.VerificationUTCDate.Date <= endPeriod.Date);
 
-                var groupedTraffic = chartScale switch
-                {
-                    ChartScale.ByDays => passengerTraffic.GroupBy(d => EF.Functions.DateDiffDay(startPeriod.Date, d.VerificationUTCDate.Date)),
-                    ChartScale.ByMonths => passengerTraffic.GroupBy(m => EF.Functions.DateDiffMonth(startPeriod.Date, m.VerificationUTCDate.Date)),
-                    ChartScale.ByYears => passengerTraffic.GroupBy(y => EF.Functions.DateDiffYear(startPeriod.Date, y.VerificationUTCDate.Date)),
-                    _ => passengerTraffic.GroupBy(y => EF.Functions.DateDiffDay(startPeriod.Date, y.VerificationUTCDate.Date)),                       
-                };
-
-                var trafficStatistics = groupedTraffic.OrderBy(d => d.Key)
-                    .Select(g => new { Date = g.Key, Count = g.Count() })
-                    .ToDictionary(k => k.Date, k => k.Count);
-
-                for (int i = 0; i < timeLabels.Count; i++)
-                {
-                    chartData.Add(i, trafficStatistics.ContainsKey(i) ? trafficStatistics[i] : 0);
-                }
-            }
-
-            return new ChartDto()
+            var groupedTraffic = chartScale switch
             {
-                Labels = timeLabels,
-                Data = chartData.Values.Select(d => d.ToString()).ToList(),
-                ErrorMessage = errorMessage
+                ChartScale.ByDays => passengerTraffic.GroupBy(d => EF.Functions.DateDiffDay(startPeriod.Date, d.VerificationUTCDate.Date)),
+                ChartScale.ByMonths => passengerTraffic.GroupBy(m => EF.Functions.DateDiffMonth(startPeriod.Date, m.VerificationUTCDate.Date)),
+                ChartScale.ByYears => passengerTraffic.GroupBy(y => EF.Functions.DateDiffYear(startPeriod.Date, y.VerificationUTCDate.Date)),
+                _ => passengerTraffic.GroupBy(y => EF.Functions.DateDiffDay(startPeriod.Date, y.VerificationUTCDate.Date)),
             };
+
+            return groupedTraffic.OrderBy(d => d.Key)
+                .Select(g => new { Date = g.Key, Count = g.Count() })
+                .ToDictionary(k => k.Date, k => k.Count); ;
         }
     }
 }
