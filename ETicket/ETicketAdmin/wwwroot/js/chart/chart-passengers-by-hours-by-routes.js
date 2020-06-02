@@ -102,8 +102,8 @@ function refreshPassengersByRoutesByHoursChart() {
                 PassengersByRoutesByHoursChart.destroy();
             }
 
-            if (chartData.errorMessage) {
-                $("#passengers-by-hours-by-routes-error").html(chartData.errorMessage);
+            if (chartData.ErrorMessage) {
+                $("#passengers-by-hours-by-routes-error").html(chartData.ErrorMessage);
             }
             else {
                 $("#passengers-by-hours-by-routes-error").html("");

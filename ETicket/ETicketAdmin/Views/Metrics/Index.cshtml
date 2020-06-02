@@ -41,15 +41,9 @@
                 <h6 class="m-0 font-weight-bold text-primary">Passengers by privilege</h6>
                 From: <input type="date" id="passengers-by-privilege-start" class="form-control form-control-sm">
                 To: <input type="date" id="passengers-by-privilege-end" class="form-control form-control-sm">
-                <select id="single-optgroups" multiple>
-                    <option value="value 1">Angular</option>
-                    <option value="value 2">React</option>
-                    <option value="value 3">Vue</option>
-                    <option value="value 4">Bootstrap</option>
-                    <option value="value 5">Foundation</option>
-                    <option value="value 6">Bulma</option>
+                <select id="routes-for-passengers-by-privilege" multiple>
+                    <option data-placeholder="true"></option>
                 </select>
-
             </div>
             <!-- Card Body -->
             <div class="card-body">
@@ -67,6 +61,9 @@
                 <h6 class="m-0 font-weight-bold text-primary">Passenger by time</h6>
                 From: <input type="date" id="passengers-by-time-start" class="form-control form-control-sm">
                 To: <input type="date" id="passengers-by-time-end" class="form-control form-control-sm">
+                <select id="routes-for-passengers-by-time" multiple>
+                    <option data-placeholder="true"></option>
+                </select>
             </div>
             <div class="card-body">
                 <div class="chart-area">
@@ -119,12 +116,6 @@
 
 <script>
     initRoutesList();
-</script>
-
-<script>
-    new SlimSelect({
-        select: '#single-optgroups'
-    });
 </script>
 
 
