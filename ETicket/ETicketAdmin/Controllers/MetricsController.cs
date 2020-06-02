@@ -92,13 +92,13 @@ namespace ETicket.Admin.Controllers
             }
         }
 
-        public IActionResult GetPassengersByHoursByRoutes(DateTime selectedDate)
+        public IActionResult GetPassengersByHoursByRoutes(DateTime selectedDate, int [] selectedRoutesId)
         {
             log.Info(nameof(MetricsController.GetTicketsByTicketTypes));
 
             try
             {
-                ChartTableDto chartDtoTicketsByTicketTypes = metricsService.PassengersByHoursByRoutes(selectedDate, null);
+                ChartTableDto chartDtoTicketsByTicketTypes = metricsService.PassengersByHoursByRoutes(selectedDate, selectedRoutesId);
 
                 var jsonString = JsonConvert.SerializeObject(chartDtoTicketsByTicketTypes, Formatting.Indented);
 

@@ -2,10 +2,8 @@
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -30,10 +28,18 @@ namespace ETicket.ApplicationServices.Services
 
         public IEnumerable<RouteDto> GetRoutes()
         {
-            var routes= unitOfWork.Routes.GetAll();
-            
+            var routes = unitOfWork.Routes.GetAll();
+
             return mapper.Map<IQueryable<Route>, IEnumerable<RouteDto>>(routes).ToList();
-        }       
+        }
+
+
+        public IEnumerable<BaseRouteDto> GetBaseRoutesInfo()
+        {
+            var routes = unitOfWork.Routes.GetAll().OrderBy(t => t.Number);
+
+            return mapper.ProjectTo<BaseRouteDto>(routes).ToList();
+        }
 
         public RouteDto GetRouteById(int id)
         {

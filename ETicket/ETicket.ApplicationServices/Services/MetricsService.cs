@@ -127,19 +127,19 @@ namespace ETicket.ApplicationServices.Services
             chartTableDto.MaxPassengersByRoute = maxPassengers;
             chartTableDto.Data = new string[24, routesCount];
 
+            var labels = chartData.Select(t => t.Number).Distinct();
+            chartTableDto.Labels = labels.ToList();
+
             for (int i = 0; i < 24; i++)
             {
                 var temp = chartData.Where(t => t.Hour == i);
-                int j = 0;
 
                 foreach (var item in temp)
                 {
-                    chartTableDto.Data[i, j++] = item.PassengersCount.ToString();
+                    var j = chartTableDto.Labels.IndexOf(item.Number);
+                    chartTableDto.Data[i, j] = item.PassengersCount.ToString();
                 }                
             }
-
-            var labels = chartData.Select(t => t.Number).Distinct();
-            chartTableDto.Labels = labels.ToList();
 
             return chartTableDto;
         }
