@@ -144,6 +144,8 @@ function refreshPassengersByRoutesByHoursChart() {
                         display: false,
                     },
                     tooltips: {
+                        mode: 'point',
+                        intersect: false,
                         titleMarginBottom: 10,
                         titleFontColor: '#6e707e',
                         titleFontSize: 14,
@@ -153,13 +155,17 @@ function refreshPassengersByRoutesByHoursChart() {
                         borderWidth: 1,
                         xPadding: 15,
                         yPadding: 15,
-                        displayColors: false,
+                        position: 'nearest',
+                        displayColors: true,
                         caretPadding: 10,
                         callbacks: {
+                            title: function (tooltipItem, chart) {
+                                return tooltipItem[0].label + ' route';
+                            },
                             label: function (tooltipItem, chart) {
-                                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label  || '';
                                 var number = rawData.Data[tooltipItem.datasetIndex][tooltipItem.index];
-                                return datasetLabel + ': ' + ((number != null) ? ((number == rawData.MaxPassengersByRoute) ? number + ' max': number) : "0");
+                                return datasetLabel + ': ' + ((number != null) ? ((number == rawData.MaxPassengersByRoute) ? number + ' max': number) : '0') + ' passengers';
                             }
                         }
                     },
