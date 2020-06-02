@@ -3,7 +3,7 @@
     public enum ChartScale
     {
         ByDays = 1,
-        ByWeeks = 7,
-        ByMonths = 30
+        ByMonths = 2,
+        ByYears = 3
     }
 }
