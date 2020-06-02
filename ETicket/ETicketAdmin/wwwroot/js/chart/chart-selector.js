@@ -26,3 +26,8 @@ function ManageChart(checkBox, chartURL, chartDivId) {
     }
 }
 
+$(document).ready(function () {
+    $("#check-box-list input:checked").each(function () {
+        $(this).trigger("change");
+    });
+})
