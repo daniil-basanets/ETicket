@@ -1,7 +1,7 @@
-﻿using ETicket.ApplicationServices.Charts.DTOs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ETicket.ApplicationServices.DTOs.Charts;
 
 namespace ETicket.ApplicationServices.Services.Interfaces
 {
@@ -10,8 +10,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
         ChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod);
         ChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod, int routeId);
         ChartDto PassengersByRoutes(DateTime startPeriod, DateTime endPeriod, int[] selectedRoutesId);
-        ChartDto PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod);
-        ChartDto PassengersByPrivilegesByRoute(DateTime startPeriod, DateTime endPeriod, int routeId);
+        ChartByRoutesDto PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod, int[] selectedRoutesId);
         ChartDto TicketsByTicketTypes(DateTime startPeriod, DateTime endPeriod);
     }
 }

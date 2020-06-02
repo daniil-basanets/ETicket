@@ -61,7 +61,7 @@ function refreshPassengersByPrivilege() {
                     labels: chartData.labels,
                     datasets: [{
                         data: chartData.data,
-                        backgroundColor: ['#808080', '#4e73df', '#1cc88a', '#36b9cc', '#FFBF40', '#7109AA'],
+                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#FFBF40', '#7109AA'],
                         hoverBorderColor: "rgba(234, 236, 244, 1)",
                     }],
                 },

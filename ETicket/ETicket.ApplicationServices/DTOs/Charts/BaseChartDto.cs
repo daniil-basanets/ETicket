@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace ETicket.ApplicationServices.Charts.DTOs
+namespace ETicket.ApplicationServices.DTOs.Charts
 {
     public abstract class BaseChartDto
     {

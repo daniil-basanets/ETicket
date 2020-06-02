@@ -81,28 +81,6 @@
             </div>
         </div>
     </div>
-    <div class="col-xl-4 col-lg-5">
-        <div class="card shadow mb-4">
-            <!-- Card Header - Dropdown -->
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Passengers by privilege by route</h6>
-                From: <input type="date" id="passengers-by-privilege-by-route-start" class="form-control form-control-sm">
-                To: <input type="date" id="passengers-by-privilege-by-route-end" class="form-control form-control-sm">
-                <div class="form-group">
-                    <label asp-for="Id" class="control-label">Route</label>
-                    <select asp-for="Id" class="form-control" asp-items="ViewBag.RouteId"></select>
-                </div>
-            </div>
-            <!-- Card Body -->
-            <div class="card-body">
-                <div class="chart-pie">
-                    <canvas id="passengers-by-privilege-by-route"></canvas>
-                </div>
-                <hr>
-                <span id="passengers-by-privilege-by-route-error" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
 </div>
 
 <!-- Bootstrap core JavaScript-->
@@ -124,7 +102,8 @@
 
   <script>
   new SlimSelect({
-    select: '#single-optgroups'
+    select: '#single-optgroups',
+    hideSelectedOption: true
   });
    </script>
 

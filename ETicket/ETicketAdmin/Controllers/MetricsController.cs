@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using ETicket.ApplicationServices.Charts.DTOs;
+using ETicket.ApplicationServices.DTOs.Charts;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
@@ -43,30 +43,15 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod)
         {
-            log.Info(nameof(MetricsController.PassengersByTime));
+            log.Info(nameof(MetricsController.PassengersByPrivileges));
             
-            try
-            {
-                return Json(metricsService.PassengersByPrivileges(startPeriod, endPeriod));
-            }
-            catch (Exception e)
-            {
-                log.Error(e);
+            var temp = new[] {2};
+            
+            var data = metricsService.PassengersByPrivileges(startPeriod, endPeriod, null);
 
-                return BadRequest();
-            }
-        }
-        
-        [HttpGet]
-        public IActionResult PassengersByPrivilegesByRoute(DateTime startPeriod, DateTime endPeriod, int routeId = 3)
-        {
-            log.Info(nameof(MetricsController.PassengersByPrivilegesByRoute));
-            
-            ViewData["RouteId"] = new SelectList(routeService.GetRoutes(), "Id", "Number");
-            
             try
             {
-                return Json(metricsService.PassengersByPrivilegesByRoute(startPeriod, endPeriod, routeId));
+                return Json(data);
             }
             catch (Exception e)
             {

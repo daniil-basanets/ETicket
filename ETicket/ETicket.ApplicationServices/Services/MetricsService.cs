@@ -1,11 +1,9 @@
-﻿using ETicket.ApplicationServices.Charts.DTOs;
-using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
+﻿using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using ETicket.ApplicationServices.DTOs.Charts;
 using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.ApplicationServices.Services
@@ -26,52 +24,29 @@ namespace ETicket.ApplicationServices.Services
             this.uow = uow;
         }
 
-        public ChartDto PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod)
+        public ChartByRoutesDto PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod, int [] routesIds)
         {
             if (startPeriod.CompareTo(endPeriod) == 1)
             {
-                return new ChartDto() { ErrorMessage = EndLessStartError };
+                return new ChartByRoutesDto() { ErrorMessage = EndLessStartError };
             }
 
             var data = uow.TicketVerifications.GetAll()
-                .Where(d=>d.VerificationUTCDate >= startPeriod && d.VerificationUTCDate <= endPeriod && d.IsVerified)
+                .Where(d => d.VerificationUTCDate >= startPeriod && d.VerificationUTCDate <= endPeriod &&
+                            d.IsVerified && (routesIds == null || routesIds.Contains(d.Transport.RouteId)))
                 .Include(t => t.Ticket)
                 .ThenInclude(u => u.User)
                 .ThenInclude(p => p.Privilege)
                 .Select(n => n.Ticket.User.Privilege)
                 .GroupBy(p => p.Name)
-                .Select(g => new { name = g.Key ?? "No privilege", count = g.Count().ToString() })
-                .ToDictionary( k => k.name, k => k.count);
+                .Select(g => new {name = g.Key ?? "No privilege", count = g.Count().ToString()})
+                .ToDictionary(k => k.name, k => k.count);
 
 
-            var chartDto = new ChartDto {Labels = data.Keys.ToArray(), Data = data.Values.ToArray()};
-
-            return chartDto;
-        }
-
-        public ChartDto PassengersByPrivilegesByRoute(DateTime startPeriod, DateTime endPeriod, int routeId)
-        {
-            if (startPeriod.CompareTo(endPeriod) == 1)
-            {
-                return new ChartDto() { ErrorMessage = EndLessStartError };
-            }
-            
-            var data = uow.TicketVerifications.GetAll()
-                .Where(d=>d.VerificationUTCDate >= startPeriod && d.VerificationUTCDate <= endPeriod && d.IsVerified && d.Transport.RouteId == routeId)
-                .Include(t => t.Ticket)
-                .ThenInclude(u => u.User)
-                .ThenInclude(p => p.Privilege)
-                .Select(n => n.Ticket.User.Privilege)
-                .GroupBy(p => p.Name)
-                .Select(g => new { name = g.Key ?? "No privilege", count = g.Count().ToString() })
-                .ToDictionary( k => k.name, k => k.count);
-
-
-            var chartDto = new ChartDto {Labels = data.Keys.ToArray(), Data = data.Values.ToArray()};
+            var chartDto = new ChartByRoutesDto {Labels = data.Keys.ToArray(), Data = data.Values.ToArray() , RoutesIds = routesIds};
 
             return chartDto;
         }
-
         public ChartDto PassengersByRoutes(DateTime startPeriod, DateTime endPeriod, int[] selectedRoutesId)
         {
             throw new NotImplementedException();

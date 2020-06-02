@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ETicket.ApplicationServices.Charts.DTOs
+namespace ETicket.ApplicationServices.DTOs.Charts
 {
     public class ChartDto : BaseChartDto
     {
