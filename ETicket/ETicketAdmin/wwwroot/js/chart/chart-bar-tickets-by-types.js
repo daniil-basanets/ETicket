@@ -93,6 +93,7 @@ function refreshTicketsByTypesChart() {
                 },
 
                 options: {
+                    maintainAspectRatio: false,
                     layout: {
                         padding: {
                             left: 10,

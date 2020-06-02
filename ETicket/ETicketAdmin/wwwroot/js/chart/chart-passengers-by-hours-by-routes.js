@@ -69,19 +69,27 @@ function refreshPassengersByRoutesByHoursChart() {
         return;
     }
 
-    var actionUrl = '/metrics/GetPassengersByHoursByRoutes' + "?selectedDate=" + start.toISOString();
+    var actionUrl = '/metrics/GetPassengersByHoursByRoutes' + "?selectedDate=" + start.toISOString() + '&selectedRoutesId=' + selectedRoutesPassengersByRoutesByHoursChart;
     $.getJSON(actionUrl, function (response) {
         if (response != null) {
             rawData = response;
 
             var chartData = new Array(24);
+            var datasetsChart = new Array(24);
             var chartColors = poolColors(rawData.Labels.length);
 
             for (var i = 0; i < chartData.length; i++) {
                 chartData[i] = new Array(rawData.Data[i].length);
                 for (var j = 0; j < chartData[i].length; j++) {
-                    chartData[i][j] = [i, i + (rawData.Data[i][j] / rawData.MaxPassengersByRoute)]; 
+                    chartData[i][j] = [i, i + (rawData.Data[i][j] / rawData.MaxPassengersByRoute)];
                 }
+                var temp = {
+                    label: i + ' hour',
+                    data: chartData[i], //routes data
+                    backgroundColor: chartColors
+                }
+
+                datasetsChart[i] = temp
             }
 
             var ctx = document.getElementById("passengers-by-hours-by-routes");
@@ -101,131 +109,10 @@ function refreshPassengersByRoutesByHoursChart() {
                 type: 'horizontalBar',
                 data: {
                     labels: rawData.Labels,
-                    datasets: [
-                        {
-                            label: '0 hour',
-                            data: chartData[0], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '1 hour',
-                            data: chartData[1], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '2 hour',
-                            data: chartData[2], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '3 hour',
-                            data: chartData[3], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '4 hour',
-                            data: chartData[4], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '5 hour',
-                            data: chartData[5], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '6 hour',
-                            data: chartData[6], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '7 hour',
-                            data: chartData[7], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '8 hour',
-                            data: chartData[8], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '9 hour',
-                            data: chartData[9], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '10 hour',
-                            data: chartData[10], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '11 hour',
-                            data: chartData[11], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '12  hour',
-                            data: chartData[12], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '13 hour',
-                            data: chartData[13], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '14 hour',
-                            data: chartData[14], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '15 hour',
-                            data: chartData[15], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '16 hour',
-                            data: chartData[16], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '17 hour',
-                            data: chartData[17], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '18 hour',
-                            data: chartData[18], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '19 hour',
-                            data: chartData[19], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '20 hour',
-                            data: chartData[20], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '21 hour',
-                            data: chartData[21], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '22 hour',
-                            data: chartData[22], //routes data
-                            backgroundColor: chartColors
-                        },
-                        {
-                            label: '23 hour',
-                            data: chartData[23], //routes data
-                            backgroundColor: chartColors
-                        }
-                    ]
+                    datasets: datasetsChart
                 },
                 options: {
-                    responsive: true,
+                    maintainAspectRatio: false,
                     scales: {
                         xAxes: [{
                             scaleLabel: {
@@ -253,12 +140,11 @@ function refreshPassengersByRoutesByHoursChart() {
                         display: false,
                     },
                     title: {
-                        display: true,
-                        text: 'Horizontal Floating Bars'
+                        display: false
                     }
                 }
             });
-
+            PassengersByRoutesByHoursChart.canvas.parentNode.style.height = "" + (rawData.Labels.length * 30) + "px";
         }
     })
 };
