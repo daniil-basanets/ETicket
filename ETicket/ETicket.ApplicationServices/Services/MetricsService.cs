@@ -141,10 +141,15 @@ namespace ETicket.ApplicationServices.Services
 
             if (errorMessageBuilder.Length == 0)
             {
+                DateTime lastSunday = startPeriod;
+                while(lastSunday.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    lastSunday = lastSunday.AddDays(-1);
+                }
+                    
                 var passengerTraffic = uow.TicketVerifications.GetAll()
-                    .Where(d => d.VerificationUTCDate >= startPeriod && d.VerificationUTCDate <= endPeriod && d.IsVerified)
-                    .AsEnumerable()
-                    .GroupBy(p => p.VerificationUTCDate.DayOfWeek)
+                    .Where(d => d.VerificationUTCDate.Date >= startPeriod.Date && d.VerificationUTCDate.Date <= endPeriod.Date && d.IsVerified)
+                    .GroupBy(p => (DayOfWeek)(((int)EF.Functions.DateDiffDay((DateTime?)lastSunday, (DateTime?)p.VerificationUTCDate)) % 7))
                     .OrderBy(g => g.Key)
                     .Select(g => new { dayOfWeek = g.Key, count = g.Count() })
                     .ToDictionary(k => k.dayOfWeek, k => k.count);
