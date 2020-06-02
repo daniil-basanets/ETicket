@@ -151,8 +151,8 @@ namespace ETicket.ApplicationServices.Services
                     .Where(d => d.VerificationUTCDate.Date >= startPeriod.Date && d.VerificationUTCDate.Date <= endPeriod.Date && d.IsVerified)
                     .GroupBy(p => (DayOfWeek)(((int)EF.Functions.DateDiffDay((DateTime?)nearestStartSunday, (DateTime?)p.VerificationUTCDate)) % 7))
                     .OrderBy(g => g.Key)
-                    .Select(g => new { dayOfWeek = g.Key, count = g.Count() })
-                    .ToDictionary(k => k.dayOfWeek, k => k.count);
+                    .Select(g => new { DayOfWeek = g.Key, Count = g.Count() })
+                    .ToDictionary(k => k.DayOfWeek, k => k.Count);
 
                 chartData = daysOfWeek.Select(d => (passengerTraffic.ContainsKey(d) ? passengerTraffic[d] : 0).ToString()).ToList();
             }
