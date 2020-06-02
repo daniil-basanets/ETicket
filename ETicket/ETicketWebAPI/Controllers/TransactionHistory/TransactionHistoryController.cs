@@ -35,9 +35,9 @@ namespace ETicket.WebAPI.Controllers.TransactionHistory
         [HttpPost]
         [Route("transactions")]
         [SwaggerOperation(Summary = "Get all transactions", Description = "Allowed: authorized user")]
-        [SwaggerResponse(200, "Returns if everything was right. Contains a list of transactions")]
-        [SwaggerResponse(400, "Returns if exseption occurred")]
-        [SwaggerResponse(401, "Returns if user was unauthorized")]
+        [SwaggerResponse(200, "Returns if everything is right. Contains a list of transactions")]
+        [SwaggerResponse(400, "Returns if an exseption occurred")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult GetTransactions([FromBody, SwaggerRequestBody("Get transactions payload", Required = true)] GetTransactionsRequest request)
         {
             logger.Info(nameof(TransactionHistoryController.GetTransactions));
@@ -69,9 +69,9 @@ namespace ETicket.WebAPI.Controllers.TransactionHistory
         [HttpPost]
         [Route("transaction")]
         [SwaggerOperation(Summary = "Create new transaction", Description = "Allowed: authorized user")]
-        [SwaggerResponse(200, "Returns if everything was right")]
-        [SwaggerResponse(400, "Returns if exseption occurred")]
-        [SwaggerResponse(401, "Returns if user was unauthorized")]
+        [SwaggerResponse(200, "Returns if everything is right")]
+        [SwaggerResponse(400, "Returns if an exseption occurred")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult CreateTransaction([FromBody, SwaggerRequestBody("Transaction history payload", Required = true)] TransactionHistoryDto transactionHistoryDto)
         {
             logger.Info(nameof(TransactionHistoryController.CreateTransaction));
