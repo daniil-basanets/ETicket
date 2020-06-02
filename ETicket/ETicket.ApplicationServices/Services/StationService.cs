@@ -37,6 +37,11 @@ namespace ETicket.ApplicationServices.Services
 
         public void Delete(int id)
         {
+            if (id <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "id should be greater than zero");
+            }
+
             uow.Stations.Delete(id);
             uow.Save();
         }
@@ -61,6 +66,11 @@ namespace ETicket.ApplicationServices.Services
 
         public void Update(StationDto stationDto)
         {
+            if (!stationValidator.Validate(stationDto).IsValid)
+            {
+                throw new ArgumentException(stationValidator.Validate(stationDto).Errors.First().ErrorMessage);
+            }
+
             var station = mapper.Map<StationDto, Station>(stationDto);
             uow.Stations.Update(station);
             uow.Save();

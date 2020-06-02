@@ -200,7 +200,55 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
 
         #region UpdateStation facts
 
+        [Theory]
+        [InlineData("     ")]
+        [InlineData("\r  \t \n ")]
+        public void Update_Station_ShouldFailNameIsInvalid(string name)
+        {
+            stationDto.Name = name;
+            Action action = () => stationService.Update(stationDto);
 
+            Assert.Throws<ArgumentException>(action);
+        }
+
+        [Fact]
+        public void Update_Station_NameShouldBeEqualDTOsName()
+        {
+            stationDto.Name = "NewName";
+            var expected = stationDto.Name;
+
+            stationService.Update(stationDto);
+
+            var actual = station.Name;
+
+            Assert.Equal(expected, actual);
+        }
+
+        #endregion
+
+        #region DeleteStation facts
+
+        [Fact]
+        public void Delete_Station_CountShouldDecrease()
+        {
+            var expected = fakeStations.Count - 1;
+
+            stationService.Delete(fakeStations.First().Id);
+
+            var actual = fakeStations.Count;
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-100)]
+        public void Delete_Station_IdShouldBeGreaterZero(int id)
+        {
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => stationService.Delete(id));
+
+            Assert.Equal("id", exception.ParamName);
+        }
 
         #endregion
 
