@@ -6,17 +6,17 @@
 <!-- Custom fonts for this template-->
 <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
 <!-- Custom styles for this template-->
 <link href="~/css/sb-admin-2.min.css" rel="stylesheet">
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+<link href="~/css/metric-style.css" rel="stylesheet" />
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#chartSelectorModal">
     Select chart
 </button>
 <!-- Content Row -->
-<div class="row">
-
+<div id="metrics-content" class="row card-body">
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="chartSelectorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -39,6 +39,9 @@
             </div>
         </div>
     </div>
+
+    <p id="empty-chart-list">No charts selected</p>
+
     <div class="col-xl-8 col-lg-7">
         <div id="TicketsByTicketTypesChartPlace"></div>
 
@@ -48,8 +51,8 @@
     <div class="col-xl-4 col-lg-5">
         <div id="PassengersByPrivilegeChartPlace"></div>
     </div>
-
 </div>
+
 
 <!-- Bootstrap core JavaScript-->
 <script src="~/vendor/jquery/jquery.min.js"></script>
