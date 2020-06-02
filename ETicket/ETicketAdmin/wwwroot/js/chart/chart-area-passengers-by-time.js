@@ -81,17 +81,19 @@ function ToDatePicker() {
     var start = new Date($('#passengers-by-time-start').val());
     var end = new Date($('#passengers-by-time-end').val());
 
-    if (chartScale = ChartScale.ByMonths) {
-        end = new Date(end.getFullYear(), end.getMonth() + 1, 0);
+    if (chartScale == ChartScale.ByMonths) {
+        end = new Date(end.getFullYear(), end.getMonth() + 1, 0) > new Date() ? new Date() : new Date(end.getFullYear(), end.getMonth() + 1, 0);
     }
 
-    if (chartScale = ChartScale.ByYears) {
+    if (chartScale == ChartScale.ByYears) {
         start = new Date(start.getFullYear(), 0, 1);
-        end = new Date(end.getFullYear() + 1, 0, 0);
+        end = new Date(end.getFullYear() + 1, 0, 0) > new Date() ? new Date() : new Date(end.getFullYear() + 1, 0, 0);
     }
 
     $('#passengers-by-time-start').attr('type', 'date');
     $('#passengers-by-time-end').attr('type', 'date');
+    $('#passengers-by-time-start').attr('max', yyyy_mm_dd(new Date()));
+    $('#passengers-by-time-end').attr('max', yyyy_mm_dd(new Date()));
 
     $('#passengers-by-time-start').val(yyyy_mm_dd(start));
     $('#passengers-by-time-end').val(yyyy_mm_dd(end));
@@ -103,13 +105,15 @@ function ToMonthPicker() {
     var start = new Date($('#passengers-by-time-start').val());
     var end = new Date($('#passengers-by-time-end').val());
 
-    if (chartScale = ChartScale.ByYears) {
+    if (chartScale == ChartScale.ByYears) {
         start = new Date(start.getFullYear(), 0, 1);
-        end = new Date(end.getFullYear() + 1, 0, 0);
+        end = new Date(end.getFullYear() + 1, 0, 0) > new Date() ? new Date() : new Date(end.getFullYear(), end.getMonth() + 1, 0);; 
     }
 
     $('#passengers-by-time-start').attr('type', 'month');
     $('#passengers-by-time-end').attr('type', 'month');
+    $('#passengers-by-time-start').attr('max', new Date());
+    $('#passengers-by-time-end').attr('max', new Date());
 
     $('#passengers-by-time-start').val(yyyy_mm(start));
     $('#passengers-by-time-end').val(yyyy_mm(end));
@@ -124,9 +128,9 @@ function ToYearPicker() {
     $('#passengers-by-time-start').attr('type', 'number');
     $('#passengers-by-time-end').attr('type', 'number');
     $('#passengers-by-time-start').attr('min', '2000');
-    $('#passengers-by-time-start').attr('max', '2100');
+    $('#passengers-by-time-start').attr('max', new Date().getFullYear());
     $('#passengers-by-time-end').attr('min', '2000');
-    $('#passengers-by-time-end').attr('max', '2100');
+    $('#passengers-by-time-end').attr('max', new Date().getFullYear());
 
     $('#passengers-by-time-start').val(start.getFullYear());
     $('#passengers-by-time-end').val(end.getFullYear());
