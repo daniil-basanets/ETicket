@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using ETicketMobile.Data.Entities;
+using ETicketMobile.DataAccess.Interfaces;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.DataAccess.Repositories;
 
@@ -9,23 +11,23 @@ namespace ETicketMobile.DataAccess.LocalAPI
     {
         private static ILocalApi localApi;
 
-        private static TokenRepository tokensRepository;
-        public static TokenRepository TokensRepository
+        private static ITokenRepository tokenRepository;
+        public static ITokenRepository TokenRepository
         {
             get
             {
-                if (tokensRepository == null)
+                if (tokenRepository == null)
                 {
-                    tokensRepository = new TokenRepository();
+                    tokenRepository = new TokenRepository();
                 }
 
-                return tokensRepository;
+                return tokenRepository;
             }
         }
 
-        private static LocalizationRepository localizationRepository;
+        private static ILocalizationRepository localizationRepository;
 
-        public static LocalizationRepository LocalizationRepository
+        public static ILocalizationRepository LocalizationRepository
         {
             get
             {
@@ -38,12 +40,27 @@ namespace ETicketMobile.DataAccess.LocalAPI
             }
         }
 
+        public LocalApi()
+        {
+        }
+
+        public LocalApi(ITokenRepository tokenRepository, ILocalizationRepository localizationRepository)
+        {
+            LocalApi.localApi = this;
+
+            LocalApi.tokenRepository = tokenRepository
+                ?? throw new ArgumentNullException(nameof(tokenRepository));
+
+            LocalApi.localizationRepository = localizationRepository
+                ?? throw new ArgumentNullException(nameof(localizationRepository));
+        }
+
         public static ILocalApi GetInstance()
         {
             if (localApi == null)
             {
                 localApi = new LocalApi();
-                tokensRepository = new TokenRepository();
+                tokenRepository = new TokenRepository();
                 localizationRepository = new LocalizationRepository();
             }
 
@@ -52,12 +69,12 @@ namespace ETicketMobile.DataAccess.LocalAPI
 
         public Task AddAsync(Token token)
         {
-            return tokensRepository.SaveTokenAsync(token);
+            return tokenRepository.SaveTokenAsync(token);
         }
 
         public Task<Token> GetTokenAsync()
         {
-            return tokensRepository.GetTokenAsync();
+            return tokenRepository.GetTokenAsync();
         }
 
         public Task AddAsync(Localization localization)
