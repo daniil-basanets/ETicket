@@ -13,6 +13,8 @@ namespace ETicketMobile.Business.Mapping
             CreateMap<UserSignUpRequestDto, User>().ReverseMap();
 
             CreateMap<UserSignUpResponseDto, User>().ReverseMap();
+
+            CreateMap<GetUserResponseDto, User>().ReverseMap();
         }
     }
 }

@@ -8,5 +8,7 @@ namespace ETicketMobile.WebAccess.Network.WebServices.Interfaces
         Task<T> GetAsync<T>(Uri endpoint, string token);
 
         Task<TDestination> PostAsync<TSource, TDestination>(Uri endpoint, TSource item, string token = "");
+
+        Task<TDestination> PutAsync<TSource, TDestination>(Uri endpoint, TSource item, string token = "");
     }
 }
