@@ -7,129 +7,175 @@
     xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Payment.LiqPayView"
-    Title="Payment"
     BackgroundColor="White">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Label">
                 <Setter Property="TextColor" Value="Gray"/>
-                <Setter Property="Margin" Value="5, 0, 0, 0" />
+                <Setter Property="Margin" Value="5, 0, 0, 0"/>
             </Style>
 
             <Style TargetType="Frame">
                 <Setter Property="HorizontalOptions" Value="FillAndExpand"/>
-                <Setter Property="CornerRadius" Value="10" />
-                <Setter Property="Padding" Value="10" />
-                <Setter Property="Margin" Value="5" />
+                <Setter Property="CornerRadius" Value="10"/>
+                <Setter Property="Padding" Value="10"/>
+                <Setter Property="Margin" Value="5"/>
             </Style>
 
             <Style TargetType="Entry">
-                <Setter Property="Keyboard" Value="Numeric" />
+                <Setter Property="Keyboard" Value="Numeric"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <ContentPage.Content>
-        <StackLayout Margin="10">
-            <Frame BackgroundColor="#fafafa">
-                <StackLayout Padding="0">
-                    <Label Text="Amount"/>
+
+        <Grid Margin="10">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+
+            <Frame
+                Grid.Row="0"
+                BackgroundColor="#fafafa">
+
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.35*"/>
+                        <RowDefinition Height="0.8*"/>
+                        <RowDefinition Height="0.35*"/>
+                        <RowDefinition Height="0.8*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label
+                        Grid.Row="0"
+                        Text="Amount"/>
                     <Entry
-                        Text="{Binding Amount}"
+                        Grid.Row="1"
+                        Text="{Binding Amount, Mode=TwoWay}"
                         IsReadOnly="True"
                         Placeholder="0.00"/>
-                    <Label Text="{local:Translate DescriptionPayment}"/>
-                    <Entry 
-                        Text="{Binding Description}"
-                        IsReadOnly="True"/>
-                </StackLayout>
-            </Frame>
-            <Frame BackgroundColor="#ffffff">
-                <StackLayout>
-                    <Label Text="{local:Translate CardNumber}"/>
                     <Label
-                        Text="{local:Translate CardNumberCorrect}"
-                        TextColor="Red"
-                        IsVisible="{Binding CardNumberWarningIsVisible}"/>
+                        Grid.Row="2"
+                        Text="{local:Translate Text=DescriptionPayment}"/>
                     <Entry
-                        Text="{Binding CardNumber}"
+                        Grid.Row="3"
+                        Text="{Binding Description, Mode=OneWay}"
+                        IsReadOnly="True"/>
+                </Grid>
+            </Frame>
+
+            <Frame
+                Grid.Row="1"
+                BackgroundColor="#ffffff">
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.45*"/>
+                        <RowDefinition Height="0.45*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="0.4*"/>
+                        <RowDefinition Height="0.4*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="0.4*"/>
+                        <RowDefinition Height="0.4*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label
+                        Grid.ColumnSpan="2"
+                        Grid.Row="0"
+                        Text="{local:Translate Text=CardNumber}"/>
+                    <Label
+                        Grid.ColumnSpan="2"
+                        Grid.Row="1"
+                        Text="{local:Translate Text=CardNumberCorrect}"
+                        TextColor="Red"
+                        IsVisible="{Binding CardNumberWarningIsVisible, Mode=OneWay}"/>
+                    <Entry
+                        Grid.ColumnSpan="2"
+                        Grid.Row="2"
+                        Text="{Binding CardNumber, Mode=OneWayToSource}"
                         Placeholder="•••• •••• •••• ••••">
                         <Entry.Behaviors>
                             <behavior:EntryMaskBehavior Mask="XXXX XXXX XXXX XXXX"/>
                         </Entry.Behaviors>
                     </Entry>
-                    <StackLayout HorizontalOptions="FillAndExpand">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" />
-                                <ColumnDefinition Width="1*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*" />
-                                <RowDefinition Height="1*" />
-                                <RowDefinition Height="2*" />
-                            </Grid.RowDefinitions>
 
-                            <Label
-                                Grid.Column="0"
-                                Grid.Row="0"
-                                Text="{local:Translate Expiration}"/>
-                            <Label
-                                Grid.Column="0"
-                                Grid.Row="1"
-                                Text="{local:Translate CardExpiration}"
-                                TextColor="Red"
-                                IsVisible="{Binding ExpirationDateWarningIsVisible}"/>
-                            <Entry
-                                Grid.Column="0"
-                                Grid.Row="2"
-                                Text="{Binding ExpirationDate}"
-                                Placeholder="{local:Translate ExpirationYear}">
-                                <Entry.Behaviors>
-                                    <behavior:EntryMaskBehavior Mask="XX/XX"/>
-                                </Entry.Behaviors>
-                            </Entry>
-                            <Label
-                                Grid.Column="1"
-                                Grid.Row="0"
-                                Text="CVV2"/>
-                            <Label
-                                Grid.Column="1"
-                                Grid.Row="1"
-                                Text="{local:Translate ExpirationDateCorrect}"
-                                TextColor="Red"
-                                IsVisible="{Binding CVV2WarningIsVisible}"/>
-                            <Entry
-                                Grid.Column="1"
-                                Grid.Row="2"
-                                Text="{Binding CVV2}"
-                                Placeholder="•••">
-                                <Entry.Behaviors>
-                                    <behavior:EntryMaskBehavior Mask="XXX"/>
-                                </Entry.Behaviors>
-                            </Entry>
-                        </Grid>
-                    </StackLayout>
+                    <Label
+                        Grid.Column="0"
+                        Grid.Row="3"
+                        Text="{local:Translate Text=Expiration}"/>
+                    <Label
+                        Grid.Column="0"
+                        Grid.Row="4"
+                        Text="{local:Translate Text=CardExpiration}"
+                        TextColor="Red"
+                        IsVisible="{Binding ExpirationDateWarningIsVisible, Mode=OneWay}"/>
+                    <Entry
+                        Grid.Column="0"
+                        Grid.Row="5"
+                        Text="{Binding ExpirationDate, Mode=OneWayToSource}"
+                        Placeholder="{local:Translate Text=ExpirationYear}">
+                        <Entry.Behaviors>
+                            <behavior:EntryMaskBehavior Mask="XX/XX"/>
+                        </Entry.Behaviors>
+                    </Entry>
+                    <Label
+                        Grid.Column="1"
+                        Grid.Row="3"
+                        Text="CVV2"/>
+                    <Label
+                        Grid.Column="1"
+                        Grid.Row="4"
+                        Text="{local:Translate Text=ExpirationDateCorrect}"
+                        TextColor="Red"
+                        IsVisible="{Binding CVV2WarningIsVisible, Mode=OneWay}"/>
+                    <Entry
+                        Grid.Column="1"
+                        Grid.Row="5"
+                        Text="{Binding CVV2, Mode=OneWayToSource}"
+                        Placeholder="•••">
+                        <Entry.Behaviors>
+                            <behavior:EntryMaskBehavior Mask="XXX"/>
+                        </Entry.Behaviors>
+                    </Entry>
 
-                    <StackLayout>
-                        <Label Text="{local:Translate PayAccept}"/>
-                        <Label 
-                            Text="{local:Translate Terms}"
-                            TextColor="#a9ce9c">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding NavigateToTermsView}"/>
-                            </Label.GestureRecognizers>
-                        </Label>
-                        <Button
-                            Text="{local:Translate PayButton}"
-                            BackgroundColor="#7ab72b"
-                            Command="{Binding Pay}"/>
-                    </StackLayout>
+                    <Label
+                        Grid.ColumnSpan="2"
+                        Grid.Row="6"
+                        Text="{local:Translate Text=PayAccept}"/>
+                    <Label
+                        Grid.ColumnSpan="2"
+                        Grid.Row="7"
+                        Text="{local:Translate Text=Terms}"
+                        TextColor="#a9ce9c">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NavigateToTermsView, Mode=OneTime}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Button
+                        Grid.ColumnSpan="2"
+                        Grid.Row="8"
+                        Text="{local:Translate Text=PayButton}"
+                        BackgroundColor="#7ab72b"
+                        Command="{Binding Pay, Mode=OneTime}"/>
 
-                </StackLayout>
+                </Grid>
             </Frame>
-        </StackLayout>
+
+        </Grid>
+        
     </ContentPage.Content>
 
 </ContentPage>

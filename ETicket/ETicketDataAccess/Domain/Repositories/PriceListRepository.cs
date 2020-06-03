@@ -1,10 +1,11 @@
 ﻿using ETicket.DataAccess.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using ETicket.DataAccess.Domain.Interfaces;
 
 namespace ETicket.DataAccess.Domain.Repositories
 {
-    public class PriceListRepository
+    public class PriceListRepository : IRepository<PriceList, int>
     {
         #region 
 
@@ -20,6 +21,16 @@ namespace ETicket.DataAccess.Domain.Repositories
         public void Create(PriceList item)
         {
             context.PriceList.Add(item);
+        }
+
+        public void Update(PriceList item)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Delete(int id)
+        {
+            throw new System.NotImplementedException();
         }
 
         public PriceList Get(int id)

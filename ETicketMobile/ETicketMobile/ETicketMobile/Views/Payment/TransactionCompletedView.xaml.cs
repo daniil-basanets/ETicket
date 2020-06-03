@@ -11,22 +11,16 @@ namespace ETicketMobile.Views.Payment
             InitializeComponent();
         }
 
-        public void OnNavigatedFrom(INavigationParameters parameters)
-        {
-        }
+        public void OnNavigatedFrom(INavigationParameters parameters) { }
 
         public void OnNavigatedTo(INavigationParameters parameters)
         {
-            var pages = Navigation.NavigationStack
-                .Where(p =>
-                    p.Title == "Tickets"
-                 || p.Title == "Areas"
-                 || p.Title == "Payment")
-                .ToList();
-
-            foreach (var page in pages)
+            if (!(Navigation.NavigationStack[0] == this))
             {
-                Navigation.RemovePage(page);
+                Navigation.NavigationStack
+                        .Take(Navigation.NavigationStack.Count - 1)
+                        .ToList()
+                        .ForEach(page => Navigation.RemovePage(page));
             }
         }
     }

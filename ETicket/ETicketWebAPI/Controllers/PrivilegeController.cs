@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Reflection;
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ETicket.WebAPI.Controllers
 {
     [Route("api/privileges")]
     [ApiController]
-    public class PrivilegesController : ControllerBase
+    [SwaggerTag("Privilege service")]
+    public class PrivilegesController : BaseAPIController
     {
         private readonly IPrivilegeService privilegeService;
         private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -19,6 +22,9 @@ namespace ETicket.WebAPI.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(Summary = "Get all privileges", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a list of privileges")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         public IActionResult GetPrivileges()
         {
             logger.Info(nameof(PrivilegesController));
@@ -36,7 +42,11 @@ namespace ETicket.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetPrivilege(int id)
+        [SwaggerOperation(Summary = "Get privilege by id", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a Privilege object", typeof(Privilege))]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        [SwaggerResponse(404, "Returns if privilege is not found by id")]
+        public IActionResult GetPrivilege([SwaggerParameter("Int", Required = true)] int id)
         {
             logger.Info(nameof(PrivilegesController));
 

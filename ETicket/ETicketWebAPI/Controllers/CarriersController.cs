@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Http;
 using log4net;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ETicket.WebAPI.Controllers
 {
     [Route("api/carriers")]
     [ApiController]
-    public class CarriersController : ControllerBase
+    [SwaggerTag("Carrier service")]
+    public class CarriersController : BaseAPIController
     {
         #region Private members
 
@@ -25,8 +27,9 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/Carriers
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [SwaggerOperation(Summary = "Get all carriers", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a list of carriers")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         public IActionResult GetAll()
         {
             log.Info(nameof(GetAll));
@@ -45,10 +48,11 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/Carriers/5
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetCarrierById(int id)
+        [SwaggerOperation(Summary = "Get carrier by id", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a Carrier object", typeof(CarrierDto))]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        [SwaggerResponse(404, "Returns if carrier is not found by id")]
+        public IActionResult GetCarrierById([SwaggerParameter("Int", Required = true)] int id)
         {
             log.Info(nameof(GetCarrierById));
 
@@ -75,9 +79,11 @@ namespace ETicket.WebAPI.Controllers
 
         // PUT: api/Carriers/5
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public IActionResult UpdateCarrier(int id, CarrierDto carrierDto)
+        [SwaggerOperation(Summary = "Update carrier", Description = "Allowed: Admin")]
+        [SwaggerResponse(204, "Returns if everything is correct, without content")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
+        public IActionResult UpdateCarrier([SwaggerParameter("Int", Required = true)] int id, [FromBody, SwaggerRequestBody("Carrier payload", Required = true)] CarrierDto carrierDto)
         {
             log.Info(nameof(UpdateCarrier));
 
@@ -104,9 +110,11 @@ namespace ETicket.WebAPI.Controllers
 
         // POST: api/Carriers
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CreateCarrier(CarrierDto carrierDto)
+        [SwaggerOperation(Summary = "Create carrier", Description = "Allowed: Admin")]
+        [SwaggerResponse(201, "Returns if carrier is created")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
+        public IActionResult CreateCarrier([FromBody, SwaggerRequestBody("Carrier payload", Required = true)] CarrierDto carrierDto)
         {
             log.Info(nameof(CreateCarrier));
 

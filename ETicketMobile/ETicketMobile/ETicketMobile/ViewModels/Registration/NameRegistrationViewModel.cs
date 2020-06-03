@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using ETicketMobile.Business.Validators;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
 using Prism.Navigation;
@@ -11,7 +12,6 @@ namespace ETicketMobile.ViewModels.Registration
     {
         #region Fields
 
-        protected INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
         private ICommand navigateToPasswordRegistrationView;
@@ -26,20 +26,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToPasswordRegistrationView => navigateToPasswordRegistrationView
-            ?? (navigateToPasswordRegistrationView = new Command(OnMoveToPasswordRegistrationView));
-
-        public string FirstNameWarning
-        {
-            get => firstNameWarning;
-            set => SetProperty(ref firstNameWarning, value);
-        }
-
-        public string LastNameWarning
-        {
-            get => lastNameWarning;
-            set => SetProperty(ref lastNameWarning, value);
-        }
+        public ICommand NavigateToPasswordRegistrationView => navigateToPasswordRegistrationView 
+            ??= new Command(OnMoveToPasswordRegistrationView);
 
         public string FirstName
         {
@@ -53,23 +41,31 @@ namespace ETicketMobile.ViewModels.Registration
             set => SetProperty(ref lastName, value);
         }
 
+        public string FirstNameWarning
+        {
+            get => firstNameWarning;
+            set => SetProperty(ref firstNameWarning, value);
+        }
+
+        public string LastNameWarning
+        {
+            get => lastNameWarning;
+            set => SetProperty(ref lastNameWarning, value);
+        }
+
         #endregion
 
         public NameRegistrationViewModel(INavigationService navigationService)
             : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
             this.navigationParameters = navigationParameters;
-
-            base.OnNavigatedTo(navigationParameters);
         }
 
-        private void OnMoveToPasswordRegistrationView(object obj)
+        private async void OnMoveToPasswordRegistrationView()
         {
             if (!IsValid())
                 return;
@@ -77,35 +73,35 @@ namespace ETicketMobile.ViewModels.Registration
             navigationParameters.Add("firstName", firstName);
             navigationParameters.Add("lastName", lastName);
 
-            navigationService.NavigateAsync(nameof(PasswordRegistrationView), navigationParameters);
+            await NavigationService.NavigateAsync(nameof(PasswordRegistrationView), navigationParameters);
         }
 
         #region Validation
 
         private bool IsValid()
         {
-            if (IsNameEmpty(firstName))
+            if (string.IsNullOrEmpty(firstName))
             {
                 FirstNameWarning = AppResource.FirstNameEmpty;
 
                 return false;
             }
 
-            if (IsNameEmpty(lastName))
+            if (string.IsNullOrEmpty(lastName))
             {
                 LastNameWarning = AppResource.LastNameEmpty;
 
                 return false;
             }
 
-            if (!IsNameValid(firstName))
+            if (!Validator.IsNameValid(firstName))
             {
                 FirstNameWarning = AppResource.FirstNameValid;
 
                 return false;
             }
 
-            if (!IsNameValid(lastName))
+            if (!Validator.IsNameValid(lastName))
             {
                 LastNameWarning = AppResource.LastNameValid;
 
@@ -113,18 +109,6 @@ namespace ETicketMobile.ViewModels.Registration
             }
 
             return true;
-        }
-
-        private bool IsNameEmpty(string name)
-        {
-            return string.IsNullOrEmpty(name);
-        }
-
-        private bool IsNameValid(string name)
-        {
-            name ??= string.Empty;
-
-            return name.Length >= 2 && name.Length <= 25;
         }
 
         #endregion

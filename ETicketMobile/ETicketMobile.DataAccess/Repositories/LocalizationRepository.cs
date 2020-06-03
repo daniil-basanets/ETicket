@@ -7,7 +7,11 @@ namespace ETicketMobile.DataAccess.Repositories
 {
     public class LocalizationRepository : ILocalizationRepository
     {
+        #region Fields
+
         private readonly SettingsRepository settingsRepository;
+
+        #endregion
 
         public LocalizationRepository()
         {

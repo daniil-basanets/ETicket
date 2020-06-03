@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ETicketMobile.Business.Model.UserAccount;
 
 namespace ETicketMobile.Business.Mapping
 {
@@ -6,7 +7,7 @@ namespace ETicketMobile.Business.Mapping
     {
         public LocalizationMapperProfile()
         {
-            CreateMap<Model.UserAccount.Localization, Data.Entities.Localization>().ReverseMap();
+            CreateMap<Localization, Data.Entities.Localization>().ReverseMap();
         }
     }
 }

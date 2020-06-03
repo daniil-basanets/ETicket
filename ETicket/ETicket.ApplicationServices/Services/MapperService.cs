@@ -36,6 +36,11 @@ namespace ETicket.ApplicationServices.Services
             return mapper.Map<TSource, TDestination>(source);
         }
 
+        public TDestination Map<TSource, TDestination>(TSource source, TDestination destination)
+        {
+            return mapper.Map(source, destination);
+        }
+
         public IQueryable<TDestination> ProjectTo<TDestination>(IQueryable source)
         {
             return mapper.ProjectTo<TDestination>(source);

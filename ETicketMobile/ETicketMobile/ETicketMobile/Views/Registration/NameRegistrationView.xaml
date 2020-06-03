@@ -7,7 +7,6 @@
     xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile" 
     xmlns:telerikInput="clr-namespace:Telerik.XamarinForms.Input;assembly=Telerik.XamarinForms.Input"
     prism:ViewModelLocator.AutowireViewModel="True"
-    Title="Name"
     x:Class="ETicketMobile.Views.Registration.NameRegistrationView">
 
     <ContentPage.Resources>
@@ -17,48 +16,66 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
+    <ContentPage.Content>
 
-        <StackLayout Margin="10, 0">
-            <Label
-                Text="{local:Translate CreateNewUser}"
-                Style="{StaticResource TitleLabelStyle}"/>
+        <Grid Margin="10, 0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="0.4*"/>
+                <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="0.2*"/>
+                <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="1.2*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
 
             <Label
-                Text="{local:Translate EnterName}"
-                Style="{StaticResource NormalLabelStyle}"/>
+                Grid.Row="0"
+                Text="{local:Translate Text=CreateNewUser}"
+                Style="{x:StaticResource Key=TitleLabelStyle}"/>
 
             <Label
-                IsVisible="{Binding FirstNameWarning, Converter={StaticResource StringToBooleanConverter}}"
-                Text="{Binding FirstNameWarning}"
-                TextColor="{Binding FirstNameWarning, Converter={StaticResource StringToColorConverter}}"
-                Style="{StaticResource NormalLabelStyle}"/>
+                Grid.Row="1"
+                Text="{local:Translate Text=EnterName}"
+                Style="{x:StaticResource Key=NormalLabelStyle}"/>
+
+            <Label
+                Grid.Row="2"
+                IsVisible="{Binding FirstNameWarning, Converter={x:StaticResource Key=StringToBooleanConverter}, Mode=OneWay}"
+                Text="{Binding FirstNameWarning, Mode=OneWay}"
+                TextColor="{Binding FirstNameWarning, Converter={x:StaticResource Key=StringToColorConverter}, Mode=OneWay}"
+                Style="{x:StaticResource Key=NormalLabelStyle}"/>
 
             <telerikInput:RadEntry
-                Text="{Binding FirstName, Mode=TwoWay}"
-                WatermarkText="{local:Translate FirstName}"
-                Style="{StaticResource LoginEntryStyle}"/>
+                Grid.Row="3"
+                Text="{Binding FirstName, Mode=OneWayToSource}"
+                WatermarkText="{local:Translate Text=FirstName}"
+                Style="{x:StaticResource Key=LoginEntryStyle}"/>
 
             <Label
-                IsVisible="{Binding LastNameWarning, Converter={StaticResource StringToBooleanConverter}}"
-                Text="{Binding LastNameWarning}"
-                TextColor="{Binding LastNameWarning, Converter={StaticResource StringToColorConverter}}"
-                Style="{StaticResource NormalLabelStyle}"/>
+                Grid.Row="4"
+                Margin="0, -10, 0, 0"
+                IsVisible="{Binding LastNameWarning, Converter={x:StaticResource Key=StringToBooleanConverter}, Mode=OneWay}"
+                Text="{Binding LastNameWarning, Mode=OneWay}"
+                TextColor="{Binding LastNameWarning, Converter={x:StaticResource Key=StringToColorConverter}, Mode=OneWay}"
+                Style="{x:StaticResource Key=NormalLabelStyle}"/>
 
             <telerikInput:RadEntry
-                Text="{Binding LastName, Mode=TwoWay}"
-                WatermarkText="{local:Translate LastName}"
-                Style="{StaticResource LoginEntryStyle}"/>
+                Grid.Row="5"
+                Text="{Binding LastName, Mode=OneWayToSource}"
+                WatermarkText="{local:Translate Text=LastName}"
+                Style="{x:StaticResource Key=LoginEntryStyle}"/>
 
             <telerikInput:RadButton
-                Command="{Binding NavigateToPasswordRegistrationView}"
-                Text="{local:Translate Next}"
-                Style="{StaticResource ActionButtonStyle}"/>
-        </StackLayout>
-    </Grid>
+                Grid.Row="6"
+                Command="{Binding NavigateToPasswordRegistrationView, Mode=OneTime}"
+                Text="{local:Translate Text=Next}"
+                Style="{x:StaticResource Key=ActionButtonStyle}"/>
+
+        </Grid>
+
+    </ContentPage.Content>
 
 </ContentPage>
