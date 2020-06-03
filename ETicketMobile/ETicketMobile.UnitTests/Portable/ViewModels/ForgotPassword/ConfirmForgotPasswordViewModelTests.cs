@@ -28,14 +28,14 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void CtorWithParameters_NullHttpService()
+        public void CtorWithParameters_NullHttpService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new ConfirmForgotPasswordViewModel(null, dialogServiceMock.Object, null));
         }
 
         [Fact]
-        public void CtorWithParameters_NullDialogService()
+        public void CtorWithParameters_NullDialogService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new ConfirmForgotPasswordViewModel(null, null, httpServiceMock.Object));
@@ -53,7 +53,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void OnAppearing_ActivationCodeTimer()
+        public void OnAppearing_ActivationCodeTimer_ShouldBeZero()
         {
             // Arrange
             var activationCodeTimer = 0;
@@ -66,7 +66,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void OnAppearing_TimerActivated()
+        public void OnAppearing_TimerActivated_ShouldBeFalse()
         {
             // Arrange
             var timerActivated = false;
@@ -79,20 +79,24 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void OnNavigatedTo()
+        public void OnNavigatedTo_NavigationParameters()
         {
             // Arrange
             var email = "email";
-
             var navigationParameters = new NavigationParameters { { email, "email" } };
 
             // Act
-            confirmForgotPasswordViewModel.OnNavigatedTo(navigationParameters);
-
-            var actualEmail = navigationParameters.GetValue<string>("email");
+            var exception = Record.Exception(() => confirmForgotPasswordViewModel.OnNavigatedTo(navigationParameters));
 
             // Assert
-            Assert.Equal(email, actualEmail);
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void OnNavigatedTo_NullNavigationParameters_ThrowArgumentNullException()
+        {
+            // Assert
+            Assert.Throws<ArgumentNullException>(() => confirmForgotPasswordViewModel.OnNavigatedTo(null));
         }
     }
 }

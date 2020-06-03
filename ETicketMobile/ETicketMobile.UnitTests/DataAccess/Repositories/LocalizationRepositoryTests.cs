@@ -59,7 +59,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         }
 
         [Fact]
-        public async Task GetLocalizationAsync_Positive()
+        public async Task GetLocalizationAsync()
         {
             // Arrange
             settingsRepositoryMock
@@ -76,14 +76,12 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         }
 
         [Fact]
-        public async Task GetLocalizationAsync_LocalizationNotFound()
+        public async Task GetLocalizationAsync_LocalizationShouldBeNull()
         {
             // Arrange
-            var setting = string.Empty;
-
             settingsRepositoryMock
                     .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
-                    .ReturnsAsync(setting);
+                    .ReturnsAsync(() => null);
 
             var localizationRepository = new LocalizationRepository(settingsRepositoryMock.Object);
 
@@ -106,7 +104,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
             await localizationRepository.SaveLocalizationAsync(localization);
 
             // Assert
-            settingsRepositoryMock.Verify(t => t.SaveAsync("Localization", culture));
+            settingsRepositoryMock.Verify();
         }
     }
 }

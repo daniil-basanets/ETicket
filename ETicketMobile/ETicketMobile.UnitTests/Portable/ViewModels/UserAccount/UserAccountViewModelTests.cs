@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using ETicketMobile.Business.Model.UserAccount;
@@ -56,7 +57,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnAppearing()
+        public void OnAppearing_ReturnsUserActions()
         {
             // Act
             userAccountViewModel.OnAppearing();
@@ -66,7 +67,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_EmptyEmail()
+        public void OnNavigatedTo_IsValid_EmptyEmail_ReturnFalse()
         {
             // Arrange
             var navigationParametersMock = new Mock<INavigationParameters>();
@@ -77,6 +78,13 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
 
             // Assert
             navigationParametersMock.Verify(np => np.GetValue<string>("email"), Times.Once);
+        }
+
+        [Fact]
+        public void OnNavigatedTo_NullNavigationParameters_ThrowArgumentNullException()
+        {
+            // Assert
+            Assert.Throws<ArgumentNullException>(() => userAccountViewModel.OnNavigatedTo(null));
         }
     }
 }

@@ -45,7 +45,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void CtorWithParameters_NullDialogService()
+        public void CtorWithParameters_NullDialogService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -53,7 +53,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void CtorWithParameters_NullUserValidator()
+        public void CtorWithParameters_NullUserValidator_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -61,7 +61,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void CtorWithParameters_NullHttpService()
+        public void CtorWithParameters_NullHttpService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -71,7 +71,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void OnNavigateToConfirmForgotPasswordView_IsValid_IsNullOrEmpty(string email)
+        public void OnNavigateToConfirmForgotPasswordView_IsValid_IsNullOrEmpty_ReturnsFalse(string email)
         {
             // Arrange
             var emailCorrect = "Are you sure you entered your email correctly?";

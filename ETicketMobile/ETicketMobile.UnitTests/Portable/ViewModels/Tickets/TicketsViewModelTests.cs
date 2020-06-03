@@ -10,6 +10,7 @@ using ETicketMobile.WebAccess;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
+using Prism.Navigation;
 using Prism.Services;
 using Xunit;
 
@@ -84,7 +85,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void CtorWithParameters_NullDialogService()
+        public void CtorWithParameters_NullDialogService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -92,7 +93,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void CtorWithParameters_NullTokenService()
+        public void CtorWithParameters_NullTokenService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -100,7 +101,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void CtorWithParameters_NullHttpService()
+        public void CtorWithParameters_NullHttpService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -108,7 +109,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void CtorWithParameters_NullLocalApi()
+        public void CtorWithParameters_NullLocalApi_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -136,7 +137,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
             ticketsViewModel.OnAppearing();
 
             // Assert
-            Assert.Equal(ticketTypes.First(), ticketsViewModel.Tickets.First(), ticketTypesEqualityComparer);
+            Assert.Equal(ticketTypes, ticketsViewModel.Tickets, ticketTypesEqualityComparer);
         }
 
         [Fact]
@@ -159,7 +160,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
             ticketsViewModel.OnAppearing();
 
             // Assert
-            Assert.Equal(areas.First(), ticketsViewModel.Areas.First(), areasViewModelEqualityComparer);
+            Assert.Equal(areas, ticketsViewModel.Areas, areasViewModelEqualityComparer);
         }
 
         [Fact]
@@ -168,6 +169,26 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
             httpServiceMock
                     .Setup(hs => hs.GetAsync<IEnumerable<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
                     .ReturnsAsync(() => null);
+        }
+
+        [Fact]
+        public void OnNavigatedTo_NavigationParameters()
+        {
+            // Arrange
+            var navigationParameters = new NavigationParameters();
+
+            // Act
+            var exception = Record.Exception(() => ticketsViewModel.OnNavigatedTo(navigationParameters));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void OnNavigatedTo_NullNavigationParameters_ThrowArgumentNullException()
+        {
+            // Assert
+            Assert.Throws<ArgumentNullException>(() => ticketsViewModel.OnNavigatedTo(null));
         }
     }
 }

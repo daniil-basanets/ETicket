@@ -66,7 +66,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         }
 
         [Fact]
-        public async Task GetTokenAsync_Positive()
+        public async Task GetTokenAsync()
         {
             // Arrange
             settingsRepositoryMock
@@ -85,14 +85,12 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         }
 
         [Fact]
-        public async Task GetTokenAsync_Negative()
+        public async Task GetTokenAsync_TokenShouldBeNull()
         {
             // Arrange
-            var setting = string.Empty;
-
             settingsRepositoryMock
                     .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
-                    .ReturnsAsync(setting);
+                    .ReturnsAsync(() => null);
 
             tokenRepository = new TokenRepository(settingsRepositoryMock.Object);
 
@@ -115,7 +113,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
             await tokenRepository.SaveTokenAsync(token);            
 
             // Assert
-            settingsRepositoryMock.Verify(t => t.SaveAsync("Token", setting));
+            settingsRepositoryMock.Verify();
         }
     }
 }

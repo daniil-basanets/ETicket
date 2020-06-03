@@ -4,6 +4,7 @@ using System.Threading;
 using ETicketMobile.ViewModels.ForgotPassword;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
+using Prism.Navigation;
 using Prism.Services;
 using Xunit;
 
@@ -13,7 +14,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
     {
         #region Fields
 
-        private readonly CreateNewPasswordViewModel confirmForgotPasswordViewModel;
+        private readonly CreateNewPasswordViewModel createNewPasswordViewModel;
 
         private readonly Mock<IHttpService> httpServiceMock;
         private readonly Mock<IPageDialogService> dialogServiceMock;
@@ -27,18 +28,18 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
             httpServiceMock = new Mock<IHttpService>();
             dialogServiceMock = new Mock<IPageDialogService>();
 
-            confirmForgotPasswordViewModel = new CreateNewPasswordViewModel(null, dialogServiceMock.Object, httpServiceMock.Object);
+            createNewPasswordViewModel = new CreateNewPasswordViewModel(null, dialogServiceMock.Object, httpServiceMock.Object);
         }
 
         [Fact]
-        public void CtorWithParameters_NullHttpService()
+        public void CtorWithParameters_NullHttpService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new CreateNewPasswordViewModel(null, dialogServiceMock.Object, null));
         }
 
         [Fact]
-        public void CtorWithParameters_NullDialogService()
+        public void CtorWithParameters_NullDialogService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new CreateNewPasswordViewModel(null, null, httpServiceMock.Object));
@@ -55,79 +56,99 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
             Assert.Null(exception);
         }
 
+        [Fact]
+        public void OnNavigatedTo_NavigationParameters()
+        {
+            // Arrange
+            var navigationParameters = new NavigationParameters();
+
+            // Act
+            var exception = Record.Exception(() => createNewPasswordViewModel.OnNavigatedTo(navigationParameters));
+
+            // Assert
+            Assert.Null(exception);
+        }
+
+        [Fact]
+        public void OnNavigatedTo_NullNavigationParameters_ThrowArgumentNullException()
+        {
+            // Assert
+            Assert.Throws<ArgumentNullException>(() => createNewPasswordViewModel.OnNavigatedTo(null));
+        }
+
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void OnNavigateToSignInView_IsValid_IsNullOrEmpty(string password)
+        public void OnNavigateToSignInView_IsValid_IsNullOrEmpty_ReturnsFalse(string password)
         {
             // Arrange
             var passwordWarning = "Enter a password";
 
             // Act
-            confirmForgotPasswordViewModel.NavigateToSignInView.Execute(password);
+            createNewPasswordViewModel.NavigateToSignInView.Execute(password);
 
             // Assert
-            Assert.Equal(passwordWarning, confirmForgotPasswordViewModel.PasswordWarning);
+            Assert.Equal(passwordWarning, createNewPasswordViewModel.PasswordWarning);
         }
 
         [Theory]
         [InlineData("1")]
         [InlineData("1234567")]
-        public void OnNavigateToSignInView_IsValid_IsPasswordShort(string password)
+        public void OnNavigateToSignInView_IsValid_IsPasswordShort_ReturnsFalse(string password)
         {
             // Arrange
             var passwordWarning = "Use 8 characters or more for your password";
 
             // Act
-            confirmForgotPasswordViewModel.NavigateToSignInView.Execute(password);
+            createNewPasswordViewModel.NavigateToSignInView.Execute(password);
 
             // Assert
-            Assert.Equal(passwordWarning, confirmForgotPasswordViewModel.PasswordWarning);
+            Assert.Equal(passwordWarning, createNewPasswordViewModel.PasswordWarning);
         }
 
         [Theory]
         [InlineData("asdasdasdasdasdasdasdasddasdasdasdasasdasdasd" +
                     "asdasdasdasdasddasdasdasdasasdasdasdasdasdasdasdasdaasss")]
-        public void OnNavigateToSignInView_IsValid_IsPasswordLong(string password)
+        public void OnNavigateToSignInView_IsValid_IsPasswordLong_ReturnsFalse(string password)
         {
             // Arrange
             var passwordWarning = "Use 100 characters or fewer for your password";
 
             // Act
-            confirmForgotPasswordViewModel.NavigateToSignInView.Execute(password);
+            createNewPasswordViewModel.NavigateToSignInView.Execute(password);
 
             // Assert
-            Assert.Equal(passwordWarning, confirmForgotPasswordViewModel.PasswordWarning);
+            Assert.Equal(passwordWarning, createNewPasswordViewModel.PasswordWarning);
         }
 
         [Theory]
         [InlineData("12345678")]
         [InlineData("12345678123123123")]
-        public void OnNavigateToSignInView_IsValid_IsPasswordWeak(string password)
+        public void OnNavigateToSignInView_IsValid_IsPasswordWeak_ReturnsFalse(string password)
         {
             // Arrange
             var passwordWarning = "Please, choose a stronger password. Try a mix of letters, numbers, symbols.";
 
             // Act
-            confirmForgotPasswordViewModel.NavigateToSignInView.Execute(password);
+            createNewPasswordViewModel.NavigateToSignInView.Execute(password);
 
             // Assert
-            Assert.Equal(passwordWarning, confirmForgotPasswordViewModel.PasswordWarning);
+            Assert.Equal(passwordWarning, createNewPasswordViewModel.PasswordWarning);
         }
 
         [Theory]
         [InlineData("qwerty12", "qwerty21")]
-        public void OnNavigateToSignInView_IsValid_PasswordsMatched(string password, string confirmPassword)
+        public void OnNavigateToSignInView_IsValid_PasswordsMatched_ReturnsFalse(string password, string confirmPassword)
         {
             // Arrange
             var passwordWarning = "Please, make sure your passwords match";
-            confirmForgotPasswordViewModel.ConfirmPassword = confirmPassword;
+            createNewPasswordViewModel.ConfirmPassword = confirmPassword;
 
             // Act
-            confirmForgotPasswordViewModel.NavigateToSignInView.Execute(password);
+            createNewPasswordViewModel.NavigateToSignInView.Execute(password);
 
             // Assert
-            Assert.Equal(passwordWarning, confirmForgotPasswordViewModel.ConfirmPasswordWarning);
+            Assert.Equal(passwordWarning, createNewPasswordViewModel.ConfirmPasswordWarning);
         }
     }
 }

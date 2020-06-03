@@ -107,7 +107,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void CtorWithParameters_NullDialogService()
+        public void CtorWithParameters_NullDialogService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -115,7 +115,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void CtorWithParameters_NullTokenService()
+        public void CtorWithParameters_NullTokenService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -123,7 +123,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void CtorWithParameters_NullHttpService()
+        public void CtorWithParameters_NullHttpService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -131,7 +131,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void CtorWithParameters_NullLocalApi()
+        public void CtorWithParameters_NullLocalApi_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -180,7 +180,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_WebException()
+        public void OnNavigatedTo_ThrowWebException()
         {
             // Arrange
             var webException = new WebException();

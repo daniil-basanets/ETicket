@@ -20,7 +20,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         private readonly Mock<IPageDialogService> dialogServiceMock;
         private readonly Mock<IHttpService> httpServiceMock;
 
-        private readonly Mock<INavigationParameters> navigationParametersMock;
+        private readonly INavigationParameters navigationParameters;
 
         #endregion
 
@@ -29,7 +29,8 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
             dialogServiceMock = new Mock<IPageDialogService>();
             httpServiceMock = new Mock<IHttpService>();
 
-            navigationParametersMock = new Mock<INavigationParameters>();
+            var email = "email";
+            navigationParameters = new NavigationParameters { { email, "email" } };
         }
 
         [Fact]
@@ -43,7 +44,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void CtorWithParameters_NullDialogService()
+        public void CtorWithParameters_NullDialogService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -51,7 +52,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void CtorWithParameters_NullHttpService()
+        public void CtorWithParameters_NullHttpService_ThrowArgumentNullException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -59,7 +60,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo()
+        public void OnNavigatedTo_ReturnsTransactions()
         {
             // Arrange
             var transactionEqualityComparer = new TransactionEqualityComparer();
@@ -92,14 +93,14 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
             var userTransactionsViewModel = new UserTransactionsViewModel(null, dialogServiceMock.Object, httpServiceMock.Object);
 
             // Act
-            userTransactionsViewModel.OnNavigatedTo(navigationParametersMock.Object);
+            userTransactionsViewModel.OnNavigatedTo(navigationParameters);
 
             // Assert
             Assert.Equal(transactions, userTransactionsViewModel.Transactions, transactionEqualityComparer);
         }
 
         [Fact]
-        public void OnNavigatedTo_WebException()
+        public void OnNavigatedTo_ThrowWebException()
         {
             // Arrange
             var webException = new WebException();
@@ -112,7 +113,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
             var userTransactionsViewModel = new UserTransactionsViewModel(null, dialogServiceMock.Object, httpServiceMock.Object);
 
             // Act
-            userTransactionsViewModel.OnNavigatedTo(navigationParametersMock.Object);
+            userTransactionsViewModel.OnNavigatedTo(navigationParameters);
 
             // Assert
             Assert.ThrowsAsync<WebException>(() => httpServiceMock.Object.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>> (null, null, null));
