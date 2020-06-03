@@ -33,8 +33,7 @@ namespace ETicket.Admin.Controllers
         {
             try
             {
-
-                ViewData["AreaId"] = new SelectList(areaService.GetAreas(), "Id", "Name");
+               ViewData["AreaId"] = new SelectList(areaService.GetAreas(), "Id", "Name");
 
                 return View(priceListService.GetAll());
             }

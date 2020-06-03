@@ -12,7 +12,7 @@ namespace ETicket.ApplicationServices.Mapping
                  .ReverseMap()
                  .ForMember(s => s.Stations, s => s.MapFrom(s => s.Stations));
             CreateMap<PriceListDto, PriceList>().ReverseMap()
-                .ForMember(d => d.Area, d => d.MapFrom(x => x.Area.Name));
+                .ForMember(d => d.AreaName, d => d.MapFrom(x => x.Area.Name));
         }
     }
 }
