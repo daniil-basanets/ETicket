@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Threading;
 using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.ViewModels.ForgotPassword;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Business.Services.Interfaces;
@@ -10,7 +9,6 @@ using ETicketMobile.UnitTests.Portable.Comparer;
 using ETicketMobile.ViewModels.BoughtTickets;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
-using Java.Net;
 using Moq;
 using Prism.Navigation;
 using Prism.Services;
@@ -199,7 +197,8 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
 
             // Assert
-            Assert.ThrowsAsync<WebException>(() => httpServiceMock.Object.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(null, null, null));
+            Assert.ThrowsAsync<WebException>(
+                () => httpServiceMock.Object.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(null, null, null));
         }
 
         [Fact]

@@ -55,22 +55,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
             Assert.Null(exception);
         }
 
-        //[Theory]
-        //[InlineData("qwerty12", "qwerty12")]
-        //[InlineData("1234567A", "1234567A")]
-        //public void OnNavigateToSignInView_IsValid(string password, string confirmPassword)
-        //{
-        //    // Arrange
-        //    confirmForgotPasswordViewModel.ConfirmPassword = confirmPassword;
-
-        //    // Act
-        //    confirmForgotPasswordViewModel.NavigateToSignInView.Execute(password);
-
-        //    // Assert
-        //    Assert.Null(confirmForgotPasswordViewModel.PasswordWarning);
-        //    Assert.Null(confirmForgotPasswordViewModel.ConfirmPasswordWarning);
-        //}
-
         [Theory]
         [InlineData(null)]
         [InlineData("")]

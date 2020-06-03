@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
@@ -12,7 +10,6 @@ using ETicketMobile.WebAccess;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
-using Prism.Navigation;
 using Prism.Services;
 using Xunit;
 

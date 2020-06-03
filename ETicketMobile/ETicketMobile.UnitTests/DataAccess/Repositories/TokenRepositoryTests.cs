@@ -16,6 +16,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         private readonly Mock<ISettingsRepository> settingsRepositoryMock;
 
         private TokenRepository tokenRepository;
+        private readonly string setting;
         private readonly Token token;
 
         #endregion
@@ -29,6 +30,9 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
                 AcessJwtToken = "AccessToken",
                 RefreshJwtToken = "RefreshToken"
             };
+
+            setting = "{\"AcessJwtToken\":\"AccessToken\"," +
+                      "\"RefreshJwtToken\":\"RefreshToken\"}";
         }
         
         [Fact]
@@ -65,12 +69,9 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         public async Task GetTokenAsync_Positive()
         {
             // Arrange
-            var value = "{\"AcessJwtToken\":\"AccessToken\"," +
-                        "\"RefreshJwtToken\":\"RefreshToken\"}";
-
             settingsRepositoryMock
                     .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
-                    .ReturnsAsync(value);
+                    .ReturnsAsync(setting);
 
             tokenRepository = new TokenRepository(settingsRepositoryMock.Object);
 
@@ -87,11 +88,11 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         public async Task GetTokenAsync_Negative()
         {
             // Arrange
-            string value = null;
+            var setting = string.Empty;
 
             settingsRepositoryMock
                     .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
-                    .ReturnsAsync(value);
+                    .ReturnsAsync(setting);
 
             tokenRepository = new TokenRepository(settingsRepositoryMock.Object);
 
@@ -106,9 +107,6 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         public async Task SaveTokenAsync()
         {
             // Arrange
-            var value = "{\"AcessJwtToken\":\"AccessToken\"," +
-                        "\"RefreshJwtToken\":\"RefreshToken\"}";
-
             settingsRepositoryMock.Setup(sr => sr.SaveAsync(It.IsAny<string>(), It.IsAny<string>()));
 
             tokenRepository = new TokenRepository(settingsRepositoryMock.Object);
@@ -117,7 +115,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
             await tokenRepository.SaveTokenAsync(token);            
 
             // Assert
-            settingsRepositoryMock.Verify(t => t.SaveAsync("Token", value));
+            settingsRepositoryMock.Verify(t => t.SaveAsync("Token", setting));
         }
     }
 }

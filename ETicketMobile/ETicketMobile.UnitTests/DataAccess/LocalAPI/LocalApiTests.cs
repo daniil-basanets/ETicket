@@ -4,6 +4,7 @@ using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.Interfaces;
 using ETicketMobile.DataAccess.LocalAPI;
 using ETicketMobile.DataAccess.Repositories;
+using ETicketMobile.UnitTests.DataAccess.Comparers;
 using Moq;
 using Xunit;
 
@@ -90,7 +91,7 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
             localApi.AddAsync(token);
 
             // Assert
-            tokenRepositoryMock.Verify(tr => tr.SaveTokenAsync(token));
+            tokenRepositoryMock.Verify();
         }
 
         [Fact]
@@ -105,7 +106,7 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
             localApi.AddAsync(localization);
             
             // Assert
-            localizationRepositoryMock.Verify(tr => tr.SaveLocalizationAsync(localization));
+            localizationRepositoryMock.Verify();
         }
 
         [Fact]
@@ -118,12 +119,13 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
 
             var localApi = new LocalApi(tokenRepositoryMock.Object, localizationRepositoryMock.Object);
 
+            var tokenEqualityComparer = new TokenEqualityComparer();
+            
             // Act
             var actualToken = await localApi.GetTokenAsync();
 
             // Assert
-            Assert.Equal(token.AcessJwtToken, actualToken.AcessJwtToken);
-            Assert.Equal(token.RefreshJwtToken, actualToken.RefreshJwtToken);
+            Assert.Equal(token, actualToken, tokenEqualityComparer);
         }
 
         [Fact]

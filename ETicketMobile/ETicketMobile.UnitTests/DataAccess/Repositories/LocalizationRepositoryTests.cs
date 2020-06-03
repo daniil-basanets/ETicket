@@ -15,6 +15,8 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         private readonly Mock<ISettingsRepository> settingsRepositoryMock;
         private readonly Localization localization;
 
+        private readonly string culture;
+
         #endregion
 
         public LocalizationRepositoryTests()
@@ -22,6 +24,8 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
             settingsRepositoryMock = new Mock<ISettingsRepository>();
 
             localization = new Localization { Culture = "ru-RU" };
+
+            culture = "{\"Culture\":\"ru-RU\"}";
         }
 
         [Fact]
@@ -58,11 +62,9 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         public async Task GetLocalizationAsync_Positive()
         {
             // Arrange
-            var value = "{\"Culture\":\"ru-RU\"}";
-
             settingsRepositoryMock
                     .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
-                    .ReturnsAsync(value);
+                    .ReturnsAsync(culture);
 
             var localizationRepository = new LocalizationRepository(settingsRepositoryMock.Object);
 
@@ -77,11 +79,11 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         public async Task GetLocalizationAsync_LocalizationNotFound()
         {
             // Arrange
-            string value = null;
+            var setting = string.Empty;
 
             settingsRepositoryMock
                     .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
-                    .ReturnsAsync(value);
+                    .ReturnsAsync(setting);
 
             var localizationRepository = new LocalizationRepository(settingsRepositoryMock.Object);
 
@@ -96,8 +98,6 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         public async Task SaveLocalizationAsync()
         {
             // Arrange
-            var value = "{\"Culture\":\"ru-RU\"}";
-
             settingsRepositoryMock.Setup(sr => sr.SaveAsync(It.IsAny<string>(), It.IsAny<string>()));
 
             var localizationRepository = new LocalizationRepository(settingsRepositoryMock.Object);
@@ -106,7 +106,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
             await localizationRepository.SaveLocalizationAsync(localization);
 
             // Assert
-            settingsRepositoryMock.Verify(t => t.SaveAsync("Localization", value));
+            settingsRepositoryMock.Verify(t => t.SaveAsync("Localization", culture));
         }
     }
 }
