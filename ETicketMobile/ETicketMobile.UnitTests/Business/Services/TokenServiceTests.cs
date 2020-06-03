@@ -17,12 +17,46 @@ namespace ETicketMobile.UnitTests.Business.Services
         private readonly Mock<IHttpService> httpServiceMock;
         private readonly Mock<ILocalApi> localApiMock;
 
+        private readonly TokenService tokenService;
+
+        private readonly TokenDto tokenDto;
+        private readonly Token token;
+
+        private readonly string email;
+        private readonly string password;
+
         #endregion
 
         public TokenServiceTests()
         {
             httpServiceMock = new Mock<IHttpService>();
             localApiMock = new Mock<ILocalApi>();
+
+            email = "email";
+            password = "password";
+
+            token = new Token
+            {
+                AcessJwtToken = "AccessToken",
+                RefreshJwtToken = "RefreshToken"
+            };
+
+            tokenDto = new TokenDto
+            {
+                AcessJwtToken = "AccessToken",
+                RefreshJwtToken = "RefreshToken"
+            };
+
+            localApiMock
+                    .Setup(l => l.GetTokenAsync())
+                    .ReturnsAsync(token);
+
+            httpServiceMock
+                .Setup(hs => hs.PostAsync<UserSignInRequestDto, TokenDto>(
+                    It.IsAny<Uri>(), It.IsAny<UserSignInRequestDto>(), It.IsAny<string>()))
+                .ReturnsAsync(tokenDto);
+
+            tokenService = new TokenService(httpServiceMock.Object, localApiMock.Object);
         }
 
         [Fact]
@@ -50,48 +84,28 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTokenAsync()
+        public async Task GetTokenAsync_AccessToken()
         {
-            // Arrange
-            var email = "email";
-            var password = "password";
-
-            var tokenDto = new TokenDto
-            {
-                AcessJwtToken = "AccessToken",
-                RefreshJwtToken = "RefreshToken"
-            };
-
-            httpServiceMock
-                .Setup(hs => hs.PostAsync<UserSignInRequestDto, TokenDto>(
-                    It.IsAny<Uri>(), It.IsAny<UserSignInRequestDto>(), It.IsAny<string>()))
-                .ReturnsAsync(tokenDto);
-
-            var tokenService = new TokenService(httpServiceMock.Object, localApiMock.Object);
-
             // Act
             var token = await tokenService.GetTokenAsync(email, password);
 
             // Assert
             Assert.Equal(tokenDto.AcessJwtToken, token.AcessJwtToken);
+        }
+
+        [Fact]
+        public async Task GetTokenAsync_RefreshToken()
+        {
+            // Act
+            var token = await tokenService.GetTokenAsync(email, password);
+
+            // Assert
             Assert.Equal(tokenDto.RefreshJwtToken, token.RefreshJwtToken);
         }
 
         [Fact]
         public async Task GetAccessTokenAsync()
         {
-            // Arrange
-            var token = new Token
-            {
-                AcessJwtToken = "AccessToken"
-            };
-
-            localApiMock
-                .Setup(l => l.GetTokenAsync())
-                .ReturnsAsync(token);
-
-            var tokenService = new TokenService(httpServiceMock.Object, localApiMock.Object);
-
             // Act
             var accessToken = await tokenService.GetAccessTokenAsync();
 
@@ -103,26 +117,10 @@ namespace ETicketMobile.UnitTests.Business.Services
         public async Task RefreshTokenAsync()
         {
             // Arrange
-            var tokenDto = new TokenDto
-            {
-                AcessJwtToken = "AccessToken",
-                RefreshJwtToken = "RefreshToken"
-            };
-
-            var token = new Token
-            {
-                AcessJwtToken = "AccessToken",
-                RefreshJwtToken = "RefreshToken"
-            };
-
             httpServiceMock
                     .Setup(hs => hs.PostAsync<string, TokenDto>(
                         It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<string>()))
                     .ReturnsAsync(tokenDto);
-
-            localApiMock
-                    .Setup(l => l.GetTokenAsync())
-                    .ReturnsAsync(token);
 
             localApiMock.Setup(l => l.AddAsync(It.IsAny<Token>()));
 

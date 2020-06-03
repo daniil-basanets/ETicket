@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.Interfaces;
 using ETicketMobile.DataAccess.Repositories;
+using ETicketMobile.UnitTests.DataAccess.Comparers;
 using Moq;
 using Xunit;
 
@@ -73,12 +74,13 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
 
             tokenRepository = new TokenRepository(settingsRepositoryMock.Object);
 
+            var tokenEqualityComparer = new TokenEqualityComparer();
+
             // Act
             var actualToken = await tokenRepository.GetTokenAsync();
 
             // Assert
-            Assert.Equal(token.AcessJwtToken, actualToken.AcessJwtToken);
-            Assert.Equal(token.RefreshJwtToken, actualToken.RefreshJwtToken);
+            Assert.Equal(token, actualToken, tokenEqualityComparer);
         }
 
         [Fact]
