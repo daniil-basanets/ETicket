@@ -7,8 +7,6 @@ namespace ETicket.ApplicationServices.Services.Interfaces
     {
         public IEnumerable<RouteDto> GetRoutes();
 
-        public IEnumerable<BaseRouteDto> GetBaseRoutesInfo();
-
         public RouteDto GetRouteById(int id);
 
         public void Create(RouteDto documentTypeDto);

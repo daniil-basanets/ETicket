@@ -33,14 +33,6 @@ namespace ETicket.ApplicationServices.Services
             return mapper.Map<IQueryable<Route>, IEnumerable<RouteDto>>(routes).ToList();
         }
 
-
-        public IEnumerable<BaseRouteDto> GetBaseRoutesInfo()
-        {
-            var routes = unitOfWork.Routes.GetAll().OrderBy(t => t.Number);
-
-            return mapper.ProjectTo<BaseRouteDto>(routes).ToList();
-        }
-
         public RouteDto GetRouteById(int id)
         {
             var route = unitOfWork.Routes.Get(id);

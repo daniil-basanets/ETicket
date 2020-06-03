@@ -249,13 +249,14 @@ namespace ETicket.Admin.Controllers
             }
         }
 
+        [HttpGet]
         public IActionResult GetRoutesList()
         {
             log.Info(nameof(RoutesController.GetRoutesList));
 
             try
             {
-                var routes = routeService.GetBaseRoutesInfo();
+                var routes = routeService.GetRoutes();
 
                 return Json(routes);
             }
