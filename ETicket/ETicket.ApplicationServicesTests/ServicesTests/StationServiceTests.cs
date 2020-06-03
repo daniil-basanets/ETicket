@@ -113,7 +113,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         #region CreateStation facts
 
         [Fact]
-        public void Create_TicketType_ShouldBeNotNull()
+        public void Create_Station_ShouldBeNotNull()
         {
             stationService.Create(stationDto);
 
