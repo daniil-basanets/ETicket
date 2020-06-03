@@ -91,41 +91,5 @@ namespace ETicket.Admin.Controllers
                 return BadRequest();
             }
         }
-
-        // GET: PriceList/Details/5
-        [HttpGet]
-        public IActionResult Details(int? id)
-        {
-            log.Info(nameof(Details));
-
-            if (id == null)
-            {
-                log.Warn(nameof(Details) + " id is null");
-
-                return NotFound();
-            }
-
-            PriceListDto priceDto;
-
-            try
-            {
-                priceDto = priceListService.Get((int)id);
-            }
-            catch (Exception e)
-            {
-                log.Error(e);
-
-                return BadRequest();
-            }
-
-            if (priceDto == null)
-            {
-                log.Warn(nameof(Details) + " priceDto is null");
-
-                return NotFound();
-            }
-
-            return View(priceDto);
-        }
     }
 }
