@@ -60,12 +60,13 @@ namespace ETicketMobile.ViewModels.UserAccount
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
+            this.navigationParameters = navigationParameters
+                ?? throw new ArgumentNullException(nameof(navigationParameters));
+
             if (string.IsNullOrEmpty(email))
             {
                 email = navigationParameters.GetValue<string>("email");
             }
-
-            this.navigationParameters = navigationParameters;
         }
 
         private async void OnNavigateToAction(UserAction action)

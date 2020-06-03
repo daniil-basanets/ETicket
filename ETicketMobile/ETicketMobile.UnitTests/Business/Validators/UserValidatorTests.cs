@@ -38,13 +38,11 @@ namespace ETicketMobile.UnitTests.Business.Validators
             Assert.Throws<ArgumentNullException>(() => new UserValidator(null));
         }
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task UserExistsAsync(bool succeeded)
+        [Fact]
+        public async Task UserExistsAsync_ReturnsTrue()
         {
             // Arrange
-            var signUpResponseDto = new SignUpResponseDto { Succeeded = succeeded };
+            var signUpResponseDto = new SignUpResponseDto { Succeeded = true };
 
             httpServiceMock
                 .Setup(hs => hs.PostAsync<SignUpRequestDto, SignUpResponseDto>(
@@ -57,7 +55,27 @@ namespace ETicketMobile.UnitTests.Business.Validators
             var userExists = await userValidator.UserExistsAsync("email");
 
             // Assert
-            Assert.Equal(succeeded, userExists);
+            Assert.True(userExists);
+        }
+
+        [Fact]
+        public async Task UserExistsAsync_ReturnsFalse()
+        {
+            // Arrange
+            var signUpResponseDto = new SignUpResponseDto { Succeeded = false };
+
+            httpServiceMock
+                .Setup(hs => hs.PostAsync<SignUpRequestDto, SignUpResponseDto>(
+                    It.IsAny<Uri>(), It.IsAny<SignUpRequestDto>(), It.IsAny<string>()))
+                .ReturnsAsync(signUpResponseDto);
+
+            var userValidator = new UserValidator(httpServiceMock.Object);
+
+            // Act
+            var userExists = await userValidator.UserExistsAsync("email");
+
+            // Assert
+            Assert.False(userExists);
         }
     }
 }
