@@ -148,7 +148,8 @@ namespace ETicketMobile.ViewModels.Tickets
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
-            this.navigationParameters = navigationParameters;
+            this.navigationParameters = navigationParameters
+                ?? throw new ArgumentNullException(nameof(navigationParameters));
         }
 
         private async Task<IList<TicketType>> GetTicketsAsync()
@@ -197,9 +198,9 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private async void UpdateAreaInfo()
         {
-            var selectedAreas = Areas.Where(x => x.Selected);
+            var selectedAreas = Areas.Where(a => a.Selected);
 
-            SelectedAreas = $"({string.Join(", ", selectedAreas.Select(x => x.Name))})";
+            SelectedAreas = $"({string.Join(", ", selectedAreas.Select(a => a.Name))})";
 
             await CountTotalPrice(selectedAreas.Select(a => a.Id));
         }

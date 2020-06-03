@@ -87,7 +87,7 @@ namespace ETicketMobile.ViewModels.BoughtTickets
         public async override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
             email = navigationParameters.GetValue<string>("email")
-                ?? throw new ArgumentNullException(nameof(navigationParameters));
+                 ?? throw new ArgumentNullException(nameof(navigationParameters));
 
             try
             {
