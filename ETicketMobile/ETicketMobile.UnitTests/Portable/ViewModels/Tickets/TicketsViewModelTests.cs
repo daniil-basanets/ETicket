@@ -6,6 +6,7 @@ using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.UnitTests.Portable.Comparer;
 using ETicketMobile.ViewModels.Tickets;
+using ETicketMobile.Views.Tickets;
 using ETicketMobile.WebAccess;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
@@ -166,9 +167,21 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         [Fact]
         public void OnNavigatedTo_RefreshTokenAsync()
         {
+            // Arrange
+            tokenServiceMock.Setup(ts => ts.RefreshTokenAsync());
+
             httpServiceMock
-                    .Setup(hs => hs.GetAsync<IEnumerable<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
-                    .ReturnsAsync(() => null);
+                .Setup(hs => hs.GetAsync<IEnumerable<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
+                .ReturnsAsync(() => null);
+
+            var myTicketsViewModel = new TicketsViewModel(null, dialogServiceMock.Object, tokenServiceMock.Object,
+                httpServiceMock.Object, localApiMock.Object);
+
+            // Act
+            myTicketsViewModel.OnAppearing();
+
+            // Assert
+            httpServiceMock.Verify(hs => hs.GetAsync<IEnumerable<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()), Times.Exactly(2));
         }
 
         [Fact]

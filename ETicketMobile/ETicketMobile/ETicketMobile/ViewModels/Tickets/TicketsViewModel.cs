@@ -161,7 +161,7 @@ namespace ETicketMobile.ViewModels.Tickets
             {
                 accessToken = await tokenService.RefreshTokenAsync();
 
-                ticketsDto = await httpService.GetAsync<IList<TicketTypeDto>>(
+                ticketsDto = await httpService.GetAsync<IEnumerable<TicketTypeDto>>(
                     TicketTypesEndpoint.GetTicketTypes, accessToken);
             }
 
