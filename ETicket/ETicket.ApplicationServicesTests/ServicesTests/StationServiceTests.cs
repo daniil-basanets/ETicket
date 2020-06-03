@@ -172,30 +172,6 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
             Assert.Equal($"Length {name.Length} of Name is invalid", exception.Message);
         }
 
-        [Theory]
-        [InlineData(null)]
-        public void Create_Station_ShouldFailLatitudeIsInvalid(double latitude)
-        {
-            stationDto.Latitude = latitude;
-            Action action = () => stationService.Create(stationDto);
-
-            var exception = Assert.Throws<ArgumentException>(action);
-
-            Assert.Equal($"Latitude is empty", exception.Message);
-        }
-
-        [Theory]
-        [InlineData(null)]
-        public void Create_Station_ShouldFailLongitudeIsInvalid(double longitude)
-        {
-            stationDto.Longitude = longitude;
-            Action action = () => stationService.Create(stationDto);
-
-            var exception = Assert.Throws<ArgumentException>(action);
-
-            Assert.Equal($"Longitude is empty", exception.Message);
-        }
-
         #endregion
 
         #region UpdateStation facts
@@ -251,6 +227,5 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         #endregion
-
     }
 }
