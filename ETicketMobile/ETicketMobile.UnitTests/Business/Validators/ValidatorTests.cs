@@ -266,10 +266,12 @@ namespace ETicketMobile.UnitTests.Business.Validators
             Assert.True(actualValue);
         }
 
-        [Theory]
-        [InlineData(0)]
-        public void TicketChoosed_ReturnsFalse(int countTickets)
+        [Fact]
+        public void TicketChoosed_ReturnsFalse()
         {
+            // Arrange
+            var countTickets = 0;
+
             // Act
             var actualValue = Validator.TicketChoosed(countTickets);
 
@@ -290,10 +292,12 @@ namespace ETicketMobile.UnitTests.Business.Validators
             Assert.True(actualValue);
         }
 
-        [Theory]
-        [InlineData(0)]
-        public void AreaChoosed_ReturnsFalse(int countAreas)
+        [Fact]
+        public void AreaChoosed_ReturnsFalse()
         {
+            // Arrange
+            var countAreas = 0;
+
             // Act
             var actualValue = Validator.AreaChoosed(countAreas);
 
