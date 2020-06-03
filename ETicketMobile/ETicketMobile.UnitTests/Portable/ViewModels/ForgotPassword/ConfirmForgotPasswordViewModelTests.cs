@@ -53,17 +53,28 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void OnAppearing()
+        public void OnAppearing_ActivationCodeTimer()
         {
             // Arrange
             var activationCodeTimer = 0;
-            var timerActivated = false;
 
             // Act
             confirmForgotPasswordViewModel.OnAppearing();
 
             // Assert
             Assert.Equal(activationCodeTimer, confirmForgotPasswordViewModel.ActivationCodeTimer);
+        }
+
+        [Fact]
+        public void OnAppearing_TimerActivated()
+        {
+            // Arrange
+            var timerActivated = false;
+
+            // Act
+            confirmForgotPasswordViewModel.OnAppearing();
+
+            // Assert
             Assert.Equal(timerActivated, confirmForgotPasswordViewModel.TimerActivated);
         }
 
