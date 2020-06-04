@@ -8,6 +8,15 @@
         <h6 class="m-0 font-weight-bold text-primary">Passenger by time</h6>
         From: <input type="date" id="passengers-by-time-start" class="form-control form-control-sm">
         To: <input type="date" id="passengers-by-time-end" class="form-control form-control-sm">
+        Routes:
+        <select id="routes-for-passengers-by-time" multiple>
+            <option data-placeholder="true"></option>
+        </select>
+        <form>
+            <input id="passengers-by-time-by-days" type="radio" name="ChartScale" value="1" checked> By days
+            <input id="passengers-by-time-by-months" type="radio" name="ChartScale" value="7"> By months
+            <input id="passengers-by-time-by-years" type="radio" name="ChartScale" value="30"> By years
+        </form>
     </div>
     <div class="card-body">
         <div class="chart-area">

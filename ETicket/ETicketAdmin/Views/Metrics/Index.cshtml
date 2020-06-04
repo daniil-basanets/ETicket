@@ -31,7 +31,7 @@
                 <div id="check-box-list" class="modal-body">
                     <input type="checkbox" id="TicketsByTicketTypesChartCheckbox" onchange="ManageChart(this, '/metrics/TicketsByTicketTypesChart', '#TicketsByTicketTypesChartPlace')"> Tickets by ticket types
                     <br>
-                    <input type="checkbox" id="PassengerByTimeChartCheckbox" onchange="ManageChart(this, '/metrics/PassengersByTimeChart', '#PassengerByTimeChartPlace')" checked> Passenger by time
+                    <input type="checkbox" id="PassengerByTimeChartCheckbox" onchange="ManageChart(this, '/metrics/PassengersByTimeChart', '#PassengersByTimeChartPlace')" checked> Passenger by time
                     <br>
                     <input type="checkbox" id="PassengersByPrivilegeChartCheckbox" onchange="ManageChart(this, '/metrics/PassengersByPrivilegesChart', '#PassengersByPrivilegeChartPlace')"> Passengers by privilege
                     <br>
@@ -45,11 +45,28 @@
 
     <p id="empty-chart-list">No charts selected</p>
 
-    <div class="col-xl-8 col-lg-7">
+    <div class="col-xl-12 col-lg-12">
         <div id="TicketsByTicketTypesChartPlace"></div>
 
-        <div id="PassengerByTimeChartPlace"></div>
-    </div>
+        <div id="PassengersByTimeChartPlace"></div>
+
+        <div id="PassengersByPrivilegeChartPlace"></div>
+
+        <!-- Radar chart-->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Passenger traffic by days of week</h6>
+                From: <input type="date" id="passengers-by-days-of-week-start" class="form-control form-control-sm">
+                To: <input type="date" id="passengers-by-days-of-week-end" class="form-control form-control-sm">
+            </div>
+            <div class="card-body">
+                <div class="chart-bar">
+                    <canvas id="passengers-by-days-of-week"></canvas>
+                </div>
+                <hr>
+                <span id="passengers-by-days-of-week-error" class="text-danger"></span>
+            </div>
+        </div>
 
         <!-- horizontalBar Chart -->
         <div class="card shadow mb-4">
@@ -69,7 +86,6 @@
                 <hr>
                 <span id="passengers-by-hours-by-routes-error" class="text-danger"></span>
             </div>
-
         </div>
     </div>
 </div>
