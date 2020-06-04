@@ -25,8 +25,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
 
         private readonly TransactionService transactionService;
 
-        private readonly TransactionHistory transaction;
         private readonly TransactionHistoryDto transactionDto;
+        private readonly TransactionHistory transaction;
 
         private readonly Guid transactionEmptyId;
         private readonly Guid transactionId;
@@ -152,14 +152,14 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
-        public void CheckConstructorWithParameters_NullUnitOfWork_ThrowException()
+        public void CheckConstructorWithParameters_CheckNullableUnitOfWork_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new TransactionService(null));
         }
 
         [Fact]
-        public void AddTransaction()
+        public void Create_Transaction()
         {
             // Act
             transactionService.AddTransaction(transactionDto);
@@ -169,7 +169,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
-        public void AddTransaction_ZeroTotalPrice_ThrowArgumentException()
+        public void Create_Transaction_CheckZeroTotalPrice_ShouldThrowException()
         {
             // Act
             transactionDto.TotalPrice = 0;
@@ -179,14 +179,14 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
-        public void AddTransaction_NullTransaction_ThrowArgumentNullException()
+        public void Create_Transaction_CheckNullableTransaction_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => transactionService.AddTransaction(null));
         }
 
         [Fact]
-        public void GetTransactions()
+        public void GetTransactions_CompareTransactions_ShouldBeEqual()
         {
             // Act
             var actualTransactions = transactionService.GetTransactions();
@@ -196,7 +196,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
-        public void GetTransactionsByUserId()
+        public void GetTransactionsByUserId_CompareTransactions_ShouldBeEqual()
         {
             // Act
             var actualTransactions = transactionService.GetTransactionsByUserId(userId);
@@ -206,14 +206,14 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
-        public void GetTransactionsByUserId_EmptyUserId_ThrowArgumentException()
+        public void GetTransactionsByUserId_CheckEmptyUserId_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentException>(() => transactionService.GetTransactionsByUserId(transactionEmptyId));
         }
 
         [Fact]
-        public void GetTransactionById()
+        public void GetTransactionById_CompareTransactions_ShouldBeEqual()
         {
             // Act
             var actualTransaction = transactionService.GetTransactionById(transactionId);
@@ -223,7 +223,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
-        public void GetTransactionById_NullTransaction_ThrowArgumentNullException()
+        public void GetTransactionById_CheckNullableTransaction_ShouldThrowException()
         {
             // Arrange
             var id = Guid.Parse("1DE63B31-A62D-4D5A-9BC7-846EB2E2BADE");
@@ -233,7 +233,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
-        public void GetTransactionById_EmptyTransactionId_ThrowArgumentException()
+        public void GetTransactionById_CheckEmptyTransactionId_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentException>(() => transactionService.GetTransactionById(transactionEmptyId));
