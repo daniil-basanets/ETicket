@@ -34,16 +34,6 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
             setting = "{\"AcessJwtToken\":\"AccessToken\"," +
                       "\"RefreshJwtToken\":\"RefreshToken\"}";
         }
-        
-        [Fact]
-        public void Ctor()
-        {
-            // Act
-            var exception = Record.Exception(() => new TokenRepository());
-
-            // Assert
-            Assert.Null(exception);
-        }
 
         [Fact]
         public void CtorWithParameters_Positive()

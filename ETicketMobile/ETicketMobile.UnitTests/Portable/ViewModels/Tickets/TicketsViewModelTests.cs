@@ -75,17 +75,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void CtorWithParameters()
-        {
-            // Act
-            var exception = Record.Exception(
-                () => new TicketsViewModel(null, dialogServiceMock.Object, tokenServiceMock.Object, httpServiceMock.Object, localApiMock.Object));
-
-            // Assert
-            Assert.Null(exception);
-        }
-
-        [Fact]
         public void CtorWithParameters_NullDialogService_ThrowArgumentNullException()
         {
             // Assert

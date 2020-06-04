@@ -29,16 +29,6 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         }
 
         [Fact]
-        public void Ctor()
-        {
-            // Act
-            var exception = Record.Exception(() => new LocalizationRepository());
-
-            // Assert
-            Assert.Null(exception);
-        }
-
-        [Fact]
         public void CtorWithParameters_Positive()
         {
             // Assert

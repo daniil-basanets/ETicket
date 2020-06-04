@@ -22,16 +22,6 @@ namespace ETicketMobile.UnitTests.Business.Validators
         }
 
         [Fact]
-        public void Ctor_Positive()
-        {
-            // Act
-            var exception = Record.Exception(() => new UserValidator(httpServiceMock.Object));
-
-            // Assert
-            Assert.Null(exception);
-        }
-
-        [Fact]
         public void Ctor_Negative()
         {
             // Assert

@@ -46,17 +46,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void CtorWithParameters()
-        {
-            // Act
-            var exception = Record.Exception(
-                () => new CreateNewPasswordViewModel(null, dialogServiceMock.Object, httpServiceMock.Object));
-
-            // Assert
-            Assert.Null(exception);
-        }
-
-        [Fact]
         public void OnNavigatedTo_NavigationParameters()
         {
             // Arrange

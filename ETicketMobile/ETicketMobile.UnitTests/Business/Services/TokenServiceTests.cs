@@ -60,16 +60,6 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public void CtorWithParameters()
-        {
-            // Act
-            var exception = Record.Exception(() => new TokenService(httpServiceMock.Object, localApiMock.Object));
-
-            // Assert
-            Assert.Null(exception);
-        }
-
-        [Fact]
         public void CtorWithParameters_NullHttpService()
         {
             // Assert

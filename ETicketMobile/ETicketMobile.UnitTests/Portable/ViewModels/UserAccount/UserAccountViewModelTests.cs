@@ -47,16 +47,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void Ctor()
-        {
-            // Act
-            var exception = Record.Exception(() => new UserAccountViewModel(null));
-
-            // Assert
-            Assert.Null(exception);
-        }
-
-        [Fact]
         public void OnAppearing_ReturnsUserActions()
         {
             // Act

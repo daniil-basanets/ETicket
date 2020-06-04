@@ -37,16 +37,6 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
         }
 
         [Fact]
-        public void Ctor()
-        {
-            // Act
-            var exception = Record.Exception(() => new LocalApi());
-
-            // Assert
-            Assert.Null(exception);
-        }
-
-        [Fact]
         public void CtorWithParameters()
         {
             // Arrange

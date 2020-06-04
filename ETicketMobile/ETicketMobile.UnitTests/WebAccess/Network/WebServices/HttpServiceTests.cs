@@ -20,16 +20,6 @@ namespace ETicketMobile.UnitTests.WebAccess.Network.WebServices
         }
 
         [Fact]
-        public void CtorWithParameters()
-        {
-            // Act
-            var exception = Record.Exception(() => new HttpService(ServerConfig.Address));
-
-            // Assert
-            Assert.Null(exception);
-        }
-
-        [Fact]
         public void CtorWithParameters_NullUri()
         {
             // Assert

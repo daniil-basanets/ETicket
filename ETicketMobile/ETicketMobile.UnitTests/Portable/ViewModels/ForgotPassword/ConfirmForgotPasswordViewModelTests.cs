@@ -42,17 +42,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void CtorWithParameters()
-        {
-            // Act
-            var exception = Record.Exception(
-                () => new ConfirmForgotPasswordViewModel(null, dialogServiceMock.Object, httpServiceMock.Object));
-
-            // Assert
-            Assert.Null(exception);
-        }
-
-        [Fact]
         public void OnAppearing_ActivationCodeTimer_ShouldBeZero()
         {
             // Arrange
