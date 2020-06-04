@@ -160,8 +160,9 @@ namespace ETicket.Admin.Controllers
 
                 return BadRequest();
             }
-        }  
+        }
 
+        [HttpGet]
         public IActionResult GetPassengersByDaysOfWeek(DateTime startPeriod, DateTime endPeriod)
         {
             log.Info(nameof(MetricsController.GetPassengersByDaysOfWeek));
@@ -180,6 +181,24 @@ namespace ETicket.Admin.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult PassengersByHoursByRoutesChart()
+        {
+            log.Info(nameof(MetricsController.PassengersByHoursByRoutesChart));
+
+            try
+            {
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
         public IActionResult GetPassengersByHoursByRoutes(DateTime selectedDate, [FromQuery] int[] selectedRoutesId)
         {
             log.Info(nameof(MetricsController.GetPassengersByHoursByRoutes));

@@ -3,8 +3,6 @@
     ViewData["Title"] = "Index";
 }
 
-
-
 <!-- Custom fonts for this template-->
 <link href="~/css/slimselect.min.css" rel="stylesheet">
 <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -37,6 +35,8 @@
                     <br>
                     <input type="checkbox" id="PassengersByPrivilegeChartCheckbox" onchange="ManageChart(this, '/metrics/PassengerTrafficByDaysOfWeekChart', '#PassengerTrafficByDaysOfWeekChartPlace')"> Passenger traffic by days of week
                     <br>
+                    <input type="checkbox" id="PassengersByPrivilegeChartCheckbox" onchange="ManageChart(this, '/metrics/PassengersByHoursByRoutesChart', '#PassengersByHoursByRoutes')"> Passengers by hours by routes
+                    <br>
                 </div>
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn btn-primary">Close</button>
@@ -56,27 +56,7 @@
 
         <div id="PassengerTrafficByDaysOfWeekChartPlace"></div>
 
-
-
-        <!-- horizontalBar Chart -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Passengers by hours by routes</h6>
-                Date: <input type="date" id="passengers-by-hours-by-routes-date" class="form-control form-control-sm">
-                Routes:
-                <select id="routes-for-passengers-by-hours-by-routes" multiple>
-                    <option data-placeholder="true"></option>
-                </select>
-            </div>
-            <!-- Card Body -->
-            <div class="card-body">
-                <div class="chart-bar">
-                    <canvas id="passengers-by-hours-by-routes"></canvas>
-                </div>
-                <hr>
-                <span id="passengers-by-hours-by-routes-error" class="text-danger"></span>
-            </div>
-        </div>
+        <div id="PassengersByHoursByRoutes"></div>
     </div>
 </div>
 
@@ -92,7 +72,6 @@
 
 <!-- Page level custom scripts -->
 <script src="~/js/chart/init-routes-list.js"></script>
-<script src="~/js/chart/chart-passengers-by-hours-by-routes.js"></script>
 
 
 <script src="~/js/slimselect.min.js"></script>
