@@ -2,8 +2,11 @@
     font-size: xx-large
 }
 #metrics-content {
-    margin-top: 20px;
+    margin: 25px;
     background-color: white;
     border-radius: 10px;
     border: 2px solid gray;
+}
+#metrics-button {
+    margin-left: 25px;
 }

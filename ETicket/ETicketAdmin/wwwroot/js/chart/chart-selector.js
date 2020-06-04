@@ -30,4 +30,7 @@ $(document).ready(function () {
     $("#check-box-list input:checked").each(function () {
         $(this).trigger("change");
     });
+
+    //Delete container from loyout only for Index
+    $('.container').removeClass('container');
 })
