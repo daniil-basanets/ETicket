@@ -6,10 +6,17 @@ namespace ETicket.ApplicationServices.DTOs
     {
         public int Id { get; set; }
 
-        [DisplayName("Carrier")]
+        [DisplayName("Vehicle number")]
+        public string VehicleNumber { get; set; }
+
         public int CarrierId { get; set; }
 
-        [DisplayName("Route")]
+        [DisplayName("Carrier")]
+        public string Carrier { get; set; }
+
         public int RouteId { get; set; }
+
+        [DisplayName("Route")]
+        public string Route { get; set; }
     }
 }

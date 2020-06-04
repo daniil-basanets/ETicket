@@ -178,7 +178,7 @@ namespace ETicket.Admin.Controllers
 
             if (id == null)
             {
-                log.Warn(nameof(PrivilegesController.Edit) + " id is null");
+                log.Warn(nameof(PrivilegesController.Delete) + " id is null");
 
                 return NotFound();
             }
@@ -189,7 +189,7 @@ namespace ETicket.Admin.Controllers
 
                 if (privilege == null)
                 {
-                    log.Warn(nameof(PrivilegesController.Edit) + " privilege is null");
+                    log.Warn(nameof(PrivilegesController.Delete) + " privilege is null");
 
                     return NotFound();
                 }

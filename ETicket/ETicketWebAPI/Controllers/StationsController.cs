@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Extensions;
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.DataAccess.Domain.Entities;
 using log4net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ETicket.WebAPI.Controllers
 {
     [Route("api/stations")]
     [ApiController]
+    [SwaggerTag("Station service")]
     public class StationsController : BaseAPIController
     {
         #region Private members
@@ -28,9 +32,10 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/stations
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetStations([FromQuery]int pageNumber = 1, [FromQuery]int pageSize = 10)
+        [SwaggerOperation(Summary = "Get all stations", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a list of stations")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        public IActionResult GetStations([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             log.Info(nameof(StationsController.GetStations));
 
@@ -52,10 +57,11 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/stations/5
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetStation(int id)
+        [SwaggerOperation(Summary = "Get station by id", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a Station object", typeof(StationDto))]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        [SwaggerResponse(404, "Returns if station is not found by id")]
+        public IActionResult GetStation([SwaggerParameter("Int", Required = true)] int id)
         {
             log.Info(nameof(StationsController.GetStation));
 

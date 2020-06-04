@@ -109,6 +109,7 @@ namespace ETicket.WebAPI
 
             services.AddSwaggerGen(c =>
             {
+                c.EnableAnnotations();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ETicket API", Version = "v1" });
             });
         }
