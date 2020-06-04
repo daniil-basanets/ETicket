@@ -97,9 +97,11 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [Fact]
         public void GetDocumentTypeById_Id_ShouldBeGreaterZero()
         {
+            var expectedMessage = "id should be greater than zero (Parameter 'id')";
+
             var exception = Assert.Throws<ArgumentOutOfRangeException>(() => documentTypesService.GetDocumentTypeById(int.MinValue));
 
-            Assert.Equal("id should be greater than zero (Parameter 'id')", exception.Message);
+            Assert.Equal(expectedMessage, exception.Message);
         }
 
         #endregion
@@ -123,9 +125,11 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [InlineData(-100)]
         public void Delete_DocumentType_IdShouldBeGreaterZero(int id)
         {
+            var expectedParamName = "id"; 
+
             var exception = Assert.Throws<ArgumentOutOfRangeException>(() => documentTypesService.Delete(id));
 
-            Assert.Equal("id", exception.ParamName);
+            Assert.Equal(expectedParamName, exception.ParamName);
         }
 
         #endregion
@@ -172,12 +176,13 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [InlineData(" \r \t \n")]
         public void Create_DocumentType_ShouldFailTypeNameIsEmpty(string name)
         {
+            var expectedMessage = "Name is empty";
             documentTypesDto.Name = name;
             Action action = () => documentTypesService.Create(documentTypesDto);
 
             var exception = Assert.Throws<ArgumentException>(action);
 
-            Assert.Equal("Name is empty", exception.Message);
+            Assert.Equal(expectedMessage, exception.Message);
         }
 
         [Theory]
@@ -185,12 +190,13 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [InlineData("qwertyuioplkjhgfdsazxcvbnmetretertretertertsadasdsadsa")]
         public void Create_DocumentType_ShouldFailNameIsInvalid(string typeName)
         {
+            var expectedMessage = $"Length {typeName.Length} of Name is invalid";
             documentTypesDto.Name = typeName;
             Action action = () => documentTypesService.Create(documentTypesDto);
 
             var exception = Assert.Throws<ArgumentException>(action);
 
-            Assert.Equal($"Length {typeName.Length} of Name is invalid", exception.Message);
+            Assert.Equal(expectedMessage, exception.Message);
         }
 
         [Fact]
