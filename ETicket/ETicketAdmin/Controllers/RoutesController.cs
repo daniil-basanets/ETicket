@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
-    public class RoutesController : Controller
+    public class RoutesController : BaseMvcController
     {
         private readonly IRouteService routeService;
         private readonly IStationService stationService;
@@ -240,6 +240,25 @@ namespace ETicket.Admin.Controllers
                 routeService.Delete(id);
 
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetRoutesList()
+        {
+            log.Info(nameof(RoutesController.GetRoutesList));
+
+            try
+            {
+                var routes = routeService.GetRoutes();
+
+                return Json(routes);
             }
             catch (Exception e)
             {

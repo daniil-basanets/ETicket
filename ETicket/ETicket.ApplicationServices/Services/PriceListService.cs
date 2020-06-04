@@ -32,7 +32,7 @@ namespace ETicket.ApplicationServices.Services
 
         public PriceListDto Get(int id)
         {
-            return mapper.Map<PriceList,PriceListDto>(uow.PriceList.Get(id));
+            return mapper.Map<PriceList, PriceListDto>(uow.PriceList.Get(id));
         }
 
         public void Create(PriceListDto priceListDto)

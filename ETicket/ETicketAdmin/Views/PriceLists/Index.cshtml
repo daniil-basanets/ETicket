@@ -1,5 +1,4 @@
-﻿@model IEnumerable<ETicket.DataAccess.Domain.Entities.PriceList>
-
+﻿@model IEnumerable<ETicket.ApplicationServices.DTOs.PriceListDto>
 @{
     ViewData["Title"] = "Index";
 }
@@ -30,7 +29,7 @@
                                 @Html.DisplayNameFor(model => model.StartDate)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Area)
+                                @Html.DisplayNameFor(model => model.AreaName)
                             </th>
                         </tr>
                     </thead>
@@ -43,7 +42,7 @@
                                 @Html.DisplayNameFor(model => model.StartDate)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Area)
+                                @Html.DisplayNameFor(model => model.AreaName)
                             </th>
                         </tr>
                     </tfoot>
@@ -58,7 +57,14 @@
                                     @Html.DisplayFor(modelItem => item.StartDate)
                                 </td>
                                 <td>
-                                    @Html.ActionLink(item.Area.Name, "Details", "Area", new { id = item.AreaId }, null)
+                                    @if (item.AreaName == null)
+                                    {
+                                        @Html.DisplayFor(modelItem => item.AreaName)
+                                    }
+                                    else
+                                    {
+                                        @Html.ActionLink(item.AreaName, "Details", "Areas", new { id = item.AreaId }, null)
+                                    }
                                 </td>
                             </tr>
                         }

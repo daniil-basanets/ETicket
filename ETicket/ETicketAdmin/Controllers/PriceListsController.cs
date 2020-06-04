@@ -33,8 +33,7 @@ namespace ETicket.Admin.Controllers
         {
             try
             {
-
-                ViewData["AreaId"] = new SelectList(areaService.GetAreas(), "Id", "Name");
+               ViewData["AreaId"] = new SelectList(areaService.GetAreas(), "Id", "Name");
 
                 return View(priceListService.GetAll());
             }
@@ -74,11 +73,11 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-               ViewData["AreaId"] = new SelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name");
+                ViewData["AreaId"] = new SelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name");
 
                 if (ModelState.IsValid)
                 {
-                   priceListService.Create(priceListDto);
+                    priceListService.Create(priceListDto);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -91,8 +90,6 @@ namespace ETicket.Admin.Controllers
 
                 return BadRequest();
             }
-
-
         }
     }
 }
