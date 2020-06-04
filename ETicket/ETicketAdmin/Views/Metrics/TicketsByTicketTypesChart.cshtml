@@ -1,0 +1,21 @@
+﻿@{
+    Layout = null;
+}
+
+<!-- Bar TicketsByTicketTypes -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Tickets by ticket types</h6>
+        From: <input type="date" id="tickets-by-types-start" class="form-control form-control-sm">
+        To: <input type="date" id="tickets-by-types-end" class="form-control form-control-sm">
+    </div>
+    <div class="card-body">
+        <div class="chart-bar">
+            <canvas id="tickets-by-types"></canvas>
+        </div>
+        <hr />
+        <span id="tickets-by-types-error" class="text-danger"></span>
+    </div>
+</div>
+
+<script src="~/js/chart/chart-bar-tickets-by-types.js"></script>

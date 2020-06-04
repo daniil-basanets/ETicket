@@ -138,6 +138,37 @@ function ToYearPicker() {
     chartScale = ChartScale.ByYears;
 }
 
+var selectedRoutesPassengerByTimeChart = [];
+
+$(document).ready(function () {
+    var slimSelectPassengerByTime = new SlimSelect({
+        select: '#routes-for-passengers-by-time',
+        searchingText: 'Searching...', // Optional - Will show during ajax request
+        hideSelectedOption: true,
+        placeholder: 'Select routes',
+        onChange: (info) => {
+            selectedRoutesPassengerByTimeChart = [];
+            for (let i = 0; i < info.length; i++) {
+                selectedRoutesPassengerByTimeChart.push(info[i].value);
+            }
+            refreshChart();
+        }
+    });
+
+    var actionUrl = '/routes/GetRoutesList';
+    $.getJSON(actionUrl, function (response) {
+        let responseResult = [];
+        if (response != null) {
+            for (let i = 0; i < response.length; i++) {
+                responseResult.push({ value: response[i].Id, text: response[i].Number })
+            }
+        }
+
+        slimSelectPassengerByTime.setData(responseResult);
+    });
+})
+
+
 var passengerByTimeChart = null;
 
 function refreshChart() {
