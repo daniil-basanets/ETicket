@@ -63,9 +63,6 @@ namespace ETicket.ApplicationServices.Services
         {
             var carrier = uow.Carriers.Get(id);
 
-            if (carrier == null)
-                throw new NullReferenceException("Not found");
-
             return mapper.Map<Carrier, CarrierDto>(carrier);
         }
 
