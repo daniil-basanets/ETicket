@@ -47,7 +47,7 @@ $(document).ready(function () {
     var table = $('#dataTable')
         //Read additional fields from server side
         .on('xhr.dt', function (e, settings, json, xhr) {
-            totalRecords = json.recordsTotal;
+            totalRecords = json.CountRecords;
         })
         .on('page.dt', function () {
             pageNumber = table.page() + 1;
@@ -65,6 +65,15 @@ $(document).ready(function () {
             order: [[1, "desc"]],
             ajax: {
                 url: 'Ticket/GetCurrentPage',
+                dataFilter: function (data) {
+                    var json = jQuery.parseJSON(data);
+                    json.draw = json.DrawCounter;
+                    json.recordsTotal = json.CountRecords;
+                    json.recordsFiltered = json.CountFiltered;
+                    json.data = json.PageData;
+
+                    return JSON.stringify(json); // return JSON string
+                },
                 //To send an array correctly by query string
                 traditional: true,
                 type: 'GET',
@@ -100,16 +109,16 @@ $(document).ready(function () {
             columns: [
                 {
                     name: "ticketType",
-                    data: "ticketType",
+                    data: "TicketTypeName",
                     render: function (data, type, row) {
                         if (data != null) {
-                            return '<a href = "TicketType/Details/' + data.id + '">' + data.typeName + '</a>'
+                            return '<a href = "TicketType/Details/' + row.TicketTypeId + '">' + row.TicketTypeName + '</a>'
                         }
                     }
                 },
                 {
                     name: "createdUTCDate",
-                    data: "createdUTCDate",
+                    data: "CreatedUTCDate",
                     render: function (data, type, row) {
                         if (data != null) {
                             var date = new Date(Date.parse(data));
@@ -119,7 +128,7 @@ $(document).ready(function () {
                 },
                 {
                     name: "activatedUTCDate",
-                    data: "activatedUTCDate",
+                    data: "ActivatedUTCDate",
                     defaultContent: "",
                     render: function (data, type, row) {
                         if (data != null) {
@@ -130,7 +139,7 @@ $(document).ready(function () {
                 },
                 {
                     name: "expirationUTCDate",
-                    data: "expirationUTCDate",
+                    data: "ExpirationUTCDate",
                     defaultContent: "",
                     render: function (data, type, row) {
                         if (data != null) {
@@ -141,11 +150,11 @@ $(document).ready(function () {
                 },
                 {
                     name: "user",
-                    data: "user",
+                    data: "UserName",
                     defaultContent: "",
                     render: function (data, type, row) {
                         if (data != null) {
-                            return '<a href = "User/Details/' + data.id + '">' + data.firstName + ' ' + data.lastName + '</a>'
+                            return '<a href = "User/Details/' + row.UserId + '">' + row.UserName + '</a>'
                         }
                     }
                 },
@@ -195,17 +204,17 @@ $(document).ready(function () {
     //Event listener for Edit button 
     $("#dataTable tbody").on('click', '#editButton', function () {
         var data = table.row($(this).parents('tr')).data();
-        location.href = "/Ticket/Edit/" + data.id;
+        location.href = "/Ticket/Edit/" + data.Id;
     })
     //Event listener for Details button 
     $("#dataTable tbody").on('click', '#detailsButton', function () {
         var data = table.row($(this).parents('tr')).data();
-        location.href = "/Ticket/Details/" + data.id;
+        location.href = "/Ticket/Details/" + data.Id;
     })
     //Event listener for Delete button 
     $("#dataTable tbody").on('click', '#deleteButton', function () {
         var data = table.row($(this).parents('tr')).data();
-        location.href = "/Ticket/Delete/" + data.id;
+        location.href = "/Ticket/Delete/" + data.Id;
     })
 
     //Delete container from loyout only for Index

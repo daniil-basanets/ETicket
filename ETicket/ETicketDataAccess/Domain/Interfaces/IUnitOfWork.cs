@@ -1,43 +1,44 @@
-﻿using ETicket.DataAccess.Domain.Entities;
+﻿using System;
+using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Repositories;
 
 namespace ETicket.DataAccess.Domain.Interfaces
 {
     public interface IUnitOfWork
     {
-        DocumentRepository Documents { get; }
+        IRepository<Document,Guid> Documents { get; }
 
-        RouteRepository Routes { get; }
+        IRepository<Route,int> Routes { get; }
+        
+        IRepository<DocumentType,int> DocumentTypes { get; }
+        
+        IRepository<RouteStation, int> RouteStation { get; }
 
-        RouteStationRepository RouteStation { get; }
+        IRepository<Privilege,int> Privileges { get; }
 
-        DocumentTypeRepository DocumentTypes { get; }
-
-        PrivilegeRepository Privileges { get; }
-
-        TicketRepository Tickets { get; }
+        IRepository<Ticket,Guid> Tickets { get; }
 
         IRepository<TicketType,int> TicketTypes { get; }
 
-        TicketAreaRepository TicketArea { get; }
+        IRepository<TicketArea, TicketArea> TicketArea { get; }
 
-        TicketVerificationRepository TicketVerifications { get; }
+        IRepository<TicketVerification,Guid> TicketVerifications { get; }
         
-        TransactionHistoryRepository TransactionHistory { get; }
+        IRepository<TransactionHistory,Guid> TransactionHistory { get; }
 
-        UserRepository Users { get; }
+        IRepository<User,Guid> Users { get; }
 
-        CarrierRepository Carriers { get; }
+        IRepository<Carrier,int> Carriers { get; }
 
         SecretCodeRepository SecretCodes { get; }
-
-        AreaRepository Areas { get; }
-
-        StationRepository Stations { get; }
         
-        TransportRepository Transports { get; }
+        IRepository<Area,int> Areas { get; }
         
-        PriceListRepository PriceList { get; }
+        IRepository<Station,int> Stations { get; }
+        
+        IRepository<Transport,int> Transports { get; }
+        
+        IRepository<PriceList,int> PriceList { get; }
 
         void Save();
     }

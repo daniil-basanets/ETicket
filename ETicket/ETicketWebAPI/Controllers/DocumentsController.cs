@@ -5,12 +5,14 @@ using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
 using log4net;
 using System.Reflection;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ETicket.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/documents")]
-    public class DocumentsController : ControllerBase
+    [SwaggerTag("Document service")]
+    public class DocumentsController : BaseAPIController
     {
         IDocumentService documentService;
 
@@ -22,6 +24,10 @@ namespace ETicket.WebAPI.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(Summary = "Get all documents", Description = "Allowed: Admin")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a list of documents")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
         public IActionResult GetDocuments()
         {
             log.Info(nameof(DocumentsController.GetDocuments));
@@ -30,7 +36,12 @@ namespace ETicket.WebAPI.Controllers
         }
                 
         [HttpGet("{id}")]
-        public IActionResult GetDocument(Guid id)
+        [SwaggerOperation(Summary = "Get document by id", Description = "Allowed: Admin")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a Document object", typeof(Document))]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        [SwaggerResponse(404, "Returns if document is not found by id")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
+        public IActionResult GetDocument([SwaggerParameter("Guid", Required = true)] Guid id)
         {
             log.Info(nameof(DocumentsController.GetDocument));
 
@@ -54,7 +65,11 @@ namespace ETicket.WebAPI.Controllers
         }
                
         [HttpPut("{id}")]
-        public  IActionResult UpdateDocument(Guid id, DocumentDto documentDto)
+        [SwaggerOperation(Summary = "Update document", Description = "Allowed: authorized user")]
+        [SwaggerResponse(200, "Returns if everything is correct", typeof(DocumentDto))]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
+        public  IActionResult UpdateDocument([SwaggerParameter("Guid", Required = true)] Guid id, [FromBody, SwaggerRequestBody("Document payload", Required = true)] DocumentDto documentDto)
         {
             log.Info(nameof(DocumentsController.UpdateDocument));
 
@@ -83,7 +98,11 @@ namespace ETicket.WebAPI.Controllers
         }
                 
         [HttpPost]
-        public IActionResult PostDocument(DocumentDto documentDto)
+        [SwaggerOperation(Summary = "Create document", Description = "Allowed: authorized user")]
+        [SwaggerResponse(200, "Returns if document is created", typeof(DocumentDto))]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
+        public IActionResult PostDocument([FromBody, SwaggerRequestBody("Document payload", Required = true)] DocumentDto documentDto)
         {
             log.Info(nameof(DocumentsController.PostDocument));
 

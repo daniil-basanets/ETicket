@@ -38,13 +38,13 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult PassengersByPrivileges(DateTime start, DateTime end)
+        public IActionResult PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod)
         {
             log.Info(nameof(MetricsController.PassengersByTime));
             
             try
             {
-                return Json(metricsService.PassengersByPrivileges(start, end));
+                return Json(metricsService.PassengersByPrivileges(startPeriod, endPeriod));
             }
             catch (Exception e)
             {
@@ -55,13 +55,13 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult PassengersByTime(DateTime start, DateTime end)
+        public IActionResult PassengersByTime(DateTime startPeriod, DateTime endPeriod)
         {
             log.Info(nameof(MetricsController.PassengersByTime));
 
             try
             {
-                ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByTime(start, end);
+                ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByTime(startPeriod, endPeriod);
 
                 return Json(chartDtoTicketsByTicketTypes);
             }
@@ -73,13 +73,13 @@ namespace ETicket.Admin.Controllers
             }
         }
 
-        public IActionResult GetTicketsByTicketTypes(DateTime start, DateTime end)
+        public IActionResult GetTicketsByTicketTypes(DateTime startPeriod, DateTime endPeriod)
         {
             log.Info(nameof(MetricsController.GetTicketsByTicketTypes));
 
             try
             {
-                ChartDto chartDtoTicketsByTicketTypes = metricsService.TicketsByTicketTypes(start, end);
+                ChartDto chartDtoTicketsByTicketTypes = metricsService.TicketsByTicketTypes(startPeriod, endPeriod);
 
                 return Json(chartDtoTicketsByTicketTypes);
             }

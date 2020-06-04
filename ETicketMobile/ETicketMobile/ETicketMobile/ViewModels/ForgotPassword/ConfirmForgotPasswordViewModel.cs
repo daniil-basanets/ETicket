@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.Endpoints;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.ForgotPassword
@@ -17,10 +18,12 @@ namespace ETicketMobile.ViewModels.ForgotPassword
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
-        private readonly HttpClientService httpClient;
+        private readonly IPageDialogService dialogService;
+        private readonly IHttpService httpService;
+
+        private string email;
 
         private Timer timer;
 
@@ -37,10 +40,10 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         #region Properties
 
         public ICommand NavigateToCreateNewPasswordView => navigateToCreateNewPasswordView
-            ?? (navigateToCreateNewPasswordView = new Command<string>(OnNavigateToCreateNewPasswordView));
+            ??= new Command<string>(OnNavigateToCreateNewPasswordView);
 
         public ICommand SendActivationCode => sendActivationCode
-            ?? (sendActivationCode = new Command(OnSendActivationCode));
+            ??= new Command(OnSendActivationCode);
 
         public string ConfirmEmailWarning
         {
@@ -62,13 +65,17 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #endregion
 
-        public ConfirmForgotPasswordViewModel(INavigationService navigationService)
-            : base(navigationService)
+        public ConfirmForgotPasswordViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IHttpService httpService
+        ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
 
-            httpClient = new HttpClientService();
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
         }
 
         public override void OnAppearing()
@@ -92,7 +99,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             ActivationCodeTimer = 0;
         }
 
-        private void TimerElapsed(object sender, ElapsedEventArgs e) 
+        private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
             ActivationCodeTimer--;
 
@@ -105,15 +112,16 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
             this.navigationParameters = navigationParameters;
+
+            email = navigationParameters.GetValue<string>("email");
         }
 
-        private void OnSendActivationCode()
+        private async void OnSendActivationCode()
         {
             if (ActivationCodeTimer != 0)
                 return;
 
-            var email = navigationParameters.GetValue<string>("email");
-            RequestActivationCode(email);
+            await SendActivationCodeAsync();
 
             ActivationCodeTimer = 60;
 
@@ -122,22 +130,50 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             TimerActivated = true;
         }
 
-        private async void RequestActivationCode(string email)
+        private async Task SendActivationCodeAsync()
         {
-            await httpClient.PostAsync<string, string>(TicketsEndpoint.RequestActivationCode, email);
+            try
+            {
+                await RequestActivationCodeAsync(email);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+
+                return;
+            }
+        }
+
+        private async Task RequestActivationCodeAsync(string email)
+        {
+            await httpService.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
 
         private async void OnNavigateToCreateNewPasswordView(string code)
         {
-            if (! await IsValid(code))
-                return;
+            await NavigateToCreateNewPasswordViewAsync(code);
+        }
 
-            await navigationService.NavigateAsync(nameof(CreateNewPasswordView), navigationParameters);
+        private async Task NavigateToCreateNewPasswordViewAsync(string code)
+        {
+            try
+            {
+                if (!await IsValidAsync(code))
+                    return;
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+
+                return;
+            }
+
+            await NavigationService.NavigateAsync(nameof(CreateNewPasswordView), navigationParameters);
         }
 
         #region Validation
 
-        private async Task<bool> IsValid(string code)
+        private async Task<bool> IsValidAsync(string code)
         {
             if (string.IsNullOrEmpty(code))
             {
@@ -146,7 +182,10 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            var confirmEmailIsSucceeded = await ConfirmEmail(code);
+            var resetPasswordRequestDto = CreateConfirmEmailRequestDto(code);
+
+            var confirmEmailIsSucceeded = await ConfirmEmailAsync(resetPasswordRequestDto);
+
             if (!confirmEmailIsSucceeded)
             {
                 ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
@@ -157,11 +196,20 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             return true;
         }
 
-        private async Task<bool> ConfirmEmail(string activationCode)
+        private ConfirmEmailRequestDto CreateConfirmEmailRequestDto(string code)
         {
-            var response = await httpClient.PostAsync<string, ConfirmEmailResponseDto>(
-                TicketsEndpoint.ConfirmEmail,
-                activationCode
+            return new ConfirmEmailRequestDto
+            {
+                Email = email,
+                ActivationCode = code
+            };
+        }
+
+        private async Task<bool> ConfirmEmailAsync(ConfirmEmailRequestDto confirmEmailRequestDto)
+        {
+            var response = await httpService.PostAsync<ConfirmEmailRequestDto, ConfirmEmailResponseDto>(
+                AuthorizeEndpoint.CheckCode,
+                confirmEmailRequestDto
             );
 
             return response.Succeeded;

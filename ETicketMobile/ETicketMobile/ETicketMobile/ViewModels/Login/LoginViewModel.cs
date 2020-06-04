@@ -1,18 +1,18 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Android.Util;
-using ETicketMobile.Business.Mapping;
+using ETicketMobile.Business.Services.Interfaces;
+using ETicketMobile.Business.Validators;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.Views.UserActions;
-using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Login
@@ -21,10 +21,11 @@ namespace ETicketMobile.ViewModels.Login
     {
         #region Fields
 
-        protected INavigationService navigationService;
-        private readonly ILocalApi localApi;
+        private readonly IPageDialogService dialogService;
+        private readonly ITokenService tokenService;
+        private readonly IHttpService httpService;
 
-        private readonly HttpClientService httpClient;
+        private readonly ILocalApi localApi;
 
         private ICommand navigateToRegistrationView;
         private ICommand navigateToForgetPasswordView;
@@ -32,35 +33,29 @@ namespace ETicketMobile.ViewModels.Login
 
         private string emailWarning;
 
-        private string email;
-
         private string password;
-        private string passwordPlaceHolder;
-        private Color passwordPlaceHolderColor;
+        private string passwordWatermark;
+        private Color passwordWatermarkColor;
+
+        private bool isDataLoad;
 
         #endregion
 
         #region Properties
 
-        public ICommand NavigateToForgetPasswordView => navigateToForgetPasswordView
-            ?? (navigateToForgetPasswordView = new Command(OnNavigateToForgetPasswordView));
+        public ICommand NavigateToForgetPasswordView => navigateToForgetPasswordView 
+            ??= new Command(OnNavigateToForgetPasswordView);
 
-        public ICommand NavigateToRegistrationView => navigateToRegistrationView
-            ?? (navigateToRegistrationView = new Command(OnNavigateToRegistrationView));
+        public ICommand NavigateToRegistrationView => navigateToRegistrationView 
+            ??= new Command(OnNavigateToRegistrationView);
 
-        public ICommand NavigateToLoginView => navigateToLoginView
-            ?? (navigateToLoginView = new Command(OnNavigateToLoginView));
+        public ICommand NavigateToLoginView => navigateToLoginView 
+            ??= new Command<string>(OnNavigateToLoginView);
 
         public string EmailWarning
         {
             get => emailWarning;
             set => SetProperty(ref emailWarning, value);
-        }
-
-        public string Email
-        {
-            get => email;
-            set => SetProperty(ref email, value);
         }
 
         public string Password
@@ -69,112 +64,135 @@ namespace ETicketMobile.ViewModels.Login
             set => SetProperty(ref password, value);
         }
 
-        public string PasswordPlaceHolder
+        public string PasswordWatermark
         {
-            get => passwordPlaceHolder;
-            set => SetProperty(ref passwordPlaceHolder, value);
+            get => passwordWatermark;
+            set => SetProperty(ref passwordWatermark, value);
         }
 
-        public Color PasswordPlaceHolderColor
+        public Color PasswordWatermarkColor
         {
-            get => passwordPlaceHolderColor;
-            set => SetProperty(ref passwordPlaceHolderColor, value);
+            get => passwordWatermarkColor;
+            set => SetProperty(ref passwordWatermarkColor, value);
+        }
+
+        public bool IsDataLoad
+        {
+            get => isDataLoad;
+            set => SetProperty(ref isDataLoad, value);
         }
 
         #endregion
 
-        public LoginViewModel(INavigationService navigationService, ILocalApi localApi)
-            : base(navigationService)
+        public LoginViewModel(
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            ITokenService tokenService,
+            IHttpService httpService,
+            ILocalApi localApi
+        ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
 
-            httpClient = new HttpClientService();
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
+
+            this.tokenService = tokenService
+                ?? throw new ArgumentNullException(nameof(tokenService));
+
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnAppearing()
         {
-            FillProperties();
+            Init();
         }
 
-        private void FillProperties()
+        private void Init()
         {
-            PasswordPlaceHolder = AppResource.PasswordPlaceHolderDefault;
+            PasswordWatermark = AppResource.PasswordWatermarkDefault;
         }
 
-        private void OnNavigateToForgetPasswordView(object obj)
+        private async void OnNavigateToForgetPasswordView()
         {
-            navigationService.NavigateAsync(nameof(ForgotPasswordView));
+            await NavigationService.NavigateAsync(nameof(ForgotPasswordView));
         }
 
-        private void OnNavigateToRegistrationView(object obj)
+        private async void OnNavigateToRegistrationView()
         {
-            navigationService.NavigateAsync(nameof(EmailRegistrationView));
+            await NavigationService.NavigateAsync(nameof(EmailRegistrationView));
         }
 
-        private async void OnNavigateToLoginView(object obj)
+        private async void OnNavigateToLoginView(string email)
         {
-            //if (!IsValid(email))
-            //    return;
+            if (!IsValid(email))
+                return;
 
-            var token = await GetTokenAsync();
+            await NavigateToLoginViewAsync(email);
+        }
+
+        private async Task NavigateToLoginViewAsync(string email)
+        {
+            Token token = null;
+
+            try
+            {
+                IsDataLoad = true;
+
+                token = await tokenService.GetTokenAsync(email, password);
+            }
+            catch (WebException)
+            {
+                IsDataLoad = false;
+
+                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+
+                return;
+            }
+
             if (token.RefreshJwtToken == null)
             {
+                //TODO UserDoesnExists
                 EmailWarning = AppResource.EmailWarning;
 
                 Password = string.Empty;
-                PasswordPlaceHolder = AppResource.PasswordPlaceHolderWrong;
-                PasswordPlaceHolderColor = Color.Red;
+                PasswordWatermark = AppResource.PasswordWatermarkWrong;
+                PasswordWatermarkColor = Color.Red;
 
                 return;
             }
 
             await localApi.AddAsync(token);
 
-            var navigationParameters = new NavigationParameters { { "email", Email } };
-            await navigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
-        }
+            var navigationParameters = new NavigationParameters { { "email", email } };
+            await NavigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
 
-        private async Task<Token> GetTokenAsync()
-        {
-            var userSignIn = new UserSignInRequestDto
-            {
-                Email = "joe@gmail.com", //email,
-                Password = "qwerty12" // password
-            };
-
-            var tokenDto = await httpClient.PostAsync<UserSignInRequestDto, TokenDto>(
-                TicketsEndpoint.Login, userSignIn);
-
-            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
-
-            return token;
+            IsDataLoad = false;
         }
 
         #region Validation
 
         private bool IsValid(string email)
         {
-            if (IsEmpty(email))
+            if (string.IsNullOrEmpty(email))
             {
                 EmailWarning = AppResource.EmailEmpty;
 
                 return false;
             }
 
-            if (IsEmpty(password))
+            if (string.IsNullOrEmpty(password))
             {
                 Password = string.Empty;
-                PasswordPlaceHolder = AppResource.PasswordEmpty;
-                PasswordPlaceHolderColor = Color.Red;
+                PasswordWatermark = AppResource.PasswordEmpty;
+                PasswordWatermarkColor = Color.Red;
 
                 return false;
             }
 
-            if (!IsEmailValid(email))
+            if (!Validator.IsEmailValid(email))
             {
                 EmailWarning = AppResource.EmailInvalid;
 
@@ -182,16 +200,6 @@ namespace ETicketMobile.ViewModels.Login
             }
 
             return true;
-        }
-
-        private bool IsEmpty(string field)
-        {
-            return string.IsNullOrEmpty(field);
-        }
-
-        private bool IsEmailValid(string email)
-        {
-            return Patterns.EmailAddress.Matcher(email).Matches();
         }
 
         #endregion

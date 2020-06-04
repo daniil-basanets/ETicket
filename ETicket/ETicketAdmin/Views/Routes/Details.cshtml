@@ -1,4 +1,4 @@
-﻿@model ETicket.DataAccess.Domain.Entities.Route
+﻿@model ETicket.ApplicationServices.DTOs.RouteDto
 
 @{
     ViewData["Title"] = "Details";
@@ -17,22 +17,24 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Number)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstStationId)
+        <dt class="col-sm-2">
+            <label class="control-label">First Station</label>
+            @Html.DisplayNameFor(model => model.FirstStationName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstStationId)
+            @Html.DisplayFor(model => model.FirstStationName)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastStationId)
+        <dt class="col-sm-2">
+            <label class="control-label">Last Station</label>
+            @Html.DisplayNameFor(model => model.LastStationName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastStationId)
+            @Html.DisplayFor(model => model.LastStationName)
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+<div class="form-group">
+    <input asp-action="Edit" asp-route-id="@Model.Id" type="submit" value="Save" class="btn btn-primary"/>
     <a href="javascript:history.back()">Back</a>
-    <a asp-action="Index">Back to Route List</a>
+    <div><a asp-action="Index">Back to Route List</a></div>    
 </div>

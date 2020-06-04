@@ -31,7 +31,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
             fakeTicketTypes = new List<TicketType>
             {
                 new TicketType {Id = 5, TypeName = "Test1", Coefficient = 2.3M, DurationHours = 12, IsPersonal = true},
-                new TicketType {Id = 7, TypeName = "Test2", Coefficient = 2.4M, DurationHours = 13, IsPersonal = false}
+                new TicketType {Id = 7, TypeName = "Test2", Coefficient = 2.4M, DurationHours = 13, IsPersonal = false},
+                new TicketType {Id = int.MaxValue, TypeName = "Test2", Coefficient = 2.4M, DurationHours = 13, IsPersonal = false}
             };
 
             ticketTypeDto = new TicketTypeDto
@@ -60,6 +61,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
 
         #endregion
 
+        #region GetTicketTypes
+
         [Fact]
         public void GetTicketTypes_CheckNull_ShouldBeNotNull()
         {
@@ -78,7 +81,11 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
             
             Assert.Equal(expected,actual);
         }
-        
+
+        #endregion
+
+        #region GetByIdTicketType
+
         [Theory]
         [InlineData(5)]
         [InlineData(7)]
@@ -90,26 +97,18 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
             Assert.Equal(expected,actual);
         }
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData(" ")]
-        public void Create_TicketType_ShouldFailTypeNameIsEmpty(string name)
-        {
-            ticketTypeDto.TypeName = name;
-            Action action = () => ticketTypeService.Create(ticketTypeDto);
-
-            var exception = Assert.Throws<ArgumentException>(action);
-            
-            Assert.Equal("Type name is empty",exception.Message);
-        }
-
         [Fact]
-        public void Create_TicketType_ShouldFailDtoShouldNotBeNull()
+        public void GetByIdTicketType_Id_ShouldBeGreaterZero()
         {
-            Assert.Throws<ArgumentNullException>(() => ticketTypeService.Create(null));
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => ticketTypeService.GetTicketTypeById(int.MinValue));
+            
+            Assert.Equal("id should be greater than zero (Parameter 'id')",exception.Message);
         }
-        
+
+        #endregion
+
+        #region Delete
+
         [Fact]
         public void Delete_TicketType_CountShouldDecrease()
         {
@@ -121,7 +120,21 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
             
             Assert.Equal(expected,actual);
         }
-        
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-100)]
+        public void Delete_TicketType_IdShouldBeGreaterZero(int id)
+        {
+            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => ticketTypeService.Delete(id));
+            
+            Assert.Equal("id",exception.ParamName);
+        }
+
+        #endregion
+
+        #region Create
+
         [Fact]
         public void Create_TicketType_ShouldBeNotNull()
         {
@@ -155,6 +168,75 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
             Assert.Equal(expected,actual);
         }
         
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData(" \r \t \n" )]
+        public void Create_TicketType_ShouldFailTypeNameIsEmpty(string name)
+        {
+            ticketTypeDto.TypeName = name;
+            Action action = () => ticketTypeService.Create(ticketTypeDto);
+
+            var exception = Assert.Throws<ArgumentException>(action);
+            
+            Assert.Equal("Type name is empty",exception.Message);
+        }
+
+        [Theory]
+        [InlineData("q")]
+        [InlineData("qwertyuioplkjhgfdsazxcvbnmetretertretertertsadasdsadsa")]
+        public void Create_TicketType_ShouldFailNameIsInvalid(string typeName)
+        {
+            ticketTypeDto.TypeName = typeName;
+            Action action = () => ticketTypeService.Create(ticketTypeDto);
+
+            var exception = Assert.Throws<ArgumentException>(action);
+            
+            Assert.Equal($"Length {typeName.Length} of Type name is invalid",exception.Message);
+        }
+
+        [Fact]
+        public void Create_TicketType_ShouldFailDurationHoursShouldBeGreaterThanZero()
+        {
+            ticketTypeDto.DurationHours = 0U;
+            Action action = () => ticketTypeService.Create(ticketTypeDto);
+            
+            Assert.Throws<ArgumentException>(action);
+        }
+        
+        [Fact]
+        public void Create_TicketType_ShouldFailDtoShouldNotBeNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => ticketTypeService.Create(null));
+        }
+        
+        [Fact]
+        public void Create_TicketType_ShouldFailCoefficientShouldBeGreaterOrEqualZero()
+        {
+            ticketTypeDto.Coefficient = decimal.MinValue;
+            Action action = () => ticketTypeService.Create(ticketTypeDto);
+            
+            var exception = Assert.Throws<ArgumentException>(action);
+            
+            Assert.Equal("Coefficient should be greater or equal than 0",exception.Message);
+        }
+
+        #endregion
+
+        #region Update
+
+        [Theory]
+        [InlineData("  f   ")]
+        [InlineData("\r f \t \n ")]
+        public void Update_TicketType_ShouldFailNameIsInvalid(string typeName)
+        {
+            ticketTypeDto.TypeName = typeName;
+            Action action = () => ticketTypeService.Update(ticketTypeDto);
+
+            Assert.Throws<ArgumentException>(action);
+        }
+        
         [Fact]
         public void Update_TicketType_NameShouldBeEqualDTOsName()
         {
@@ -167,5 +249,19 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
 
             Assert.Equal(expected,actual);
         }
+        
+        [Fact]
+        public void Update_TicketType_ShouldFailCoefficientShouldBeGreaterOrEqualZero()
+        {
+            ticketTypeDto.Coefficient = decimal.MinusOne;
+            Action action = () => ticketTypeService.Update(ticketTypeDto);
+            
+            var exception = Assert.Throws<ArgumentException>(action);
+            
+            Assert.Equal("Coefficient should be greater or equal than 0",exception.Message);
+        }
+        
+
+        #endregion
     }
 }

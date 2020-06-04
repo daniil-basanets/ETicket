@@ -1,12 +1,11 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using ETicket.ApplicationServices.Services;
-using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.ApplicationServices.DTOs;
 using log4net;
 using System.Reflection;
 using ETicket.ApplicationServices.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ETicket.Admin.Controllers
 {
@@ -14,12 +13,13 @@ namespace ETicket.Admin.Controllers
     public class RoutesController : Controller
     {
         private readonly IRouteService routeService;
-
+        private readonly IStationService stationService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public RoutesController(IRouteService routeService)
+        public RoutesController(IRouteService routeService, IStationService stationService)
         {
             this.routeService = routeService;
+            this.stationService = stationService;
         }
 
         [HttpGet]
@@ -79,7 +79,21 @@ namespace ETicket.Admin.Controllers
         {
             log.Info(nameof(RoutesController.Create));
 
-            return View();
+            try
+            {
+                var stationNames = stationService.GetAll();
+
+                ViewData["StationId"] = new SelectList(stationNames, "Id", "Name");
+
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                throw;
+            }
+            
         }
 
         [HttpPost]
@@ -96,6 +110,11 @@ namespace ETicket.Admin.Controllers
 
                     return RedirectToAction(nameof(Index));
                 }
+
+                var stationNames = stationService.GetAll();
+
+                ViewData["StationId"] = new SelectList(stationNames, "Id", "Name", routeDto.Id);
+
                 return View(routeDto);
             }
             catch (Exception e)
@@ -111,23 +130,27 @@ namespace ETicket.Admin.Controllers
         {
             log.Info(nameof(RoutesController.Edit));
 
+            if (id == null)
+            {
+                log.Warn(nameof(RoutesController.Edit) + " id is null");
+
+                return NotFound();
+            }
+
             try
             {
-                if (id == null)
-                {
-                    log.Warn(nameof(RoutesController.Edit) + " id is null");
-
-                    return NotFound();
-                }
-
                 var route = routeService.GetRouteById(id.Value);
-
+                                              
                 if (route == null)
                 {
                     log.Warn(nameof(RoutesController.Edit) + " route is null");
 
                     return NotFound();
                 }
+
+                var stationNames = stationService.GetAll();
+
+                ViewData["StationId"] = new SelectList(stationNames, "Id", "Name", route.Id);
 
                 return View(route);
             }
@@ -160,6 +183,10 @@ namespace ETicket.Admin.Controllers
 
                     return RedirectToAction(nameof(Index));
                 }
+
+                var stationNames = stationService.GetAll();
+
+                ViewData["StationId"] = new SelectList(stationNames, "Id", "Name", routeDto.Id);
 
                 return View(routeDto);
             }

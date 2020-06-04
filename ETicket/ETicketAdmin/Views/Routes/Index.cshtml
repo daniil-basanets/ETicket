@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ETicket.DataAccess.Domain.Entities.Route>
+﻿@model IEnumerable<ETicket.ApplicationServices.DTOs.RouteDto>
 
 @{
     ViewData["Title"] = "Index";
@@ -60,10 +60,10 @@
                                     @Html.DisplayFor(modelItem => item.Number)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.FirstStationId)
+                                    @Html.DisplayFor(modelItem => item.FirstStationName)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.LastStationId)
+                                    @Html.DisplayFor(modelItem => item.LastStationName)
                                 </td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>

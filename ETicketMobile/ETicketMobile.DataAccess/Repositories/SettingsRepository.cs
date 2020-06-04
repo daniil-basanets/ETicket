@@ -8,7 +8,11 @@ namespace ETicketMobile.DataAccess.Repositories
 {
     public class SettingsRepository
     {
+        #region Fields
+
         private SQLiteAsyncConnection database;
+
+        #endregion
 
         public void Connect()
         {
@@ -21,7 +25,7 @@ namespace ETicketMobile.DataAccess.Repositories
         private static string GetDatabasePath()
         {
             var basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var path = Path.Combine(basePath, "ETicket.db");
+            var path = Path.Combine(basePath, "ETicketdb.db");
 
             return path;
         }

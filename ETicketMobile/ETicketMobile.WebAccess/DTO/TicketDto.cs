@@ -1,19 +1,27 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace ETicketMobile.WebAccess
+namespace ETicketMobile.WebAccess.DTO
 {
     public class TicketDto
     {
-        [JsonProperty("id")]
-        public int Id { get; set; }
+        [JsonProperty("ticketType")]
+        public string TicketType { get; set; }
 
-        [JsonProperty("typeName")]
-        public string Name { get; set; }
+        [JsonProperty("createdUTCDate")]
+        public DateTime CreatedAt { get; set; }
 
-        [JsonProperty("coefficient")]
-        public decimal Coefficient { get; set; }
+        [JsonProperty("activatedUTCDate")]
+        public DateTime? ActivatedAt { get; set; }
 
-        [JsonProperty("DurationHours")]
-        public int DurationHours { get; set; }
+        [JsonProperty("expirationUTCDate")]
+        public DateTime? ExpiredAt { get; set; }
+
+        [JsonProperty("transactionRRN")]
+        public string ReferenceNumber { get; set; }
+
+        [JsonProperty("ticketArea")]
+        public IEnumerable<string> TicketAreas { get; set; }
     }
 }

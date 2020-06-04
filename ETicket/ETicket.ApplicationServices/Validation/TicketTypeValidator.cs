@@ -10,11 +10,11 @@ namespace ETicket.ApplicationServices.Validation
             RuleFor(t => t.TypeName)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("{PropertyName} is empty")
-                .Length(2, 50).WithMessage("Length {TotalLength} of {PropertyName} is invalid. It should be from 2 to 50 symbols")
-                .Must(BeAValidName);
+                .Length(2, 50).WithMessage("Length {TotalLength} of {PropertyName} is invalid")
+                .Must(n => n.Trim().Length >= 2);
 
             RuleFor(t => t.IsPersonal)
-                .NotNull();
+                .NotNull().WithMessage("{PropertyName} should not be null");
 
             RuleFor(t => t.DurationHours)
                 .Cascade(CascadeMode.StopOnFirstFailure)
@@ -24,13 +24,7 @@ namespace ETicket.ApplicationServices.Validation
             RuleFor(t => t.Coefficient)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotNull()
-                .GreaterThanOrEqualTo(decimal.Zero).WithMessage("{PropertyName} should be greater than {ComparisonValue}");
-        }
-        
-        private bool BeAValidName(string name)
-        {
-            name = name.Replace(" ", "");
-            return name.Length >= 2;
+                .GreaterThanOrEqualTo(decimal.Zero).WithMessage("{PropertyName} should be greater or equal than {ComparisonValue}");
         }
     }
 }

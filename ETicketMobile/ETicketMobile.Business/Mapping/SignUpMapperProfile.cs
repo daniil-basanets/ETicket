@@ -8,11 +8,9 @@ namespace ETicketMobile.Business.Mapping
     {
         public SignUpMapperProfile()
         {
-            CreateMap<SignUpRequestDto, SignUp>();
-            CreateMap<SignUp, SignUpRequestDto>();
+            CreateMap<SignUpRequestDto, SignUp>().ReverseMap();
 
-            CreateMap<SignUpResponseDto, SignUp>();
-            CreateMap<SignUp, SignUpResponseDto>();
+            CreateMap<SignUpResponseDto, SignUp>().ReverseMap();
         }
     }
 }

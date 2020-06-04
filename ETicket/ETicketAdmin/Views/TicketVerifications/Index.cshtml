@@ -1,5 +1,4 @@
-﻿@model IEnumerable<ETicket.DataAccess.Domain.Entities.TicketVerification>
-
+﻿@model IEnumerable<ETicket.ApplicationServices.DTOs.TicketVerificationDto>
 @{
     ViewData["Title"] = "Index";
 }
@@ -20,7 +19,7 @@
                             <th>
                                 <details onclick="makeSingleOnClickEvent()">
                                     <summary>
-                                        @Html.DisplayNameFor(model => model.Ticket)
+                                        @Html.DisplayNameFor(model => model.TicketId)
                                     </summary>
                                     <div class="filters">
                                         <input type="text" class="document-filter-form form-control form-control-sm" id="ticket-id-input">
@@ -41,7 +40,7 @@
                             <th>
                                 <details onclick="makeSingleOnClickEvent()">
                                     <summary>
-                                        @Html.DisplayNameFor(model => model.Station)
+                                        @Html.DisplayNameFor(model => model.StationName)
                                     </summary>
                                     <div class="filters">
                                         <input type="text" class="document-filter-form form-control form-control-sm" id="station-name-input">
@@ -51,7 +50,7 @@
                             <th>
                                 <details onclick="makeSingleOnClickEvent()">
                                     <summary>
-                                        @Html.DisplayNameFor(model => model.Transport)
+                                        @Html.DisplayNameFor(model => model.TransportNumber)
                                     </summary>
                                     <div class="filters">
                                         <input type="text" class="document-filter-form form-control form-control-sm" id="transport-number-input">
@@ -80,16 +79,16 @@
                     <tfoot>
                         <tr>
                             <th>
-                                @Html.DisplayNameFor(model => model.Ticket)
+                                @Html.DisplayNameFor(model => model.TicketId)
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.VerificationUTCDate)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Station)
+                                @Html.DisplayNameFor(model => model.StationName)
                             </th>
                             <th>
-                                @Html.DisplayNameFor(model => model.Transport)
+                                @Html.DisplayNameFor(model => model.TransportNumber)
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.IsVerified)
@@ -106,16 +105,16 @@
                             {
                                 <tr>
                                     <td>
-                                        @Html.ActionLink(item.Ticket.Id.ToString(), "Details", "Ticket", new { id = item.TicketId }, null)
+                                        @Html.ActionLink(item.TicketId.ToString(), "Details", "Ticket", new { id = item.TicketId }, null)
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.VerificationUTCDate)
                                     </td>
                                     <td>
-                                        @Html.ActionLink(item.Station.Name, "Details", "Station", new { id = item.StationId }, null)
+                                        @Html.ActionLink(item.StationName, "Details", "Station", new { id = item.StationId }, null)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Transport.VehicleNumber)
+                                        @Html.ActionLink(item.TransportNumber, "Details", "Transports", new { id = item.TransportId }, null)
                                     </td>
                                     <td>
                                         @(item.IsVerified ? "Yes" : "No")

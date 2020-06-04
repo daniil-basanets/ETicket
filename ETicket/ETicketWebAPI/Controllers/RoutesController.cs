@@ -5,12 +5,13 @@ using ETicket.ApplicationServices.DTOs;
 using log4net;
 using System.Reflection;
 using System;
+using ETicket.ApplicationServices.Extensions;
 
 namespace ETicket.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/routes")]
-    public class RoutesController : ControllerBase
+    public class RoutesController : BaseAPIController
     {
         IRouteService routeService;
 
@@ -22,11 +23,15 @@ namespace ETicket.WebAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetRoutes()
+        public IActionResult GetRoutes([FromQuery]int pageNumber = 1, [FromQuery]int pageSize = 10)
         {
             log.Info(nameof(RoutesController.GetRoutes));
 
-            return Ok(routeService.GetRoutes());
+            var routePage = routeService
+                    .GetRoutes()
+                    .ToPage(pageNumber, pageSize);
+
+            return Ok(routePage);
         }
 
         [HttpGet("{id}")]

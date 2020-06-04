@@ -3,11 +3,9 @@ using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
-using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.DocumentTypes;
 using ETicket.ApplicationServices.Services.Transaction;
 using ETicket.DataAccess.Domain;
-using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -19,8 +17,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ETicket.ApplicationServices.Services.PagingServices;
-using ETicket.ApplicationServices.Services.DataTable;
 using ETicket.ApplicationServices.Validation;
 
 namespace ETicket.Admin
@@ -53,6 +49,8 @@ namespace ETicket.Admin
             services.AddTransient<IValidator<DocumentTypeDto>, DocumentTypeValidator>();
             services.AddTransient<IValidator<PrivilegeDto>, PrivilegeValidator>();
             services.AddTransient<IValidator<TransactionHistoryDto>, TransactionHistoryValidator>();
+            services.AddTransient<IValidator<AreaDto>, AreaValidator>();
+            services.AddTransient<IValidator<CarrierDto>, CarrierValidator>();
 
 
             services.AddTransient<ITicketService, TicketService>();
@@ -72,19 +70,7 @@ namespace ETicket.Admin
             services.AddTransient<ITicketVerificationService, TicketVerificationService>();
             services.AddTransient<IMetricsService, MetricsService>();
 
-            services.AddTransient<IDataTablePagingService<Ticket>, TicketPagingService>();
-            services.AddTransient<IDataTablePagingService<User>, UserPagingService>();
-            services.AddTransient<IDataTablePagingService<Document>, DocumentPagingService>();
-            services.AddTransient<IDataTablePagingService<TransactionHistory>, TransactionHistoryPagingService>();
-            services.AddTransient<IDataTablePagingService<TicketVerification>, TicketVerificationPagingService>();
 
-            services.AddTransient<IDataTableService<Ticket>, DataTableService<Ticket>>();
-            services.AddTransient<IDataTableService<User>, DataTableService<User>>();
-            services.AddTransient<IDataTableService<Document>, DataTableService<Document>>();
-            services.AddTransient<IDataTableService<TransactionHistory>, DataTableService<TransactionHistory>>();
-            services.AddTransient<IDataTableService<TicketVerification>, DataTableService<TicketVerification>>();
-
-            
             services.AddIdentityCore<IdentityUser>(o =>
             {
                 o.Password.RequireDigit = false;
