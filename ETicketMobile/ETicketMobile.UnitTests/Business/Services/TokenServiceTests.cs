@@ -51,10 +51,17 @@ namespace ETicketMobile.UnitTests.Business.Services
                     .Setup(l => l.GetTokenAsync())
                     .ReturnsAsync(token);
 
+            localApiMock.Setup(l => l.AddAsync(It.IsAny<Token>()));
+
             httpServiceMock
                 .Setup(hs => hs.PostAsync<UserSignInRequestDto, TokenDto>(
                     It.IsAny<Uri>(), It.IsAny<UserSignInRequestDto>(), It.IsAny<string>()))
                 .ReturnsAsync(tokenDto);
+
+            httpServiceMock
+                    .Setup(hs => hs.PostAsync<string, TokenDto>(
+                        It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(tokenDto);
 
             tokenService = new TokenService(httpServiceMock.Object, localApiMock.Object);
         }
@@ -106,16 +113,6 @@ namespace ETicketMobile.UnitTests.Business.Services
         [Fact]
         public async Task RefreshTokenAsync()
         {
-            // Arrange
-            httpServiceMock
-                    .Setup(hs => hs.PostAsync<string, TokenDto>(
-                        It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<string>()))
-                    .ReturnsAsync(tokenDto);
-
-            localApiMock.Setup(l => l.AddAsync(It.IsAny<Token>()));
-
-            var tokenService = new TokenService(httpServiceMock.Object, localApiMock.Object);
-
             // Act
             var accessToken = await tokenService.RefreshTokenAsync();
 

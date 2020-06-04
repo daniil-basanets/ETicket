@@ -5,12 +5,21 @@ namespace ETicketMobile.UnitTests.UserInterface.Behaviors
 {
     public class EntryMaskBehaviorTests
     {
+        #region Fields
+
+        private readonly EntryMaskBehavior entryMaskBehavior;
+
+        #endregion
+
+        public EntryMaskBehaviorTests()
+        {
+            entryMaskBehavior = new EntryMaskBehavior();
+        }
+
         [Fact]
         public void CheckInstanceProperties()
         {
             // Arrange
-            var entryMaskBehavior = new EntryMaskBehavior();
-
             var mask = "mask";
 
             // Act

@@ -4,7 +4,6 @@ using System.Threading;
 using ETicketMobile.ViewModels.ForgotPassword;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
-using Prism.Navigation;
 using Prism.Services;
 using Xunit;
 
@@ -43,19 +42,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new CreateNewPasswordViewModel(null, null, httpServiceMock.Object));
-        }
-
-        [Fact]
-        public void OnNavigatedTo_NavigationParameters()
-        {
-            // Arrange
-            var navigationParameters = new NavigationParameters();
-
-            // Act
-            var exception = Record.Exception(() => createNewPasswordViewModel.OnNavigatedTo(navigationParameters));
-
-            // Assert
-            Assert.Null(exception);
         }
 
         [Fact]

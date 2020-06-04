@@ -17,8 +17,13 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
     {
         #region Fields
 
+        private readonly UserTransactionsViewModel userTransactionsViewModel;
+
         private readonly Mock<IPageDialogService> dialogServiceMock;
         private readonly Mock<IHttpService> httpServiceMock;
+
+        private readonly IEnumerable<TransactionDto> transactionsDto;
+        private readonly IEnumerable<Transaction> transactions;
 
         private readonly INavigationParameters navigationParameters;
 
@@ -31,6 +36,34 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
 
             var email = "email";
             navigationParameters = new NavigationParameters { { email, "email" } };
+
+            transactionsDto = new List<TransactionDto>
+            {
+                new TransactionDto
+                {
+                    ReferenceNumber = "ReferenceNumber",
+                    TotalPrice = 100,
+                    Date = DateTime.Parse("02/06/20 17:00:00")
+                }
+            };
+
+            transactions = new List<Transaction>
+            {
+                new Transaction
+                {
+                    ReferenceNumber = "ReferenceNumber",
+                    TotalPrice = 100,
+                    Date = DateTime.Parse("02/06/20 17:00:00")
+                }
+            };
+
+            httpServiceMock
+                    .SetupSequence(hs => hs.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>>(
+                        It.IsAny<Uri>(), It.IsAny<GetTransactionsRequestDto>(), It.IsAny<string>()))
+                    .ReturnsAsync(transactionsDto)
+                    .ThrowsAsync(new WebException());
+
+            userTransactionsViewModel = new UserTransactionsViewModel(null, dialogServiceMock.Object, httpServiceMock.Object);
         }
 
         [Fact]
@@ -55,33 +88,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
             // Arrange
             var transactionEqualityComparer = new TransactionEqualityComparer();
 
-            var transactionsDto = new List<TransactionDto>
-            {
-                new TransactionDto
-                {
-                    ReferenceNumber = "ReferenceNumber",
-                    TotalPrice = 100,
-                    Date = DateTime.Parse("02/06/20 17:00:00")
-                }
-            };
-
-            var transactions = new List<Transaction>
-            {
-                new Transaction
-                {
-                    ReferenceNumber = "ReferenceNumber",
-                    TotalPrice = 100,
-                    Date = DateTime.Parse("02/06/20 17:00:00")
-                }
-            };
-
-            httpServiceMock
-                    .Setup(hs => hs.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>>(
-                        It.IsAny<Uri>(), It.IsAny<GetTransactionsRequestDto>(), It.IsAny<string>()))
-                    .ReturnsAsync(transactionsDto);
-
-            var userTransactionsViewModel = new UserTransactionsViewModel(null, dialogServiceMock.Object, httpServiceMock.Object);
-
             // Act
             userTransactionsViewModel.OnNavigatedTo(navigationParameters);
 
@@ -92,21 +98,12 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         [Fact]
         public void OnNavigatedTo_ThrowWebException()
         {
-            // Arrange
-            var webException = new WebException();
-
-            httpServiceMock
-                    .Setup(hs => hs.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>>(
-                        It.IsAny<Uri>(), It.IsAny<GetTransactionsRequestDto>(), It.IsAny<string>()))
-                    .ThrowsAsync(webException);
-
-            var userTransactionsViewModel = new UserTransactionsViewModel(null, dialogServiceMock.Object, httpServiceMock.Object);
-
             // Act
             userTransactionsViewModel.OnNavigatedTo(navigationParameters);
 
             // Assert
-            Assert.ThrowsAsync<WebException>(() => httpServiceMock.Object.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>> (null, null, null));
+            Assert.ThrowsAsync<WebException>(
+                () => httpServiceMock.Object.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>> (null, null, null));
         }
     }
 }

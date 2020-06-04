@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.UnitTests.Portable.Comparer;
 using ETicketMobile.ViewModels.Tickets;
-using ETicketMobile.Views.Tickets;
 using ETicketMobile.WebAccess;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
-using Prism.Navigation;
 using Prism.Services;
 using Xunit;
 
@@ -28,6 +25,11 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         private readonly Mock<IHttpService> httpServiceMock;
         private readonly Mock<ILocalApi> localApiMock;
 
+        private IEnumerable<TicketTypeDto> ticketTypesDto;
+
+        private readonly IEnumerable<TicketType> ticketTypes;
+        private readonly IEnumerable<AreaViewModel> areas;
+
         #endregion
 
         public TicketsViewModelTests()
@@ -38,7 +40,8 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
             localApiMock = new Mock<ILocalApi>();
 
             var accessToken = "AccessToken";
-            var ticketTypesDto = new List<TicketTypeDto>
+
+            ticketTypesDto = new List<TicketTypeDto>
             {
                 new TicketTypeDto
                 {
@@ -58,6 +61,29 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
                     Description = "Description"
                 }
             };
+
+            areas = new List<AreaViewModel>
+            {
+                new AreaViewModel
+                {
+                    Id = 1,
+                    Name = "Area",
+                    Description = "Description"
+                }
+            };
+
+            ticketTypes = new List<TicketType>
+            {
+                new TicketType
+                {
+                    Id = 1,
+                    Name = "TickeType",
+                    Coefficient = 1,
+                    DurationHours = 10
+                }
+            };
+
+            tokenServiceMock.Setup(ts => ts.RefreshTokenAsync());
 
             tokenServiceMock
                     .Setup(ts => ts.GetAccessTokenAsync())
@@ -112,17 +138,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
             // Arrange
             var ticketTypesEqualityComparer = new TicketTypesEqualityComparer();
 
-            var ticketTypes = new List<TicketType>
-            {
-                new TicketType
-                {
-                    Id = 1,
-                    Name = "TickeType",
-                    Coefficient = 1,
-                    DurationHours = 10
-                }
-            };
-
             // Act
             ticketsViewModel.OnAppearing();
 
@@ -136,16 +151,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
             // Arrange
             var areasViewModelEqualityComparer = new AreasViewModelEqualityComparer();
 
-            var areas = new List<AreaViewModel>
-            {
-                new AreaViewModel
-                {
-                    Id = 1,
-                    Name = "Area",
-                    Description = "Description"
-                }
-            };
-
             // Act
             ticketsViewModel.OnAppearing();
 
@@ -157,33 +162,15 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         public void OnNavigatedTo_RefreshTokenAsync()
         {
             // Arrange
-            tokenServiceMock.Setup(ts => ts.RefreshTokenAsync());
-
             httpServiceMock
-                .Setup(hs => hs.GetAsync<IEnumerable<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
-                .ReturnsAsync(() => null);
-
-            var myTicketsViewModel = new TicketsViewModel(null, dialogServiceMock.Object, tokenServiceMock.Object,
-                httpServiceMock.Object, localApiMock.Object);
+                    .Setup(hs => hs.GetAsync<IEnumerable<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
+                    .ReturnsAsync(() => null);
 
             // Act
-            myTicketsViewModel.OnAppearing();
+            ticketsViewModel.OnAppearing();
 
             // Assert
             httpServiceMock.Verify(hs => hs.GetAsync<IEnumerable<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()), Times.Exactly(2));
-        }
-
-        [Fact]
-        public void OnNavigatedTo_NavigationParameters()
-        {
-            // Arrange
-            var navigationParameters = new NavigationParameters();
-
-            // Act
-            var exception = Record.Exception(() => ticketsViewModel.OnNavigatedTo(navigationParameters));
-
-            // Assert
-            Assert.Null(exception);
         }
 
         [Fact]

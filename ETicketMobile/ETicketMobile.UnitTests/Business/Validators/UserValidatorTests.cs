@@ -14,11 +14,22 @@ namespace ETicketMobile.UnitTests.Business.Validators
 
         private readonly Mock<IHttpService> httpServiceMock;
 
+        private readonly UserValidator userValidator;
+        private readonly SignUpResponseDto signUpResponseDto;
+
         #endregion
 
         public UserValidatorTests()
         {
             httpServiceMock = new Mock<IHttpService>();
+
+            signUpResponseDto = new SignUpResponseDto();
+            httpServiceMock
+                .Setup(hs => hs.PostAsync<SignUpRequestDto, SignUpResponseDto>(
+                    It.IsAny<Uri>(), It.IsAny<SignUpRequestDto>(), It.IsAny<string>()))
+                .ReturnsAsync(signUpResponseDto);
+
+            userValidator = new UserValidator(httpServiceMock.Object);
         }
 
         [Fact]
@@ -32,14 +43,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         public async Task UserExistsAsync_ReturnsTrue()
         {
             // Arrange
-            var signUpResponseDto = new SignUpResponseDto { Succeeded = true };
-
-            httpServiceMock
-                .Setup(hs => hs.PostAsync<SignUpRequestDto, SignUpResponseDto>(
-                    It.IsAny<Uri>(), It.IsAny<SignUpRequestDto>(), It.IsAny<string>()))
-                .ReturnsAsync(signUpResponseDto);
-
-            var userValidator = new UserValidator(httpServiceMock.Object);
+            signUpResponseDto.Succeeded = true;
 
             // Act
             var userExists = await userValidator.UserExistsAsync("email");
@@ -52,14 +56,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         public async Task UserExistsAsync_ReturnsFalse()
         {
             // Arrange
-            var signUpResponseDto = new SignUpResponseDto { Succeeded = false };
-
-            httpServiceMock
-                .Setup(hs => hs.PostAsync<SignUpRequestDto, SignUpResponseDto>(
-                    It.IsAny<Uri>(), It.IsAny<SignUpRequestDto>(), It.IsAny<string>()))
-                .ReturnsAsync(signUpResponseDto);
-
-            var userValidator = new UserValidator(httpServiceMock.Object);
+            signUpResponseDto.Succeeded = false;
 
             // Act
             var userExists = await userValidator.UserExistsAsync("email");

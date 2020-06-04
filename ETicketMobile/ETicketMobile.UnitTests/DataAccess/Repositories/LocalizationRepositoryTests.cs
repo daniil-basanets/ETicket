@@ -12,10 +12,10 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
     {
         #region Fields
 
+        private readonly LocalizationRepository localizationRepository;
+
         private readonly Mock<ISettingsRepository> settingsRepositoryMock;
         private readonly Localization localization;
-
-        private readonly string culture;
 
         #endregion
 
@@ -25,7 +25,15 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
 
             localization = new Localization { Culture = "ru-RU" };
 
-            culture = "{\"Culture\":\"ru-RU\"}";
+            var culture = "{\"Culture\":\"ru-RU\"}";
+
+            settingsRepositoryMock
+                    .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
+                    .ReturnsAsync(culture);
+
+            settingsRepositoryMock.Setup(sr => sr.SaveAsync(It.IsAny<string>(), It.IsAny<string>()));
+
+            localizationRepository = new LocalizationRepository(settingsRepositoryMock.Object);
         }
 
         [Fact]
@@ -36,28 +44,8 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         }
 
         [Fact]
-        public void CtorWithParameters_Negative()
-        {
-            // Arrange
-            var settingsRepository = new SettingsRepository();
-
-            // Act
-            var localizationRepository = new LocalizationRepository(settingsRepository);
-
-            // Assert
-            Assert.IsNotType<ArgumentNullException>(localizationRepository);
-        }
-
-        [Fact]
         public async Task GetLocalizationAsync()
         {
-            // Arrange
-            settingsRepositoryMock
-                    .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
-                    .ReturnsAsync(culture);
-
-            var localizationRepository = new LocalizationRepository(settingsRepositoryMock.Object);
-
             // Act
             var actualLocalization = await localizationRepository.GetLocalizationAsync();
 
@@ -73,8 +61,6 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
                     .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
                     .ReturnsAsync(() => null);
 
-            var localizationRepository = new LocalizationRepository(settingsRepositoryMock.Object);
-
             // Act
             var actualLocalization = await localizationRepository.GetLocalizationAsync();
 
@@ -85,11 +71,6 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         [Fact]
         public async Task SaveLocalizationAsync()
         {
-            // Arrange
-            settingsRepositoryMock.Setup(sr => sr.SaveAsync(It.IsAny<string>(), It.IsAny<string>()));
-
-            var localizationRepository = new LocalizationRepository(settingsRepositoryMock.Object);
-
             // Act
             await localizationRepository.SaveLocalizationAsync(localization);
 

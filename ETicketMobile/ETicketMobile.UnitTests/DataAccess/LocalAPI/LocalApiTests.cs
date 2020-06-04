@@ -14,6 +14,8 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
     {
         #region Fields
 
+        private readonly LocalApi localApi;
+
         private readonly Mock<ITokenRepository> tokenRepositoryMock;
         private readonly Mock<ILocalizationRepository> localizationRepositoryMock;
 
@@ -34,20 +36,20 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
             };
 
             localization = new Localization { Culture = "ru-RU" };
-        }
 
-        [Fact]
-        public void CtorWithParameters()
-        {
-            // Arrange
-            var tokenRepository = new TokenRepository();
-            var localizationRepository = new LocalizationRepository();
+            tokenRepositoryMock.Setup(tr => tr.SaveTokenAsync(It.IsAny<Token>()));
 
-            // Act
-            var exception = Record.Exception(() => new LocalApi(tokenRepository, localizationRepository));
+            localizationRepositoryMock.Setup(l => l.SaveLocalizationAsync(It.IsAny<Localization>()));
 
-            // Assert
-            Assert.Null(exception);
+            localizationRepositoryMock
+                    .Setup(l => l.GetLocalizationAsync())
+                    .ReturnsAsync(localization);
+
+            tokenRepositoryMock
+                    .Setup(tr => tr.GetTokenAsync())
+                    .ReturnsAsync(token);
+
+            localApi = new LocalApi(tokenRepositoryMock.Object, localizationRepositoryMock.Object);
         }
 
         [Fact]
@@ -73,10 +75,6 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
         [Fact]
         public void AddAsync_Token()
         {
-            // Arrange
-            tokenRepositoryMock.Setup(tr => tr.SaveTokenAsync(It.IsAny<Token>()));
-            var localApi = new LocalApi(tokenRepositoryMock.Object, localizationRepositoryMock.Object);
-
             // Act
             localApi.AddAsync(token);
 
@@ -87,11 +85,6 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
         [Fact]
         public void AddAsync_Localization()
         {
-            // Arrange
-            localizationRepositoryMock.Setup(l => l.SaveLocalizationAsync(It.IsAny<Localization>()));
-
-            var localApi = new LocalApi(tokenRepositoryMock.Object, localizationRepositoryMock.Object);
-            
             // Act
             localApi.AddAsync(localization);
             
@@ -103,12 +96,6 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
         public async Task GetTokenAsync()
         {
             // Arrange
-            tokenRepositoryMock
-                    .Setup(tr => tr.GetTokenAsync())
-                    .ReturnsAsync(token);
-
-            var localApi = new LocalApi(tokenRepositoryMock.Object, localizationRepositoryMock.Object);
-
             var tokenEqualityComparer = new TokenEqualityComparer();
             
             // Act
@@ -121,13 +108,6 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
         [Fact]
         public async Task GetLocalizationAsync()
         {
-            // Arrange
-            localizationRepositoryMock
-                    .Setup(l => l.GetLocalizationAsync())
-                    .ReturnsAsync(localization);
-
-            var localApi = new LocalApi(tokenRepositoryMock.Object, localizationRepositoryMock.Object);
-
             // Act
             var actualLocalization = await localApi.GetLocalizationAsync();
 

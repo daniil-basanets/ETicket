@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Business.Services.Interfaces;
@@ -32,6 +33,12 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         private readonly Mock<ILocalApi> localApiMock;
 
         private readonly IEnumerable<TicketDto> ticketsDto;
+
+        private readonly IEnumerable<Ticket> tickets;
+        private readonly IEnumerable<Ticket> unusedTickets;
+        private readonly IEnumerable<Ticket> activatedTickets;
+        private readonly IEnumerable<Ticket> expiredTickets;
+
         private readonly Token token;
 
         #endregion
@@ -72,6 +79,41 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
                 }
             };
 
+            tickets = new List<Ticket>
+            {
+                new Ticket
+                {
+                    TicketType = "Unused",
+                    ReferenceNumber = "ReferenceNumber1",
+                    TicketAreas = new List<string> { "A" },
+                    CreatedAt = DateTime.Parse("02/01/20 12:00:00")
+                },
+                new Ticket
+                {
+                    TicketType = "Activated",
+                    ReferenceNumber = "ReferenceNumber2",
+                    TicketAreas = new List<string> { "A", "B" },
+                    CreatedAt = DateTime.Parse("02/02/20 13:00:00"),
+                    ActivatedAt = DateTime.Parse("02/02/20 13:00:00"),
+                    ExpiredAt = DateTime.Parse("02/07/20 14:00:00")
+                },
+                new Ticket
+                {
+                    TicketType = "Expired",
+                    ReferenceNumber = "ReferenceNumber3",
+                    TicketAreas = new List<string> { "A", "B", "C" },
+                    CreatedAt = DateTime.Parse("02/03/20 14:00:00"),
+                    ActivatedAt = DateTime.Parse("02/03/20 14:00:00"),
+                    ExpiredAt = DateTime.Parse("02/06/20 15:00:00")
+                }
+            };
+
+            unusedTickets = new List<Ticket> { tickets.ElementAt(0) };
+
+            activatedTickets = new List<Ticket> { tickets.ElementAt(1) };
+
+            expiredTickets = new List<Ticket> { tickets.ElementAt(2) };
+
             token = new Token
             {
                 AcessJwtToken = "AccessToken",
@@ -82,9 +124,13 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
                     .Setup(l => l.GetTokenAsync())
                     .ReturnsAsync(token);
 
+            tokenServiceMock.Setup(ts => ts.RefreshTokenAsync());
+
             httpServiceMock
-                    .Setup(hs => hs.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(It.IsAny<Uri>(), It.IsAny<GetTicketsByEmailRequestDto>(), It.IsAny<string>()))
-                    .ReturnsAsync(ticketsDto);
+                    .SetupSequence(hs => hs.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
+                        It.IsAny<Uri>(), It.IsAny<GetTicketsByEmailRequestDto>(), It.IsAny<string>()))
+                    .ReturnsAsync(ticketsDto)
+                    .Throws(new WebException());
 
             myTicketsViewModel = new MyTicketsViewModel(null, dialogServiceMock.Object, tokenServiceMock.Object,
                 httpServiceMock.Object, localApiMock.Object);
@@ -130,36 +176,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         [Fact]
         public void OnNavigatedTo_GetTickets()
         {
-            // Arrange
-            var tickets = new List<Ticket>
-            {
-                new Ticket
-                {
-                    TicketType = "Unused",
-                    ReferenceNumber = "ReferenceNumber1",
-                    TicketAreas = new List<string> { "A" },
-                    CreatedAt = DateTime.Parse("02/01/20 12:00:00")
-                },
-                new Ticket
-                {
-                    TicketType = "Activated",
-                    ReferenceNumber = "ReferenceNumber2",
-                    TicketAreas = new List<string> { "A", "B" },
-                    CreatedAt = DateTime.Parse("02/02/20 13:00:00"),
-                    ActivatedAt = DateTime.Parse("02/02/20 13:00:00"),
-                    ExpiredAt = DateTime.Parse("02/07/20 14:00:00")
-                },
-                new Ticket
-                {
-                    TicketType = "Expired",
-                    ReferenceNumber = "ReferenceNumber3",
-                    TicketAreas = new List<string> { "A", "B", "C" },
-                    CreatedAt = DateTime.Parse("02/03/20 14:00:00"),
-                    ActivatedAt = DateTime.Parse("02/03/20 14:00:00"),
-                    ExpiredAt = DateTime.Parse("02/06/20 15:00:00")
-                }
-            };
-
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
 
@@ -171,17 +187,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         [Fact]
         public void OnNavigatedTo_ThrowWebException()
         {
-            // Arrange
-            var webException = new WebException();
-
-            httpServiceMock
-                    .Setup(hs => hs.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
-                         It.IsAny<Uri>(), It.IsAny<GetTicketsByEmailRequestDto>(), It.IsAny<string>()))
-                    .Throws(webException);
-
-            var myTicketsViewModel = new MyTicketsViewModel(null, dialogServiceMock.Object, tokenServiceMock.Object,
-                httpServiceMock.Object, localApiMock.Object);
-
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
 
@@ -194,15 +199,10 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         public void OnNavigatedTo_GetTickets_RefreshToken()
         {
             // Arrange
-            tokenServiceMock.Setup(ts => ts.RefreshTokenAsync());
-
             httpServiceMock
                 .Setup(hs => hs.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
                     It.IsAny<Uri>(), It.IsAny<GetTicketsByEmailRequestDto>(), It.IsAny<string>()))
                 .ReturnsAsync(() => null);
-
-            var myTicketsViewModel = new MyTicketsViewModel(null, dialogServiceMock.Object, tokenServiceMock.Object,
-                httpServiceMock.Object, localApiMock.Object);
 
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
@@ -215,18 +215,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         [Fact]
         public void OnNavigatedTo_GetUnusedTickets()
         {
-            // Arrange
-            var unusedTickets = new List<Ticket>
-            {
-                new Ticket
-                {
-                    TicketType = "Unused",
-                    ReferenceNumber = "ReferenceNumber1",
-                    TicketAreas = new List<string> { "A" },
-                    CreatedAt = DateTime.Parse("02/01/20 12:00:00")
-                }
-            };
-
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
 
@@ -237,20 +225,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         [Fact]
         public void OnNavigatedTo_GetActivatedTickets()
         {
-            // Arrange
-            var activatedTickets = new List<Ticket>
-            {
-                new Ticket
-                {
-                    TicketType = "Activated",
-                    ReferenceNumber = "ReferenceNumber2",
-                    TicketAreas = new List<string> { "A", "B" },
-                    CreatedAt = DateTime.Parse("02/02/20 13:00:00"),
-                    ActivatedAt = DateTime.Parse("02/02/20 13:00:00"),
-                    ExpiredAt = DateTime.Parse("02/07/20 14:00:00")
-                }
-            };
-
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
 
@@ -261,20 +235,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         [Fact]
         public void OnNavigatedTo_GetExpiredTickets()
         {
-            // Arrange
-            var expiredTickets = new List<Ticket>
-            {
-                new Ticket
-                {
-                    TicketType = "Expired",
-                    ReferenceNumber = "ReferenceNumber3",
-                    TicketAreas = new List<string> { "A", "B", "C" },
-                    CreatedAt = DateTime.Parse("02/03/20 14:00:00"),
-                    ActivatedAt = DateTime.Parse("02/03/20 14:00:00"),
-                    ExpiredAt = DateTime.Parse("02/06/20 15:00:00")
-                }
-            };
-
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
 

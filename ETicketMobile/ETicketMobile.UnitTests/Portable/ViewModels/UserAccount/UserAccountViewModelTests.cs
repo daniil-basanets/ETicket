@@ -20,6 +20,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
 
         private readonly UserAccountViewModel userAccountViewModel;
 
+        private readonly Mock<INavigationParameters> navigationParametersMock;
         private readonly Mock<INavigationService> navigationServiceMock;
 
         private readonly UserActionEqualityComparer userActionEqualityComparer;
@@ -32,6 +33,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
 
+            navigationParametersMock = new Mock<INavigationParameters>();
             navigationServiceMock = new Mock<INavigationService>();
 
             userAccountViewModel = new UserAccountViewModel(navigationServiceMock.Object);
@@ -44,6 +46,8 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
                 new UserAction { Name = "Transactions History", View = nameof(UserTransactionsView) },
                 new UserAction { Name = "My Tickets", View = nameof(MyTicketsView) }
             };
+
+            navigationParametersMock.Setup(np => np.GetValue<string>(It.IsAny<string>()));
         }
 
         [Fact]
@@ -59,15 +63,11 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         [Fact]
         public void OnNavigatedTo_IsValid_EmptyEmail_ReturnFalse()
         {
-            // Arrange
-            var navigationParametersMock = new Mock<INavigationParameters>();
-            navigationParametersMock.Setup(np => np.GetValue<string>(It.IsAny<string>()));
-
             // Act
             userAccountViewModel.OnNavigatedTo(navigationParametersMock.Object);
 
             // Assert
-            navigationParametersMock.Verify(np => np.GetValue<string>("email"), Times.Once);
+            navigationParametersMock.Verify();
         }
 
         [Fact]
