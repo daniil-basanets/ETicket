@@ -83,7 +83,7 @@ namespace ETicket.ApplicationServices.Services.Transaction
             var transaction = unitOfWork.TransactionHistory.Get(transactionId);
 
             if (transaction == null)
-                throw new ArgumentNullException("Transaction not found.");
+                throw new NullReferenceException("Transaction not found.");
 
             return mapperService.Map<TransactionHistory, TransactionHistoryDto>(transaction);
         }
