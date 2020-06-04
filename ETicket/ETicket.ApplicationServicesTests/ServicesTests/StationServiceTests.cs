@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services;
-using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 using Moq;
@@ -105,7 +104,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         {
             var exception = Assert.Throws<ArgumentOutOfRangeException>(() => stationService.Get(-9));
 
-            Assert.Equal("id should be greater than zero (Parameter 'id')", exception.Message);
+            var expectedMessage = "id should be greater than zero (Parameter 'id')";
+            Assert.Equal(expectedMessage, exception.Message);
         }
 
         #endregion
@@ -157,7 +157,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
 
             var exception = Assert.Throws<ArgumentException>(action);
 
-            Assert.Equal("Name is empty", exception.Message);
+            var expectedMessage = "Name is empty";
+            Assert.Equal(expectedMessage, exception.Message);
         }
 
         [Theory]
@@ -169,7 +170,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
 
             var exception = Assert.Throws<ArgumentException>(action);
 
-            Assert.Equal($"Length {name.Length} of Name is invalid", exception.Message);
+            var expectedMessage = $"Length {name.Length} of Name is invalid";
+            Assert.Equal(expectedMessage, exception.Message);
         }
 
         #endregion
@@ -221,9 +223,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [InlineData(-100)]
         public void Delete_Station_IdShouldBeGreaterZero(int id)
         {
-            var exception = Assert.Throws<ArgumentOutOfRangeException>(() => stationService.Delete(id));
-
-            Assert.Equal("id", exception.ParamName);
+            Assert.Throws<ArgumentOutOfRangeException>(() => stationService.Delete(id));
         }
 
         #endregion
