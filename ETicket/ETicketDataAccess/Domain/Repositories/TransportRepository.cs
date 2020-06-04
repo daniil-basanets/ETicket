@@ -1,6 +1,7 @@
 ﻿using ETicket.DataAccess.Domain.Entities;
 using System.Linq;
 using ETicket.DataAccess.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.DataAccess.Domain.Repositories
 {
@@ -34,12 +35,17 @@ namespace ETicket.DataAccess.Domain.Repositories
 
         public Transport Get(int id)
         {
-            return context.Transports.FirstOrDefault(t => t.Id == id);
+            return context.Transports
+                .Include(r => r.Route)
+                .Include(c => c.Carriers)
+                .FirstOrDefault(t => t.Id == id);
         }
 
         public IQueryable<Transport> GetAll()
         {
-            return context.Transports;
+            return context.Transports
+                .Include(c => c.Carriers)
+                .Include(r => r.Route);
         }
 
         public void Update(Transport item)

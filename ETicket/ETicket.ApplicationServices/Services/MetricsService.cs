@@ -16,6 +16,8 @@ namespace ETicket.ApplicationServices.Services
         private readonly IUnitOfWork uow;
         private const int HoursInDay = 24;
         private const string EndLessStartError = "End date cannot be less than start date";
+        private const string MaxDaysForChartError = "The period of time cannot be more than {0} days";
+
         #endregion
 
         public MetricsService(IUnitOfWork uow)

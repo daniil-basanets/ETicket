@@ -13,8 +13,8 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TicketId)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TicketId)
+        <dd class="col-sm-10">
+            @Html.ActionLink(@Model.TicketId.ToString(), "Details", "Ticket", new { id = @Model.TicketId }, null)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.VerificationUTCDate)
@@ -25,14 +25,14 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.StationName)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StationName)
+        <dd class="col-sm-10">
+            @Html.ActionLink(@Model.StationName, "Details", "Station", new { id = @Model.StationId }, null)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TransportNumber)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TransportNumber)
+        <dd class="col-sm-10">
+            @Html.ActionLink(@Model.TransportNumber, "Details", "Transports", new { id = @Model.TransportId }, null)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.IsVerified)
