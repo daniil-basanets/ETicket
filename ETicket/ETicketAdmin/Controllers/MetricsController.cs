@@ -41,7 +41,7 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult PassengersByPrivilegesChart(DateTime startPeriod, DateTime endPeriod)
+        public IActionResult PassengersByPrivilegesChart()
         {
             log.Info(nameof(MetricsController.PassengersByPrivilegesChart));
 
@@ -75,7 +75,7 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult PassengersByTimeChart(DateTime startPeriod, DateTime endPeriod)
+        public IActionResult PassengersByTimeChart()
         {
             log.Info(nameof(MetricsController.PassengersByTimeChart));
 
@@ -111,7 +111,7 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult TicketsByTicketTypesChart(DateTime startPeriod, DateTime endPeriod)
+        public IActionResult TicketsByTicketTypesChart()
         {
             log.Info(nameof(MetricsController.TicketsByTicketTypesChart));
 
@@ -144,6 +144,23 @@ namespace ETicket.Admin.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet]
+        public IActionResult PassengerTrafficByDaysOfWeekChart()
+        {
+            log.Info(nameof(MetricsController.PassengerTrafficByDaysOfWeekChart));
+
+            try
+            {
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }  
 
         public IActionResult GetPassengersByDaysOfWeek(DateTime startPeriod, DateTime endPeriod)
         {

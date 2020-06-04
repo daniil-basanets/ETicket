@@ -35,6 +35,8 @@
                     <br>
                     <input type="checkbox" id="PassengersByPrivilegeChartCheckbox" onchange="ManageChart(this, '/metrics/PassengersByPrivilegesChart', '#PassengersByPrivilegeChartPlace')"> Passengers by privilege
                     <br>
+                    <input type="checkbox" id="PassengersByPrivilegeChartCheckbox" onchange="ManageChart(this, '/metrics/PassengerTrafficByDaysOfWeekChart', '#PassengerTrafficByDaysOfWeekChartPlace')"> Passenger traffic by days of week
+                    <br>
                 </div>
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn btn-primary">Close</button>
@@ -52,21 +54,9 @@
 
         <div id="PassengersByPrivilegeChartPlace"></div>
 
-        <!-- Radar chart-->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Passenger traffic by days of week</h6>
-                From: <input type="date" id="passengers-by-days-of-week-start" class="form-control form-control-sm">
-                To: <input type="date" id="passengers-by-days-of-week-end" class="form-control form-control-sm">
-            </div>
-            <div class="card-body">
-                <div class="chart-bar">
-                    <canvas id="passengers-by-days-of-week"></canvas>
-                </div>
-                <hr>
-                <span id="passengers-by-days-of-week-error" class="text-danger"></span>
-            </div>
-        </div>
+        <div id="PassengerTrafficByDaysOfWeekChartPlace"></div>
+
+
 
         <!-- horizontalBar Chart -->
         <div class="card shadow mb-4">
@@ -103,7 +93,7 @@
 <!-- Page level custom scripts -->
 <script src="~/js/chart/init-routes-list.js"></script>
 <script src="~/js/chart/chart-passengers-by-hours-by-routes.js"></script>
-<script src="~/js/chart/chart-radar-passengers-by-days-of-week.js"></script>
+
 
 <script src="~/js/slimselect.min.js"></script>
 
