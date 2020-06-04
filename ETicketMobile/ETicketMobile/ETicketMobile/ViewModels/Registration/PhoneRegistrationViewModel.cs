@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ETicketMobile.Business.Validators;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
@@ -11,15 +12,8 @@ namespace ETicketMobile.ViewModels.Registration
 {
     public class PhoneRegistrationViewModel : ViewModelBase
     {
-        #region Constants
-
-        private const int PhoneMaxLength = 13;
-
-        #endregion
-
         #region Fields
 
-        protected readonly INavigationService navigationService;
         protected INavigationParameters navigationParameters;
 
         private readonly IHttpService httpService;
@@ -46,9 +40,6 @@ namespace ETicketMobile.ViewModels.Registration
         public PhoneRegistrationViewModel(INavigationService navigationService, IHttpService httpService) 
             : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.httpService = httpService
                 ?? throw new ArgumentNullException(nameof(httpService));
         }
@@ -71,14 +62,14 @@ namespace ETicketMobile.ViewModels.Registration
                 return;
 
             navigationParameters.Add("phone", phoneNumber);
-            await navigationService.NavigateAsync(nameof(NameRegistrationView), navigationParameters);
+            await NavigationService.NavigateAsync(nameof(NameRegistrationView), navigationParameters);
         }
 
         #region Validation
 
         private bool IsValid(string phone)
         {
-            if (!IsPhoneCorrectLong(phone))
+            if (!Validator.HasPhoneCorrectLength(phone))
             {
                 PhoneWarning = AppResource.PhoneFormat;
 
@@ -86,11 +77,6 @@ namespace ETicketMobile.ViewModels.Registration
             }
 
             return true;
-        }
-
-        private bool IsPhoneCorrectLong(string phone)
-        {
-            return phone.Length == PhoneMaxLength;
         }
 
         #endregion

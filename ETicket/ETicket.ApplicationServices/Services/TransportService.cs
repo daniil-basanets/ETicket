@@ -24,9 +24,11 @@ namespace ETicket.ApplicationServices.Services
             mapper = new MapperService();
         }
 
-        public IEnumerable<Transport> GetAll()
+        public IEnumerable<TransportDto> GetAll()
         {
-            return uow.Transports.GetAll().ToList();
+            var transports = uow.Transports.GetAll();
+            
+            return mapper.Map<IQueryable<Transport>, IEnumerable<TransportDto>>(transports).ToList();
         }
 
         public Transport Get(int id)

@@ -63,6 +63,15 @@ $(document).ready(function () {
             order: [[1, "desc"]],
             ajax: {
                 url: 'Documents/GetCurrentPage',
+                dataFilter: function (data) {
+                    var json = jQuery.parseJSON(data);
+                    json.draw = json.drawCounter;
+                    json.recordsTotal = json.countRecords;
+                    json.recordsFiltered = json.countFiltered;
+                    json.data = json.pageData;
+
+                    return JSON.stringify(json); // return JSON string
+                },
                 //To send an array correctly by query string
                 traditional: true,
                 type: 'GET',
@@ -98,7 +107,7 @@ $(document).ready(function () {
             columns: [
                 {
                     name: "documentType",
-                    data: "documentType.name",
+                    data: "documentTypeName",
                 },
                 {
                     name: "number",

@@ -22,7 +22,6 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Fields
 
-        private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
         private readonly IPageDialogService dialogService;
@@ -67,9 +66,6 @@ namespace ETicketMobile.ViewModels.Registration
             IHttpService httpService
         ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
-
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
@@ -116,7 +112,7 @@ namespace ETicketMobile.ViewModels.Registration
             }
 
             navigationParameters.Add("birth", birthday);
-            await navigationService.NavigateAsync(nameof(ConfirmEmailView), navigationParameters);
+            await NavigationService.NavigateAsync(nameof(ConfirmEmailView), navigationParameters);
         }
 
         private async Task RequestActivationCodeAsync(string email)

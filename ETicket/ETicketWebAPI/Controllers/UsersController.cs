@@ -4,11 +4,17 @@ using Microsoft.AspNetCore.Http;
 using log4net;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Extensions;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ETicket.WebAPI.Controllers
 {
     [Route("api/users")]
     [ApiController]
+    [SwaggerTag("User service")]
     public class UsersController : BaseAPIController
     {
         #region Private members
@@ -26,19 +32,27 @@ namespace ETicket.WebAPI.Controllers
             this.ticketService = ticketService;
         }
 
-        // GET: api/users/{id}/tickets
-        [HttpGet("{userid}/tickets")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetTicketsByUser(Guid userId)
+        // GET: api/users/{email}/tickets
+        [HttpGet("{email}/tickets")]
+        [SwaggerOperation(Summary = "Get all tickets for concrete user", Description = "Allowed: authorized user")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a list of user's tickets")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
+        public IActionResult GetTicketsByUser(string email, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             log.Info(nameof(GetTicketsByUser));
 
             try
             {
-                var tickets = ticketService.GetTicketsByUserId(userId);
+                var ticketPage = ticketService.GetTicketsByUserEmail(email)
+                                              .ToPage(pageNumber, pageSize);
 
-                return Ok(tickets);
+                if (ticketPage.TotalRowsCount == 0)
+                {
+                    return NoContent();
+                }
+
+                return Json(ticketPage);
             }
             catch (Exception e)
             {
@@ -50,10 +64,12 @@ namespace ETicket.WebAPI.Controllers
 
         // GET: api/users/5
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetUser(Guid id)
+        [SwaggerOperation(Summary = "Get user by id", Description = "Allowed: authorized user")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a User object", typeof(UserDto))]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        [SwaggerResponse(404, "Returns if user is not found by id")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
+        public IActionResult GetUser([SwaggerParameter("Guid", Required = true)] Guid id)
         {
             log.Info(nameof(UsersController.GetUser));
 
@@ -80,9 +96,11 @@ namespace ETicket.WebAPI.Controllers
 
         // PUT: api/users/5
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdateUser(Guid id, UserDto userDto)
+        [SwaggerOperation(Summary = "Update user", Description = "Allowed: authorized user")]
+        [SwaggerResponse(204, "Returns if everything is correct, without content")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        [SwaggerResponse(401, "Returns if user is unauthorized")]
+        public IActionResult UpdateUser([SwaggerParameter("Guid", Required = true)] Guid id, [FromBody, SwaggerRequestBody("User payload", Required = true)] UserDto userDto)
         {
             log.Info(nameof(UsersController.UpdateUser));
 
@@ -109,9 +127,10 @@ namespace ETicket.WebAPI.Controllers
 
         // POST: api/users
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult CreateUser(UserDto userDto)
+        [SwaggerOperation(Summary = "Create user", Description = "Allowed: everyone")]
+        [SwaggerResponse(201, "Returns if user is created")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        public IActionResult CreateUser([FromBody, SwaggerRequestBody("User payload", Required = true)] UserDto userDto)
         {
             log.Info(nameof(UsersController.CreateUser));
 

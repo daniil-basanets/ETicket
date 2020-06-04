@@ -48,8 +48,8 @@ function refreshPassengersByPrivilege() {
                 passengersByPrivilegeChart.destroy();
             }
 
-            if (chartData.errorMessage) {
-                $("#passengers-by-privilege-error").html(chartData.errorMessage);
+            if (chartData.ErrorMessage) {
+                $("#passengers-by-privilege-error").html(chartData.ErrorMessage);
             }
             else {
                 $("#passengers-by-privilege-error").html("");
@@ -58,9 +58,9 @@ function refreshPassengersByPrivilege() {
             passengersByPrivilegeChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: chartData.labels,
+                    labels: chartData.Labels,
                     datasets: [{
-                        data: chartData.data,
+                        data: chartData.Data,
                         backgroundColor: ['#808080', '#4e73df', '#1cc88a', '#36b9cc', '#FFBF40', '#7109AA'],
                         hoverBorderColor: "rgba(234, 236, 244, 1)",
                     }],
