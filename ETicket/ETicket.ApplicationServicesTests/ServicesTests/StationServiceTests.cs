@@ -153,9 +153,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         public void Create_Station_ShouldFailNameIsEmpty(string name)
         {
             stationDto.Name = name;
-            Action action = () => stationService.Create(stationDto);
 
-            var exception = Assert.Throws<ArgumentException>(action);
+            var exception = Assert.Throws<ArgumentException>(() => stationService.Create(stationDto));
 
             var expectedMessage = "Name is empty";
             Assert.Equal(expectedMessage, exception.Message);
@@ -166,9 +165,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         public void Create_Station_ShouldFailNameIsInvalid(string name)
         {
             stationDto.Name = name;
-            Action action = () => stationService.Create(stationDto);
 
-            var exception = Assert.Throws<ArgumentException>(action);
+            var exception = Assert.Throws<ArgumentException>(() => stationService.Create(stationDto));
 
             var expectedMessage = $"Length {name.Length} of Name is invalid";
             Assert.Equal(expectedMessage, exception.Message);
@@ -184,9 +182,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         public void Update_Station_ShouldFailNameIsInvalid(string name)
         {
             stationDto.Name = name;
-            Action action = () => stationService.Update(stationDto);
 
-            Assert.Throws<ArgumentException>(action);
+            Assert.Throws<ArgumentException>(() => stationService.Update(stationDto));
         }
 
         [Fact]
