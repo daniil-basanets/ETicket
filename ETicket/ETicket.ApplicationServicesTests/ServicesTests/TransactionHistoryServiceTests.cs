@@ -23,9 +23,13 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         private readonly IEnumerable<TransactionHistory> transactions;
         private readonly IEnumerable<Ticket> tickets;
 
+        private readonly TransactionService transactionService;
+
         private readonly TransactionHistory transaction;
         private readonly TransactionHistoryDto transactionDto;
 
+        private readonly Guid transactionEmptyId;
+        private readonly Guid transactionId;
         private readonly Guid userId;
 
         #endregion
@@ -88,7 +92,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
 
             transactionDto = new TransactionHistoryDto
             {
-                Id = Guid.Empty,
+                Id = transactionEmptyId,
                 ReferenceNumber = "ReferenceNumber",
                 TotalPrice = 100,
                 Date = DateTime.Parse("03/06/20 15:00:00")
@@ -96,13 +100,16 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
 
             transaction = new TransactionHistory
             {
-                Id = Guid.Empty,
+                Id = transactionEmptyId,
                 ReferenceNumber = "ReferenceNumber",
                 TotalPrice = 100,
                 Date = DateTime.Parse("03/06/20 15:00:00")
             };
 
+            transactionEmptyId = Guid.Empty;
+            transactionId = Guid.NewGuid();
             userId = Guid.Parse("A2BA5D10-C628-4858-B821-D6F0399D01BC");
+
             tickets = new Ticket[]
             {
                 new Ticket
@@ -123,10 +130,29 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
             };
 
             unitOfWorkMock.Setup(uow => uow.TransactionHistory.Create(It.IsAny<TransactionHistory>()));
+
+            unitOfWorkMock
+                    .Setup(uow => uow.TransactionHistory.Get(transactionId))
+                    .Returns(transaction);
+
+            unitOfWorkMock
+                    .Setup(uow => uow.TransactionHistory.GetAll())
+                    .Returns(transactions.AsQueryable);
+
+            unitOfWorkMock
+                .Setup(uow => uow.Tickets.GetAll())
+                .Returns(tickets.AsQueryable);
+
+            var id = Guid.Parse("1DE63B31-A62D-4D5A-9BC7-846EB2E2BADE");
+            unitOfWorkMock
+                    .Setup(uow => uow.TransactionHistory.Get(id))
+                    .Returns(() => null);
+
+            transactionService = new TransactionService(unitOfWorkMock.Object);
         }
 
         [Fact]
-        public void Ctor_NullUnitOfWork_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_NullUnitOfWork_ThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new TransactionService(null));
@@ -135,22 +161,16 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [Fact]
         public void AddTransaction()
         {
-            // Arrange
-            var transactionServie = new TransactionService(unitOfWorkMock.Object);
-
             // Act
-            transactionServie.AddTransaction(transactionDto);
+            transactionService.AddTransaction(transactionDto);
 
             // Assert
-            unitOfWorkMock.Verify();
+            unitOfWorkMock.Verify(uow => uow.TransactionHistory.Create(It.IsAny<TransactionHistory>()), Times.Once);
         }
 
         [Fact]
         public void AddTransaction_ZeroTotalPrice_ThrowArgumentException()
         {
-            // Arrange
-            var transactionService = new TransactionService(unitOfWorkMock.Object);
-
             // Act
             transactionDto.TotalPrice = 0;
 
@@ -161,9 +181,6 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [Fact]
         public void AddTransaction_NullTransaction_ThrowArgumentNullException()
         {
-            // Arrange
-            var transactionService = new TransactionService(unitOfWorkMock.Object);
-
             // Assert
             Assert.Throws<ArgumentNullException>(() => transactionService.AddTransaction(null));
         }
@@ -171,15 +188,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [Fact]
         public void GetTransactions()
         {
-            // Arrange
-            unitOfWorkMock
-                    .Setup(uow => uow.TransactionHistory.GetAll())
-                    .Returns(transactions.AsQueryable);
-
-            var transactionServie = new TransactionService(unitOfWorkMock.Object);
-
             // Act
-            var actualTransactions = transactionServie.GetTransactions();
+            var actualTransactions = transactionService.GetTransactions();
 
             // Assert
             Assert.Equal(transactionsDto, actualTransactions, transactionHistoryDtoEqualityComparer);
@@ -188,15 +198,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [Fact]
         public void GetTransactionsByUserId()
         {
-            // Arrange
-            unitOfWorkMock
-                .Setup(uow => uow.Tickets.GetAll())
-                .Returns(tickets.AsQueryable);
-
-            var transactionServie = new TransactionService(unitOfWorkMock.Object);
-
             // Act
-            var actualTransactions = transactionServie.GetTransactionsByUserId(userId);
+            var actualTransactions = transactionService.GetTransactionsByUserId(userId);
 
             // Assert
             Assert.Equal(transactionsDto, actualTransactions, transactionHistoryDtoEqualityComparer);
@@ -205,29 +208,15 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [Fact]
         public void GetTransactionsByUserId_EmptyUserId_ThrowArgumentException()
         {
-            // Arrange
-            var id = Guid.Empty;
-
-            var transactionService = new TransactionService(unitOfWorkMock.Object);
-
             // Assert
-            Assert.Throws<ArgumentException>(() => transactionService.GetTransactionsByUserId(id));
+            Assert.Throws<ArgumentException>(() => transactionService.GetTransactionsByUserId(transactionEmptyId));
         }
 
         [Fact]
         public void GetTransactionById()
         {
-            // Arrange
-            var id = Guid.NewGuid();
-
-            unitOfWorkMock
-                    .Setup(uow => uow.TransactionHistory.Get(id))
-                    .Returns(transaction);
-
-            var transactionServie = new TransactionService(unitOfWorkMock.Object);
-
             // Act
-            var actualTransaction = transactionServie.GetTransactionById(id);
+            var actualTransaction = transactionService.GetTransactionById(transactionId);
 
             // Assert
             Assert.Equal(transactionDto, actualTransaction, transactionHistoryDtoEqualityComparer);
@@ -237,28 +226,17 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         public void GetTransactionById_NullTransaction_ThrowArgumentNullException()
         {
             // Arrange
-            var id = Guid.NewGuid();
-
-            unitOfWorkMock
-                    .Setup(uow => uow.TransactionHistory.Get(id))
-                    .Returns(() => null);
-
-            var transactionService = new TransactionService(unitOfWorkMock.Object);
+            var id = Guid.Parse("1DE63B31-A62D-4D5A-9BC7-846EB2E2BADE");
 
             // Assert
-            Assert.Throws<ArgumentNullException>(() => transactionService.GetTransactionById(id));
+            Assert.Throws<NullReferenceException>(() => transactionService.GetTransactionById(id));
         }
 
         [Fact]
         public void GetTransactionById_EmptyTransactionId_ThrowArgumentException()
         {
-            // Arrange
-            var id = Guid.Empty;
-
-            var transactionService = new TransactionService(unitOfWorkMock.Object);
-
             // Assert
-            Assert.Throws<ArgumentException>(() => transactionService.GetTransactionById(id));
+            Assert.Throws<ArgumentException>(() => transactionService.GetTransactionById(transactionEmptyId));
         }
     }
 }
