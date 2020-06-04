@@ -1,6 +1,7 @@
 ﻿using ETicket.DataAccess.Domain.Entities;
 using System.Linq;
 using ETicket.DataAccess.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.DataAccess.Domain.Repositories
 {

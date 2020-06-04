@@ -32,7 +32,7 @@
             @Html.DisplayNameFor(model => model.TransportNumber)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TransportNumber)
+            @Html.ActionLink(@Model.TransportNumber, "Details", "Transports", new { id = @Model.TransportId }, null)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.IsVerified)
