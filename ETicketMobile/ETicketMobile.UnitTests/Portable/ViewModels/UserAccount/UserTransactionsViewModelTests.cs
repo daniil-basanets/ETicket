@@ -67,7 +67,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void CtorWithParameters_NullDialogService_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableDialogService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -75,7 +75,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void CtorWithParameters_NullHttpService_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -83,7 +83,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_ReturnsTransactions()
+        public void OnNavigatedTo_CompareTransactions_ShouldBeEqual()
         {
             // Arrange
             var transactionEqualityComparer = new TransactionEqualityComparer();
@@ -96,7 +96,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_ThrowWebException()
+        public void OnNavigatedTo_CheckThrowWebException()
         {
             // Act
             userTransactionsViewModel.OnNavigatedTo(navigationParameters);

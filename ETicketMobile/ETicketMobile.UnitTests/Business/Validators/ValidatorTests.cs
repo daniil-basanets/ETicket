@@ -8,7 +8,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [Theory]
         [InlineData("b@gmail.com")]
         [InlineData("anton.ukrainets@gmail.com")]
-        public void HasEmailCorrectLength_ReturnsTrue(string email)
+        public void CheckHasEmailCorrectLength_ReturnsTrue(string email)
         {
             // Act
             var actualValue = Validator.HasEmailCorrectLength(email);
@@ -19,7 +19,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
 
         [Theory]
         [InlineData("qwertyuiopasdfghkjklzxcvvcbmvnbzxczxczadashrtwreqwqe@gmail.com")]
-        public void HasEmailCorrectLength_ReturnsFalse(string email)
+        public void CheckHasEmailCorrectLength_ReturnsFalse(string email)
         {
             // Act
             var actualValue = Validator.HasEmailCorrectLength(email);
@@ -32,7 +32,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData("")]
         [InlineData("1")]
         [InlineData("1234567")]
-        public void IsPasswordShort_ReturnsTrue(string password)
+        public void CheckIsPasswordShort_ReturnsTrue(string password)
         {
             // Act
             var actualValue = Validator.IsPasswordShort(password);
@@ -44,7 +44,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [Theory]
         [InlineData("12345612321312312312321323")]
         [InlineData("ABCABCABCC")]
-        public void IsPasswordShort_ReturnsFalse(string password)
+        public void CheckIsPasswordShort_ReturnsFalse(string password)
         {
             // Act
             var actualValue = Validator.IsPasswordShort(password);
@@ -56,7 +56,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [Theory]
         [InlineData("asdasdasdasdasdasdasdasddasdasdasdasasdasdasd" +
                     "asdasdasdasdasddasdasdasdasasdasdasdasdasdasdasdasdaasss")]
-        public void IsPasswordLong_ReturnsTrue(string password)
+        public void CheckIsPasswordLong_ReturnsTrue(string password)
         {
             // Act
             var actualValue = Validator.IsPasswordLong(password);
@@ -69,7 +69,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData("")]
         [InlineData("1")]
         [InlineData("1234567")]
-        public void IsPasswordLong_ReturnsFalse(string password)
+        public void CheckIsPasswordLong_ReturnsFalse(string password)
         {
             // Act
             var actualValue = Validator.IsPasswordLong(password);
@@ -81,7 +81,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [Theory]
         [InlineData("123123")]
         [InlineData("12311231231223")]
-        public void IsPasswordWeak_ReturnsTrue(string password)
+        public void CheckIsPasswordWeak_ReturnsTrue(string password)
         {
             // Act
             var actualValue = Validator.IsPasswordWeak(password);
@@ -94,7 +94,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData("a")]
         [InlineData("abc")]
         [InlineData("qwerty12")]
-        public void IsPasswordWeak_ReturnsFalse(string password)
+        public void CheckIsPasswordWeak_ReturnsFalse(string password)
         {
             // Act
             var actualValue = Validator.IsPasswordWeak(password);
@@ -106,7 +106,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [Theory]
         [InlineData("qwerty12", "qwerty12")]
         [InlineData("abcdefgh", "abcdefgh")]
-        public void PasswordsMatched_ReturnsTrue(string password, string confirmPassword)
+        public void CheckPasswordsMatched_ReturnsTrue(string password, string confirmPassword)
         {
             // Act
             var actualValue = Validator.PasswordsMatched(password, confirmPassword);
@@ -118,7 +118,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [Theory]
         [InlineData("qwerty12", "qwerty21")]
         [InlineData("1234567A", "1234567a")]
-        public void PasswordsMatched_ReturnsFalse(string password, string confirmPassword)
+        public void CheckPasswordsMatched_ReturnsFalse(string password, string confirmPassword)
         {
             // Act
             var actualValue = Validator.PasswordsMatched(password, confirmPassword);
@@ -129,7 +129,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
 
         [Theory]
         [InlineData("1234432156788765")]
-        public void HasCardNumberCorrectLength_ReturnsTrue(string cardNumber)
+        public void CheckHasCardNumberCorrectLength_ReturnsTrue(string cardNumber)
         {
             // Act
             var actualValue = Validator.HasCardNumberCorrectLength(cardNumber);
@@ -142,7 +142,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData("1")]
         [InlineData("abc")]
         [InlineData("1234 4321 5678 8765")]
-        public void HasCardNumberCorrectLength_ReturnsFalse(string cardNumber)
+        public void CheckHasCardNumberCorrectLength_ReturnsFalse(string cardNumber)
         {
             // Act
             var actualValue = Validator.HasCardNumberCorrectLength(cardNumber);
@@ -154,7 +154,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [Theory]
         [InlineData("01/12")]
         [InlineData("00/00")]
-        public void HasExpirationDateCorrectLength_ReturnsTrue(string expirationDate)
+        public void CheckHasExpirationDateCorrectLength_ReturnsTrue(string expirationDate)
         {
             // Act
             var actualValue = Validator.HasExpirationDateCorrectLength(expirationDate);
@@ -168,7 +168,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData("1")]
         [InlineData("0112")]
         [InlineData("01/123")]
-        public void HasExpirationDateCorrectLength_ReturnsFalse(string expirationDate)
+        public void CheckHasExpirationDateCorrectLength_ReturnsFalse(string expirationDate)
         {
             // Act
             var actualValue = Validator.HasExpirationDateCorrectLength(expirationDate);
@@ -180,7 +180,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [Theory]
         [InlineData("810")]
         [InlineData("121")]
-        public void HasCVV2CorrectLength_ReturnsTrue(string cvv2)
+        public void CheckHasCVV2CorrectLength_ReturnsTrue(string cvv2)
         {
             // Act
             var actualValue = Validator.HasCVV2CorrectLength(cvv2);
@@ -194,7 +194,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData("1")]
         [InlineData("12")]
         [InlineData("1234")]
-        public void HasCVV2CorrectLength_ReturnsFalse(string cvv2)
+        public void CheckHasCVV2CorrectLength_ReturnsFalse(string cvv2)
         {
             // Act
             var actualValue = Validator.HasCVV2CorrectLength(cvv2);
@@ -206,7 +206,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [Theory]
         [InlineData("Mo")]
         [InlineData("Wolfe­schlegel­stein­haus")]
-        public void IsNameValid_ReturnsTrue(string name)
+        public void CheckIsNameValid_ReturnsTrue(string name)
         {
             // Act
             var actualValue = Validator.IsNameValid(name);
@@ -220,7 +220,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData("")]
         [InlineData("a")]
         [InlineData("Wolfe­schlegel­stein­hausen­berger­dorff")]
-        public void IsNameValid_ReturnsFalse(string name)
+        public void CheckIsNameValid_ReturnsFalse(string name)
         {
             // Act
             var actualValue = Validator.IsNameValid(name);
@@ -231,7 +231,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
 
         [Theory]
         [InlineData("+380679953365")]
-        public void HasPhoneCorrectLength_ReturnsTrue(string name)
+        public void CheckHasPhoneCorrectLength_ReturnsTrue(string name)
         {
             // Act
             var actualValue = Validator.HasPhoneCorrectLength(name);
@@ -244,7 +244,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData("")]
         [InlineData("0679953365")]
         [InlineData("+38 (067)-995-33-65")]
-        public void HasPhoneCorrectLength_ReturnsFalse(string name)
+        public void CheckHasPhoneCorrectLength_ReturnsFalse(string name)
         {
             // Act
             var actualValue = Validator.HasPhoneCorrectLength(name);
@@ -257,7 +257,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData(1)]
         [InlineData(5)]
         [InlineData(10)]
-        public void TicketChoosed_ReturnsTrue(int countTickets)
+        public void CheckIfTicketChoosed_ReturnsTrue(int countTickets)
         {
             // Act
             var actualValue = Validator.TicketChoosed(countTickets);
@@ -267,7 +267,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         }
 
         [Fact]
-        public void TicketChoosed_ReturnsFalse()
+        public void CheckIfTicketChoosed_ReturnsFalse()
         {
             // Arrange
             var countTickets = 0;
@@ -283,7 +283,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData(1)]
         [InlineData(5)]
         [InlineData(10)]
-        public void AreaChoosed_ReturnsTrue(int countAreas)
+        public void CheckIfAreaChoosed_ReturnsTrue(int countAreas)
         {
             // Act
             var actualValue = Validator.AreaChoosed(countAreas);
@@ -293,7 +293,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         }
 
         [Fact]
-        public void AreaChoosed_ReturnsFalse()
+        public void CheckIfAreaChoosed_ReturnsFalse()
         {
             // Arrange
             var countAreas = 0;

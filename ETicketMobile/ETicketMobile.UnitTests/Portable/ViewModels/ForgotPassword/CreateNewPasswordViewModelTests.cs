@@ -31,21 +31,21 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void CtorWithParameters_NullHttpService_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableNullHttpService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new CreateNewPasswordViewModel(null, dialogServiceMock.Object, null));
         }
 
         [Fact]
-        public void CtorWithParameters_NullDialogService_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableNullDialogService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new CreateNewPasswordViewModel(null, null, httpServiceMock.Object));
         }
 
         [Fact]
-        public void OnNavigatedTo_NullNavigationParameters_ThrowArgumentNullException()
+        public void OnNavigatedTo_CheckNullableNavigationParameters_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => createNewPasswordViewModel.OnNavigatedTo(null));
@@ -54,7 +54,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void OnNavigateToSignInView_IsValid_IsNullOrEmpty_ReturnsFalse(string password)
+        public void OnNavigateToSignInView_CheckIfIsValid_CheckIfIsNullOrEmpty_ReturnsFalse(string password)
         {
             // Arrange
             var passwordWarning = "Enter a password";
@@ -69,7 +69,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         [Theory]
         [InlineData("1")]
         [InlineData("1234567")]
-        public void OnNavigateToSignInView_IsValid_IsPasswordShort_ReturnsFalse(string password)
+        public void OnNavigateToSignInView_CheckIfIsValid_CheckIfIsPasswordShort_ReturnsFalse(string password)
         {
             // Arrange
             var passwordWarning = "Use 8 characters or more for your password";
@@ -84,7 +84,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         [Theory]
         [InlineData("asdasdasdasdasdasdasdasddasdasdasdasasdasdasd" +
                     "asdasdasdasdasddasdasdasdasasdasdasdasdasdasdasdasdaasss")]
-        public void OnNavigateToSignInView_IsValid_IsPasswordLong_ReturnsFalse(string password)
+        public void OnNavigateToSignInView_CheckIfIsValid_CheckIfIsPasswordLong_ReturnsFalse(string password)
         {
             // Arrange
             var passwordWarning = "Use 100 characters or fewer for your password";
@@ -99,7 +99,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         [Theory]
         [InlineData("12345678")]
         [InlineData("12345678123123123")]
-        public void OnNavigateToSignInView_IsValid_IsPasswordWeak_ReturnsFalse(string password)
+        public void OnNavigateToSignInView_CheckIfIsValid_CheckIfIsPasswordWeak_ReturnsFalse(string password)
         {
             // Arrange
             var passwordWarning = "Please, choose a stronger password. Try a mix of letters, numbers, symbols.";
@@ -113,7 +113,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
 
         [Theory]
         [InlineData("qwerty12", "qwerty21")]
-        public void OnNavigateToSignInView_IsValid_PasswordsMatched_ReturnsFalse(string password, string confirmPassword)
+        public void OnNavigateToSignInView_CheckIfIsValid_CheckIfPasswordsMatched_ReturnsFalse(string password, string confirmPassword)
         {
             // Arrange
             var passwordWarning = "Please, make sure your passwords match";

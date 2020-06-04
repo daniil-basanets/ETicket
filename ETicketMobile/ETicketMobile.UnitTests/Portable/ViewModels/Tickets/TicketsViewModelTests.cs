@@ -25,7 +25,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         private readonly Mock<IHttpService> httpServiceMock;
         private readonly Mock<ILocalApi> localApiMock;
 
-        private IEnumerable<TicketTypeDto> ticketTypesDto;
+        private readonly IEnumerable<TicketTypeDto> ticketTypesDto;
 
         private readonly IEnumerable<TicketType> ticketTypes;
         private readonly IEnumerable<AreaViewModel> areas;
@@ -101,7 +101,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void CtorWithParameters_NullDialogService_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableDialogService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -109,7 +109,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void CtorWithParameters_NullTokenService_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableTokenService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -117,7 +117,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void CtorWithParameters_NullHttpService_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -125,7 +125,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void CtorWithParameters_NullLocalApi_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableLocalApi_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -133,7 +133,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void OnAppearing_Tickets()
+        public void OnAppearing_CompareTickets_ShouldBeEqual()
         {
             // Arrange
             var ticketTypesEqualityComparer = new TicketTypesEqualityComparer();
@@ -146,7 +146,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void OnAppearing_Areas()
+        public void OnAppearing_CompareAreas_ShouldBeEqual()
         {
             // Arrange
             var areasViewModelEqualityComparer = new AreasViewModelEqualityComparer();
@@ -159,7 +159,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void OnNavigatedTo_RefreshTokenAsync()
+        public void OnNavigatedTo_Tickets_CheckRefreshTokenAsyncWhenAccessTokenShouldBeNull()
         {
             // Arrange
             httpServiceMock

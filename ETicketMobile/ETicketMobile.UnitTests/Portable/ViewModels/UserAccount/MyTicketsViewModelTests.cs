@@ -142,7 +142,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void CtorWithParameters_NullDialogService_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableDialogService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -150,7 +150,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void CtorWithParameters_NullTokenService_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableTokenService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -158,7 +158,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void CtorWithParameters_NullHttpService_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -166,7 +166,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void CtorWithParameters_NullLocalApi_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableLocalApi_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
@@ -174,7 +174,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_GetTickets()
+        public void OnNavigatedTo_CompareTickets_ShouldBeEqual()
         {
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
@@ -185,7 +185,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_ThrowWebException()
+        public void OnNavigatedTo_CheckThrowWebException()
         {
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
@@ -196,7 +196,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_GetTickets_RefreshToken()
+        public void OnNavigatedTo_Tickets_CheckRefreshTokenWhenAccessTokenShouldBeNull()
         {
             // Arrange
             httpServiceMock
@@ -213,7 +213,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_GetUnusedTickets()
+        public void OnNavigatedTo_CompareUnusedTickets_ShouldBeEqual()
         {
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
@@ -223,7 +223,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_GetActivatedTickets()
+        public void OnNavigatedTo_CompareActivatedTickets_ShouldBeEqual()
         {
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
@@ -233,7 +233,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_GetExpiredTickets()
+        public void OnNavigatedTo_CompareExpiredTickets_ShouldBeEqual()
         {
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);

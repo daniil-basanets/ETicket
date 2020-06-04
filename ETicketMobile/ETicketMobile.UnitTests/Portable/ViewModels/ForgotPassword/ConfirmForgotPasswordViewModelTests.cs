@@ -2,7 +2,6 @@
 using ETicketMobile.ViewModels.ForgotPassword;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
-using Prism.Navigation;
 using Prism.Services;
 using Xunit;
 
@@ -28,21 +27,21 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void CtorWithParameters_NullHttpService_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new ConfirmForgotPasswordViewModel(null, dialogServiceMock.Object, null));
         }
 
         [Fact]
-        public void CtorWithParameters_NullDialogService_ThrowArgumentNullException()
+        public void CheckConstructorWithParameters_CheckNullableDialogService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new ConfirmForgotPasswordViewModel(null, null, httpServiceMock.Object));
         }
 
         [Fact]
-        public void OnAppearing_ActivationCodeTimer_ShouldBeZero()
+        public void OnAppearing_CompareActivationCodeTimers_ShouldBeEqual()
         {
             // Arrange
             var activationCodeTimer = 0;
@@ -55,7 +54,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void OnAppearing_TimerActivated_ShouldBeFalse()
+        public void OnAppearing_CompareTimersActivated_ShouldBeEqual()
         {
             // Arrange
             var timerActivated = false;
@@ -68,21 +67,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void OnNavigatedTo_NavigationParameters()
-        {
-            // Arrange
-            var email = "email";
-            var navigationParameters = new NavigationParameters { { email, "email" } };
-
-            // Act
-            var exception = Record.Exception(() => confirmForgotPasswordViewModel.OnNavigatedTo(navigationParameters));
-
-            // Assert
-            Assert.Null(exception);
-        }
-
-        [Fact]
-        public void OnNavigatedTo_NullNavigationParameters_ThrowArgumentNullException()
+        public void OnNavigatedTo_CheckNullableNavigationParameters_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => confirmForgotPasswordViewModel.OnNavigatedTo(null));

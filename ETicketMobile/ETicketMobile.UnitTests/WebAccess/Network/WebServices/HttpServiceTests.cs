@@ -20,7 +20,7 @@ namespace ETicketMobile.UnitTests.WebAccess.Network.WebServices
         }
 
         [Fact]
-        public void CtorWithParameters_NullUri()
+        public void CheckContructorWithParameters_CheckNullableUri_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new HttpService(null));

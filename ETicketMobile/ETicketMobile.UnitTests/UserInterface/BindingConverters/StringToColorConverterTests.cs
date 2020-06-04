@@ -21,7 +21,7 @@ namespace ETicketMobile.UnitTests.UserInterface.BindingConverters
         [Theory]
         [InlineData("abc")]
         [InlineData("123")]
-        public void Convert_Positive(string value)
+        public void CheckConvertStringToColor_CompareChangedColors_ShouldBeEqual(string value)
         {
             // Arrange
             var expectedValue = Color.Red;
@@ -36,7 +36,7 @@ namespace ETicketMobile.UnitTests.UserInterface.BindingConverters
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void Convert_Negative(string value)
+        public void CheckConvertStringToColor_CompareDefaultColors_ShouldBeEqual(string value)
         {
             // Arrange
             var expectedValue = Color.Default;
@@ -49,7 +49,7 @@ namespace ETicketMobile.UnitTests.UserInterface.BindingConverters
         }
 
         [Fact]
-        public void ConvertBack()
+        public void CheckConvertBack_ShouldThrowException()
         {
             // Assert
             Assert.Throws<NotImplementedException>(() => stringToColorConverter.ConvertBack(null, null, null, null));

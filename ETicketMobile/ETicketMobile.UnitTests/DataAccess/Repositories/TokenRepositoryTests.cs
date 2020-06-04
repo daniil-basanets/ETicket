@@ -44,14 +44,14 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         }
 
         [Fact]
-        public void CtorWithParameters_Positive()
+        public void CheckConstructorWithParameters_CheckNullableSettingsRepository_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new TokenRepository(null));
         }
 
         [Fact]
-        public async Task GetTokenAsync()
+        public async Task GetTokenAsync_CompareTokens_ShouldBeEqual()
         {
             // Arrange
             var tokenEqualityComparer = new TokenEqualityComparer();
@@ -64,7 +64,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         }
 
         [Fact]
-        public async Task GetTokenAsync_TokenShouldBeNull()
+        public async Task GetTokenAsync_CheckNullableSettingName_TokenShouldBeNull()
         {
             // Arrange
             settingsRepositoryMock
@@ -79,7 +79,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         }
 
         [Fact]
-        public async Task SaveTokenAsync()
+        public async Task Create_Token()
         {
             // Act
             await tokenRepository.SaveTokenAsync(token);

@@ -20,7 +20,7 @@ namespace ETicketMobile.UnitTests.UserInterface.BindingConverters
         [Theory]
         [InlineData("abc")]
         [InlineData("123")]
-        public void Convert_Positive(string value)
+        public void CheckConvertStringToBool_ReturnsTrue(string value)
         {
             // Act
             var actualValue = (bool)stringToBooleanConverter.Convert(value, null, null, null);
@@ -32,7 +32,7 @@ namespace ETicketMobile.UnitTests.UserInterface.BindingConverters
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void Convert_Negative(string value)
+        public void CheckConvertStringToBool_ReturnsFalse(string value)
         {
             // Act
             var actualValue = (bool)stringToBooleanConverter.Convert(value, null, null, null);
@@ -42,7 +42,7 @@ namespace ETicketMobile.UnitTests.UserInterface.BindingConverters
         }
 
         [Fact]
-        public void ConvertBack()
+        public void CheckConvertBack_ShouldThrowException()
         {
             // Assert
             Assert.Throws<NotImplementedException>(() => stringToBooleanConverter.ConvertBack(null, null, null, null));

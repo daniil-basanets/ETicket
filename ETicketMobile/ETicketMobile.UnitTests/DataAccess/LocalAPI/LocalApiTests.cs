@@ -53,7 +53,7 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
         }
 
         [Fact]
-        public void CtoWithParameters_NullTokenRepository()
+        public void CheckConstructorWithParameters_CheckNullableTokenRepository_ShouldThrowException()
         {
             // Arrange
             var localizationRepository = new LocalizationRepository();
@@ -63,7 +63,7 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
         }
 
         [Fact]
-        public void CtoWithParameters_NullLocalizationRepository()
+        public void CheckConstructorWithParameters_CheckNullableLocalizationRepository_ShouldThrowException()
         {
             // Arrange
             var tokenRepository = new TokenRepository();
@@ -73,7 +73,7 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
         }
 
         [Fact]
-        public void AddAsync_Token()
+        public void Create_Token()
         {
             // Act
             localApi.AddAsync(token);
@@ -83,7 +83,7 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
         }
 
         [Fact]
-        public void AddAsync_Localization()
+        public void Create_Localization()
         {
             // Act
             localApi.AddAsync(localization);
@@ -93,7 +93,7 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
         }
 
         [Fact]
-        public async Task GetTokenAsync()
+        public async Task GetTokenAsync_CompareTokens_ShouldBeEqual()
         {
             // Arrange
             var tokenEqualityComparer = new TokenEqualityComparer();
@@ -106,7 +106,7 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
         }
 
         [Fact]
-        public async Task GetLocalizationAsync()
+        public async Task GetLocalizationAsync_CompareLocalizations_ShouldBeEqual()
         {
             // Act
             var actualLocalization = await localApi.GetLocalizationAsync();

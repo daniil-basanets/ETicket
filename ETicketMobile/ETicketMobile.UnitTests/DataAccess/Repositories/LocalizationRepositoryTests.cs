@@ -37,14 +37,14 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         }
 
         [Fact]
-        public void CtorWithParameters_Positive()
+        public void CheckConstructorWithParameters_CheckNullableSettingsRepository_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new LocalizationRepository(null));
         }
 
         [Fact]
-        public async Task GetLocalizationAsync()
+        public async Task GetLocalizationAsync_CompareLocalizations_ShouldBeEqual()
         {
             // Act
             var actualLocalization = await localizationRepository.GetLocalizationAsync();
@@ -54,7 +54,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         }
 
         [Fact]
-        public async Task GetLocalizationAsync_LocalizationShouldBeNull()
+        public async Task GetLocalizationAsync_CheckNullableSettingName_LocalizationShouldBeNull()
         {
             // Arrange
             settingsRepositoryMock
@@ -69,7 +69,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
         }
 
         [Fact]
-        public async Task SaveLocalizationAsync()
+        public async Task Create_Localization()
         {
             // Act
             await localizationRepository.SaveLocalizationAsync(localization);

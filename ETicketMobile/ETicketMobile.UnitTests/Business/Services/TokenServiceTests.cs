@@ -67,21 +67,21 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public void CtorWithParameters_NullHttpService()
+        public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new TokenService(null, localApiMock.Object));
         }
 
         [Fact]
-        public void CtorWithParameters_NullLocalApi()
+        public void CheckConstructorWithParameters_CheckNullableLocalApi_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new TokenService(httpServiceMock.Object, null));
         }
 
         [Fact]
-        public async Task GetTokenAsync_AccessToken()
+        public async Task GetTokenAsync_AccessToken_CompareAccessesTokens_ShouldBeEqual()
         {
             // Act
             var token = await tokenService.GetTokenAsync(email, password);
@@ -91,7 +91,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTokenAsync_RefreshToken()
+        public async Task GetTokenAsync_RefreshToken_CompareRefreshesTokens_ShouldBeEqual()
         {
             // Act
             var token = await tokenService.GetTokenAsync(email, password);
@@ -101,7 +101,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetAccessTokenAsync()
+        public async Task GetAccessTokenAsync_CompareAccessesTokens_ShouldBeEqual()
         {
             // Act
             var accessToken = await tokenService.GetAccessTokenAsync();
@@ -111,7 +111,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task RefreshTokenAsync()
+        public async Task RefreshTokenAsync_CompareRefreshesTokens_ShouldBeEqual()
         {
             // Act
             var accessToken = await tokenService.RefreshTokenAsync();

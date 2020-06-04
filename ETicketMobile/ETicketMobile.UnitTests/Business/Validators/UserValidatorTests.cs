@@ -33,14 +33,14 @@ namespace ETicketMobile.UnitTests.Business.Validators
         }
 
         [Fact]
-        public void Ctor_Negative()
+        public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(() => new UserValidator(null));
         }
 
         [Fact]
-        public async Task UserExistsAsync_ReturnsTrue()
+        public async Task CheckUserExistsAsyncWhenSignUpSucceededTrue_ReturnsTrue()
         {
             // Arrange
             signUpResponseDto.Succeeded = true;
@@ -53,7 +53,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         }
 
         [Fact]
-        public async Task UserExistsAsync_ReturnsFalse()
+        public async Task CheckUserExistsAsyncWhenSihnUpSucceededFalse_ReturnsFalse()
         {
             // Arrange
             signUpResponseDto.Succeeded = false;
