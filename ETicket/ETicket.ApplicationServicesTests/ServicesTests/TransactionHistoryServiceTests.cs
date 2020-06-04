@@ -126,16 +126,6 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
-        public void Ctor()
-        {
-            // Act
-            var exception = Record.Exception(() => new TransactionService(unitOfWorkMock.Object));
-
-            // Assert
-            Assert.Null(exception);
-        }
-
-        [Fact]
         public void Ctor_NullUnitOfWork_ThrowArgumentNullException()
         {
             // Assert
