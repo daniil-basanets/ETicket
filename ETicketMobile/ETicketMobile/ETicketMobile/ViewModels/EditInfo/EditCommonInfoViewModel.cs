@@ -34,9 +34,11 @@ namespace ETicketMobile.ViewModels.EditInfo
 
         private readonly ITokenService tokenService;
 
-        // private readonly ILocalApi localApi;
+        private readonly ILocalApi localApi;
 
         private User user;
+
+        private User userInfo;
 
         private readonly IHttpService httpService;
 
@@ -48,18 +50,20 @@ namespace ETicketMobile.ViewModels.EditInfo
 
         private string lastName;
 
-        private string firstNameWarning;
-
-        private string lastNameWarning;
-
         private string phoneNumber;
 
         private int age;
 
+        private string firstNameWarning;
+
+        private string lastNameWarning;
+
+        private string phoneWarning;
+
+        private string ageWarning;
+
         #endregion
-
-       
-
+               
         #region Properties
 
         public ICommand NavigateToSuccessfullySavedView => navigateToSuccessfullySavedView
@@ -88,6 +92,18 @@ namespace ETicketMobile.ViewModels.EditInfo
             set => SetProperty(ref lastNameWarning, value);
         }
 
+        public string PhoneWarning
+        {
+            get => phoneWarning;
+            set => SetProperty(ref phoneWarning, value);
+        }
+
+        public string AgeWarning
+        {
+            get => ageWarning;
+            set => SetProperty(ref ageWarning, value);
+        }
+
         public string PhoneNumber
         { 
             get =>  phoneNumber;
@@ -111,10 +127,14 @@ namespace ETicketMobile.ViewModels.EditInfo
             INavigationService navigationService,
             IHttpService httpService,
             IPageDialogService dialogService,
-            ITokenService tokenService
+            ITokenService tokenService,
+            ILocalApi localApi
             )
             : base(navigationService)
         {
+            this.localApi = localApi
+                ?? throw new ArgumentNullException(nameof(localApi));
+
             this.navigationService = navigationService
                 ?? throw new ArgumentNullException(nameof(navigationService));
 
@@ -133,7 +153,8 @@ namespace ETicketMobile.ViewModels.EditInfo
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync
+                    ("Error", "Check connection with server", "OK");
 
                 return;
             }
@@ -149,19 +170,31 @@ namespace ETicketMobile.ViewModels.EditInfo
 
             userRequestDto.Email = User.Email;
 
-            var userResponseDto = await httpService.PostAsync<GetUserRequestDto, GetUserResponseDto>(UsersEndpoint.GetUserByEmail, userRequestDto, accessToken);
+            var userResponseDto = await httpService.PostAsync
+                <GetUserRequestDto, GetUserResponseDto>
+                (UsersEndpoint.GetUserByEmail, userRequestDto, accessToken);
 
-            var userInfo = AutoMapperConfiguration.Mapper.Map<User>(userResponseDto);
+            userInfo = AutoMapperConfiguration.Mapper.Map<User>(userResponseDto);
+
+            Init();
+        }
+
+        private void Init()
+        {
+            FirstName = userInfo.FirstName;
+            LastName = userInfo.LastName;
+            PhoneNumber = userInfo.Phone;
+            Age = userInfo.Age;
         }
 
         private UserInfoRequestDto UserInfoRequest()
         {
             return new UserInfoRequestDto
             {
-                Phone = navigationParameters.GetValue<string>("phone"),
-                FirstName = navigationParameters.GetValue<string>("firstName"),
-                LastName = navigationParameters.GetValue<string>("lastName"),
-                Age = navigationParameters.GetValue<string>("age")
+            Phone = phoneNumber,
+            FirstName = firstName,
+            LastName = lastName,
+            Age = age
             };
         }
 
@@ -169,11 +202,6 @@ namespace ETicketMobile.ViewModels.EditInfo
         {
             if (!IsValid())
                 return;
-
-            navigationParameters.Add("firstName", firstName);
-            navigationParameters.Add("lastName", lastName);
-            navigationParameters.Add("phoneNumber", phoneNumber);
-            navigationParameters.Add("age", age);
 
             await UpdateUserInfo();
 
@@ -185,7 +213,11 @@ namespace ETicketMobile.ViewModels.EditInfo
         {
             var user = UserInfoRequest();
 
-            var response = await httpService.PutAsync<UserInfoRequestDto, UserInfoResponseDto>(AuthorizeEndpoint.Registration, user);
+            accessToken = await tokenService.RefreshTokenAsync();
+
+            var response = await httpService.PutAsync
+                <UserInfoRequestDto, UserInfoResponseDto>
+                (AuthorizeEndpoint.Registration, user, accessToken);
 
             return response.Succeeded;
         }
@@ -222,11 +254,13 @@ namespace ETicketMobile.ViewModels.EditInfo
 
             if (!Validator.HasPhoneCorrectLength(phoneNumber))
             {
+                PhoneWarning = AppResource.Phone;
                 return false;
             }
-
-            if (Age<=13 | Age>=110)
+            
+            if (!Validator.IsAgeCorrect(Age))
             {
+                AgeWarning = AppResource.WrongAge;
                 return false;
             }
 

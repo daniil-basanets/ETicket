@@ -17,6 +17,6 @@ namespace ETicketMobile.WebAccess.DTO
         public string Phone { get; set; }
 
         [JsonProperty("age")]
-        public string Age { get; set; }       
+        public int Age { get; set; }       
     }
 }

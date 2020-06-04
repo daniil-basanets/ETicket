@@ -21,7 +21,16 @@ namespace ETicketMobile.Business.Validators
 
         private const int PhoneMaxLength = 13;
 
-        #endregion
+        private const int MinAge = 13;
+        private const int MaxAge = 110;
+
+        private const int DocumentMinLength = 5;
+        private const int DocumentMaxLength = 15;
+
+        private const int PrivilegeMinLength = 4;
+        private const int PrivilegeMaxLength = 50;
+
+        #endregion 
 
         public static bool IsEmailValid(string email)
         {
@@ -88,6 +97,21 @@ namespace ETicketMobile.Business.Validators
         public static bool AreaChoosed(int count)
         {
             return count != 0;
+        }
+
+        public static bool IsAgeCorrect(int age)
+        {
+            return (age >= MinAge & age <= MaxAge);
+        }
+
+        public static bool IsDocumentNumberValid(string number)
+        {
+            return (number.Length >= DocumentMinLength & number.Length <= DocumentMaxLength);
+        }
+
+        public static bool IsPrivilegeNameValid(string number)
+        {
+            return (number.Length >= PrivilegeMinLength & number.Length <= PrivilegeMaxLength);
         }
     }
 }

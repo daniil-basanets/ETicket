@@ -225,6 +225,14 @@
     <value>Description payment</value>
     <comment>LiqPayView</comment>
   </data>
+  <data name="DocumentEmptyWarning" xml:space="preserve">
+    <value>Document Number field is empty</value>
+    <comment>EditCommonInfoViewModel</comment>
+  </data>
+  <data name="DocumentWarning" xml:space="preserve">
+    <value>Are you sure you entered correct quantity of symbols in your document number?</value>
+    <comment>EditCommonInfoViewModel</comment>
+  </data>
   <data name="Duration" xml:space="preserve">
     <value>Duration:</value>
     <comment>ReceiptView</comment>
@@ -303,7 +311,7 @@
   </data>
   <data name="FirstNameValid" xml:space="preserve">
     <value>Are you sure you entered your first name correctly?</value>
-    <comment>NameRegistrationViewModel</comment>
+    <comment>NameRegistrationViewModel, EditCommonInfoViewModel</comment>
   </data>
   <data name="ForgotPassword" xml:space="preserve">
     <value>Forgot your password?</value>
@@ -331,7 +339,7 @@
   </data>
   <data name="LastNameValid" xml:space="preserve">
     <value>Are you sure you entered your last name correctly?</value>
-    <comment>NameRegistrationViewModel</comment>
+    <comment>NameRegistrationViewModel, EditCommonInfoViewModel</comment>
   </data>
   <data name="Localization" xml:space="preserve">
     <value>Localizations</value>
@@ -395,7 +403,7 @@
   </data>
   <data name="Phone" xml:space="preserve">
     <value>Phone</value>
-    <comment>PhoneRegistrationView</comment>
+    <comment>PhoneRegistrationView, EditCommonInfoViewModel</comment>
   </data>
   <data name="PhoneFormat" xml:space="preserve">
     <value>Phone number must be in format +380 (XX)-XXX-XX-XX</value>
@@ -404,6 +412,14 @@
   <data name="Price" xml:space="preserve">
     <value>Price:</value>
     <comment>ReceiptView</comment>
+  </data>
+  <data name="PrivilegeEmptyWarning" xml:space="preserve">
+    <value>Privilege Name field is empty</value>
+    <comment>EditCommonInfoViewModel</comment>
+  </data>
+  <data name="PrivilegeWarning" xml:space="preserve">
+    <value>Are you sure you entered correct quantity of symbols in your privilege name?</value>
+    <comment>EditCommonInfoViewModel</comment>
   </data>
   <data name="RegistrationHint" xml:space="preserve">
     <value>Don't have an account?</value>
@@ -436,6 +452,10 @@
   <data name="TransactionHistory" xml:space="preserve">
     <value>Transactions History</value>
     <comment>ChooseActionViewModel</comment>
+  </data>
+  <data name="WrongAge" xml:space="preserve">
+    <value>Please enter correct age</value>
+    <comment>EditCommonInfoViewModel</comment>
   </data>
   <data name="WrongSignIn" xml:space="preserve">
     <value>Can't you sign in?</value>

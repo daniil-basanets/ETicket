@@ -12,8 +12,12 @@ namespace ETicketMobile.Business.Model.User
 
         public string Phone { get; set; }
 
-        public string Age { get; set; }
+        public int Age { get; set; }
 
         public string Email { get; set; }
+
+        public Guid DocumentId { get; set; }
+
+        public int PrivilegeId { get; set; }
     }
 }
