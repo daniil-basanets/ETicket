@@ -114,7 +114,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
 
             var exception = Assert.Throws<ArgumentException>(action);
 
-            Assert.Equal("Email is empty", exception.Message);
+            var expectedMessage = "Email is empty";
+            Assert.Equal(expectedMessage, exception.Message);
         }
 
         #endregion
