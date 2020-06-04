@@ -138,7 +138,7 @@ function ToYearPicker() {
     chartScale = ChartScale.ByYears;
 }
 
-let selectedRoutesPassengerByTimeChart = [];
+var selectedRoutesPassengerByTimeChart = [];
 
 $(document).ready(function () {
     var slimSelectPassengerByTime = new SlimSelect({
