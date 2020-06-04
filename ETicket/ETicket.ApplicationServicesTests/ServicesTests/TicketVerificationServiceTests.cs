@@ -83,8 +83,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
 
             fakeTransports = new List<Transport>
             {
-                new Transport {Id = 1, CarriersId = 1, Number = "TE1111ST", RouteId = fakeRoutes[0].Id, Route = fakeRoutes[0]}, //Normal transport
-                new Transport {Id = 2, CarriersId = 2, Number = "TE3333ST", RouteId = Int32.MaxValue} //With wrong route
+                new Transport {Id = 1, CarriersId = 1, VehicleNumber = "TE1111ST", RouteId = fakeRoutes[0].Id, Route = fakeRoutes[0]}, //Normal transport
+                new Transport {Id = 2, CarriersId = 2, VehicleNumber = "TE3333ST", RouteId = Int32.MaxValue} //With wrong route
             };
 
             fakeTicketVerifications = new List<TicketVerification>
