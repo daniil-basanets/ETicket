@@ -1,9 +1,5 @@
 ﻿using ETicket.ApplicationServices.DTOs;
-using ETicket.DataAccess.Domain.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ETicket.ApplicationServices.Services.Interfaces
 {
