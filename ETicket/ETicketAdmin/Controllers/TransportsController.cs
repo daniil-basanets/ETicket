@@ -4,6 +4,8 @@ using System;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using System.Reflection;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ETicket.Admin.Controllers
 {
@@ -13,13 +15,19 @@ namespace ETicket.Admin.Controllers
 
         private readonly ITransportService transportService;
 
+        private readonly IRouteService routeService;
+
+        private readonly ICarrierService carrierService;
+
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 
-        public TransportsController(ITransportService transportService)
+        public TransportsController(ITransportService transportService, IRouteService routeService, ICarrierService carrierService)
         {
             this.transportService = transportService;
+            this.routeService = routeService;
+            this.carrierService = carrierService;
         }
 
         // GET: Transport
@@ -77,9 +85,21 @@ namespace ETicket.Admin.Controllers
         // GET: Transport/Create
         public IActionResult Create()
         {
-            log.Info(nameof(Create));
+            log.Info(nameof(TransportsController.Create));
 
-            return View();
+            try
+            {
+                ViewData["RouteId"] = new SelectList(routeService.GetRoutes().Select(a => new { a.Id, a.Number }), "Id", "Number");
+                ViewData["CarrierId"] = new SelectList(carrierService.GetAll().Select(a => new { a.Id, a.Name }), "Id", "Name");
+
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         // POST: Transport/Create
@@ -103,15 +123,47 @@ namespace ETicket.Admin.Controllers
                     return BadRequest();
                 }
             }
+
             return View(transportDto);
         }
+
         // GET: Transport/Edit/5
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            log.Info(nameof(Edit));
+            log.Info(nameof(TransportsController.Edit));
 
-            return Details(id);
+            if (id == null)
+            {
+                log.Warn(nameof(TransportsController.Edit) + " id is null");
+
+                return NotFound();
+            }
+
+            try
+            {
+                var transport = transportService.Get(id.Value);
+
+                if (transport == null)
+                {
+                    log.Warn(nameof(TransportsController.Edit) + " transport is null");
+
+                    return NotFound();
+                }
+                else
+                {
+                    ViewData["RouteId"] = new SelectList(routeService.GetRoutes().Select(a => new { a.Id, a.Number }), "Id", "Number");
+                    ViewData["CarrierId"] = new SelectList(carrierService.GetAll().Select(a => new { a.Id, a.Name }), "Id", "Name");
+
+                    return Details(id);
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         // POST: Transport/Edit/5
@@ -132,6 +184,7 @@ namespace ETicket.Admin.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                
                     transportService.Update(transportDto);
 
                     return RedirectToAction(nameof(Index));
@@ -151,9 +204,36 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult Delete(int? id)
         {
-            log.Info(nameof(Delete));
+            log.Info(nameof(TransportsController.Delete));
 
-            return Details(id);
+            if (id == null)
+            {
+                log.Warn(nameof(TransportsController.Delete) + " id is null");
+
+                return NotFound();
+            }
+
+            try
+            {
+                var transport = transportService.Get(id.Value);
+
+                if (transport == null)
+                {
+                    log.Warn(nameof(TransportsController.Delete) + " transport is null");
+
+                    return NotFound();
+                }
+                else
+                {
+                    return View(transport);
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
         }
 
         // POST: Transport/Delete/5

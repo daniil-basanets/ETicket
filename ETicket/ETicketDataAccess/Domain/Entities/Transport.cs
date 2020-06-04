@@ -10,6 +10,7 @@ namespace ETicket.DataAccess.Domain.Entities
         public int Id { get; set; }
 
         [DisplayName("Vehicle number")]
+        [MaxLength(25)]
         [Required]
         public string VehicleNumber { get; set; }
         public int CarriersId { get; set; }

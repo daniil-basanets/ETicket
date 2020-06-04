@@ -1,5 +1,4 @@
-﻿@model IEnumerable<ETicket.DataAccess.Domain.Entities.Transport>
-
+﻿@model IEnumerable<ETicket.ApplicationServices.DTOs.TransportDto>
 @{
     ViewData["Title"] = "Index";
 }
@@ -24,7 +23,7 @@
                         @Html.DisplayNameFor(model => model.VehicleNumber)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Carriers)
+                        @Html.DisplayNameFor(model => model.Carrier)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Route)
@@ -41,7 +40,7 @@
                         @Html.DisplayNameFor(model => model.VehicleNumber)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Carriers)
+                        @Html.DisplayNameFor(model => model.Carrier)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Route)
@@ -60,10 +59,10 @@
                             @Html.DisplayFor(modelItem => item.VehicleNumber)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Carriers.Name)
+                            @Html.DisplayFor(modelItem => item.Carrier)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Route.Number)
+                            @Html.DisplayFor(modelItem => item.Route)
                         </td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>

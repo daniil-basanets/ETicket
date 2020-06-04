@@ -6,7 +6,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface ITransportService
     {
-        public IEnumerable<Transport> GetAll();
+        public IEnumerable<TransportDto> GetAll();
 
         public TransportDto Get(int id);
 
