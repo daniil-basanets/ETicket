@@ -110,9 +110,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         public void Create_Code_ShouldFailEmailIsEmpty(string email, string code)
         {
             var sc = new SecretCode { Id = 8, Code = code, Email = email };
-            Action action = () => secretCodeService.Add(sc);
 
-            var exception = Assert.Throws<ArgumentException>(action);
+            var exception = Assert.Throws<ArgumentException>(() => secretCodeService.Add(sc));
 
             var expectedMessage = "Email is empty";
             Assert.Equal(expectedMessage, exception.Message);
@@ -175,7 +174,8 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
 
             var actual = secretCodeService.Count(email);
 
-            Assert.Equal(2, actual);
+            var expectedCount = 2;
+            Assert.Equal(expectedCount, actual);
         }
 
         [Theory]
