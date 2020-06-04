@@ -40,13 +40,15 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod)
+        public IActionResult PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod, [FromQuery] int[] selectedRoutesId)
         {
-            log.Info(nameof(MetricsController.PassengersByTime));
+            log.Info(nameof(MetricsController.PassengersByPrivileges));
             
             try
             {
-                return Json(metricsService.PassengersByPrivileges(startPeriod, endPeriod));
+                var chartDtoPassengersByPrivileges = metricsService.PassengersByPrivileges(startPeriod, endPeriod, selectedRoutesId);
+                
+                return Json(chartDtoPassengersByPrivileges);
             }
             catch (Exception e)
             {
