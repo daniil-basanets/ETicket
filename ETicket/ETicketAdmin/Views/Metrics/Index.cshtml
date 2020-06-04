@@ -3,7 +3,10 @@
     ViewData["Title"] = "Index";
 }
 
+
+
 <!-- Custom fonts for this template-->
+<link href="~/css/slimselect.min.css" rel="stylesheet">
 <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
@@ -13,7 +16,7 @@
 <!-- Content Row -->
 <div class="row">
 
-    <div class="col-xl-8 col-lg-7">
+    <div class="col-xl-12 col-lg-12">
 
         <!-- Bar TicketsByTicketTypes -->
         <div class="card shadow mb-4">
@@ -31,31 +34,16 @@
             </div>
         </div>
 
-        <!-- Passengers by time -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Passenger by time</h6>        
-                From: <input type="date" id="passengers-by-time-start" class="form-control form-control-sm">
-                To: <input type="date" id="passengers-by-time-end" class="form-control form-control-sm">
-            </div>
-            <div class="card-body">
-                <div class="chart-area">
-                    <canvas id="passengers-by-time"></canvas>
-                </div>
-                <hr>
-                <span id="passengers-by-time-error" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Donut Chart -->
-    <div class="col-xl-4 col-lg-5">
+        <!-- Donut Chart -->
         <div class="card shadow mb-4">
             <!-- Card Header - Dropdown -->
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Passengers by privilege</h6>
                 From: <input type="date" id="passengers-by-privilege-start" class="form-control form-control-sm">
                 To: <input type="date" id="passengers-by-privilege-end" class="form-control form-control-sm">
+                <select id="routes-for-passengers-by-privilege" multiple>
+                    <option data-placeholder="true"></option>
+                </select>
             </div>
             <!-- Card Body -->
             <div class="card-body">
@@ -65,6 +53,45 @@
                 <hr>
                 <span id="passengers-by-privilege-error" class="text-danger"></span>
             </div>
+        </div>
+
+        <!-- Passengers by time -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Passenger by time</h6>
+                From: <input type="date" id="passengers-by-time-start" class="form-control form-control-sm">
+                To: <input type="date" id="passengers-by-time-end" class="form-control form-control-sm">
+                <select id="routes-for-passengers-by-time" multiple>
+                    <option data-placeholder="true"></option>
+                </select>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="passengers-by-time"></canvas>
+                </div>
+                <hr>
+                <span id="passengers-by-time-error" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- horizontalBar Chart -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Passengers by hours by routes</h6>
+                Date: <input type="date" id="passengers-by-hours-by-routes-date" class="form-control form-control-sm">
+                <select id="routes-for-passengers-by-hours-by-routes" multiple>
+                    <option data-placeholder="true"></option>
+                </select>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="chart-bar">
+                    <canvas id="passengers-by-hours-by-routes"></canvas>
+                </div>
+                <hr>
+                <span id="passengers-by-hours-by-routes-error" class="text-danger"></span>
+            </div>
+
         </div>
     </div>
 </div>
@@ -79,6 +106,21 @@
 <script src="~/vendor/chart.js/Chart.min.js"></script>
 
 <!-- Page level custom scripts -->
+<script src="~/js/chart/init-routes-list.js"></script>
 <script src="~/js/chart/chart-bar-tickets-by-types.js"></script>
 <script src="~/js/chart/chart-area-passengers-by-time.js"></script>
 <script src="~/js/chart/chart-pie-passengers-by-privileges.js"></script>
+<script src="~/js/chart/chart-passengers-by-hours-by-routes.js"></script>
+
+<script src="~/js/slimselect.min.js"></script>
+
+<script>
+    initRoutesList();
+</script>
+
+
+
+
+
+
+
