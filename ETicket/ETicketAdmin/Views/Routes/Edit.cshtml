@@ -32,6 +32,9 @@
                 <option data-placeholder="true"></option>
             </select>
 
+            <div id="station-hidden-items">
+                @*@Html.Hidden("SationsIds", null, new { @Id = "HSationsIds" })*@
+             </div>
 
             <div class="form-group">
                 <label class="control-label">Last Station</label>
@@ -58,11 +61,6 @@
 <script src="~/js/slimselect.min.js"></script>
 
 <script>
-
-    $("#submit").click(function () {
-
-    })
-
     var stationList = [];
 
     var selectStations = [];
@@ -74,7 +72,7 @@
         hideSelectedOption: true,
         placeholder: 'Select stations',
         data: stationList,
-
+        
         onChange: (info) => {
             if (info.length > selectStations.length) { //Add
                 for (let i = 0; i < info.length; i++) {
@@ -109,9 +107,20 @@
                     }
                 }
             }
-
+            SeveStationInHiddenItems(selectStations);
         }
     });
+
+    function SaveStationInHiddenItems(selectStations) {
+        $("#station-hidden-items").html("");
+        for (let i = 0; i < selectStations.length; i++) {
+            var input = document.createElement("input");
+            input.setAttribute('type', 'hidden');
+            input.setAttribute('name', 'StationIds');
+            input.setAttribute('value', selectStations[i]);
+            $("#station-hidden-items").append(input);
+        }
+    }
 
     var actionUrl = '/station/GetStationList';
     $.getJSON(actionUrl, function (response) {
