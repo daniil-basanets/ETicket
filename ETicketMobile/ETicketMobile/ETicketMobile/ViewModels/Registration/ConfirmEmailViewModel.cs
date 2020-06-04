@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
 using ETicketMobile.Business.Services.Interfaces;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
+using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.UserActions;
 using ETicketMobile.WebAccess.DTO;
@@ -22,11 +22,10 @@ namespace ETicketMobile.ViewModels.Registration
 
         private INavigationParameters navigationParameters;
 
+        private readonly ILocalTokenService localTokenService;
         private readonly IPageDialogService dialogService;
         private readonly ITokenService tokenService;
         private readonly IHttpService httpService;
-
-        private readonly ILocalApi localApi;
 
         private Timer timer;
 
@@ -81,20 +80,20 @@ namespace ETicketMobile.ViewModels.Registration
 
         public ConfirmEmailViewModel(
             INavigationService navigationService,
+            ILocalTokenService localTokenService,
             IPageDialogService dialogService,
             ITokenService tokenService,
-            IHttpService httpService,
-            ILocalApi localApi
+            IHttpService httpService
         ) : base(navigationService)
         {
+            this.localTokenService = localTokenService
+                ?? throw new ArgumentNullException(nameof(localTokenService));
+
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
             this.tokenService = tokenService
                 ?? throw new ArgumentNullException(nameof(tokenService));
-
-            this.localApi = localApi
-                ?? throw new ArgumentNullException(nameof(localApi));
 
             this.httpService = httpService
                 ?? throw new ArgumentNullException(nameof(httpService));
@@ -189,7 +188,7 @@ namespace ETicketMobile.ViewModels.Registration
                 IsDataLoad = true;
 
                 var token = await tokenService.GetTokenAsync(email, password);
-                await localApi.AddAsync(token);
+                await localTokenService.AddAsync(token);
             }
             catch (WebException)
             {

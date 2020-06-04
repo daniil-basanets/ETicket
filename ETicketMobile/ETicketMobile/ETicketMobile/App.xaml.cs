@@ -35,6 +35,7 @@ using ETicketMobile.Business.Validators;
 using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.Business.Services;
 using ETicketMobile.Business.Services.Interfaces;
+using ETicketMobile.DataAccess.Services;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace ETicketMobile
@@ -70,7 +71,8 @@ namespace ETicketMobile
             var userValidator = new UserValidator(httpService);
             containerRegistry.RegisterInstance<IUserValidator>(userValidator);
 
-            var tokenService = new TokenService(httpService, localApi);
+            var localTokenService = new LocalTokenService(localApi);
+            var tokenService = new TokenService(localTokenService, httpService);
             containerRegistry.RegisterInstance<ITokenService>(tokenService);
 
             containerRegistry.RegisterForNavigation<NavigationPage>();

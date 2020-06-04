@@ -8,7 +8,7 @@ using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Business.Validators;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
+using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.Views.Payment;
 using ETicketMobile.WebAccess;
 using ETicketMobile.WebAccess.DTO;
@@ -26,11 +26,10 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private INavigationParameters navigationParameters;
 
+        private readonly ILocalTokenService localTokenService;
         private readonly IPageDialogService dialogService;
         private readonly ITokenService tokenService;
         private readonly IHttpService httpService;
-
-        private readonly ILocalApi localApi;
 
         private IList<TicketType> tickets;
         private IList<AreaViewModel> areas;
@@ -104,12 +103,15 @@ namespace ETicketMobile.ViewModels.Tickets
 
         public TicketsViewModel(
             INavigationService navigationService,
+            ILocalTokenService localTokenService,
             IPageDialogService dialogService,
             ITokenService tokenService,
-            IHttpService httpService,
-            ILocalApi localApi
+            IHttpService httpService
         ) : base(navigationService)
         {
+            this.localTokenService = localTokenService
+                ?? throw new ArgumentNullException(nameof(localTokenService));
+
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
@@ -118,9 +120,6 @@ namespace ETicketMobile.ViewModels.Tickets
 
             this.httpService = httpService
                 ?? throw new ArgumentNullException(nameof(httpService));
-
-            this.localApi = localApi
-                ?? throw new ArgumentNullException(nameof(localApi));
         }
 
         public async override void OnAppearing()
@@ -129,7 +128,7 @@ namespace ETicketMobile.ViewModels.Tickets
 
             try
             {
-                accessToken = await tokenService.GetAccessTokenAsync();
+                accessToken = await localTokenService.GetAccessTokenAsync();
                 Tickets = await GetTicketsAsync();
                 Areas = await GetAreasAsync();
             }

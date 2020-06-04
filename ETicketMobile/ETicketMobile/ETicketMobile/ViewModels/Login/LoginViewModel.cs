@@ -5,7 +5,7 @@ using System.Windows.Input;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Business.Validators;
 using ETicketMobile.Data.Entities;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
+using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Registration;
@@ -21,11 +21,10 @@ namespace ETicketMobile.ViewModels.Login
     {
         #region Fields
 
+        private readonly ILocalTokenService localTokenService;
         private readonly IPageDialogService dialogService;
         private readonly ITokenService tokenService;
         private readonly IHttpService httpService;
-
-        private readonly ILocalApi localApi;
 
         private ICommand navigateToRegistrationView;
         private ICommand navigateToForgetPasswordView;
@@ -86,14 +85,14 @@ namespace ETicketMobile.ViewModels.Login
 
         public LoginViewModel(
             INavigationService navigationService,
+            ILocalTokenService localTokenService,
             IPageDialogService dialogService,
             ITokenService tokenService,
-            IHttpService httpService,
-            ILocalApi localApi
+            IHttpService httpService
         ) : base(navigationService)
         {
-            this.localApi = localApi
-                ?? throw new ArgumentNullException(nameof(localApi));
+            this.localTokenService = localTokenService
+                ?? throw new ArgumentNullException(nameof(localTokenService));
 
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
@@ -164,7 +163,7 @@ namespace ETicketMobile.ViewModels.Login
                 return;
             }
 
-            await localApi.AddAsync(token);
+            await localTokenService.AddAsync(token);
 
             var navigationParameters = new NavigationParameters { { "email", email } };
             await NavigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);

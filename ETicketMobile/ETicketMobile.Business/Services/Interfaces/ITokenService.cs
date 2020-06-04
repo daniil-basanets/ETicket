@@ -7,8 +7,6 @@ namespace ETicketMobile.Business.Services.Interfaces
     {
         Task<Token> GetTokenAsync(string email, string password);
 
-        Task<string> GetAccessTokenAsync();
-
         Task<string> RefreshTokenAsync();
     }
 }
