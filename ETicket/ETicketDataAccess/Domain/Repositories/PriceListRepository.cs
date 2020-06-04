@@ -1,4 +1,5 @@
 ﻿using ETicket.DataAccess.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using ETicket.DataAccess.Domain.Interfaces;
 
@@ -34,7 +35,8 @@ namespace ETicket.DataAccess.Domain.Repositories
 
         public PriceList Get(int id)
         {
-            return context.PriceList.FirstOrDefault(p => p.Id == id);
+            return context.PriceList.Include(p => p.Area)
+                .FirstOrDefault(p => p.Id == id);
         }
 
         public IQueryable<PriceList> GetAll()
