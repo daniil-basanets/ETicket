@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ETicket.ApplicationServices.Enums;
+using System.Text;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -192,6 +193,60 @@ namespace ETicket.ApplicationServices.Services
             }
 
             return chartTableDto;
+        }
+
+        public ChartDto PassengersByDaysOfWeek(DateTime startPeriod, DateTime endPeriod)
+        {
+            //This array is needed to establish the order of days on the chart.
+            //And to fill in the gaps, if there were no passengers for a certain day 
+            var daysOfWeek = new DayOfWeek[] 
+            { 
+                DayOfWeek.Monday
+                , DayOfWeek.Tuesday
+                , DayOfWeek.Wednesday
+                , DayOfWeek.Thursday
+                , DayOfWeek.Friday
+                , DayOfWeek.Saturday
+                , DayOfWeek.Sunday          
+            };
+
+            StringBuilder errorMessageBuilder = new StringBuilder();
+
+            if (startPeriod.CompareTo(endPeriod) == 1)
+            {
+                errorMessageBuilder.AppendLine(EndLessStartError);
+            }
+            if((endPeriod - startPeriod).Days < 7)
+            {
+                errorMessageBuilder.AppendLine("One week - minimum time period;");
+            }
+
+            var chartData = new List<string>();
+
+            if (errorMessageBuilder.Length == 0)
+            {
+                DateTime nearestStartSunday = startPeriod;
+                while(nearestStartSunday.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    nearestStartSunday = nearestStartSunday.AddDays(-1);
+                }
+                    
+                var passengerTraffic = uow.TicketVerifications.GetAll()
+                    .Where(d => d.VerificationUTCDate.Date >= startPeriod.Date && d.VerificationUTCDate.Date <= endPeriod.Date && d.IsVerified)
+                    .GroupBy(p => (DayOfWeek)(((int)EF.Functions.DateDiffDay((DateTime?)nearestStartSunday, (DateTime?)p.VerificationUTCDate)) % 7))
+                    .OrderBy(g => g.Key)
+                    .Select(g => new { DayOfWeek = g.Key, Count = g.Count() })
+                    .ToDictionary(k => k.DayOfWeek, k => k.Count);
+
+                chartData = daysOfWeek.Select(d => (passengerTraffic.ContainsKey(d) ? passengerTraffic[d] : 0).ToString()).ToList();
+            }
+
+            return new ChartDto()
+            {
+                Labels = daysOfWeek.Select(t => t.ToString()).ToList(),
+                Data = chartData,
+                ErrorMessage = errorMessageBuilder.ToString()
+            };
         }
     }
 }

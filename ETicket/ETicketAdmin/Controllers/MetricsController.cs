@@ -94,6 +94,24 @@ namespace ETicket.Admin.Controllers
             }
         }
 
+        public IActionResult GetPassengersByDaysOfWeek(DateTime startPeriod, DateTime endPeriod)
+        {
+            log.Info(nameof(MetricsController.GetPassengersByDaysOfWeek));
+
+            try
+            {
+                ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByDaysOfWeek(startPeriod, endPeriod);
+
+                return Json(chartDtoTicketsByTicketTypes);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
         public IActionResult GetPassengersByHoursByRoutes(DateTime selectedDate, [FromQuery] int[] selectedRoutesId)
         {
             log.Info(nameof(MetricsController.GetPassengersByHoursByRoutes));
