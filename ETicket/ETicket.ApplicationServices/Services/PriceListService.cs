@@ -30,15 +30,14 @@ namespace ETicket.ApplicationServices.Services
             return mapper.Map<IQueryable<PriceList>, IEnumerable<PriceListDto>>(priceLists).ToList();
         }
 
-        public PriceList Get(int id)
+        public PriceListDto Get(int id)
         {
-            return uow.PriceList.Get(id);
+            return mapper.Map<PriceList, PriceListDto>(uow.PriceList.Get(id));
         }
 
         public void Create(PriceListDto priceListDto)
         {
             var priceList = mapper.Map<PriceListDto, PriceList>(priceListDto);
-            priceList.StartDate = DateTime.UtcNow;
             uow.PriceList.Create(priceList);
             uow.Save();
         }
