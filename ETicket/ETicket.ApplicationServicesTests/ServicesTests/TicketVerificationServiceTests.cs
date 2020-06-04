@@ -284,12 +284,56 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
+        public void VerifyTicket_ExpiredTicket_CountShouldIncrease()
+        {
+            var expected = fakeTicketVerifications.Count + 1;
+
+            ticketVerificationService.VerifyTicket(fakeTickets[1].Id, fakeTransports[0].Id, (float)fakeStations[0].Longitude, (float)fakeStations[0].Latitude);
+
+            var actual = fakeTicketVerifications.Count;
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void VerifyTicket_ExpiredTicket_IsVerifyFalse()
+        {
+            ticketVerificationService.VerifyTicket(fakeTickets[1].Id, fakeTransports[0].Id, (float)fakeStations[0].Longitude, (float)fakeStations[0].Latitude);
+
+            var actual = fakeTicketVerifications.Last().IsVerified;
+
+            Assert.False(actual);
+        }
+
+        [Fact]
         public void VerifyTicket_TicketWithWrongZone_TicketDoesNotContainTheZoneErrorMessage()
         {
             var expected = "Ticket does not contain the zone";
             var actual = ticketVerificationService.VerifyTicket(fakeTickets[0].Id, fakeTransports[0].Id, (float)fakeStations[1].Longitude, (float)fakeStations[1].Latitude).ErrorMessage;
 
             Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void VerifyTicket_TicketWithWrongZone_CountShouldIncrease()
+        {
+            var expected = fakeTicketVerifications.Count + 1;
+
+            ticketVerificationService.VerifyTicket(fakeTickets[0].Id, fakeTransports[0].Id, (float)fakeStations[1].Longitude, (float)fakeStations[1].Latitude);
+
+            var actual = fakeTicketVerifications.Count;
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void VerifyTicket_TicketWithWrongZone_IsVerifyFalse()
+        {
+            ticketVerificationService.VerifyTicket(fakeTickets[0].Id, fakeTransports[0].Id, (float)fakeStations[1].Longitude, (float)fakeStations[1].Latitude);
+
+            var actual = fakeTicketVerifications.Last().IsVerified;
+
+            Assert.False(actual);
         }
 
         [Fact]
@@ -302,6 +346,16 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
             var actual = fakeTicketVerifications.Count;
 
             Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void VerifyTicket_AllOk_IsVerifyFalse()
+        {
+            ticketVerificationService.VerifyTicket(fakeTickets[0].Id, fakeTransports[0].Id, (float)fakeStations[0].Longitude, (float)fakeStations[0].Longitude);
+
+            var actual = fakeTicketVerifications.Last().IsVerified;
+
+            Assert.True(actual);
         }
 
         [Fact]
