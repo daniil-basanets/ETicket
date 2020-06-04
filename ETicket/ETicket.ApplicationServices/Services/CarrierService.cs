@@ -36,9 +36,11 @@ namespace ETicket.ApplicationServices.Services
             uow.Save();
         }
 
-        public IEnumerable<Carrier> GetAll()
+        public IEnumerable<CarrierDto> GetAll()
         {
-            return uow.Carriers.GetAll().ToList();
+            var carriers = uow.Carriers.GetAll();
+            
+            return mapper.Map<IQueryable<Carrier>, IEnumerable<CarrierDto>>(carriers).ToList();
         }
 
         public CarrierDto Get(int id)

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using ETicket.ApplicationServices.Services.PagingServices.Models;
 
 namespace ETicket.ApplicationServices.Services.DataTable
 {
@@ -16,7 +17,7 @@ namespace ETicket.ApplicationServices.Services.DataTable
             this.service = service;
         }
 
-        public object GetDataTablePage(DataTablePagingInfo pagingInfo)
+        public DataTablePage<T> GetDataTablePage(DataTablePagingInfo pagingInfo)
         {
             var data = service.GetAll();
             var drawStep = pagingInfo.DrawCounter;
@@ -80,14 +81,14 @@ namespace ETicket.ApplicationServices.Services.DataTable
             return expression;
         }
 
-        private object GetJsonDataTable(IQueryable<T> data, int drawCounter, int countRecords, int countFiltered)
+        private DataTablePage<T> GetJsonDataTable(IQueryable<T> data, int drawCounter, int countRecords, int countFiltered)
         {
-            return new
+            return new DataTablePage<T>
             {
-                draw = ++drawCounter,
-                recordsTotal = countRecords,
-                recordsFiltered = countFiltered,
-                data = data
+                DrawCounter = ++drawCounter,
+                CountRecords = countRecords,
+                CountFiltered = countFiltered,
+                PageData = data
             };
         }
 

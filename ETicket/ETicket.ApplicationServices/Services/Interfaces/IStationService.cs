@@ -8,7 +8,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface IStationService
     {
-        public IEnumerable<Station> GetAll();
+        public IEnumerable<StationDto> GetAll();
         public StationDto Get(int id);
 
         public void Create(StationDto stationDto);

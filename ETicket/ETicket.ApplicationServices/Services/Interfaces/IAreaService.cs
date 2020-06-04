@@ -6,7 +6,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface IAreaService
     {
-        public IEnumerable<Area> GetAreas();
+        public IEnumerable<AreaDto> GetAreas();
         
         public AreaDto GetAreaById(int id);
 

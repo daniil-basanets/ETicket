@@ -18,7 +18,7 @@ namespace ETicketMobile.WebAccess.DTO
         [JsonProperty("expirationUTCDate")]
         public DateTime? ExpiredAt { get; set; }
 
-        [JsonProperty("referenceNumber")]
+        [JsonProperty("transactionRRN")]
         public string ReferenceNumber { get; set; }
 
         [JsonProperty("ticketArea")]

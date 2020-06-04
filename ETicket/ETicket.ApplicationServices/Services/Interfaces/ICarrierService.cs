@@ -8,7 +8,7 @@ namespace ETicket.ApplicationServices.Services.Interfaces
 {
     public interface ICarrierService
     {
-        public IEnumerable<Carrier> GetAll();
+        public IEnumerable<CarrierDto> GetAll();
 
         public CarrierDto Get(int id);
 

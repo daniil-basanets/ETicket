@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Reflection;
-using ETicket.ApplicationServices.Charts.DTOs;
+using ETicket.ApplicationServices.DTOs.Charts;
 using ETicket.ApplicationServices.Enums;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ETicket.Admin.Controllers
 {
-    public class MetricsController : Controller
+    [Authorize(Roles = "Admin, SuperUser")]
+    public class MetricsController : BaseMvcController
     {
         #region Private members
 
@@ -77,10 +79,28 @@ namespace ETicket.Admin.Controllers
         public IActionResult GetTicketsByTicketTypes(DateTime startPeriod, DateTime endPeriod)
         {
             log.Info(nameof(MetricsController.GetTicketsByTicketTypes));
-
+        
             try
             {
                 ChartDto chartDtoTicketsByTicketTypes = metricsService.TicketsByTicketTypes(startPeriod, endPeriod);
+
+                return Json(chartDtoTicketsByTicketTypes);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        public IActionResult GetPassengersByHoursByRoutes(DateTime selectedDate, [FromQuery] int[] selectedRoutesId)
+        {
+            log.Info(nameof(MetricsController.GetPassengersByHoursByRoutes));
+
+            try
+            {
+                ChartTableDto chartDtoTicketsByTicketTypes = metricsService.PassengersByHoursByRoutes(selectedDate, selectedRoutesId);
 
                 return Json(chartDtoTicketsByTicketTypes);
             }

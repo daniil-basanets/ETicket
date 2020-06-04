@@ -30,7 +30,7 @@ namespace ETicket.DataAccess.Domain.Interfaces
 
         IRepository<Carrier,int> Carriers { get; }
 
-        SecretCodeRepository SecretCodes { get; }
+        ISecretCodeRepository SecretCodes { get; }
         
         IRepository<Area,int> Areas { get; }
         

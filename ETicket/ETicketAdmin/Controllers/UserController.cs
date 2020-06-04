@@ -7,9 +7,7 @@ using System.Reflection;
 
 using ETicket.Admin.Models.DataTables;
 using ETicket.ApplicationServices.DTOs;
-using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.Admin.Controllers
 {
@@ -18,7 +16,6 @@ namespace ETicket.Admin.Controllers
     {
         #region Private members
 
-        private readonly IDataTableService<User> dataTableService;
         private readonly IUserService userService;
         private readonly IPrivilegeService privilegeService;
         private readonly IDocumentService documentService;
@@ -27,13 +24,12 @@ namespace ETicket.Admin.Controllers
 
         #endregion
 
-        public UserController(IPrivilegeService PService, IUserService UService, IDocumentTypesService DTService, IDocumentService DService, IDataTableService<User> dataTableService)
+        public UserController(IPrivilegeService PService, IUserService UService, IDocumentTypesService DTService, IDocumentService DService)
         {
             userService = UService;
             privilegeService = PService;
             documentService = DService;
             documentTypeService = DTService;
-            this.dataTableService = dataTableService;
         }
 
         [HttpGet]
@@ -58,7 +54,7 @@ namespace ETicket.Admin.Controllers
         [HttpGet]
         public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
         {
-            return Json(dataTableService.GetDataTablePage(pagingInfo));
+            return Json(userService.GetUsersPage(pagingInfo));
         }
 
         [HttpGet]

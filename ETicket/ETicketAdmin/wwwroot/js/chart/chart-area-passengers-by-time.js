@@ -157,7 +157,7 @@ function refreshChart() {
     $.getJSON(actionUrl, function (response) {
         if (response != null) {
             chartData = response;
-            var maxY = Math.max.apply(null, chartData.data);
+            var maxY = Math.max.apply(null, chartData.Data);
 
             var ctx = document.getElementById("passengers-by-time");
 
@@ -165,8 +165,8 @@ function refreshChart() {
                 passengerByTimeChart.destroy();
             }
 
-            if (chartData.errorMessage) {
-                $("#passengers-by-time-error").html(chartData.errorMessage);
+            if (chartData.ErrorMessage) {
+                $("#passengers-by-time-error").html(chartData.ErrorMessage);
             }
             else {
                 $("#passengers-by-time-error").html("");
@@ -175,7 +175,7 @@ function refreshChart() {
             passengerByTimeChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: chartData.labels,
+                    labels: chartData.Labels,
                     datasets: [{
                         label: "passengers",
                         lineTension: 0.3,
@@ -189,7 +189,7 @@ function refreshChart() {
                         pointHoverBorderColor: "rgba(78, 115, 223, 1)",
                         pointHitRadius: 10,
                         pointBorderWidth: 2,
-                        data: chartData.data,
+                        data: chartData.Data,
                     }],
                 },
                 options: {
