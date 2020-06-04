@@ -10,7 +10,7 @@ using System.Reflection;
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
-    public class StationController : Controller
+    public class StationController : BaseMvcController
     {
         #region Private members
 
@@ -247,6 +247,25 @@ namespace ETicket.Admin.Controllers
                 stationService.Delete(id);
 
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetStationList()
+        {
+            log.Info(nameof(StationController.GetStationList));
+
+            try
+            {
+                var stations = stationService.GetAll();
+
+                return Json(stations);
             }
             catch (Exception e)
             {

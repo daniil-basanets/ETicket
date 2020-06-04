@@ -267,5 +267,7 @@ namespace ETicket.Admin.Controllers
                 return BadRequest();
             }
         }
+
+
     }
 }
