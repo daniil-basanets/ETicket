@@ -63,7 +63,7 @@ function refreshPassengersByDayOfWeekChart() {
     $.getJSON(actionUrl, function (response) {
         if (response != null) {
             chartData = response;
-            var maxY = Math.max.apply(null, chartData.data);
+            var maxY = Math.max.apply(null, chartData.Data);
 
             var ctx = document.getElementById("passengers-by-days-of-week");
 
@@ -71,8 +71,8 @@ function refreshPassengersByDayOfWeekChart() {
                 passengersByDayOfWeekChart.destroy();
             }
 
-            if (chartData.errorMessage) {
-                $("#passengers-by-days-of-week-error").html(chartData.errorMessage);
+            if (chartData.ErrorMessage) {
+                $("#passengers-by-days-of-week-error").html(chartData.ErrorMessage);
             }
             else {
                 $("#passengers-by-days-of-week-error").html("");
@@ -81,7 +81,7 @@ function refreshPassengersByDayOfWeekChart() {
             passengersByDayOfWeekChart = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: chartData.labels,
+                    labels: chartData.Labels,
                     datasets: [{
                         label: "passengers",
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
@@ -94,10 +94,11 @@ function refreshPassengersByDayOfWeekChart() {
                         pointHoverBorderColor: "rgba(78, 115, 223, 1)",
                         pointHitRadius: 10,
                         pointBorderWidth: 2,
-                        data: chartData.data,
+                        data: chartData.Data,
                     }],
                 },
                 options: {
+                    maintainAspectRatio: false,
                     tooltips: {
                         backgroundColor: "rgb(255,255,255)",
                         bodyFontColor: "#858796",
