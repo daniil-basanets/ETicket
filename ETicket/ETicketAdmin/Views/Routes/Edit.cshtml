@@ -32,6 +32,7 @@
                 <option data-placeholder="true"></option>
             </select>
 
+            @Html.Hidden("StationIds", null, new { @id = "StationIdsArray" });
 
             <div class="form-group">
                 <label class="control-label">Last Station</label>
@@ -58,10 +59,9 @@
 <script src="~/js/slimselect.min.js"></script>
 
 <script>
-
-    $("#submit").click(function () {
-
-    })
+    //$("#submit").click(function () {
+        
+    //})
 
     var stationList = [];
 
@@ -109,7 +109,12 @@
                     }
                 }
             }
-
+            var selectStationsParams = "";
+            for (let i = 0; i < selectStations.length; i++) {
+                selectStationsParams = selectStationsParams + selectStations[i]  + "&";
+            }
+            selectStationsParams = selectStationsParams.slice(0, -1);
+            $("#StationIdsArray").val(selectStationsParams);
         }
     });
 

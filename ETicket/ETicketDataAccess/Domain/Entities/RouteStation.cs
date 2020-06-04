@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ETicket.DataAccess.Domain.Entities
 {
@@ -13,5 +15,9 @@ namespace ETicket.DataAccess.Domain.Entities
 
         [ForeignKey("StationId")]
         public Station Station { get; set; }
+
+        [Required]
+        [DisplayName("Station Order Number")]
+        public int StationOrderNumber { get; set; }
     }
 }

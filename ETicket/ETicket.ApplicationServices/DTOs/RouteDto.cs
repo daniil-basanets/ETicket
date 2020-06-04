@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace ETicket.ApplicationServices.DTOs
 {
@@ -20,5 +21,13 @@ namespace ETicket.ApplicationServices.DTOs
 
         [DisplayName("Last station")]
         public int LastStationId { get; set; }
+
+        [DisplayName("Stations")]
+        public List<int> StationIds { get; set; }
+
+        public RouteDto()
+        {
+            StationIds = new List<int>();
+        }
     }
 }
