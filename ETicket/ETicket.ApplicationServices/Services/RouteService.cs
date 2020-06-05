@@ -42,19 +42,17 @@ namespace ETicket.ApplicationServices.Services
 
         public void Update(RouteDto routeDto)
         {
-            //var routeService = mapper.Map<RouteDto, Route>(routeDto);
-            //unitOfWork.Routes.Update(routeService);
-            //unitOfWork.Save();
-
             Route routeToUpdate = unitOfWork.Routes.Get(routeDto.Id);
 
             mapper.Map(routeDto, routeToUpdate);
                         
             unitOfWork.RouteStation.Delete(routeToUpdate.Id);
-            
+
+            int iter = 1;
+
             foreach (var stationId in routeDto.StationIds)
             {
-                unitOfWork.RouteStation.Create(new RouteStation() { RouteId = routeToUpdate.Id, StationId = stationId });
+                unitOfWork.RouteStation.Create(new RouteStation() { RouteId = routeToUpdate.Id, StationId = stationId, StationOrderNumber = iter++}); 
             }
 
             unitOfWork.Save();

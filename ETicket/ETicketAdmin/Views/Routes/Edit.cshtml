@@ -22,22 +22,17 @@
                 <span asp-validation-for="Number" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">First Station</label>
                 <label asp-for="FirstStationName" class="control-label"></label>
                 <select asp-for="FirstStationId" class="form-control" asp-items="ViewBag.StationId"></select>
                 <span asp-validation-for="FirstStationName" class="text-danger"></span>
             </div>
-
             <select id="stations-for-the-route" multiple>
                 <option data-placeholder="true"></option>
             </select>
-
             <div id="station-hidden-items">
-                @*@Html.Hidden("SationsIds", null, new { @Id = "HSationsIds" })*@
-             </div>
-
-            <div class="form-group">
-                <label class="control-label">Last Station</label>
+                @Html.Hidden("StationsIds", null, new { @Id = "HStationsIds" })
+            </div>
+            <div class="form-group">                
                 <label asp-for="LastStationName" class="control-label"></label>
                 <select asp-for="LastStationId" class="form-control" asp-items="ViewBag.StationId"></select>
                 <span asp-validation-for="LastStationName" class="text-danger"></span>
@@ -59,78 +54,23 @@
 <!-- Core plugin JavaScript-->
 <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
 <script src="~/js/slimselect.min.js"></script>
+<script src="~/js/routeSlimSelect/edit-slim-select.js"></script>
 
 <script>
-    var stationList = [];
+    var actionUrl = '/station/GetStationList';
 
-    var selectStations = [];
-
-    var slimSelectStationForTheRoute = new SlimSelect({
-        select: '#stations-for-the-route',
-        selected: true,
-        searchingText: 'Searching...', // Optional - Will show during ajax request
-        hideSelectedOption: true,
-        placeholder: 'Select stations',
-        data: stationList,
-        
-        onChange: (info) => {
-            if (info.length > selectStations.length) { //Add
-                for (let i = 0; i < info.length; i++) {
-                    if (!selectStations.includes(info[i].value)) {
-                        selectStations.push(info[i].value);
-                    }
-                }
-            }
-            else {
-
-                if (info.length == 0) {
-                    selectStations = [];
-                }
-
-                for (let i = 0; i < selectStations.length; i++) { //Delete
-
-                    var idForDelete = -1;
-
-                    for (let j = 0; j < info.length; j++) {
-                        if (selectStations[i] == info[j].value) {
-                            idForDelete = -1;
-                            break;
-                        }
-                        else {
-                            idForDelete = i;
-                        }
-
-                    }
-
-                    if (idForDelete != -1) {
-                        selectStations.splice(i, 1);
-                    }
-                }
-            }
-            SaveStationInHiddenItems(selectStations);
-        }
-    });
-
-    function SaveStationInHiddenItems(selectStations) {
-        $("#station-hidden-items").html("");
-        for (let i = 0; i < selectStations.length; i++) {
-            var input = document.createElement("input");
-            input.setAttribute('type', 'hidden');
-            input.setAttribute('name', 'StationIds');
-            input.setAttribute('value', selectStations[i]);
-            $("#station-hidden-items").append(input);
+    $.getJSON(actionUrl, function (response) {
+    if (response != null) {
+        for (let i = 0; i < response.length; i++) {
+            stationList.push({ value: response[i].Id, text: response[i].Name })
         }
     }
 
-    var actionUrl = '/station/GetStationList';
-    $.getJSON(actionUrl, function (response) {
-        if (response != null) {
-            for (let i = 0; i < response.length; i++) {
-                stationList.push({ value: response[i].Id, text: response[i].Name })
-            }
-        }
+    slimSelectStationForTheRoute.setData(stationList);
 
-        slimSelectStationForTheRoute.setData(stationList);
+    SetSlimSelectSelectedItems(@Json.Serialize(Model.StationIds));
     });
-
 </script>
+
+
+ 

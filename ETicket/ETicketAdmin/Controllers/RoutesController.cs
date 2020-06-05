@@ -141,6 +141,8 @@ namespace ETicket.Admin.Controllers
             {
                 var route = routeService.GetRouteById(id.Value);
                                               
+
+
                 if (route == null)
                 {
                     log.Warn(nameof(RoutesController.Edit) + " route is null");
@@ -267,7 +269,5 @@ namespace ETicket.Admin.Controllers
                 return BadRequest();
             }
         }
-
-
     }
 }
