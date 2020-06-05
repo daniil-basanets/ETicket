@@ -26,9 +26,14 @@ namespace ETicket.DataAccess.Domain.Repositories
             context.RouteStations.Add(item);
         }
 
-        public void Delete(int id)
+        public void Delete(int routeId)
         {
-            throw new NotImplementedException();
+            var routeStationList = context.RouteStations.Where(m => m.RouteId == routeId);
+
+            if (routeStationList != null)
+            {
+                context.RemoveRange(routeStationList);
+            }
         }
 
         public void DeleteRouteFromStations(int routeId)

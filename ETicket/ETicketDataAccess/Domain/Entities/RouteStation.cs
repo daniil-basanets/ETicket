@@ -16,8 +16,8 @@ namespace ETicket.DataAccess.Domain.Entities
         [ForeignKey("StationId")]
         public Station Station { get; set; }
 
-        [Required]
-        [DisplayName("Station Order Number")]
-        public int StationOrderNumber { get; set; }
+        //[Required]
+        //[DisplayName("Station Order Number")]
+        //public int StationOrderNumber { get; set; }
     }
 }

@@ -42,8 +42,25 @@ namespace ETicket.ApplicationServices.Services
 
         public void Update(RouteDto routeDto)
         {
-            var routeService = mapper.Map<RouteDto, Route>(routeDto);
-            unitOfWork.Routes.Update(routeService);
+            //var routeService = mapper.Map<RouteDto, Route>(routeDto);
+            //unitOfWork.Routes.Update(routeService);
+            //unitOfWork.Save();
+
+            Route routeToUpdate = unitOfWork.Routes.Get(routeDto.Id);
+
+            mapper.Map(routeDto, routeToUpdate);
+                        
+            unitOfWork.RouteStation.Delete(routeToUpdate.Id);
+            
+            foreach (var stationId in routeDto.StationIds)
+            {
+                unitOfWork.RouteStation.Create(new RouteStation() { RouteId = routeToUpdate.Id, StationId = stationId });
+            }
+
+            unitOfWork.Save();
+
+            unitOfWork.Routes.Update(routeToUpdate);
+
             unitOfWork.Save();
         }
 
