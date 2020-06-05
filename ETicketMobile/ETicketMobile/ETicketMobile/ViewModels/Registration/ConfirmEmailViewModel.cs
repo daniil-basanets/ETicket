@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.Resources;
@@ -22,6 +23,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         private INavigationParameters navigationParameters;
 
+        private readonly IEmailActivationService emailActivationService;
         private readonly ILocalTokenService localTokenService;
         private readonly IPageDialogService dialogService;
         private readonly ITokenService tokenService;
@@ -79,6 +81,7 @@ namespace ETicketMobile.ViewModels.Registration
         #endregion
 
         public ConfirmEmailViewModel(
+            IEmailActivationService emailActivationService,
             INavigationService navigationService,
             ILocalTokenService localTokenService,
             IPageDialogService dialogService,
@@ -86,6 +89,9 @@ namespace ETicketMobile.ViewModels.Registration
             IHttpService httpService
         ) : base(navigationService)
         {
+            this.emailActivationService = emailActivationService
+                ?? throw new ArgumentNullException(nameof(emailActivationService));
+
             this.localTokenService = localTokenService
                 ?? throw new ArgumentNullException(nameof(localTokenService));
 
@@ -153,19 +159,14 @@ namespace ETicketMobile.ViewModels.Registration
 
             try
             {
-                await RequestActivationCodeAsync(email);
+                await emailActivationService.RequestActivationCodeAsync(email);
             }
-            catch (WebException)
+            catch (EmailActivationException)
             {
                 await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
                 return;
             }
-        }
-
-        private async Task RequestActivationCodeAsync(string email)
-        {
-            await httpService.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
 
         private async void OnNavigateToSignInView(string code)
@@ -190,7 +191,7 @@ namespace ETicketMobile.ViewModels.Registration
                 var token = await tokenService.GetTokenAsync(email, password);
                 await localTokenService.AddAsync(token);
             }
-            catch (WebException)
+            catch (EmailActivationException)
             {
                 IsDataLoad = false;
 
@@ -206,8 +207,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         private async Task<bool> ConfirmAndCreateUserAsync(string code)
         {
-            var confirmEmailIsSucceeded = await ConfirmEmailAsync(code);
-            if (!confirmEmailIsSucceeded)
+            var emailActivated = await emailActivationService.ActivateEmailAsync(email, code);
+            if (!emailActivated)
             {
                 ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
 
@@ -234,22 +235,6 @@ namespace ETicketMobile.ViewModels.Registration
         }
 
         #endregion
-
-        private async Task<bool> ConfirmEmailAsync(string activationCode)
-        {
-            var confirmEmailRequestDto = new ConfirmEmailRequestDto
-            {
-                Email = navigationParameters.GetValue<string>("email"),
-                ActivationCode = activationCode
-            };
-
-            var response = await httpService.PostAsync<ConfirmEmailRequestDto, ConfirmEmailResponseDto>(
-                AuthorizeEndpoint.CheckCode,
-                confirmEmailRequestDto
-            );
-
-            return response.Succeeded;
-        }
 
         private UserSignUpRequestDto CreateUserSignUpRequest()
         {
