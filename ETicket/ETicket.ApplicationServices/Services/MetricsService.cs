@@ -297,5 +297,69 @@ namespace ETicket.ApplicationServices.Services
             };
         }
 
+        public MultiLineChartDto PassengersByDaysOfWeek(DateTime startPeriod, DateTime endPeriod, int[] selectedRoutesId)
+        {
+            //This array is needed to establish the order of days on the chart.
+            //And to fill in the gaps, if there were no passengers for a certain day 
+            var daysOfWeek = new DayOfWeek[]
+            {
+                DayOfWeek.Monday
+                , DayOfWeek.Tuesday
+                , DayOfWeek.Wednesday
+                , DayOfWeek.Thursday
+                , DayOfWeek.Friday
+                , DayOfWeek.Saturday
+                , DayOfWeek.Sunday
+            };
+
+            StringBuilder errorMessageBuilder = new StringBuilder();
+
+            if (startPeriod.CompareTo(endPeriod) == 1)
+            {
+                errorMessageBuilder.AppendLine(EndLessStartError);
+            }
+            if ((endPeriod - startPeriod).Days < 7)
+            {
+                errorMessageBuilder.AppendLine("One week - minimum time period;");
+            }
+
+            var multiLineChartDto = new MultiLineChartDto();
+
+            if (errorMessageBuilder.Length == 0)
+            {
+                DateTime nearestStartSunday = startPeriod;
+                while (nearestStartSunday.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    nearestStartSunday = nearestStartSunday.AddDays(-1);
+                }
+
+                var passengerTraffic = uow.TicketVerifications.GetAll()
+                    .Where(d => d.VerificationUTCDate.Date >= startPeriod.Date && d.VerificationUTCDate.Date <= endPeriod.Date && d.IsVerified
+                            && (selectedRoutesId.Length == 0 || selectedRoutesId.Contains(d.Transport.RouteId)))
+                    .GroupBy(p => new { p.Transport.Route.Number, DayOfWeek = (((int)EF.Functions.DateDiffDay((DateTime?)nearestStartSunday, (DateTime?)p.VerificationUTCDate)) % 7) })
+                    .Select(g => new { g.Key.Number, g.Key.DayOfWeek, PassengersCount = g.Count() })
+                    .OrderBy(t => t.Number)
+                    .ToList();
+
+                var transportNumbers = passengerTraffic.Select(t => t.Number).Distinct().ToList();
+                var chartData = new string[transportNumbers.Count, daysOfWeek.Length];
+
+                for (int i = 0; i < transportNumbers.Count; i++)
+                {
+                    for (int j = 0; j < daysOfWeek.Length; j++)
+                    {
+                        chartData[i, j] = (passengerTraffic.Where(t => t.Number == transportNumbers[i] && t.DayOfWeek == j).Count() != 0 ? passengerTraffic.Where(t => t.Number == transportNumbers[i] && t.DayOfWeek == j).First().PassengersCount : 0).ToString();
+                    }
+                }
+
+                multiLineChartDto.Labels = daysOfWeek.Select(t => t.ToString()).ToList();
+                multiLineChartDto.Data = chartData;
+                multiLineChartDto.LineLable = transportNumbers;
+            }
+
+            multiLineChartDto.ErrorMessage = errorMessageBuilder.ToString();
+
+            return multiLineChartDto;
+        }
     }
 }
