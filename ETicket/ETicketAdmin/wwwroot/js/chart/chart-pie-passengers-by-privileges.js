@@ -60,6 +60,11 @@ function refreshPassengersByPrivilege() {
     var start = new Date($('#passengers-by-privilege-start').val());
     var end = new Date($('#passengers-by-privilege-end').val());
 
+    var selectedRoutesUrl = "";
+    for (var key in selectedRoutesPassengersByPrivilegeChart) {
+        selectedRoutesUrl += "selectedRoutesId=" + selectedRoutesPassengersByPrivilegeChart[key] + "&";
+    }
+
     if (isNaN(start.valueOf()) || isNaN(end.valueOf())) {
         return;
     }
@@ -67,7 +72,7 @@ function refreshPassengersByPrivilege() {
 // Pie Chart Example
     var chartData;
 
-    var actionUrl = '/metrics/PassengersByPrivileges' + "?startPeriod=" + start.toISOString() + "&endPeriod=" + end.toISOString();
+    var actionUrl = '/metrics/PassengersByPrivileges' + "?startPeriod=" + start.toISOString() + "&endPeriod=" + end.toISOString() + '&' + selectedRoutesUrl.slice(0, -1);
     $.getJSON(actionUrl, function (response) {
         if (response != null) {
             chartData = response;
@@ -91,7 +96,7 @@ function refreshPassengersByPrivilege() {
                     labels: chartData.Labels,
                     datasets: [{
                         data: chartData.Data,
-                        backgroundColor: ['#808080', '#4e73df', '#1cc88a', '#36b9cc', '#FFBF40', '#7109AA'],
+                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#FFBF40', '#7109AA'],
                         hoverBorderColor: "rgba(234, 236, 244, 1)",
                     }],
                 },
