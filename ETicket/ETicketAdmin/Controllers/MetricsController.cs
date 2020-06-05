@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using ETicket.ApplicationServices.DTOs.Charts;
+using ETicket.ApplicationServices.Enums;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
@@ -40,6 +41,23 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
+        public IActionResult PassengersByPrivilegesChart()
+        {
+            log.Info(nameof(MetricsController.PassengersByPrivilegesChart));
+
+            try
+            {
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
         public IActionResult PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod, [FromQuery] int[] selectedRoutesId)
         {
             log.Info(nameof(MetricsController.PassengersByPrivileges));
@@ -59,15 +77,49 @@ namespace ETicket.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult PassengersByTime(DateTime startPeriod, DateTime endPeriod)
+        public IActionResult PassengersByTimeChart()
+        {
+            log.Info(nameof(MetricsController.PassengersByTimeChart));
+
+            try
+            {
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }     
+
+        [HttpGet]
+        public IActionResult PassengersByTime(DateTime startPeriod, DateTime endPeriod, ChartScale scale)
         {
             log.Info(nameof(MetricsController.PassengersByTime));
 
             try
             {
-                ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByTime(startPeriod, endPeriod);
+                ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByTime(startPeriod, endPeriod, scale);
 
                 return Json(chartDtoTicketsByTicketTypes);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult TicketsByTicketTypesChart()
+        {
+            log.Info(nameof(MetricsController.TicketsByTicketTypesChart));
+
+            try
+            {
+                return View();
             }
             catch (Exception e)
             {
@@ -95,6 +147,60 @@ namespace ETicket.Admin.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult PassengerTrafficByDaysOfWeekChart()
+        {
+            log.Info(nameof(MetricsController.PassengerTrafficByDaysOfWeekChart));
+
+            try
+            {
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetPassengersByDaysOfWeek(DateTime startPeriod, DateTime endPeriod)
+        {
+            log.Info(nameof(MetricsController.GetPassengersByDaysOfWeek));
+
+            try
+            {
+                ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByDaysOfWeek(startPeriod, endPeriod);
+
+                return Json(chartDtoTicketsByTicketTypes);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult PassengersByHoursByRoutesChart()
+        {
+            log.Info(nameof(MetricsController.PassengersByHoursByRoutesChart));
+
+            try
+            {
+                return View();
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
         public IActionResult GetPassengersByHoursByRoutes(DateTime selectedDate, [FromQuery] int[] selectedRoutesId)
         {
             log.Info(nameof(MetricsController.GetPassengersByHoursByRoutes));

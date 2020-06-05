@@ -27,12 +27,26 @@ function number_format(number, decimals, dec_point, thousands_sep) {
     return s.join(dec);
 }
 
+var ChartScale = {
+    ByDays : 1,
+    ByMonths : 2,
+    ByYears : 3
+}
+
+var chartScale = ChartScale.ByDays;
+
 function yyyy_mm_dd(date) {
     //var now = new Date();
     var y = date.getFullYear();
     var m = date.getMonth() + 1;
     var d = date.getDate();
     return '' + y + "-" + (m < 10 ? '0' : '') + m + "-" + (d < 10 ? '0' : '') + d;
+}
+
+function yyyy_mm(date) {
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    return '' + y + "-" + (m < 10 ? '0' : '') + m;
 }
 
 $(document).ready(function () {
@@ -49,17 +63,128 @@ $('#passengers-by-time-start').change(function () {
 $('#passengers-by-time-end').change(function () {
     refreshChart();
 })
+$('#passengers-by-time-by-days').change(function () {
+    ToDatePicker();
+    refreshChart();
+})
+$('#passengers-by-time-by-months').change(function () {
+    ToMonthPicker();
+    refreshChart();
+})
+$('#passengers-by-time-by-years').change(function () {
+    ToYearPicker();
+    refreshChart();
+})
 
-var passengerByTimeChart = null;
-function refreshChart() {
+var isMonthDatePick = false;
+function ToDatePicker() {
     var start = new Date($('#passengers-by-time-start').val());
     var end = new Date($('#passengers-by-time-end').val());
 
+    if (chartScale == ChartScale.ByMonths) {
+        end = new Date(end.getFullYear(), end.getMonth() + 1, 0) > new Date() ? new Date() : new Date(end.getFullYear(), end.getMonth() + 1, 0);
+    }
+
+    if (chartScale == ChartScale.ByYears) {
+        start = new Date(start.getFullYear(), 0, 1);
+        end = new Date(end.getFullYear() + 1, 0, 0) > new Date() ? new Date() : new Date(end.getFullYear() + 1, 0, 0);
+    }
+
+    $('#passengers-by-time-start').attr('type', 'date');
+    $('#passengers-by-time-end').attr('type', 'date');
+    $('#passengers-by-time-start').attr('max', yyyy_mm_dd(new Date()));
+    $('#passengers-by-time-end').attr('max', yyyy_mm_dd(new Date()));
+
+    $('#passengers-by-time-start').val(yyyy_mm_dd(start));
+    $('#passengers-by-time-end').val(yyyy_mm_dd(end));
+
+    chartScale = ChartScale.ByDays;
+}
+
+function ToMonthPicker() {
+    var start = new Date($('#passengers-by-time-start').val());
+    var end = new Date($('#passengers-by-time-end').val());
+
+    if (chartScale == ChartScale.ByYears) {
+        start = new Date(start.getFullYear(), 0, 1);
+        end = new Date(end.getFullYear() + 1, 0, 0) > new Date() ? new Date() : new Date(end.getFullYear(), end.getMonth() + 1, 0);; 
+    }
+
+    $('#passengers-by-time-start').attr('type', 'month');
+    $('#passengers-by-time-end').attr('type', 'month');
+    $('#passengers-by-time-start').attr('max', new Date());
+    $('#passengers-by-time-end').attr('max', new Date());
+
+    $('#passengers-by-time-start').val(yyyy_mm(start));
+    $('#passengers-by-time-end').val(yyyy_mm(end));
+
+    chartScale = ChartScale.ByMonths;
+}
+
+function ToYearPicker() {
+    var start = new Date($('#passengers-by-time-start').val());
+    var end = new Date($('#passengers-by-time-end').val());
+
+    $('#passengers-by-time-start').attr('type', 'number');
+    $('#passengers-by-time-end').attr('type', 'number');
+    $('#passengers-by-time-start').attr('min', '2000');
+    $('#passengers-by-time-start').attr('max', new Date().getFullYear());
+    $('#passengers-by-time-end').attr('min', '2000');
+    $('#passengers-by-time-end').attr('max', new Date().getFullYear());
+
+    $('#passengers-by-time-start').val(start.getFullYear());
+    $('#passengers-by-time-end').val(end.getFullYear());
+
+    chartScale = ChartScale.ByYears;
+}
+
+var selectedRoutesPassengerByTimeChart = [];
+
+$(document).ready(function () {
+    var slimSelectPassengerByTime = new SlimSelect({
+        select: '#routes-for-passengers-by-time',
+        searchingText: 'Searching...', // Optional - Will show during ajax request
+        hideSelectedOption: true,
+        placeholder: 'Select routes',
+        onChange: (info) => {
+            selectedRoutesPassengerByTimeChart = [];
+            for (let i = 0; i < info.length; i++) {
+                selectedRoutesPassengerByTimeChart.push(info[i].value);
+            }
+            refreshChart();
+        }
+    });
+
+    var actionUrl = '/routes/GetRoutesList';
+    $.getJSON(actionUrl, function (response) {
+        let responseResult = [];
+        if (response != null) {
+            for (let i = 0; i < response.length; i++) {
+                responseResult.push({ value: response[i].Id, text: response[i].Number })
+            }
+        }
+
+        slimSelectPassengerByTime.setData(responseResult);
+    });
+})
+
+
+var passengerByTimeChart = null;
+
+function refreshChart() {
+    var start = new Date($('#passengers-by-time-start').val());
+    var end = new Date($('#passengers-by-time-end').val());
     if (isNaN(start.valueOf()) || isNaN(end.valueOf())) {
         return;
     }
+    if (chartScale == ChartScale.ByMonths) {
+        end = new Date(end.getFullYear(), end.getMonth() + 1, 0);
+    }
+    if (chartScale == ChartScale.ByYears) {
+        end = new Date(end.getFullYear() + 1, 0, 0);
+    }
    
-    var actionUrl = '/metrics/PassengersByTime' + "?startPeriod=" + start.toISOString() + "&endPeriod=" + end.toISOString();
+    var actionUrl = '/metrics/PassengersByTime' + "?startPeriod=" + start.toISOString() + "&endPeriod=" + end.toISOString() + "&scale=" + chartScale;
     $.getJSON(actionUrl, function (response) {
         if (response != null) {
             chartData = response;

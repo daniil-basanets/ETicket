@@ -9,21 +9,21 @@ namespace ETicket.DataAccess.Domain.Entities
         [Key]
         public int Id { get; set; }
 
-        [DisplayName("Number")]
+        [DisplayName("Vehicle number")]
+        [MaxLength(25)]
         [Required]
-        public string Number { get; set; }
-
-        [DisplayName("Carrier")]
+        public string VehicleNumber { get; set; }
         public int CarriersId { get; set; }
 
         [ForeignKey("CarriersId")]
+        [DisplayName("Carrier")]
         [Required]
         public Carrier Carriers { get; set; }
 
-        [DisplayName("Route")]
         public int RouteId { get; set; }
 
         [ForeignKey("RouteId")]
+        [DisplayName("Route")]
         [Required]
         public Route Route { get; set; }
     }

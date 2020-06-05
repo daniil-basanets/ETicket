@@ -136,7 +136,7 @@ $(document).ready(function () {
                 },
                 {
                     name: "transport",
-                    data: "TransportNumber",
+                    data: "transportNumber",
                     defaultContent: "",
                     render: function (data, type, row) {
                         if (data != null) {

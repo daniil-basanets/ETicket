@@ -25,6 +25,36 @@ $('#passengers-by-privilege-end').change(function () {
     refreshPassengersByPrivilege();
 })
 
+var selectedRoutesPassengersByPrivilegeChart = [];
+
+$(document).ready(function () {
+    var slimSelectPassengersByPrivilege = new SlimSelect({
+        select: '#routes-for-passengers-by-privilege',
+        searchingText: 'Searching...', // Optional - Will show during ajax request
+        hideSelectedOption: true,
+        placeholder: 'Select routes',
+        onChange: (info) => {
+            selectedRoutesPassengersByPrivilegeChart = [];
+            for (let i = 0; i < info.length; i++) {
+                selectedRoutesPassengersByPrivilegeChart.push(info[i].value);
+            }
+            refreshPassengersByPrivilege();
+        }
+    });
+
+    var actionUrl = '/routes/GetRoutesList';
+    $.getJSON(actionUrl, function (response) {
+        let responseResult = [];
+        if (response != null) {
+            for (let i = 0; i < response.length; i++) {
+                responseResult.push({ value: response[i].Id, text: response[i].Number })
+            }
+        }
+
+        slimSelectPassengersByPrivilege.setData(responseResult);
+    });
+})
+
 var passengersByPrivilegeChart = null;
 function refreshPassengersByPrivilege() {
     var start = new Date($('#passengers-by-privilege-start').val());

@@ -80,7 +80,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
-            this.navigationParameters = navigationParameters;
+            this.navigationParameters = navigationParameters
+                ?? throw new ArgumentNullException(nameof(navigationParameters));
         }
 
         private async void OnNavigateToSignInView(string password)
