@@ -37,26 +37,12 @@ steps:
   displayName: 'Run xUnit tests - $(buildConfiguration)'
   inputs:
     command: 'test'
-    arguments: '--no-build --configuration $(buildConfiguration)'
+    arguments: '--no-build --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=$(Build.SourcesDirectory)/TestResults/Coverage/ /p:Exclude="[*ETicket.DataAccess]*"'
     publishTestResults: true
     projects: '**/*Tests.csproj'
 
-- script: dotnet test ETicket/ETicket.ApplicationServicesTests/ETicket.ApplicationServicesTests.csproj --logger "trx;LogFileName=testresults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=TestResults/Coverage/
-  displayName: 'dotnet test'
-
-- script: dotnet reportgenerator "-reports:$(Build.SourcesDirectory)/TestResults/Coverage/coverage.cobertura.xml" "-targetDir:$(Build.SourcesDirectory)/TestResults/Coverage/Reports" -tag:$(Build.BuildNumber) -reportTypes:htmlInline
-  workingDirectory: $(Build.SourcesDirectory)/BuildApp.Web.Tests
-  displayName: 'dotnet reportgenerator'
-
-- task: PublishTestResults@2
-  inputs:
-    testRunner: VSTest
-    testResultsFiles: '**/*.trx'
-    failTaskOnFailedTests: true
-
 - task: PublishCodeCoverageResults@1
+  displayName: 'Publish Code Coverage Results'
   inputs:
-    codeCoverageTool: 'cobertura'
-    summaryFileLocation: $(Build.SourcesDirectory)/TestResults/Coverage/**/coverage.cobertura.xml
-    reportDirectory: $(Build.SourcesDirectory)/TestResults/Coverage/Reports
-    failIfCoverageEmpty: false 
+    codeCoverageTool: 'Cobertura'
+    summaryFileLocation: '$(Build.SourcesDirectory)/TestResults/Coverage/coverage.cobertura.xml'
