@@ -69,9 +69,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
             this.userValidator = userValidator
                 ?? throw new ArgumentNullException(nameof(userValidator));
-
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));            
         }
 
         private async void OnNavigateToConfirmForgotPasswordView(string email)

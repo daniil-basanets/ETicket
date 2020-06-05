@@ -34,10 +34,17 @@ namespace ETicketMobile.Business.Services
         {
             var getTicketsByEmailRequestDto = new GetTicketsByEmailRequestDto { Email = email };
 
+            var getTicketsByEmail = TicketsEndpoint.GetTicketsByEmail(email);
+
             try
             {
-                var ticketsDto = await httpService.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
-                    TicketsEndpoint.GetTickets, getTicketsByEmailRequestDto, accessToken);
+                var ticketsDto = await httpService.GetAsync<IEnumerable<TicketDto>>(
+                    TicketsEndpoint.GetTickets, accessToken);
+
+                //    TicketsEndpoint.GetTickets, getTicketsByEmailRequestDto, accessToken);
+
+                //var ticketsDto = await httpService.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
+                //    TicketsEndpoint.GetTickets, getTicketsByEmailRequestDto, accessToken);
 
                 if (ticketsDto == null)
                 {
