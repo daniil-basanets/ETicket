@@ -28,9 +28,9 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 }
 
 var ChartScale = {
-    ByDays : 1,
-    ByMonths : 2,
-    ByYears : 3
+    ByDays: 1,
+    ByMonths: 2,
+    ByYears: 3
 }
 
 var chartScale = ChartScale.ByDays;
@@ -107,7 +107,7 @@ function ToMonthPicker() {
 
     if (chartScale == ChartScale.ByYears) {
         start = new Date(start.getFullYear(), 0, 1);
-        end = new Date(end.getFullYear() + 1, 0, 0) > new Date() ? new Date() : new Date(end.getFullYear(), end.getMonth() + 1, 0);; 
+        end = new Date(end.getFullYear() + 1, 0, 0) > new Date() ? new Date() : new Date(end.getFullYear(), end.getMonth() + 1, 0);;
     }
 
     $('#passengers-by-time-start').attr('type', 'month');
@@ -168,6 +168,43 @@ $(document).ready(function () {
     });
 })
 
+var collor = [
+    "rgba(0, 117, 220, 0.5)"
+    , "rgba(153, 63, 0, 0.5)"
+    , "rgba(76, 0, 92, 0.5)"
+    , "rgba(25, 25, 25, 0.5)"
+    , "rgba(0, 92, 49, 0.5)"
+    , "rgba(255, 204, 72, 0.5)"
+    , "rgba(255, 204, 153, 0.5)"
+    , "rgba(128, 128, 128, 0.5)"
+    , "rgba(148, 255, 181, 0.5)"
+    , "rgba(240, 163, 255, 0.5)"
+    , "rgba(143, 124, 0, 0.5)"
+    , "rgba(194, 0, 136, 0.5)"
+    , "rgba(0, 51, 128, 0.5)"
+    , "rgba(255, 164, 5, 0.5)"
+    , "rgba(255, 168, 187, 0.5)"
+    , "rgba(66, 102, 0, 0.5)"
+    , "rgba(255, 0, 16, 0.5)"
+    , "rgba(94, 241, 242, 0.5)"
+    , "rgba(0, 153, 143, 0.5)"
+    , "rgba(224, 255, 102, 0.5)"
+    , "rgba(116, 10, 255, 0.5)"
+    , "rgba(153, 0, 0, 0.5)"
+    , "rgba(255, 255, 128, 0.5)"
+    , "rgba(255, 255, 0, 0.5)"
+    , "rgba(255, 80, 5, 0.5)"
+    , "rgba(255, 255, 128, 0.5)"
+]
+
+function getCollor(id) {
+    if (id > collor.length) {
+        return "rgba(255, 255, 255, 0.5)"
+    }
+    return collor[id];
+}
+
+
 
 var passengerByTimeChart = null;
 
@@ -183,11 +220,66 @@ function refreshChart() {
     if (chartScale == ChartScale.ByYears) {
         end = new Date(end.getFullYear() + 1, 0, 0);
     }
-   
-    var actionUrl = '/metrics/PassengersByTime' + "?startPeriod=" + start.toISOString() + "&endPeriod=" + end.toISOString() + "&scale=" + chartScale;
+    var selectedRoutesUrl = "";
+    for (var key in selectedRoutesPassengerByTimeChart) {
+        selectedRoutesUrl += "selectedRoutesId=" + selectedRoutesPassengerByTimeChart[key] + "&";
+    }
+    var actionUrl = "";
+    var isMultiLines = false;
+    if (selectedRoutesUrl) {
+        isMultiLines = true;
+        actionUrl = '/metrics/MultiRoutesPassengersByTime' + "?startPeriod=" + start.toISOString() + "&endPeriod=" + end.toISOString() + "&scale=" + chartScale + '&' + selectedRoutesUrl.slice(0, -1);
+    } else {
+        isMultiLines = false;
+        actionUrl = '/metrics/PassengersByTime' + "?startPeriod=" + start.toISOString() + "&endPeriod=" + end.toISOString() + "&scale=" + chartScale;
+    }
     $.getJSON(actionUrl, function (response) {
         if (response != null) {
             chartData = response;
+
+            var datasetsChart = [];
+            if (!isMultiLines) {
+                datasetsChart[0] = {
+                    label: "all passengers",
+                    data: chartData.Data, //routes data
+                    borderColor: getCollor(0),
+                    lineTension: 0.3,
+                    backgroundColor: "rgba(0, 0, 0, 0)",
+                    pointRadius: 3,
+                    pointBackgroundColor: getCollor(0).replace("0.5", "1"),
+                    pointBorderColor: getCollor(0).replace("0.5", "1"),
+                    pointHoverRadius: 3,
+                    pointHoverBackgroundColor: getCollor(0).replace("0.5", "1"),
+                    pointHoverBorderColor: getCollor(0).replace("0.5", "1"),
+                    pointHitRadius: 10,
+                    pointBorderWidth: 2
+                }
+            }
+            else {
+                chartData = response;
+                for (var i = 0; i < chartData.LineLable.length; i++) {
+                    var items = [];
+                    for (var j = 0; j < chartData.Data[i].length; j++) {
+                        items[j] = chartData.Data[i][j];
+                    }
+                    var temp = {
+                        label: chartData.LineLable[i],
+                        data: items, //routes data
+                        borderColor: getCollor(i),
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(0, 0, 0, 0)",
+                        pointRadius: 3,
+                        pointBackgroundColor: getCollor(i).replace("0.5", "1"),
+                        pointBorderColor: getCollor(i).replace("0.5", "1"),
+                        pointHoverRadius: 3,
+                        pointHoverBackgroundColor: getCollor(i).replace("0.5", "1"),
+                        pointHoverBorderColor: getCollor(i).replace("0.5", "1"),
+                        pointHitRadius: 10,
+                        pointBorderWidth: 2
+                    }
+                    datasetsChart[i] = temp
+                }
+            }
             var maxY = Math.max.apply(null, chartData.Data);
 
             var ctx = document.getElementById("passengers-by-time");
@@ -206,22 +298,9 @@ function refreshChart() {
             passengerByTimeChart = new Chart(ctx, {
                 type: 'line',
                 data: {
+                   
                     labels: chartData.Labels,
-                    datasets: [{
-                        label: "passengers",
-                        lineTension: 0.3,
-                        backgroundColor: "rgba(78, 115, 223, 0.05)",
-                        borderColor: "rgba(78, 115, 223, 1)",
-                        pointRadius: 3,
-                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                        pointBorderColor: "rgba(78, 115, 223, 1)",
-                        pointHoverRadius: 3,
-                        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                        pointHitRadius: 10,
-                        pointBorderWidth: 2,
-                        data: chartData.Data,
-                    }],
+                    datasets: datasetsChart,
                 },
                 options: {
                     maintainAspectRatio: false,
@@ -266,7 +345,7 @@ function refreshChart() {
                         }],
                     },
                     legend: {
-                        display: false
+                        display: true
                     },
                     tooltips: {
                         backgroundColor: "rgb(255,255,255)",

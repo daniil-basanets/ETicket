@@ -79,6 +79,26 @@ namespace ETicket.ApplicationServices.Services
             return chartDto;
         }
 
+
+        public MultiLineChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod, int[] selectedRoutesId, ChartScale chartScale = ChartScale.ByDays)
+        {
+            MultiLineChartDto passengerTrafficChartData= new MultiLineChartDto();
+
+            if (startPeriod.CompareTo(endPeriod) == 1)
+            {
+                passengerTrafficChartData.ErrorMessage = EndLessStartError;
+            }
+
+            var timeLabels = GetTimeLabels(startPeriod, endPeriod, chartScale);
+
+            if (passengerTrafficChartData.ErrorMessage == null)
+            {
+                passengerTrafficChartData = GetMultiRoutePassengerTraffic(timeLabels, startPeriod, endPeriod, chartScale, selectedRoutesId);
+            }
+
+            return passengerTrafficChartData;
+        }
+
         public ChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod, ChartScale chartScale)
         {
             string errorMessage = null;
@@ -137,6 +157,43 @@ namespace ETicket.ApplicationServices.Services
             }
 
             return timeLabels;
+        }
+
+        private MultiLineChartDto GetMultiRoutePassengerTraffic(List<string> timeLabels, DateTime startPeriod, DateTime endPeriod, ChartScale chartScale, int[] selectedRoutesId)
+        {
+            var passengerInfo = uow.TicketVerifications.GetAll()
+                   .Where(t => t.IsVerified && t.VerificationUTCDate.Date >= startPeriod.Date && t.VerificationUTCDate.Date <= endPeriod.Date
+                        && (selectedRoutesId.Length == 0 || selectedRoutesId.Contains(t.Transport.RouteId)));
+
+            var groupedTraffic = chartScale switch
+            {
+                ChartScale.ByDays => passengerInfo.GroupBy(d => new { d.Transport.Route.Number, Step = EF.Functions.DateDiffDay(startPeriod.Date, d.VerificationUTCDate.Date) }),
+                ChartScale.ByMonths => passengerInfo.GroupBy(m => new { m.Transport.Route.Number, Step = EF.Functions.DateDiffMonth(startPeriod.Date, m.VerificationUTCDate.Date) }),
+                ChartScale.ByYears => passengerInfo.GroupBy(y => new { y.Transport.Route.Number, Step = EF.Functions.DateDiffYear(startPeriod.Date, y.VerificationUTCDate.Date) }),
+                _ => passengerInfo.GroupBy(d => new { d.Transport.Route.Number, Step = EF.Functions.DateDiffDay(startPeriod.Date, d.VerificationUTCDate.Date) })
+            };
+
+            var passengerTraffic = groupedTraffic.Select(g => new { g.Key.Number, g.Key.Step, PassengersCount = g.Count() })
+                .OrderBy(t => t.Number)
+                .ToList();
+
+            var transportNumbers = passengerTraffic.Select(t => t.Number).Distinct().ToList();
+            var chartData = new string[transportNumbers.Count, timeLabels.Count];
+
+            for (int i = 0; i < transportNumbers.Count; i++)
+            {
+                for (int j = 0; j < timeLabels.Count; j++)
+                {
+                    chartData[i, j] = (passengerTraffic.Where(t => t.Number == transportNumbers[i] && t.Step == j).Count() != 0 ? passengerTraffic.Where(t => t.Number == transportNumbers[i] && t.Step == j).First().PassengersCount : 0).ToString();
+                }
+            }
+
+            return new MultiLineChartDto()
+            {
+                Labels = timeLabels,
+                Data = chartData,
+                LineLable = transportNumbers
+            };
         }
 
         private Dictionary<int, int> GetPassengerTraffic(DateTime startPeriod, DateTime endPeriod, ChartScale chartScale)
@@ -248,5 +305,6 @@ namespace ETicket.ApplicationServices.Services
                 ErrorMessage = errorMessageBuilder.ToString()
             };
         }
+
     }
 }

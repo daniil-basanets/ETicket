@@ -98,9 +98,28 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByTime(startPeriod, endPeriod, scale);
+                ChartDto chartDto = metricsService.PassengersByTime(startPeriod, endPeriod, scale);
 
-                return Json(chartDtoTicketsByTicketTypes);
+                return Json(chartDto);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult MultiRoutesPassengersByTime(DateTime startPeriod, DateTime endPeriod, ChartScale scale, int[] selectedRoutesId)
+        {
+            log.Info(nameof(MetricsController.PassengersByTime));
+
+            try
+            {
+                MultiLineChartDto chartDto = metricsService.PassengersByTime(startPeriod, endPeriod, selectedRoutesId, scale);
+
+                return Json(chartDto);
             }
             catch (Exception e)
             {
