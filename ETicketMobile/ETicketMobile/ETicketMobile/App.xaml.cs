@@ -9,6 +9,7 @@ using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.DataAccess.Repositories;
 using ETicketMobile.DataAccess.Repositories.Interfaces;
 using ETicketMobile.DataAccess.Services;
+using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.UserInterface.Localization.Interfaces;
 using ETicketMobile.ViewModels;
@@ -68,12 +69,23 @@ namespace ETicketMobile
             containerRegistry.RegisterInstance<ILocalApi>(localApi);
             containerRegistry.RegisterInstance<ILocalize>(localize);
 
-            var userValidator = new UserValidator(httpService);
-            containerRegistry.RegisterInstance<IUserValidator>(userValidator);
+            var emailActivationService = new EmailActivationService(httpService);
 
             var localTokenService = new LocalTokenService(localApi);
             var tokenService = new TokenService(localTokenService, httpService);
+
+            var ticketsService = new TicketsService(tokenService, httpService);
+            var transactionService = new TransactionService(httpService);
+
+            var userValidator = new UserValidator(httpService);
+
+            containerRegistry.RegisterInstance<IUserValidator>(userValidator);
+
+            containerRegistry.RegisterInstance<ILocalTokenService>(localTokenService);
+            containerRegistry.RegisterInstance<IEmailActivationService>(emailActivationService);
             containerRegistry.RegisterInstance<ITokenService>(tokenService);
+            containerRegistry.RegisterInstance<ITicketsService>(ticketsService);
+            containerRegistry.RegisterInstance<ITransactionService>(transactionService);
 
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
