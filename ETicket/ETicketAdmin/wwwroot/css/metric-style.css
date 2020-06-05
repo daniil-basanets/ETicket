@@ -1,0 +1,12 @@
+﻿#empty-chart-list {
+    font-size: xx-large
+}
+#metrics-content {
+    margin: 25px;
+    background-color: white;
+    border-radius: 10px;
+    border: 2px solid gray;
+}
+#metrics-button {
+    margin-left: 25px;
+}

@@ -49,7 +49,8 @@ namespace ETicketMobile.ViewModels.UserAccount
 
         public override async void OnNavigatedTo(INavigationParameters navigationParameters)
         {
-            var email = navigationParameters.GetValue<string>("email");
+            var email = navigationParameters.GetValue<string>("email")
+                ?? throw new ArgumentNullException(nameof(navigationParameters));
 
             try
             {

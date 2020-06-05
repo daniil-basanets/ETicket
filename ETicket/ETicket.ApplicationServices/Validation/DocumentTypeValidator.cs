@@ -10,7 +10,8 @@ namespace ETicket.ApplicationServices.Validation
             RuleFor(d => d.Name)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty().WithMessage("{PropertyName} is empty")
-                .Length(2, 50).WithMessage("Lenght {TotalLength} of {PropertyName} is Invalid");
+                .Length(2, 50).WithMessage("Length {TotalLength} of {PropertyName} is invalid")
+                .Must(n => n.Trim().Length >= 2); 
         }
     }
 }

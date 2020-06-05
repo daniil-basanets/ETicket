@@ -11,6 +11,6 @@ namespace ETicketMobile.DataAccess.LocalAPI.Interfaces
 
         Task AddAsync(Token token);
 
-        Task AddAsync(Localization token);
+        Task AddAsync(Localization localization);
     }
 }

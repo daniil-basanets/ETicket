@@ -9,6 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ETicket.WebAPI.Controllers
 {
@@ -33,6 +34,7 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // GET: api/users/{email}/tickets
+        [Authorize]
         [HttpGet("{email}/tickets")]
         [SwaggerOperation(Summary = "Get all tickets for concrete user", Description = "Allowed: authorized user")]
         [SwaggerResponse(200, "Returns if everything is correct. Contains a list of user's tickets")]
@@ -63,6 +65,7 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // GET: api/users/5
+        [Authorize]
         [HttpGet("{id}")]
         [SwaggerOperation(Summary = "Get user by id", Description = "Allowed: authorized user")]
         [SwaggerResponse(200, "Returns if everything is correct. Contains a User object", typeof(UserDto))]
@@ -95,6 +98,7 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // PUT: api/users/5
+        [Authorize]
         [HttpPut("{id}")]
         [SwaggerOperation(Summary = "Update user", Description = "Allowed: authorized user")]
         [SwaggerResponse(204, "Returns if everything is correct, without content")]

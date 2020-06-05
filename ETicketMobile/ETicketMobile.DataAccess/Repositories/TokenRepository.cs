@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.Interfaces;
 using Newtonsoft.Json;
@@ -9,14 +10,19 @@ namespace ETicketMobile.DataAccess.Repositories
     {
         #region Fields
 
-        private readonly SettingsRepository settingsRepository;
+        private readonly ISettingsRepository settingsRepository;
 
         #endregion
 
         public TokenRepository()
         {
             settingsRepository = new SettingsRepository();
-            settingsRepository.Connect();
+        }
+
+        public TokenRepository(ISettingsRepository settingsRepository)
+        {
+            this.settingsRepository = settingsRepository
+                ?? throw new ArgumentNullException(nameof(settingsRepository));
         }
 
         public async Task<Token> GetTokenAsync()

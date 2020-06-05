@@ -172,7 +172,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public SecretCodeRepository SecretCodes
+        public ISecretCodeRepository SecretCodes
         {
             get
             {
