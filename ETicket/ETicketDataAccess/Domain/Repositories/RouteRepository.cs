@@ -34,12 +34,18 @@ namespace ETicket.DataAccess.Domain.Repositories
         public Route Get(int id)
         {
             return db.Routes.Include(r => r.FirstStation)
-                .Include(r => r.LastStation).FirstOrDefault(r => r.Id == id);
+                            .Include(r => r.LastStation)
+                            .Include(r => r.RouteStations)
+                            .ThenInclude(r => r.Station)
+                            .FirstOrDefault(r => r.Id == id);
         }
 
         public IQueryable<Route> GetAll()
         {
-            return db.Routes.Include(r => r.FirstStation).Include(r => r.LastStation);
+            return db.Routes.Include(r => r.FirstStation)
+                            .Include(r => r.LastStation)
+                            .Include(r => r.RouteStations)
+                            .ThenInclude(r => r.Station);
         }
 
         public void Update(Route item)

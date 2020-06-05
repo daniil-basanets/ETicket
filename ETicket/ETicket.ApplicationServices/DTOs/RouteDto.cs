@@ -22,12 +22,8 @@ namespace ETicket.ApplicationServices.DTOs
         [DisplayName("Last station")]
         public int LastStationId { get; set; }
 
-        [DisplayName("Stations")]
-        public List<int> StationIds { get; set; }
+        public IList<int> StationIds { get; set; }
 
-        public RouteDto()
-        {
-            StationIds = new List<int>();
-        }
+        public IList<string> StationNames { get; set; }
     }
 }

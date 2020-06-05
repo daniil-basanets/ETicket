@@ -15,7 +15,8 @@ namespace ETicket.ApplicationServices.Mapping
             CreateMap<RouteDto, Route>().ReverseMap()
                 .ForMember(r=>r.FirstStationName,r=>r.MapFrom(s=>s.FirstStation.Name))
                 .ForMember(r=>r.LastStationName,r=>r.MapFrom(s=>s.LastStation.Name))
-                .ForMember(r=>r.StationIds,r=>r.MapFrom(s=>s.RouteStations.Select(x => x.StationId)));
+                .ForMember(r=>r.StationIds,r=>r.MapFrom(s=>s.RouteStations.Select(x => x.StationId)))
+                .ForMember(r=>r.StationNames,r=>r.MapFrom(s => s.RouteStations.Select(x => x.Station.Name)));
         }        
     }
 }
