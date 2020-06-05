@@ -26,17 +26,17 @@ namespace ETicketMobile.Business.Validators
         {
             try
             {
-            var signUpRequestDto = new SignUpRequestDto { Email = email };
+                var signUpRequestDto = new SignUpRequestDto { Email = email };
 
-            var isUserExists = await httpService.PostAsync<SignUpRequestDto, SignUpResponseDto>(
-                AuthorizeEndpoint.CheckUserExists, signUpRequestDto);
+                var isUserExists = await httpService.PostAsync<SignUpRequestDto, SignUpResponseDto>(
+                    AuthorizeEndpoint.CheckUserExists, signUpRequestDto);
 
-            return isUserExists.Succeeded;
-        }
+                return isUserExists.Succeeded;
+            }
             catch (System.Net.WebException ex)
             {
                 throw new Exceptions.WebException("Server exception", ex);
-    }
+            }
             catch (SocketException ex)
             {
                 throw new Exceptions.WebException("Server exception", ex);

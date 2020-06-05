@@ -145,7 +145,7 @@ namespace ETicketMobile.ViewModels.Login
                 return;
             }
 
-            if (token == null)
+            if (token.RefreshJwtToken == null)
             {
                 IsDataLoad = false;
 

@@ -77,14 +77,14 @@ namespace ETicketMobile.ViewModels.Registration
                 return false;
             }
 
-            if (!Validator.IsPasswordShort(password))
+            if (Validator.IsPasswordShort(password))
             {
                 PasswordWarning = AppResource.PasswordShort;
 
                 return false;
             }
 
-            if (!Validator.IsPasswordLong(password))
+            if (Validator.IsPasswordLong(password))
             {
                 PasswordWarning = AppResource.PasswordLong;
 

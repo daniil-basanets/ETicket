@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading;
+using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.ViewModels.ForgotPassword;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
@@ -16,6 +17,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
 
         private readonly ForgotPasswordViewModel forgotPasswordViewModel;
 
+        private readonly Mock<IEmailActivationService> emailActivationServiceMock;
         private readonly Mock<IPageDialogService> dialogServiceMock;
         private readonly Mock<IUserValidator> userValidatorMock;
         private readonly Mock<IHttpService> httpServiceMock;
@@ -26,11 +28,20 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
 
+            emailActivationServiceMock = new Mock<IEmailActivationService>();
             dialogServiceMock = new Mock<IPageDialogService>();
             userValidatorMock = new Mock<IUserValidator>();
             httpServiceMock = new Mock<IHttpService>();
 
-            forgotPasswordViewModel = new ForgotPasswordViewModel(null, dialogServiceMock.Object, userValidatorMock.Object, httpServiceMock.Object);
+            forgotPasswordViewModel = new ForgotPasswordViewModel(emailActivationServiceMock.Object, null, dialogServiceMock.Object, userValidatorMock.Object);
+        }
+
+        [Fact]
+        public void CheckConstructorWithParameters_CheckNullableEmailActivationService_ShouldThrowException()
+        {
+            // Assert
+            Assert.Throws<ArgumentNullException>(
+                () => new ForgotPasswordViewModel(null, null, dialogServiceMock.Object, userValidatorMock.Object));
         }
 
         [Fact]
@@ -38,7 +49,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new ForgotPasswordViewModel(null, null, userValidatorMock.Object, httpServiceMock.Object));
+                () => new ForgotPasswordViewModel(emailActivationServiceMock.Object, null, null, userValidatorMock.Object));
         }
 
         [Fact]
@@ -46,15 +57,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new ForgotPasswordViewModel(null, dialogServiceMock.Object, null, httpServiceMock.Object));
-        }
-
-        [Fact]
-        public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
-        {
-            // Assert
-            Assert.Throws<ArgumentNullException>(
-                () => new ForgotPasswordViewModel(null, dialogServiceMock.Object, userValidatorMock.Object, null));
+                () => new ForgotPasswordViewModel(emailActivationServiceMock.Object, null, dialogServiceMock.Object, null));
         }
 
         [Theory]

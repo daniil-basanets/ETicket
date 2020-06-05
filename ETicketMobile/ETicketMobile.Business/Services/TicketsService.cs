@@ -32,26 +32,19 @@ namespace ETicketMobile.Business.Services
 
         public async Task<IEnumerable<Ticket>> GetTicketsAsync(string accessToken, string email)
         {
-            var getTicketsByEmailRequestDto = new GetTicketsByEmailRequestDto { Email = email };
-
             var getTicketsByEmail = TicketsEndpoint.GetTicketsByEmail(email);
 
             try
             {
                 var ticketsDto = await httpService.GetAsync<IEnumerable<TicketDto>>(
-                    TicketsEndpoint.GetTickets, accessToken);
-
-                //    TicketsEndpoint.GetTickets, getTicketsByEmailRequestDto, accessToken);
-
-                //var ticketsDto = await httpService.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
-                //    TicketsEndpoint.GetTickets, getTicketsByEmailRequestDto, accessToken);
+                    getTicketsByEmail, accessToken);
 
                 if (ticketsDto == null)
                 {
                     accessToken = await tokenService.RefreshTokenAsync();
 
-                    await httpService.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
-                        TicketsEndpoint.GetTickets, getTicketsByEmailRequestDto, accessToken);
+                    ticketsDto = await httpService.GetAsync<IEnumerable<TicketDto>>(
+                        getTicketsByEmail, accessToken);
                 }
 
                 var tickets = AutoMapperConfiguration.Mapper.Map<IEnumerable<Ticket>>(ticketsDto);

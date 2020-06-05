@@ -77,10 +77,12 @@ namespace ETicketMobile
             var ticketsService = new TicketsService(tokenService, httpService);
             var transactionService = new TransactionService(httpService);
 
+            var userService = new UserService(httpService);
             var userValidator = new UserValidator(httpService);
 
             containerRegistry.RegisterInstance<IUserValidator>(userValidator);
 
+            containerRegistry.RegisterInstance<IUserService>(userService);
             containerRegistry.RegisterInstance<ILocalTokenService>(localTokenService);
             containerRegistry.RegisterInstance<IEmailActivationService>(emailActivationService);
             containerRegistry.RegisterInstance<ITokenService>(tokenService);

@@ -1,4 +1,5 @@
 ﻿using System;
+using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.ViewModels.ForgotPassword;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
@@ -13,31 +14,33 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
 
         private readonly ConfirmForgotPasswordViewModel confirmForgotPasswordViewModel;
 
-        private readonly Mock<IHttpService> httpServiceMock;
+        private readonly Mock<IEmailActivationService> emailActivationServiceMock;
         private readonly Mock<IPageDialogService> dialogServiceMock;
+        private readonly Mock<IHttpService> httpServiceMock;
 
         #endregion
 
         public ConfirmForgotPasswordViewModelTests()
         {
-            httpServiceMock = new Mock<IHttpService>();
+            emailActivationServiceMock = new Mock<IEmailActivationService>();
             dialogServiceMock = new Mock<IPageDialogService>();
+            httpServiceMock = new Mock<IHttpService>();
 
-            confirmForgotPasswordViewModel = new ConfirmForgotPasswordViewModel(null, dialogServiceMock.Object, httpServiceMock.Object);
+            confirmForgotPasswordViewModel = new ConfirmForgotPasswordViewModel(emailActivationServiceMock.Object, null, dialogServiceMock.Object);
         }
 
         [Fact]
-        public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
+        public void CheckConstructorWithParameters_CheckNullableEmailActivationService_ShouldThrowException()
         {
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new ConfirmForgotPasswordViewModel(null, dialogServiceMock.Object, null));
+            Assert.Throws<ArgumentNullException>(() => new ConfirmForgotPasswordViewModel(null, null, dialogServiceMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableDialogService_ShouldThrowException()
         {
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new ConfirmForgotPasswordViewModel(null, null, httpServiceMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new ConfirmForgotPasswordViewModel(emailActivationServiceMock.Object, null, null));
         }
 
         [Fact]

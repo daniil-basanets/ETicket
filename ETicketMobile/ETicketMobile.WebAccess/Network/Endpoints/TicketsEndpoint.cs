@@ -12,7 +12,7 @@ namespace ETicketMobile.WebAccess.Network.Endpoints
 
         public static Uri GetTicketsByEmail(string email)
         {
-            return new Uri($"/api/users/{email}/tickets");
+            return new Uri($"/api/users/{email}/tickets", UriKind.Relative);
         }
     }
 }

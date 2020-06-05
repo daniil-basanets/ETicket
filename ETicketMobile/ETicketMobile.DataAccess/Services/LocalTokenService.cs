@@ -20,9 +20,9 @@ namespace ETicketMobile.DataAccess.Services
                 ?? throw new ArgumentNullException(nameof(localApi));
         }
 
-        public Task AddAsync(Token token)
+        public async Task AddAsync(Token token)
         {
-            throw new NotImplementedException();
+            await localApi.AddAsync(token);
         }
 
         public async Task<string> GetAccessTokenAsync()

@@ -90,7 +90,7 @@ namespace ETicketMobile.ViewModels.BoughtTickets
 
                 return;
             }
-            }
+        }
 
         private IEnumerable<Ticket> GetUnusedTickets()
         {

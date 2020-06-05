@@ -188,7 +188,7 @@ namespace ETicketMobile.ViewModels.Registration
                 var token = await tokenService.GetTokenAsync(email, password);
                 await localTokenService.AddAsync(token);
             }
-            catch (Business.Exceptions.WebException)
+            catch (WebException)
             {
                 IsDataLoad = false;
 
