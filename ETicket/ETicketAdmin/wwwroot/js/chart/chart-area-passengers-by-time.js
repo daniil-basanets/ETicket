@@ -240,7 +240,7 @@ function refreshChart() {
             var datasetsChart = [];
             if (!isMultiLines) {
                 datasetsChart[0] = {
-                    label: "all passengers",
+                    label: "all routes",
                     data: chartData.Data, //routes data
                     borderColor: getCollor(0),
                     lineTension: 0.3,
