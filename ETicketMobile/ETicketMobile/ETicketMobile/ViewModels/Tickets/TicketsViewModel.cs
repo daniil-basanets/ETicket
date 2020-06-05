@@ -8,6 +8,7 @@ using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Business.Validators;
 using ETicketMobile.DataAccess.Services.Interfaces;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.Payment;
 using Prism.Navigation;
 using Prism.Services;
@@ -128,7 +129,7 @@ namespace ETicketMobile.ViewModels.Tickets
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
                 return;
             }
@@ -210,14 +211,14 @@ namespace ETicketMobile.ViewModels.Tickets
         {
             if (!Validator.TicketChoosed(Tickets.Count))
             {
-                await dialogService.DisplayAlertAsync("Warning", "Choose ticket", "OK");
+                await dialogService.DisplayAlertAsync("Warning", "Choose ticket", AppResource.Ok);
 
                 return false;
             }
 
             if (!Validator.AreaChoosed(Areas.Where(a => a.Selected).Count()))
             {
-                await dialogService.DisplayAlertAsync("Warning", "Choose Areas", "OK");
+                await dialogService.DisplayAlertAsync("Warning", "Choose Areas", AppResource.Ok);
 
                 return false;
             }

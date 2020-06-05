@@ -105,7 +105,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             {
                 IsDataLoad = false;
 
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
                 return;
             }

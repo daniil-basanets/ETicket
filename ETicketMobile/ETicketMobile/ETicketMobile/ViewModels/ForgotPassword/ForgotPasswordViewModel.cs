@@ -65,7 +65,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 ?? throw new ArgumentNullException(nameof(emailActivationService));
 
             this.dialogService = dialogService
-                ?? throw new ArgumentNullException(nameof(dialogService));            
+                ?? throw new ArgumentNullException(nameof(dialogService));
 
             this.userValidator = userValidator
                 ?? throw new ArgumentNullException(nameof(userValidator));
@@ -94,7 +94,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             {
                 IsDataLoad = false;
 
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
                 return;
             }

@@ -205,7 +205,18 @@ namespace ETicketMobile.Resources {
                 return ResourceManager.GetString("Confirm", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string Ok
+        {
+            get
+            {
+                return ResourceManager.GetString("Ok", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Enter activation code.
         /// </summary>
@@ -504,7 +515,29 @@ namespace ETicketMobile.Resources {
                 return ResourceManager.GetString("GeneratePassword", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string Error
+        {
+            get
+            {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Check your network connection and try again.
+        /// </summary>
+        internal static string ErrorConnection
+        {
+            get
+            {
+                return ResourceManager.GetString("ErrorConnection", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to We will remember your data for sign in, and you dont need anymore to fill it again.
         /// </summary>
@@ -742,7 +775,7 @@ namespace ETicketMobile.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign up..
+        ///   Looks up a localized string similar to Sign up.
         /// </summary>
         internal static string SignUp {
             get {

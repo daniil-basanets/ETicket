@@ -7,6 +7,7 @@ using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Model.Registration;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Business.Validators;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.Payment;
 using ETicketMobile.WebAccess.DTO;
 using Prism.Navigation;
@@ -157,7 +158,7 @@ namespace ETicketMobile.ViewModels.Payment
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
                 return;
             }

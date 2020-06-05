@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Model.Transactions;
 using ETicketMobile.Business.Services.Interfaces;
+using ETicketMobile.Resources;
 using Prism.Navigation;
 using Prism.Services;
 
@@ -53,7 +54,7 @@ namespace ETicketMobile.ViewModels.UserAccount
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
                 return;
             }

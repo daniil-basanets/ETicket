@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Services.Interfaces;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
 using Prism.Navigation;
 using Prism.Services;
@@ -105,7 +106,7 @@ namespace ETicketMobile.ViewModels.Registration
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
                 return;
             }
