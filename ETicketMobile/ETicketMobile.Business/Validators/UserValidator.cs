@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.Endpoints;
@@ -16,7 +17,8 @@ namespace ETicketMobile.Business.Validators
 
         public UserValidator(IHttpService httpService)
         {
-            this.httpService = httpService;
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public async Task<bool> UserExistsAsync(string email)
@@ -24,7 +26,7 @@ namespace ETicketMobile.Business.Validators
             var signUpRequestDto = new SignUpRequestDto { Email = email };
 
             var isUserExists = await httpService.PostAsync<SignUpRequestDto, SignUpResponseDto>(
-                AuthorizeEndpoint.CheckEmail, signUpRequestDto);
+                AuthorizeEndpoint.CheckUserExists, signUpRequestDto);
 
             return isUserExists.Succeeded;
         }

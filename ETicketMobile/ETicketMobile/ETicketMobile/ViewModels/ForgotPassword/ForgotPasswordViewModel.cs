@@ -58,18 +58,18 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         public ForgotPasswordViewModel(
             INavigationService navigationService,
             IPageDialogService dialogService,
-            IHttpService httpService,
-            IUserValidator userValidator
+            IUserValidator userValidator,
+            IHttpService httpService
         ) : base(navigationService)
         {
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));
-
             this.userValidator = userValidator
                 ?? throw new ArgumentNullException(nameof(userValidator));
+
+            this.httpService = httpService
+                ?? throw new ArgumentNullException(nameof(httpService));            
         }
 
         private async void OnNavigateToConfirmForgotPasswordView(string email)
@@ -127,7 +127,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            // TODO EmailHasCorrectLength
             if (!Validator.HasEmailCorrectLength(email))
             {
                 EmailWarning = AppResource.EmailCorrectLong;
