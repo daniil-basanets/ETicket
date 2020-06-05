@@ -14,5 +14,7 @@ namespace ETicketMobile.Business.Services.Interfaces
         Task<IList<AreaDto>> GetAreasDtoAsync(string accessToken);
 
         Task<GetTicketPriceResponseDto> RequestGetTicketPriceAsync(IEnumerable<int> areasId, int ticketTypeId);
+
+        Task<BuyTicketResponseDto> RequestBuyTicketAsync(BuyTicketRequestDto buyTicketRequestDto);
     }
 }

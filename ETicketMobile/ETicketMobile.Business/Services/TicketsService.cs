@@ -140,5 +140,24 @@ namespace ETicketMobile.Business.Services
                 throw new Exceptions.WebException("Server exception", ex);
             }
         }
+
+        public async Task<BuyTicketResponseDto> RequestBuyTicketAsync(BuyTicketRequestDto buyTicketRequestDto)
+        {
+            try
+            {
+                var response = await httpService.PostAsync<BuyTicketRequestDto, BuyTicketResponseDto>(
+                TicketsEndpoint.BuyTicket, buyTicketRequestDto);
+
+                return response;
+            }
+            catch (System.Net.WebException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
+            catch (SocketException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
+        }
     }
 }
