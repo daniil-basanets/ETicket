@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.Resources;
@@ -157,7 +158,7 @@ namespace ETicketMobile.ViewModels.Registration
             {
                 await emailActivationService.RequestActivationCodeAsync(email);
             }
-            catch (Business.Exceptions.WebException)
+            catch (WebException)
             {
                 await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 

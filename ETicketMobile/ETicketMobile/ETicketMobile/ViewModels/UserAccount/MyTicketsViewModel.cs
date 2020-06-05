@@ -59,11 +59,11 @@ namespace ETicketMobile.ViewModels.BoughtTickets
             ITicketsService ticketsService
         ) : base(navigationService)
         {
-            this.dialogService = dialogService
-                ?? throw new ArgumentNullException(nameof(dialogService));
-
             this.localTokenService = localTokenService
                 ?? throw new ArgumentNullException(nameof(localTokenService));
+
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
 
             this.ticketsService = ticketsService
                 ?? throw new ArgumentNullException(nameof(ticketsService));

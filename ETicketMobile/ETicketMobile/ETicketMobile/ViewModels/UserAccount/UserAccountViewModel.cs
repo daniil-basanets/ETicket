@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Input;
 using ETicketMobile.Business.Model.UserAccount;
 using ETicketMobile.Resources;

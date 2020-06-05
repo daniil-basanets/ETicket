@@ -65,11 +65,11 @@ namespace ETicketMobile.ViewModels.Registration
             IPageDialogService dialogService
         ) : base(navigationService)
         {
-            this.dialogService = dialogService
-                ?? throw new ArgumentNullException(nameof(dialogService));
-
             this.emailActivationService = emailActivationService
                 ?? throw new ArgumentNullException(nameof(emailActivationService));
+
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
         }
 
         public override void OnAppearing()

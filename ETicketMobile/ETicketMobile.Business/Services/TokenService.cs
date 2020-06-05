@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Data.Entities;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.Endpoints;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
+using Java.Net;
 
 namespace ETicketMobile.Business.Services
 {
@@ -37,26 +37,48 @@ namespace ETicketMobile.Business.Services
                 Password = password
             };
 
-            var tokenDto = await httpService.PostAsync<UserSignInRequestDto, TokenDto>(
-                AuthorizeEndpoint.Login, userSignIn);
+            try
+            {
+                var tokenDto = await httpService.PostAsync<UserSignInRequestDto, TokenDto>(
+                    AuthorizeEndpoint.Login, userSignIn);
 
-            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
+                var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
 
-            return token;
+                return token;
+            }
+            catch (System.Net.WebException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
+            catch (SocketException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
         }
 
         public async Task<string> RefreshTokenAsync()
         {
-            var refreshToken = await localTokenService.GetReshreshTokenAsync();
+            try
+            {
+                var refreshToken = await localTokenService.GetReshreshTokenAsync();
 
-            var tokenDto = await httpService.PostAsync<string, TokenDto>(
-                AuthorizeEndpoint.RefreshToken, refreshToken);
+                var tokenDto = await httpService.PostAsync<string, TokenDto>(
+                    AuthorizeEndpoint.RefreshToken, refreshToken);
 
-            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
+                var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
 
-            await localTokenService.AddAsync(token);
+                await localTokenService.AddAsync(token);
 
-            return token.AcessJwtToken;
+                return token.AcessJwtToken;
+            }
+            catch (System.Net.WebException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
+            catch (SocketException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
         }
     }
 }

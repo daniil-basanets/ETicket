@@ -116,7 +116,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         {
             if (string.IsNullOrEmpty(email))
             {
-                //TODO incorrect
                 EmailWarning = AppResource.EmailCorrect;
 
                 return false;

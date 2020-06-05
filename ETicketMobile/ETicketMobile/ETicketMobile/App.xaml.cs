@@ -1,9 +1,14 @@
 ﻿using System.Globalization;
 using System.Threading.Tasks;
-using ETicketMobile.DataAccess.Interfaces;
+using ETicketMobile.Business.Services;
+using ETicketMobile.Business.Services.Interfaces;
+using ETicketMobile.Business.Validators;
+using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.DataAccess.LocalAPI;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.DataAccess.Repositories;
+using ETicketMobile.DataAccess.Repositories.Interfaces;
+using ETicketMobile.DataAccess.Services;
 using ETicketMobile.Resources;
 using ETicketMobile.UserInterface.Localization.Interfaces;
 using ETicketMobile.ViewModels;
@@ -25,17 +30,12 @@ using ETicketMobile.Views.Tickets;
 using ETicketMobile.Views.UserAccount;
 using ETicketMobile.Views.UserActions;
 using ETicketMobile.WebAccess.Network.Configs;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using ETicketMobile.WebAccess.Network.WebServices;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism;
 using Prism.Ioc;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using ETicketMobile.Business.Validators;
-using ETicketMobile.Business.Validators.Interfaces;
-using ETicketMobile.Business.Services;
-using ETicketMobile.Business.Services.Interfaces;
-using ETicketMobile.DataAccess.Services;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace ETicketMobile

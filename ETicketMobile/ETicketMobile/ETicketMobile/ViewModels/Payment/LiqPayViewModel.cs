@@ -24,6 +24,7 @@ namespace ETicketMobile.ViewModels.Payment
 
         private IEnumerable<int> areasId;
         private int ticketTypeId;
+
         private string email;
 
         private ICommand pay;

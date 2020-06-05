@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Business.Validators;
 using ETicketMobile.Data.Entities;
@@ -147,7 +147,6 @@ namespace ETicketMobile.ViewModels.Login
 
             if (token.RefreshJwtToken == null)
             {
-                //TODO UserDoesnExists
                 EmailWarning = AppResource.EmailWarning;
 
                 Password = string.Empty;

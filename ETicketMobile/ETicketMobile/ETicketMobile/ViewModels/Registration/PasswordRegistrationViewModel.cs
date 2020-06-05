@@ -17,9 +17,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         private string passwordWarning;
 
-        private string confirmPasswordWarning;
-
         private string confirmPassword;
+        private string confirmPasswordWarning;
 
         #endregion
 
