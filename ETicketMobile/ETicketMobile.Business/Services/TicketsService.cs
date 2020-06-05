@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
-using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Business.Services.Interfaces;
@@ -30,6 +28,37 @@ namespace ETicketMobile.Business.Services
 
             this.httpService = httpService
                 ?? throw new ArgumentNullException(nameof(httpService));
+        }
+
+        public async Task<IEnumerable<Ticket>> GetTicketsAsync(string accessToken, string email)
+        {
+            var getTicketsByEmailRequestDto = new GetTicketsByEmailRequestDto { Email = email };
+
+            try
+            {
+                var ticketsDto = await httpService.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
+                    TicketsEndpoint.GetTickets, getTicketsByEmailRequestDto, accessToken);
+
+                if (ticketsDto == null)
+                {
+                    accessToken = await tokenService.RefreshTokenAsync();
+
+                    await httpService.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
+                        TicketsEndpoint.GetTickets, getTicketsByEmailRequestDto, accessToken);
+                }
+
+                var tickets = AutoMapperConfiguration.Mapper.Map<IEnumerable<Ticket>>(ticketsDto);
+
+                return tickets;
+            }
+            catch (System.Net.WebException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
+            catch (SocketException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
         }
 
         public async Task<IList<TicketType>> GetTicketTypesAsync(string accessToken)

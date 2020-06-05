@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using ETicketMobile.Business.Mapping;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.DataAccess.Services.Interfaces;
-using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
-using Java.Net;
 using Prism.Navigation;
 using Prism.Services;
 
@@ -22,12 +16,7 @@ namespace ETicketMobile.ViewModels.BoughtTickets
 
         private readonly ILocalTokenService localTokenService;
         private readonly IPageDialogService dialogService;
-        private readonly ITokenService tokenService;
-        private readonly IHttpService httpService;
-
-        private string email;
-
-        private string accessToken;
+        private readonly ITicketsService ticketsService;
 
         private IEnumerable<Ticket> tickets;
         private IEnumerable<Ticket> unusedTickets;
@@ -67,7 +56,7 @@ namespace ETicketMobile.ViewModels.BoughtTickets
             INavigationService navigationService,
             ILocalTokenService localTokenService,
             IPageDialogService dialogService,
-            IHttpService httpService
+            ITicketsService ticketsService
         ) : base(navigationService)
         {
             this.dialogService = dialogService
@@ -76,20 +65,20 @@ namespace ETicketMobile.ViewModels.BoughtTickets
             this.localTokenService = localTokenService
                 ?? throw new ArgumentNullException(nameof(localTokenService));
 
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));
+            this.ticketsService = ticketsService
+                ?? throw new ArgumentNullException(nameof(ticketsService));
         }
 
         public async override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
-            email = navigationParameters.GetValue<string>("email")
+            var email = navigationParameters.GetValue<string>("email")
                  ?? throw new ArgumentNullException(nameof(navigationParameters));
 
             try
             {
-                accessToken = await localTokenService.GetAccessTokenAsync();
+                var accessToken = await localTokenService.GetAccessTokenAsync();
 
-                Tickets = await GetTickets();
+                Tickets = await ticketsService.GetTicketsAsync(accessToken, email);
                 UnusedTickets = GetUnusedTickets();
                 ActivatedTickets = GetActivatedTickets();
                 ExpiredTickets = GetExpiredTickets();
@@ -100,47 +89,7 @@ namespace ETicketMobile.ViewModels.BoughtTickets
 
                 return;
             }
-            catch (SocketException)
-            {
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
-
-                return;
             }
-        }
-
-        private async Task<IEnumerable<Ticket>> GetTickets()
-        {
-            var getTicketsByEmailRequestDto = new GetTicketsByEmailRequestDto { Email = email };
-
-            var ticketsDto = await httpService.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
-                    TicketsEndpoint.GetTickets, getTicketsByEmailRequestDto, accessToken);
-
-            if (ticketsDto == null)
-            {
-                accessToken = await tokenService.RefreshTokenAsync();
-
-                await httpService.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
-                    TicketsEndpoint.GetTickets, getTicketsByEmailRequestDto, accessToken);
-            }
-
-            var tickets = AutoMapperConfiguration.Mapper.Map<IEnumerable<Ticket>>(ticketsDto);
-
-            return tickets;
-        }
-
-        private async Task<string> RefreshTokenAsync()
-        {
-            var refreshToken = await localTokenService.GetReshreshTokenAsync();
-
-            var tokenDto = await httpService.PostAsync<string, TokenDto>(
-                AuthorizeEndpoint.RefreshToken, refreshToken);
-
-            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
-
-            await localTokenService.AddAsync(token);
-
-            return token.AcessJwtToken;
-        }
 
         private IEnumerable<Ticket> GetUnusedTickets()
         {
