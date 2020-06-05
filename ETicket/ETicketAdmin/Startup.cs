@@ -118,7 +118,7 @@ namespace ETicket.Admin
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Metrics}/{action=Index}");
+                    pattern: "{controller=Metrics}/{action=Index}/{id?}");
             });
         }
     }
