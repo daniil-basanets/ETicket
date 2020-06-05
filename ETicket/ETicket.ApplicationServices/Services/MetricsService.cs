@@ -26,7 +26,7 @@ namespace ETicket.ApplicationServices.Services
             this.uow = uow;
         }
 
-        public ChartDto PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod)
+        public ChartDto PassengersByPrivileges(DateTime startPeriod, DateTime endPeriod, int[] selectedRoutes)
         {
             if (startPeriod.CompareTo(endPeriod) == 1)
             {
@@ -34,7 +34,8 @@ namespace ETicket.ApplicationServices.Services
             }
 
             var data = uow.TicketVerifications.GetAll()
-                .Where(d => d.VerificationUTCDate >= startPeriod && d.VerificationUTCDate <= endPeriod && d.IsVerified)
+                .Where(d => d.VerificationUTCDate >= startPeriod && d.VerificationUTCDate <= endPeriod && d.IsVerified && 
+                            (selectedRoutes.Length == 0 || selectedRoutes.Contains(d.Transport.RouteId)))
                 .Include(t => t.Ticket)
                 .ThenInclude(u => u.User)
                 .ThenInclude(p => p.Privilege)
@@ -48,17 +49,7 @@ namespace ETicket.ApplicationServices.Services
 
             return chartDto;
         }
-
-        public ChartDto PassengersByRoutes(DateTime startPeriod, DateTime endPeriod, int[] selectedRoutesId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ChartDto PassengersByTime(DateTime startPeriod, DateTime endPeriod, int routeId)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public ChartDto TicketsByTicketTypes(DateTime startPeriod, DateTime endPeriod)
         {
             if (startPeriod.CompareTo(endPeriod) == 1)
