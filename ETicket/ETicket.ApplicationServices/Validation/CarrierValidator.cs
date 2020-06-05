@@ -27,10 +27,10 @@ namespace ETicket.ApplicationServices.Validation
             RuleFor(t => t.Phone)
                 .NotEmpty()
                 .NotNull()
-                .Must(IsValidPhoneNumber);
+                .Must(IsPhoneNumberValid);
         }
 
-        private bool IsValidPhoneNumber(string phoneNumber)
+        private bool IsPhoneNumberValid(string phoneNumber)
         {
             if (phoneNumber == null)
             {
