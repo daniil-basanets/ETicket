@@ -67,7 +67,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         #region Create
 
         [Fact]
-        public void Create_Carrier_ShouldBeNotNull()
+        public void Create_ValidCarrierDto_EntityModelNotNull()
         {
             carrierService.Create(carrierDto);
 
@@ -77,7 +77,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
-        public void Create_Carrier_CheckNameInNewObject_ShouldBeTheSameAsInFake()
+        public void Create_ValidCarrierDto_NameShouldBeTheSameAsInEntityModel()
         {
             carrierService.Create(carrierDto);
 
@@ -88,7 +88,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
-        public void Create_Carrier_AddNewObject_CountShouldIncrease()
+        public void Create_ValidCarrierDto_CarriersCountShouldIncrease()
         {
             var expected = fakeCarriers.Count + 1;
 
@@ -106,7 +106,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [InlineData(" \r \t \n")]
         [InlineData("q")]
         [InlineData("qwertyuioplkjhgfdsazxcvbnmetretertretertertsadasdsd")]
-        public void Create_Carrier_ShouldFailNameIsInvalid(string name)
+        public void Create_InvalidCarrierName_ShouldFail(string name)
         {
             carrierDto.Name = name;
             Action action = () => carrierService.Create(carrierDto);
@@ -121,7 +121,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [InlineData(" \r \t \n")]
         [InlineData("q")]
         [InlineData("qwertyuioplkjhgfdsazxcvbnmetret")]
-        public void Create_Carrier_ShouldFailIBANIsInvalid(string iban)
+        public void Create_InvalidCarrierIban_ShouldFail(string iban)
         {
             carrierDto.IBAN = iban;
             Action action = () => carrierService.Create(carrierDto);
@@ -137,7 +137,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [InlineData("q")]
         [InlineData("qwertyuioplkjhgfdsazxcvbnmetretertretertertsadasdsadsa")]
         [InlineData("*/--+//-+-#$(")]
-        public void Create_Carrier_ShouldFailPhoneIsInvalid(string phone)
+        public void Create_InvalidCarrierPhone_ShouldFail(string phone)
         {
             carrierDto.Phone = phone;
             Action action = () => carrierService.Create(carrierDto);
@@ -152,7 +152,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [InlineData(" \r \t \n")]
         [InlineData("q")]
         [InlineData("qwertyuioplkjhgfdsazxcvbnmetretertretertertsadasdsadsa")]
-        public void Create_Carrier_ShouldFailAddressIsInvalid(string address)
+        public void Create_InvalidCarrierAddress_ShouldFail(string address)
         {
             carrierDto.Address = address;
             Action action = () => carrierService.Create(carrierDto);
@@ -161,7 +161,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
-        public void Create_Carrier_ShouldFailDtoShouldNotBeNull()
+        public void Create_NullCarrierDto_ShouldFail()
         {
             Assert.Throws<ArgumentNullException>(() => carrierService.Create(null));
         }
@@ -177,7 +177,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [InlineData(" \r \t \n")]
         [InlineData("q")]
         [InlineData("qwertyuioplkjhgfdsazxcvbnmetretertretertertsadasdsadsa")]
-        public void Update_Carrier_ShouldFailNameIsInvalid(string name)
+        public void Update_InvalidCarrierName_ShouldFail(string name)
         {
             carrierDto.Name = name;
             Action action = () => carrierService.Update(carrierDto);
@@ -186,7 +186,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
-        public void Update_Carrier_NameShouldBeEqualDTOsName()
+        public void Update_ValidCarrierDto_NameShouldBeEqualDTOsName()
         {
             carrierDto.Name = "UpdatedName";
             var expected = carrierDto.Name;
@@ -203,7 +203,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         #region Delete
 
         [Fact]
-        public void Delete_Carrier_CountShouldDecrease()
+        public void Delete_ValidCarrierId_CarriersCountShouldDecrease()
         {
             var expected = fakeCarriers.Count - 1;
 
@@ -217,7 +217,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [Theory]
         [InlineData(0)]
         [InlineData(-100)]
-        public void Delete_Carrier_IdShouldBeGreaterZero(int id)
+        public void Delete_InvalidCarrierId_ShouldFail(int id)
         {
             Action action = () => carrierService.Delete(id);
 
@@ -229,7 +229,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         #region GetAll
 
         [Fact]
-        public void GetAll_CheckNull_ShouldBeNotNull()
+        public void GetAll_NoParameters_ReturnShouldBeNotNull()
         {
             var actual = carrierService.GetAll();
 
@@ -237,7 +237,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         }
 
         [Fact]
-        public void GetAll_CompareCount_ShouldBeEqual()
+        public void GetAll_NoParameters_ReturnCountShouldBeEqual()
         {
             var carriers = carrierService.GetAll();
 
@@ -256,7 +256,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [InlineData(2)]
         [InlineData(1)]
         [InlineData(6)]
-        public void Get_CheckName_ShouldBeTheSameAsInFake(int id)
+        public void Get_ValidCarrierId_NameShouldBeTheSameAsInFake(int id)
         {
             var expected = fakeCarriers.Single(t => t.Id == id).Name;
             var actual = carrierService.Get(id).Name;
@@ -269,7 +269,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [InlineData(0)]
         [InlineData(100)]
         [InlineData(int.MaxValue)]
-        public void Get_ShouldBeGreaterZero(int id)
+        public void Get_InvalidCarrierId_ShouldFail(int id)
         {
             Action action = () => carrierService.Get(id);
 
