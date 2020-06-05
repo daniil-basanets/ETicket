@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ETicketMobile.Business.Exceptions;
+using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Business.Validators;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Login;
-using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -21,7 +19,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         private INavigationParameters navigationParameters;
 
         private readonly IPageDialogService dialogService;
-        private readonly IHttpService httpService;
+        private readonly IUserService userService;
 
         private ICommand navigateToSignInView;
 
@@ -68,14 +66,14 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         public CreateNewPasswordViewModel(
             INavigationService navigationService,
             IPageDialogService dialogService,
-            IHttpService httpService
+            IUserService userService
         ) : base(navigationService)
         {
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));
+            this.userService = userService
+                ?? throw new ArgumentNullException(nameof(userService));
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -98,7 +96,9 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             {
                 IsDataLoad = true;
 
-                if (!await RequestChangePasswordAsync(password))
+                var email = navigationParameters.GetValue<string>("email");
+
+                if (!await userService.RequestChangePasswordAsync(email, password))
                     return;
             }
             catch (WebException)
@@ -113,28 +113,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             await NavigationService.NavigateAsync(nameof(LoginView));
 
             IsDataLoad = false;
-        }
-
-        private async Task<bool> RequestChangePasswordAsync(string password)
-        {
-            var email = navigationParameters.GetValue<string>("email");
-
-            var createNewPasswordDto = CreateNewPasswordDto(email, password);
-            var response = await httpService.PostAsync<CreateNewPasswordRequestDto, CreateNewPasswordResponseDto>(
-                    AuthorizeEndpoint.ResetPassword,
-                    createNewPasswordDto
-            );
-
-            return response.Succeeded;
-        }
-
-        private CreateNewPasswordRequestDto CreateNewPasswordDto(string email, string password)
-        {
-            return new CreateNewPasswordRequestDto
-            {
-                Email = email,
-                NewPassword = password
-            };
         }
 
         #region Validation

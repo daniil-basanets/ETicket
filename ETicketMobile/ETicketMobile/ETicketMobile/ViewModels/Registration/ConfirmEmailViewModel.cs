@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
-using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.UserActions;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -27,7 +23,7 @@ namespace ETicketMobile.ViewModels.Registration
         private readonly ILocalTokenService localTokenService;
         private readonly IPageDialogService dialogService;
         private readonly ITokenService tokenService;
-        private readonly IHttpService httpService;
+        private readonly IUserService userService;
 
         private Timer timer;
 
@@ -86,7 +82,7 @@ namespace ETicketMobile.ViewModels.Registration
             ILocalTokenService localTokenService,
             IPageDialogService dialogService,
             ITokenService tokenService,
-            IHttpService httpService
+            IUserService userService
         ) : base(navigationService)
         {
             this.emailActivationService = emailActivationService
@@ -101,8 +97,8 @@ namespace ETicketMobile.ViewModels.Registration
             this.tokenService = tokenService
                 ?? throw new ArgumentNullException(nameof(tokenService));
 
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));
+            this.userService = userService
+                ?? throw new ArgumentNullException(nameof(userService));
         }
 
         public override void OnAppearing()
@@ -215,9 +211,9 @@ namespace ETicketMobile.ViewModels.Registration
                 return false;
             }
 
-            var userCreated = await CreateNewUserAsync();
+            await CreateNewUserAsync();
 
-            return userCreated;
+            return true;
         }
 
         #region Validation
@@ -249,14 +245,11 @@ namespace ETicketMobile.ViewModels.Registration
             };
         }
 
-        private async Task<bool> CreateNewUserAsync()
+        private async Task CreateNewUserAsync()
         {
             var user = CreateUserSignUpRequest();
 
-            var response = await httpService
-                .PostAsync<UserSignUpRequestDto, UserSignUpResponseDto>(AuthorizeEndpoint.Registration, user);
-
-            return response.Succeeded;
+            await userService.CreateNewUserAsync(user);
         }
     }
 }

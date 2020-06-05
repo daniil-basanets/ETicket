@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ETicketMobile.Business.Exceptions;
+using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Views.Registration;
-using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -24,8 +23,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         private INavigationParameters navigationParameters;
 
+        private readonly IEmailActivationService emailActivationService;
         private readonly IPageDialogService dialogService;
-        private readonly IHttpService httpService;
 
         private ICommand navigateToConfirmEmailView;
 
@@ -61,16 +60,16 @@ namespace ETicketMobile.ViewModels.Registration
         #endregion
 
         public BirthdayRegistrationViewModel(
+            IEmailActivationService emailActivationService,
             INavigationService navigationService,
-            IPageDialogService dialogService,
-            IHttpService httpService
+            IPageDialogService dialogService
         ) : base(navigationService)
         {
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));
+            this.emailActivationService = emailActivationService
+                ?? throw new ArgumentNullException(nameof(emailActivationService));
         }
 
         public override void OnAppearing()
@@ -102,7 +101,7 @@ namespace ETicketMobile.ViewModels.Registration
 
             try
             {
-                await RequestActivationCodeAsync(email);
+                await emailActivationService.RequestActivationCodeAsync(email);
             }
             catch (WebException)
             {
@@ -113,11 +112,6 @@ namespace ETicketMobile.ViewModels.Registration
 
             navigationParameters.Add("birth", birthday);
             await NavigationService.NavigateAsync(nameof(ConfirmEmailView), navigationParameters);
-        }
-
-        private async Task RequestActivationCodeAsync(string email)
-        {
-            await httpService.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
     }
 }

@@ -10,7 +10,6 @@ using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.Views.UserActions;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -24,7 +23,6 @@ namespace ETicketMobile.ViewModels.Login
         private readonly ILocalTokenService localTokenService;
         private readonly IPageDialogService dialogService;
         private readonly ITokenService tokenService;
-        private readonly IHttpService httpService;
 
         private ICommand navigateToRegistrationView;
         private ICommand navigateToForgetPasswordView;
@@ -87,8 +85,7 @@ namespace ETicketMobile.ViewModels.Login
             INavigationService navigationService,
             ILocalTokenService localTokenService,
             IPageDialogService dialogService,
-            ITokenService tokenService,
-            IHttpService httpService
+            ITokenService tokenService
         ) : base(navigationService)
         {
             this.localTokenService = localTokenService
@@ -99,9 +96,6 @@ namespace ETicketMobile.ViewModels.Login
 
             this.tokenService = tokenService
                 ?? throw new ArgumentNullException(nameof(tokenService));
-
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnAppearing()
