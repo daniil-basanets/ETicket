@@ -51,11 +51,6 @@ namespace ETicket.ApplicationServices.Services
         {
             var carriers = uow.Carriers.GetAll();
 
-            if (carriers == null)
-            {
-                throw new NullReferenceException("Not found");
-            }
-
             return mapper.Map<IQueryable<Carrier>, IEnumerable<CarrierDto>>(carriers).ToList();
         }
 
