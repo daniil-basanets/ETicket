@@ -145,8 +145,10 @@ namespace ETicketMobile.ViewModels.Login
                 return;
             }
 
-            if (token.RefreshJwtToken == null)
+            if (token == null)
             {
+                IsDataLoad = false;
+
                 EmailWarning = AppResource.EmailWarning;
 
                 Password = string.Empty;
