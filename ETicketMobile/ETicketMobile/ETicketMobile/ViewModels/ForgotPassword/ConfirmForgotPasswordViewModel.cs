@@ -6,7 +6,6 @@ using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -136,7 +135,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             {
                 await emailActivationService.RequestActivationCodeAsync(email);
             }
-            catch (EmailActivationException)
+            catch (WebException)
             {
                 await dialogService.DisplayAlertAsync("Error", "Check connection with server.", "OK");
 
@@ -170,7 +169,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
                 ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
             }
-            catch (EmailActivationException)
+            catch (WebException)
             {
                 await dialogService.DisplayAlertAsync("Error", "Check connection with server.", "OK");
             }

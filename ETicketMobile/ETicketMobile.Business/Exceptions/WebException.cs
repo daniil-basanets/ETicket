@@ -3,9 +3,9 @@
 namespace ETicketMobile.Business.Exceptions
 {
 
-    public class EmailActivationException : Exception
+    public class WebException : Exception
     {
-        public EmailActivationException(string message, Exception innerException)
+        public WebException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

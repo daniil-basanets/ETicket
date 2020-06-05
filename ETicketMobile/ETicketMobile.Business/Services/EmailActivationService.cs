@@ -39,13 +39,13 @@ namespace ETicketMobile.Business.Services
 
                 return response.Succeeded;
             }
-            catch (WebException ex)
+            catch (System.Net.WebException ex)
             {
-                throw new EmailActivationException("Server exception", ex);
+                throw new Exceptions.WebException("Server exception", ex);
             }
             catch (SocketException ex)
             {
-                throw new EmailActivationException("Server exception", ex);
+                throw new Exceptions.WebException("Server exception", ex);
             }
         }
 
@@ -55,13 +55,13 @@ namespace ETicketMobile.Business.Services
             {
                 await httpService.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
             }
-            catch (WebException ex)
+            catch (System.Net.WebException ex)
             {
-                throw new EmailActivationException("Server exception", ex);
+                throw new Exceptions.WebException("Server exception", ex);
             }
             catch (SocketException ex)
             {
-                throw new EmailActivationException("Server exception", ex);
+                throw new Exceptions.WebException("Server exception", ex);
             }
         }
     }

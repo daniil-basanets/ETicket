@@ -161,7 +161,7 @@ namespace ETicketMobile.ViewModels.Registration
             {
                 await emailActivationService.RequestActivationCodeAsync(email);
             }
-            catch (EmailActivationException)
+            catch (Business.Exceptions.WebException)
             {
                 await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
 
@@ -191,7 +191,7 @@ namespace ETicketMobile.ViewModels.Registration
                 var token = await tokenService.GetTokenAsync(email, password);
                 await localTokenService.AddAsync(token);
             }
-            catch (EmailActivationException)
+            catch (Business.Exceptions.WebException)
             {
                 IsDataLoad = false;
 
