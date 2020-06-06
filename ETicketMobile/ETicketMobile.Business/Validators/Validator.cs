@@ -22,7 +22,7 @@ namespace ETicketMobile.Business.Validators
         private const int PhoneMaxLength = 13;
 
         private const int MinAge = 13;
-        private const int MaxAge = 110;
+        private const int MaxAge = 120;
 
         private const int DocumentMinLength = 5;
         private const int DocumentMaxLength = 15;
