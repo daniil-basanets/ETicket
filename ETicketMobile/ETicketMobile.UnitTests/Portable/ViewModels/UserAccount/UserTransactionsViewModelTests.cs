@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using ETicketMobile.Business.Model.Transactions;
 using ETicketMobile.Business.Services.Interfaces;
-using ETicketMobile.UnitTests.Portable.Comparer;
 using ETicketMobile.ViewModels.UserAccount;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;

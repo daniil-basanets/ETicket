@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using ETicketMobile.Business.Services;
 using ETicketMobile.Data.Entities;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;

@@ -1,6 +1,4 @@
-﻿using System.Windows.Input;
-
-namespace ETicketMobile.Business.Model.Tickets
+﻿namespace ETicketMobile.Business.Model.Tickets
 {
     public class Area
     {

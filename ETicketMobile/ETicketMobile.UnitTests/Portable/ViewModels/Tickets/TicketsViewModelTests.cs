@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Business.Services.Interfaces;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.DataAccess.Services.Interfaces;
-using ETicketMobile.UnitTests.Portable.Comparer;
 using ETicketMobile.ViewModels.Tickets;
 using ETicketMobile.WebAccess;
 using ETicketMobile.WebAccess.DTO;
