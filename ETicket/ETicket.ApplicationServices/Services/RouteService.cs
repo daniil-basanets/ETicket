@@ -26,11 +26,9 @@ namespace ETicket.ApplicationServices.Services
 
             unitOfWork.Save();
             
-            int iter = 1;
-            
-            foreach (var stationId in routeDto.StationIds)
+            for (int i = 0; i < routeDto.StationIds.Count; i++)
             {
-                unitOfWork.RouteStation.Create(new RouteStation() { RouteId = route.Id, StationId = stationId, StationOrderNumber = iter++ });
+                unitOfWork.RouteStation.Create(new RouteStation() { RouteId = route.Id, StationId = routeDto.StationIds[i], StationOrderNumber = i+1 });
             }
 
             unitOfWork.Save();
