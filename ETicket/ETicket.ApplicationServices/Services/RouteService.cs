@@ -55,8 +55,6 @@ namespace ETicket.ApplicationServices.Services
                 unitOfWork.RouteStation.Create(new RouteStation() { RouteId = routeToUpdate.Id, StationId = stationId, StationOrderNumber = iter++}); 
             }
 
-            unitOfWork.Save();
-
             unitOfWork.Routes.Update(routeToUpdate);
 
             unitOfWork.Save();

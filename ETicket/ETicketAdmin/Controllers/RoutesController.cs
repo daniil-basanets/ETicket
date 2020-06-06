@@ -93,7 +93,7 @@ namespace ETicket.Admin.Controllers
 
                 throw;
             }
-            
+
         }
 
         [HttpPost]
@@ -140,8 +140,6 @@ namespace ETicket.Admin.Controllers
             try
             {
                 var route = routeService.GetRouteById(id.Value);
-                                              
-
 
                 if (route == null)
                 {
