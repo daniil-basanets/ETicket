@@ -166,6 +166,7 @@ namespace ETicket.Admin.Controllers
             }
         }
 
+
         [HttpGet]
         public IActionResult PassengerTrafficByDaysOfWeekChart()
         {
@@ -193,6 +194,25 @@ namespace ETicket.Admin.Controllers
                 ChartDto chartDtoTicketsByTicketTypes = metricsService.PassengersByDaysOfWeek(startPeriod, endPeriod);
 
                 return Json(chartDtoTicketsByTicketTypes);
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetMultiRoutesPassengersByDaysOfWeek(DateTime startPeriod, DateTime endPeriod, int[] selectedRoutesId)
+        {
+            log.Info(nameof(MetricsController.GetMultiRoutesPassengersByDaysOfWeek));
+
+            try
+            {
+                MultiLineChartDto chartDto = metricsService.PassengersByDaysOfWeek(startPeriod, endPeriod, selectedRoutesId);
+
+                return Json(chartDto);
             }
             catch (Exception e)
             {
