@@ -7,7 +7,6 @@ using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
-using Prism.Behaviors;
 using Xunit;
 
 namespace ETicketMobile.UnitTests.Business.Services
