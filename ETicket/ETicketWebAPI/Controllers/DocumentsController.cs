@@ -6,21 +6,23 @@ using ETicket.ApplicationServices.DTOs;
 using log4net;
 using System.Reflection;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ETicket.WebAPI.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "Admin, SuperUser")]
     [Route("api/documents")]
     [SwaggerTag("Document service")]
     public class DocumentsController : BaseAPIController
     {
-        IDocumentService documentService;
+        private readonly IDocumentService documentService;
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public DocumentsController(IDocumentService iDocumentService)
+        public DocumentsController(IDocumentService documentService)
         {
-            documentService = iDocumentService;
+            this.documentService = documentService;
         }
 
         [HttpGet]

@@ -6,20 +6,22 @@ using log4net;
 using System.Reflection;
 using System;
 using ETicket.ApplicationServices.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ETicket.WebAPI.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "Admin, SuperUser")]
     [Route("api/routes")]
     public class RoutesController : BaseAPIController
     {
-        IRouteService routeService;
+        private readonly IRouteService routeService;
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public RoutesController(IRouteService iRouteService)
+        public RoutesController(IRouteService routeService)
         {
-            routeService = iRouteService;
+            this.routeService = routeService;
         }
 
         [HttpGet]
@@ -58,6 +60,7 @@ namespace ETicket.WebAPI.Controllers
             }           
         }
 
+
         [HttpPut("{id}")]
         public IActionResult UpdateRoute(int id, RouteDto routeDto)
         {
@@ -84,7 +87,7 @@ namespace ETicket.WebAPI.Controllers
                 log.Error(e);
 
                 return BadRequest();
-            }            
+            }
         }
 
         [HttpPost]
@@ -108,7 +111,7 @@ namespace ETicket.WebAPI.Controllers
                 log.Error(e);
 
                 return BadRequest();
-            }            
+            }
         }
 
         [HttpDelete("{id}")]
@@ -134,7 +137,7 @@ namespace ETicket.WebAPI.Controllers
                 log.Error(e);
 
                 return BadRequest();
-            }            
+            }
         }
     }
 }
