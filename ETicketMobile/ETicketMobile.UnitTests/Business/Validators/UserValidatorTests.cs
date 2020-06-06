@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Validators;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
@@ -17,17 +18,22 @@ namespace ETicketMobile.UnitTests.Business.Validators
         private readonly UserValidator userValidator;
         private readonly SignUpResponseDto signUpResponseDto;
 
+        private readonly string email;
+
         #endregion
 
         public UserValidatorTests()
         {
             httpServiceMock = new Mock<IHttpService>();
 
+            email = "email";
+
             signUpResponseDto = new SignUpResponseDto();
             httpServiceMock
-                .Setup(hs => hs.PostAsync<SignUpRequestDto, SignUpResponseDto>(
+                .SetupSequence(hs => hs.PostAsync<SignUpRequestDto, SignUpResponseDto>(
                     It.IsAny<Uri>(), It.IsAny<SignUpRequestDto>(), It.IsAny<string>()))
-                .ReturnsAsync(signUpResponseDto);
+                .ReturnsAsync(signUpResponseDto)
+                .ThrowsAsync(new System.Net.WebException());
 
             userValidator = new UserValidator(httpServiceMock.Object);
         }
@@ -46,7 +52,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
             signUpResponseDto.Succeeded = true;
 
             // Act
-            var userExists = await userValidator.UserExistsAsync("email");
+            var userExists = await userValidator.UserExistsAsync(email);
 
             // Assert
             Assert.True(userExists);
@@ -59,10 +65,20 @@ namespace ETicketMobile.UnitTests.Business.Validators
             signUpResponseDto.Succeeded = false;
 
             // Act
-            var userExists = await userValidator.UserExistsAsync("email");
+            var userExists = await userValidator.UserExistsAsync(email);
 
             // Assert
             Assert.False(userExists);
+        }
+
+        [Fact]
+        public async Task GetTokenAsync_AccessToken_ShouldThrowException()
+        {
+            // Act
+            await userValidator.UserExistsAsync(email);
+
+            // Assert
+            await Assert.ThrowsAsync<WebException>(() => userValidator.UserExistsAsync(email));
         }
     }
 }
