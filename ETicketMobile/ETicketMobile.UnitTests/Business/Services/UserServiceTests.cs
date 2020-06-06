@@ -1,0 +1,123 @@
+﻿using System;
+using System.Threading.Tasks;
+using ETicketMobile.Business.Services;
+using ETicketMobile.Business.Services.Interfaces;
+using ETicketMobile.WebAccess.DTO;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
+using Moq;
+using Xunit;
+
+namespace ETicketMobile.UnitTests.Business.Services
+{
+    public class UserServiceTests
+    {
+        #region Fields
+
+        private readonly IUserService userService;
+
+        private readonly Mock<IHttpService> httpServiceMock;
+
+        private readonly CreateNewPasswordResponseDto createNewPasswordResponseDto;
+
+        private readonly UserSignUpRequestDto userSignUpRequestDto;
+        private readonly UserSignUpResponseDto userSignUpResponseDto;
+
+        private readonly string email;
+        private readonly string password;
+
+        #endregion
+
+        public UserServiceTests()
+        {
+            email = "email";
+            password = "password";
+
+            createNewPasswordResponseDto = new CreateNewPasswordResponseDto();
+
+            userSignUpRequestDto = new UserSignUpRequestDto
+            {
+                Email = email,
+                Password = password,
+                FirstName = "firstName",
+                LastName = "lastName",
+                Phone = "+380679953365",
+                DateOfBirth = DateTime.Parse("12/02/1997 12:30:01")
+            };
+
+            userSignUpResponseDto = new UserSignUpResponseDto();
+
+            httpServiceMock = new Mock<IHttpService>();
+
+            httpServiceMock
+                    .Setup(hs => hs.PostAsync<CreateNewPasswordRequestDto, CreateNewPasswordResponseDto>(
+                        It.IsAny<Uri>(), It.IsAny<CreateNewPasswordRequestDto>(), It.IsAny<string>()))
+                    .ReturnsAsync(createNewPasswordResponseDto);
+
+            httpServiceMock
+                    .Setup(hs => hs.PostAsync<UserSignUpRequestDto, UserSignUpResponseDto>(
+                        It.IsAny<Uri>(), It.IsAny<UserSignUpRequestDto>(), It.IsAny<string>()))
+                    .ReturnsAsync(userSignUpResponseDto);
+
+            userService = new UserService(httpServiceMock.Object);
+        }
+
+        [Fact]
+        public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
+        {
+            // Assert
+            Assert.Throws<ArgumentNullException>(() => new UserService(null));
+        }
+
+        [Fact]
+        public async Task RequestChangePasswordAsync_ReturnsTrue()
+        {
+            // Arrange
+            createNewPasswordResponseDto.Succeeded = true;
+
+            // Act
+            var actualResult = await userService.RequestChangePasswordAsync(email, password);
+
+            // Assert
+            Assert.True(actualResult);
+        }
+
+        [Fact]
+        public async Task RequestChangePasswordAsync_ReturnsFalse()
+        {
+            // Arrange
+            createNewPasswordResponseDto.Succeeded = false;
+
+            // Act
+            var actualResult = await userService.RequestChangePasswordAsync(email, password);
+
+            // Assert
+            Assert.False(actualResult);
+        }
+
+        [Fact]
+        public async Task CreateNewUserAsync_ReturnsTrue()
+        {
+            // Arrange
+            userSignUpResponseDto.Succeeded = true;
+
+            // Act
+            var actualResult = await userService.CreateNewUserAsync(userSignUpRequestDto);
+
+            // Assert
+            Assert.True(actualResult);
+        }
+
+        [Fact]
+        public async Task CreateNewUserAsync_ReturnsFalse()
+        {
+            // Arrange
+            userSignUpResponseDto.Succeeded = false;
+
+            // Act
+            var actualResult = await userService.CreateNewUserAsync(userSignUpRequestDto);
+
+            // Assert
+            Assert.False(actualResult);
+        }
+    }
+}
