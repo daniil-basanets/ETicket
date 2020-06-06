@@ -82,6 +82,13 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
+        public void OnNavigatedTo_CheckNullableNavigationParameters_ShouldThrowException()
+        {
+            // Assert
+            Assert.Throws<NullReferenceException>(() => userTransactionsViewModel.OnNavigatedTo(null));
+        }
+
+        [Fact]
         public void OnNavigatedTo_CompareTransactions_ShouldBeEqual()
         {
             // Arrange
