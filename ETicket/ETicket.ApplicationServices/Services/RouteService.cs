@@ -21,8 +21,18 @@ namespace ETicket.ApplicationServices.Services
 
         public void Create(RouteDto routeDto)
         {
-            var routeService = mapper.Map<RouteDto, Route>(routeDto);
-            unitOfWork.Routes.Create(routeService);
+            var route = mapper.Map<RouteDto, Route>(routeDto);
+            unitOfWork.Routes.Create(route);
+
+            unitOfWork.Save();
+            
+            int iter = 1;
+            
+            foreach (var stationId in routeDto.StationIds)
+            {
+                unitOfWork.RouteStation.Create(new RouteStation() { RouteId = route.Id, StationId = stationId, StationOrderNumber = iter++ });
+            }
+
             unitOfWork.Save();
         }
 
@@ -54,8 +64,6 @@ namespace ETicket.ApplicationServices.Services
             {
                 unitOfWork.RouteStation.Create(new RouteStation() { RouteId = routeToUpdate.Id, StationId = stationId, StationOrderNumber = iter++}); 
             }
-
-            unitOfWork.Save();
 
             unitOfWork.Routes.Update(routeToUpdate);
 
