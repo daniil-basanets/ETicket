@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Services;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
+using Prism.Behaviors;
 using Xunit;
 
 namespace ETicketMobile.UnitTests.Business.Services
@@ -93,10 +95,13 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public void GetTokenAsync_AccessToken_ShouldThrowException()
+        public async Task GetTokenAsync_AccessToken_ShouldThrowException()
         {
+            // Act
+            await tokenService.GetTokenAsync(email, password);
+
             // Assert
-            Assert.ThrowsAsync<System.Net.WebException>(() => tokenService.GetTokenAsync(email, password));
+            await Assert.ThrowsAsync<WebException>(() => tokenService.GetTokenAsync(email, password));
         }
 
         [Fact]
@@ -105,17 +110,18 @@ namespace ETicketMobile.UnitTests.Business.Services
             // Act
             var accessToken = await tokenService.RefreshTokenAsync();
 
-            localTokenServiceMock.Verify(lts => lts.AddAsync(It.IsAny<Token>()));
-
             // Assert
             Assert.Equal(tokenDto.AcessJwtToken, accessToken);
         }
 
         [Fact]
-        public void GetTokenAsync_RefreshToken_ShouldThrowException()
+        public async Task GetTokenAsync_RefreshToken_ShouldThrowException()
         {
+            // Act
+            await tokenService.RefreshTokenAsync();
+
             // Assert
-            Assert.ThrowsAsync<System.Net.WebException>(() => tokenService.RefreshTokenAsync());
+            await Assert.ThrowsAsync<WebException>(() => tokenService.RefreshTokenAsync());
         }
 
         [Fact]

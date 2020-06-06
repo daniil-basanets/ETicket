@@ -7,6 +7,7 @@ using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.DataAccess.Services.Interfaces;
+using ETicketMobile.UnitTests.Comparers;
 using ETicketMobile.UnitTests.Portable.Comparer;
 using ETicketMobile.ViewModels.BoughtTickets;
 using ETicketMobile.WebAccess.DTO;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Model.Transactions;
 using ETicketMobile.Business.Services;
 using ETicketMobile.Business.Services.Interfaces;
@@ -78,9 +79,10 @@ namespace ETicketMobile.UnitTests.Business.Services
             };
 
             httpServiceMock
-                    .Setup(hs => hs.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>>(
+                    .SetupSequence(hs => hs.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>>(
                         It.IsAny<Uri>(), It.IsAny<GetTransactionsRequestDto>(), It.IsAny<string>()))
-                    .ReturnsAsync(transactionsDto);
+                    .ReturnsAsync(transactionsDto)
+                    .ThrowsAsync(new System.Net.WebException());
 
             transactionService = new TransactionService(httpServiceMock.Object);
         }
@@ -103,6 +105,16 @@ namespace ETicketMobile.UnitTests.Business.Services
 
             // Assert
             Assert.Equal(transactions, actualTransactions, transactionEqualityComparer);
+        }
+
+        [Fact]
+        public async Task GetTransactionsAsync_Transactions_ShouldThrowException()
+        {
+            // Act
+            await transactionService.GetTransactionsAsync(email);
+
+            // Assert
+            await Assert.ThrowsAsync<WebException>(() => transactionService.GetTransactionsAsync(email));
         }
     }
 }

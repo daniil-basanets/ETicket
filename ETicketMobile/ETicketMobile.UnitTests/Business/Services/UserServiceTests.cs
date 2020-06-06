@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Services;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.WebAccess.DTO;
@@ -49,14 +50,16 @@ namespace ETicketMobile.UnitTests.Business.Services
             httpServiceMock = new Mock<IHttpService>();
 
             httpServiceMock
-                    .Setup(hs => hs.PostAsync<CreateNewPasswordRequestDto, CreateNewPasswordResponseDto>(
+                    .SetupSequence(hs => hs.PostAsync<CreateNewPasswordRequestDto, CreateNewPasswordResponseDto>(
                         It.IsAny<Uri>(), It.IsAny<CreateNewPasswordRequestDto>(), It.IsAny<string>()))
-                    .ReturnsAsync(createNewPasswordResponseDto);
+                    .ReturnsAsync(createNewPasswordResponseDto)
+                    .ThrowsAsync(new System.Net.WebException());
 
             httpServiceMock
-                    .Setup(hs => hs.PostAsync<UserSignUpRequestDto, UserSignUpResponseDto>(
+                    .SetupSequence(hs => hs.PostAsync<UserSignUpRequestDto, UserSignUpResponseDto>(
                         It.IsAny<Uri>(), It.IsAny<UserSignUpRequestDto>(), It.IsAny<string>()))
-                    .ReturnsAsync(userSignUpResponseDto);
+                    .ReturnsAsync(userSignUpResponseDto)
+                    .ThrowsAsync(new System.Net.WebException());
 
             userService = new UserService(httpServiceMock.Object);
         }
@@ -95,6 +98,16 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
+        public async Task RequestChangePasswordAsync_ShouldThrowException()
+        {
+            // Act
+            await userService.RequestChangePasswordAsync(email, password);
+
+            // Assert
+            await Assert.ThrowsAsync<WebException>(() => userService.RequestChangePasswordAsync(email, password));
+        }
+
+        [Fact]
         public async Task CreateNewUserAsync_ReturnsTrue()
         {
             // Arrange
@@ -118,6 +131,16 @@ namespace ETicketMobile.UnitTests.Business.Services
 
             // Assert
             Assert.False(actualResult);
+        }
+
+        [Fact]
+        public async Task CreateNewUserAsync_ShouldThrowException()
+        {
+            // Act
+            await userService.CreateNewUserAsync(userSignUpRequestDto);
+
+            // Assert
+            await Assert.ThrowsAsync<WebException>(() => userService.CreateNewUserAsync(userSignUpRequestDto));
         }
     }
 }
