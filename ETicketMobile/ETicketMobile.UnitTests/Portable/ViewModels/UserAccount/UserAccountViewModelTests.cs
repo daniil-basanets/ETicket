@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using ETicketMobile.Business.Model.UserAccount;
-using ETicketMobile.UnitTests.Portable.Comparer;
+using ETicketMobile.UnitTests.Comparers;
 using ETicketMobile.ViewModels.UserAccount;
 using ETicketMobile.Views.Tickets;
 using ETicketMobile.Views.UserAccount;
