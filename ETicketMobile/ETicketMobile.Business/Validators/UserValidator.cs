@@ -4,6 +4,7 @@ using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.Endpoints;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
+using Java.Net;
 
 namespace ETicketMobile.Business.Validators
 {
@@ -23,12 +24,23 @@ namespace ETicketMobile.Business.Validators
 
         public async Task<bool> UserExistsAsync(string email)
         {
-            var signUpRequestDto = new SignUpRequestDto { Email = email };
+            try
+            {
+                var signUpRequestDto = new SignUpRequestDto { Email = email };
 
-            var isUserExists = await httpService.PostAsync<SignUpRequestDto, SignUpResponseDto>(
-                AuthorizeEndpoint.CheckUserExists, signUpRequestDto);
+                var isUserExists = await httpService.PostAsync<SignUpRequestDto, SignUpResponseDto>(
+                    AuthorizeEndpoint.CheckUserExists, signUpRequestDto);
 
-            return isUserExists.Succeeded;
+                return isUserExists.Succeeded;
+            }
+            catch (System.Net.WebException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
+            catch (SocketException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
         }
     }
 }

@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using ETicketMobile.Business.Mapping;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Business.Validators;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
+using ETicketMobile.DataAccess.Services.Interfaces;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.Payment;
-using ETicketMobile.WebAccess;
-using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -26,11 +22,10 @@ namespace ETicketMobile.ViewModels.Tickets
 
         private INavigationParameters navigationParameters;
 
+        private readonly ILocalTokenService localTokenService;
         private readonly IPageDialogService dialogService;
+        private readonly ITicketsService ticketsService;
         private readonly ITokenService tokenService;
-        private readonly IHttpService httpService;
-
-        private readonly ILocalApi localApi;
 
         private IList<TicketType> tickets;
         private IList<AreaViewModel> areas;
@@ -39,8 +34,6 @@ namespace ETicketMobile.ViewModels.Tickets
         private string selectedTicket;
 
         private string selectedArea;
-
-        private string accessToken;
 
         private decimal totalPrice;
 
@@ -51,7 +44,7 @@ namespace ETicketMobile.ViewModels.Tickets
         #region Properties
 
         public ICommand ChooseTicket => chooseTicket
-            ??= new Command(OnChooseTicket);
+            ??= new Command(OnGoToPayment);
 
         public IList<TicketType> Tickets
         {
@@ -104,23 +97,23 @@ namespace ETicketMobile.ViewModels.Tickets
 
         public TicketsViewModel(
             INavigationService navigationService,
+            ILocalTokenService localTokenService,
             IPageDialogService dialogService,
-            ITokenService tokenService,
-            IHttpService httpService,
-            ILocalApi localApi
+            ITicketsService ticketsService,
+            ITokenService tokenService
         ) : base(navigationService)
         {
+            this.localTokenService = localTokenService
+                ?? throw new ArgumentNullException(nameof(localTokenService));
+
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
+            this.ticketsService = ticketsService
+                ?? throw new ArgumentNullException(nameof(ticketsService));
+
             this.tokenService = tokenService
                 ?? throw new ArgumentNullException(nameof(tokenService));
-
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));
-
-            this.localApi = localApi
-                ?? throw new ArgumentNullException(nameof(localApi));
         }
 
         public async override void OnAppearing()
@@ -129,13 +122,14 @@ namespace ETicketMobile.ViewModels.Tickets
 
             try
             {
-                accessToken = await tokenService.GetAccessTokenAsync();
-                Tickets = await GetTicketsAsync();
-                Areas = await GetAreasAsync();
+                var accessToken = await localTokenService.GetAccessTokenAsync();
+
+                Tickets = await ticketsService.GetTicketTypesAsync(accessToken);
+                Areas = await GetAreasAsync(accessToken);
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
                 return;
             }
@@ -152,34 +146,31 @@ namespace ETicketMobile.ViewModels.Tickets
                 ?? throw new ArgumentNullException(nameof(navigationParameters));
         }
 
-        private async Task<IList<TicketType>> GetTicketsAsync()
+        private async void UpdateAreaInfo()
         {
-            var ticketsDto = await httpService.GetAsync<IEnumerable<TicketTypeDto>>(
-                    TicketTypesEndpoint.GetTicketTypes, accessToken);
+            var selectedAreas = Areas.Where(x => x.Selected);
 
-            if (ticketsDto == null)
-            {
-                accessToken = await tokenService.RefreshTokenAsync();
+            SelectedAreas = $"({string.Join(", ", selectedAreas.Select(x => x.Name))})";
 
-                ticketsDto = await httpService.GetAsync<IEnumerable<TicketTypeDto>>(
-                    TicketTypesEndpoint.GetTicketTypes, accessToken);
-            }
-
-            var tickets = AutoMapperConfiguration.Mapper.Map<IList<TicketType>>(ticketsDto);
-
-            return tickets;
+            await CountTotalPrice(selectedAreas.Select(a => a.Id));
         }
 
-        private async Task<IList<AreaViewModel>> GetAreasAsync()
+        private async Task CountTotalPrice(IEnumerable<int> selectedAreas)
         {
-            var areasDto = await httpService.GetAsync<IList<AreaDto>>(AreasEndpoint.GetAreas, accessToken);
-
-            if (areasDto == null)
+            if (ticketSelected == null
+             || selectedArea.Length == 0)
             {
-                accessToken = await tokenService.RefreshTokenAsync();
-
-                areasDto = await httpService.GetAsync<IList<AreaDto>>(AreasEndpoint.GetAreas, accessToken);
+                return;
             }
+
+            var price = await ticketsService.RequestGetTicketPriceAsync(selectedAreas, TicketSelected.Id);
+
+            TotalPrice = Math.Round(price.TotalPrice, 2);
+        }
+
+        private async Task<IList<AreaViewModel>> GetAreasAsync(string accessToken)
+        {
+            var areasDto = await ticketsService.GetAreasDtoAsync(accessToken);
 
             var areas = areasDto
                 .Select(
@@ -196,49 +187,19 @@ namespace ETicketMobile.ViewModels.Tickets
             return areas;
         }
 
-        private async void UpdateAreaInfo()
-        {
-            var selectedAreas = Areas.Where(a => a.Selected);
-
-            SelectedAreas = $"({string.Join(", ", selectedAreas.Select(a => a.Name))})";
-
-            await CountTotalPrice(selectedAreas.Select(a => a.Id));
-        }
-
-        private async Task CountTotalPrice(IEnumerable<int> selectedAreas)
-        {
-            if (ticketSelected == null
-             || selectedArea.Length == 0)
-            {
-                return;
-            }
-
-            var price = await RequestGetTicketPriceAsync(selectedAreas, TicketSelected.Id);
-            TotalPrice = Math.Round(price.TotalPrice, 2);
-        }
-
-        private async Task<GetTicketPriceResponseDto> RequestGetTicketPriceAsync(IEnumerable<int> areasId, int ticketTypeId)
-        {
-            var getTicketPriceRequestDto = new GetTicketPriceRequestDto
-            {
-                AreasId = areasId,
-                TicketTypeId = ticketTypeId
-            };
-
-            var response = await httpService.PostAsync<GetTicketPriceRequestDto, GetTicketPriceResponseDto>(
-                    TicketsEndpoint.GetTicketPrice, getTicketPriceRequestDto);
-
-            return response;
-        }
-
-        private async void OnChooseTicket()
+        private async void OnGoToPayment()
         {
             if (!await IsValid())
                 return;
 
+            var areasId = Areas
+                    .Where(a => a.Selected)
+                    .Select(a => a.Id)
+                    .ToArray();
+
             navigationParameters.Add("ticketId", TicketSelected.Id);
             navigationParameters.Add("ticketName", TicketSelected.Name);
-            navigationParameters.Add("areas", Areas.Where(a => a.Selected).Select(a => a.Id));
+            navigationParameters.Add("areas", areasId);
             navigationParameters.Add("totalPrice", TotalPrice);
 
             await NavigationService.NavigateAsync(nameof(LiqPayView), navigationParameters);
@@ -250,14 +211,14 @@ namespace ETicketMobile.ViewModels.Tickets
         {
             if (!Validator.TicketChoosed(Tickets.Count))
             {
-                await dialogService.DisplayAlertAsync("Warning", "Choose ticket", "OK");
+                await dialogService.DisplayAlertAsync("Warning", "Choose ticket", AppResource.Ok);
 
                 return false;
             }
 
             if (!Validator.AreaChoosed(Areas.Where(a => a.Selected).Count()))
             {
-                await dialogService.DisplayAlertAsync("Warning", "Choose Areas", "OK");
+                await dialogService.DisplayAlertAsync("Warning", "Choose Areas", AppResource.Ok);
 
                 return false;
             }

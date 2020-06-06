@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ETicketMobile.Business.Exceptions;
+using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Business.Validators;
 using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Login;
-using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -19,8 +18,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
     {
         #region Fields
 
+        private readonly IEmailActivationService emailActivationService;
         private readonly IPageDialogService dialogService;
-        private readonly IHttpService httpService;
 
         private readonly IUserValidator userValidator;
 
@@ -35,10 +34,10 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #region Properties
 
-        public ICommand NavigateToConfirmForgotPasswordView => navigateToConfirmForgotPasswordView 
+        public ICommand NavigateToConfirmForgotPasswordView => navigateToConfirmForgotPasswordView
             ??= new Command<string>(OnNavigateToConfirmForgotPasswordView);
 
-        public ICommand CancelCommand => cancelCommand 
+        public ICommand CancelCommand => cancelCommand
             ??= new Command(OnCancelCommand);
 
         public string EmailWarning
@@ -56,20 +55,20 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         #endregion
 
         public ForgotPasswordViewModel(
+            IEmailActivationService emailActivationService,
             INavigationService navigationService,
             IPageDialogService dialogService,
-            IUserValidator userValidator,
-            IHttpService httpService
+            IUserValidator userValidator
         ) : base(navigationService)
         {
+            this.emailActivationService = emailActivationService
+                ?? throw new ArgumentNullException(nameof(emailActivationService));
+
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
             this.userValidator = userValidator
                 ?? throw new ArgumentNullException(nameof(userValidator));
-
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));            
         }
 
         private async void OnNavigateToConfirmForgotPasswordView(string email)
@@ -86,13 +85,13 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
                 IsDataLoad = true;
 
-                await RequestActivationCodeAsync(email);
+                await emailActivationService.RequestActivationCodeAsync(email);
             }
             catch (WebException)
             {
                 IsDataLoad = false;
 
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
                 return;
             }
@@ -114,7 +113,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         {
             if (string.IsNullOrEmpty(email))
             {
-                //TODO incorrect
                 EmailWarning = AppResource.EmailCorrect;
 
                 return false;
@@ -134,7 +132,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            if (! await userValidator.UserExistsAsync(email))
+            if (!await userValidator.UserExistsAsync(email))
             {
                 EmailWarning = AppResource.EmailWrong;
 
@@ -146,9 +144,5 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #endregion
 
-        private async Task RequestActivationCodeAsync(string email)
-        {
-            await httpService.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
-        }
     }
 }

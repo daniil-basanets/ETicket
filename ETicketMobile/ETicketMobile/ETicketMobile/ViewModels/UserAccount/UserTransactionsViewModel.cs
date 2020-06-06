@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
-using ETicketMobile.Business.Mapping;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Model.Transactions;
-using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
+using ETicketMobile.Business.Services.Interfaces;
+using ETicketMobile.Resources;
 using Prism.Navigation;
 using Prism.Services;
 
@@ -16,9 +13,8 @@ namespace ETicketMobile.ViewModels.UserAccount
     {
         #region Fields
 
+        private readonly ITransactionService transactionService;
         private readonly IPageDialogService dialogService;
-
-        private readonly IHttpService httpService;
 
         private IEnumerable<Transaction> transactions;
 
@@ -35,16 +31,16 @@ namespace ETicketMobile.ViewModels.UserAccount
         #endregion
 
         public UserTransactionsViewModel(
+            ITransactionService transactionService,
             INavigationService navigationService,
-            IPageDialogService dialogService,
-            IHttpService httpService
+            IPageDialogService dialogService
         ) : base(navigationService)
         {
+            this.transactionService = transactionService
+                ?? throw new ArgumentNullException(nameof(transactionService));
+
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
-
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override async void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -54,26 +50,14 @@ namespace ETicketMobile.ViewModels.UserAccount
 
             try
             {
-                Transactions = await GetTransactionsAsync(email);
+                Transactions = await transactionService.GetTransactionsAsync(email);
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
                 return;
             }
-        }
-
-        private async Task<IEnumerable<Transaction>> GetTransactionsAsync(string email)
-        {
-            var getTransactionsRequestDto = new GetTransactionsRequestDto { Email = email };
-
-            var transacationsDto = await httpService.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>>(
-                    TransactionsEndpoint.GetTransactionsByEmail, getTransactionsRequestDto);
-
-            var transactions = AutoMapperConfiguration.Mapper.Map<IEnumerable<Transaction>>(transacationsDto);
-
-            return transactions;
         }
     }
 }

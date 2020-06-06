@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.Interfaces;
+using ETicketMobile.DataAccess.Repositories.Interfaces;
 using Newtonsoft.Json;
 
 namespace ETicketMobile.DataAccess.Repositories

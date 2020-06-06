@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ETicketMobile.Business.Exceptions;
+using ETicketMobile.Business.Services.Interfaces;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
-using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -24,8 +24,8 @@ namespace ETicketMobile.ViewModels.Registration
 
         private INavigationParameters navigationParameters;
 
+        private readonly IEmailActivationService emailActivationService;
         private readonly IPageDialogService dialogService;
-        private readonly IHttpService httpService;
 
         private ICommand navigateToConfirmEmailView;
 
@@ -37,7 +37,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToConfirmEmailView => navigateToConfirmEmailView 
+        public ICommand NavigateToConfirmEmailView => navigateToConfirmEmailView
             ??= new Command<DateTime>(OnNavigateToConfirmEmailView);
 
         public DateTime DefaultDisplayDate
@@ -61,16 +61,16 @@ namespace ETicketMobile.ViewModels.Registration
         #endregion
 
         public BirthdayRegistrationViewModel(
+            IEmailActivationService emailActivationService,
             INavigationService navigationService,
-            IPageDialogService dialogService,
-            IHttpService httpService
+            IPageDialogService dialogService
         ) : base(navigationService)
         {
+            this.emailActivationService = emailActivationService
+                ?? throw new ArgumentNullException(nameof(emailActivationService));
+
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
-
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnAppearing()
@@ -102,22 +102,17 @@ namespace ETicketMobile.ViewModels.Registration
 
             try
             {
-                await RequestActivationCodeAsync(email);
+                await emailActivationService.RequestActivationCodeAsync(email);
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
                 return;
             }
 
             navigationParameters.Add("birth", birthday);
             await NavigationService.NavigateAsync(nameof(ConfirmEmailView), navigationParameters);
-        }
-
-        private async Task RequestActivationCodeAsync(string email)
-        {
-            await httpService.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
     }
 }

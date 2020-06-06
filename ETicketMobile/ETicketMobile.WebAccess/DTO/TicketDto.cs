@@ -6,7 +6,7 @@ namespace ETicketMobile.WebAccess.DTO
 {
     public class TicketDto
     {
-        [JsonProperty("ticketType")]
+        [JsonProperty("ticketTypeName")]
         public string TicketType { get; set; }
 
         [JsonProperty("createdUTCDate")]
@@ -21,7 +21,7 @@ namespace ETicketMobile.WebAccess.DTO
         [JsonProperty("transactionRRN")]
         public string ReferenceNumber { get; set; }
 
-        [JsonProperty("ticketArea")]
+        [JsonProperty("Areas")]
         public IEnumerable<string> TicketAreas { get; set; }
     }
 }

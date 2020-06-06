@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Validators;
 using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Login;
 using ETicketMobile.Views.Registration;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -19,7 +18,6 @@ namespace ETicketMobile.ViewModels.Registration
         #region Fields
 
         private readonly IPageDialogService dialogService;
-        private readonly IHttpService httpService;
 
         private ICommand navigateToPhoneRegistrationView;
         private ICommand navigateToSignInView;
@@ -32,10 +30,10 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToPhoneRegistrationView => navigateToPhoneRegistrationView 
+        public ICommand NavigateToPhoneRegistrationView => navigateToPhoneRegistrationView
             ??= new Command<string>(OnMoveToPhoneRegistrationView);
 
-        public ICommand NavigateToSignInView => navigateToSignInView 
+        public ICommand NavigateToSignInView => navigateToSignInView
             ??= new Command(OnNavigateToSignInView);
 
         public string EmailWarning
@@ -49,15 +47,11 @@ namespace ETicketMobile.ViewModels.Registration
         public EmailRegistrationViewModel(
             INavigationService navigationService,
             IPageDialogService dialogService,
-            IHttpService httpService,
             IUserValidator userValidator
         ) : base(navigationService)
         {
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
-
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));
 
             this.userValidator = userValidator
                 ?? throw new ArgumentNullException(nameof(userValidator));
@@ -77,7 +71,7 @@ namespace ETicketMobile.ViewModels.Registration
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
                 return;
             }
@@ -127,5 +121,6 @@ namespace ETicketMobile.ViewModels.Registration
         }
 
         #endregion
+
     }
 }

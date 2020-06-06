@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
+using ETicketMobile.Business.Exceptions;
+using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
-using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.Endpoints;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -20,8 +18,8 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         private INavigationParameters navigationParameters;
 
+        private readonly IEmailActivationService emailActivationService;
         private readonly IPageDialogService dialogService;
-        private readonly IHttpService httpService;
 
         private string email;
 
@@ -66,13 +64,13 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         #endregion
 
         public ConfirmForgotPasswordViewModel(
+            IEmailActivationService emailActivationService,
             INavigationService navigationService,
-            IPageDialogService dialogService,
-            IHttpService httpService
+            IPageDialogService dialogService
         ) : base(navigationService)
         {
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));
+            this.emailActivationService = emailActivationService
+                ?? throw new ArgumentNullException(nameof(emailActivationService));
 
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
@@ -135,46 +133,25 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         {
             try
             {
-                await RequestActivationCodeAsync(email);
+                await emailActivationService.RequestActivationCodeAsync(email);
             }
             catch (WebException)
             {
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
                 return;
             }
-        }
-
-        private async Task RequestActivationCodeAsync(string email)
-        {
-            await httpService.PostAsync<string, string>(AuthorizeEndpoint.RequestActivationCode, email);
         }
 
         private async void OnNavigateToCreateNewPasswordView(string code)
         {
-            await NavigateToCreateNewPasswordViewAsync(code);
-        }
-
-        private async Task NavigateToCreateNewPasswordViewAsync(string code)
-        {
-            try
-            {
-                if (!await IsValidAsync(code))
-                    return;
-            }
-            catch (WebException)
-            {
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
-
+            if (!await TryValidateUserEmailAsync(code))
                 return;
-            }
 
             await NavigationService.NavigateAsync(nameof(CreateNewPasswordView), navigationParameters);
         }
 
-        #region Validation
-
-        private async Task<bool> IsValidAsync(string code)
+        private async Task<bool> TryValidateUserEmailAsync(string code)
         {
             if (string.IsNullOrEmpty(code))
             {
@@ -183,39 +160,21 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            var resetPasswordRequestDto = CreateConfirmEmailRequestDto(code);
-
-            var confirmEmailIsSucceeded = await ConfirmEmailAsync(resetPasswordRequestDto);
-
-            if (!confirmEmailIsSucceeded)
+            try
             {
-                ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
+                var emailActivated = await emailActivationService.ActivateEmailAsync(email, code);
 
-                return false;
+                if (emailActivated)
+                    return true;
+
+                ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
             }
 
-            return true;
+            return false;
         }
-
-        private ConfirmEmailRequestDto CreateConfirmEmailRequestDto(string code)
-        {
-            return new ConfirmEmailRequestDto
-            {
-                Email = email,
-                ActivationCode = code
-            };
-        }
-
-        private async Task<bool> ConfirmEmailAsync(ConfirmEmailRequestDto confirmEmailRequestDto)
-        {
-            var response = await httpService.PostAsync<ConfirmEmailRequestDto, ConfirmEmailResponseDto>(
-                AuthorizeEndpoint.CheckCode,
-                confirmEmailRequestDto
-            );
-
-            return response.Succeeded;
-        }
-
-        #endregion
     }
 }

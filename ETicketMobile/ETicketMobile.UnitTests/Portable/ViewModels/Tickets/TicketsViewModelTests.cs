@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Business.Services.Interfaces;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
-using ETicketMobile.UnitTests.Portable.Comparer;
+using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.ViewModels.Tickets;
 using ETicketMobile.WebAccess;
 using ETicketMobile.WebAccess.DTO;
@@ -20,10 +19,11 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
 
         private readonly TicketsViewModel ticketsViewModel;
 
+        private readonly Mock<ILocalTokenService> localTokenServiceMock;
         private readonly Mock<IPageDialogService> dialogServiceMock;
+        private readonly Mock<ITicketsService> ticketsServiceMock;
         private readonly Mock<ITokenService> tokenServiceMock;
         private readonly Mock<IHttpService> httpServiceMock;
-        private readonly Mock<ILocalApi> localApiMock;
 
         private readonly IEnumerable<TicketTypeDto> ticketTypesDto;
 
@@ -34,10 +34,11 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
 
         public TicketsViewModelTests()
         {
+            localTokenServiceMock = new Mock<ILocalTokenService>();
             dialogServiceMock = new Mock<IPageDialogService>();
+            ticketsServiceMock = new Mock<ITicketsService>();
             tokenServiceMock = new Mock<ITokenService>();
             httpServiceMock = new Mock<IHttpService>();
-            localApiMock = new Mock<ILocalApi>();
 
             var accessToken = "AccessToken";
 
@@ -85,8 +86,8 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
 
             tokenServiceMock.Setup(ts => ts.RefreshTokenAsync());
 
-            tokenServiceMock
-                    .Setup(ts => ts.GetAccessTokenAsync())
+            localTokenServiceMock
+                    .Setup(lts => lts.GetAccessTokenAsync())
                     .ReturnsAsync(accessToken);
 
             httpServiceMock
@@ -97,7 +98,15 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
                     .Setup(hs => hs.GetAsync<IList<AreaDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
                     .ReturnsAsync(areasDto);
 
-            ticketsViewModel = new TicketsViewModel(null, dialogServiceMock.Object, tokenServiceMock.Object, httpServiceMock.Object, localApiMock.Object);
+            ticketsViewModel = new TicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, ticketsServiceMock.Object, tokenServiceMock.Object);
+        }
+
+        [Fact]
+        public void CheckConstructorWithParameters_CheckNullableLocalTokenService_ShouldThrowException()
+        {
+            // Assert
+            Assert.Throws<ArgumentNullException>(
+                () => new TicketsViewModel(null, null, dialogServiceMock.Object, ticketsServiceMock.Object, tokenServiceMock.Object));
         }
 
         [Fact]
@@ -105,7 +114,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new TicketsViewModel(null, null, tokenServiceMock.Object, httpServiceMock.Object, localApiMock.Object));
+                () => new TicketsViewModel(null, localTokenServiceMock.Object, null, ticketsServiceMock.Object, tokenServiceMock.Object));
         }
 
         [Fact]
@@ -113,64 +122,15 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new TicketsViewModel(null, dialogServiceMock.Object, null, httpServiceMock.Object, localApiMock.Object));
+                () => new TicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, ticketsServiceMock.Object, null));
         }
 
         [Fact]
-        public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
+        public void CheckConstructorWithParameters_CheckNullableTicketsService_ShouldThrowException()
         {
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new TicketsViewModel(null, dialogServiceMock.Object, tokenServiceMock.Object, null, localApiMock.Object));
-        }
-
-        [Fact]
-        public void CheckConstructorWithParameters_CheckNullableLocalApi_ShouldThrowException()
-        {
-            // Assert
-            Assert.Throws<ArgumentNullException>(
-                () => new TicketsViewModel(null, dialogServiceMock.Object, tokenServiceMock.Object, httpServiceMock.Object, null));
-        }
-
-        [Fact]
-        public void OnAppearing_CompareTickets_ShouldBeEqual()
-        {
-            // Arrange
-            var ticketTypesEqualityComparer = new TicketTypesEqualityComparer();
-
-            // Act
-            ticketsViewModel.OnAppearing();
-
-            // Assert
-            Assert.Equal(ticketTypes, ticketsViewModel.Tickets, ticketTypesEqualityComparer);
-        }
-
-        [Fact]
-        public void OnAppearing_CompareAreas_ShouldBeEqual()
-        {
-            // Arrange
-            var areasViewModelEqualityComparer = new AreasViewModelEqualityComparer();
-
-            // Act
-            ticketsViewModel.OnAppearing();
-
-            // Assert
-            Assert.Equal(areas, ticketsViewModel.Areas, areasViewModelEqualityComparer);
-        }
-
-        [Fact]
-        public void OnNavigatedTo_Tickets_CheckRefreshTokenAsyncWhenAccessTokenShouldBeNull()
-        {
-            // Arrange
-            httpServiceMock
-                    .Setup(hs => hs.GetAsync<IEnumerable<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
-                    .ReturnsAsync(() => null);
-
-            // Act
-            ticketsViewModel.OnAppearing();
-
-            // Assert
-            httpServiceMock.Verify(hs => hs.GetAsync<IEnumerable<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()), Times.Exactly(2));
+                () => new TicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, null, tokenServiceMock.Object));
         }
 
         [Fact]

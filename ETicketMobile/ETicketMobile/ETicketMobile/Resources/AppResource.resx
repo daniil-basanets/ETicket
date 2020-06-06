@@ -281,6 +281,14 @@
     <value>Enter your phone</value>
     <comment>PhoneRegistrationView</comment>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+    <comment>DisplayAlertDialog</comment>
+  </data>
+  <data name="ErrorConnection" xml:space="preserve">
+    <value>Check your network connection and try again</value>
+    <comment>DisplayAlertDialog</comment>
+  </data>
   <data name="Expiration" xml:space="preserve">
     <value>Expiration</value>
     <comment>LiqPayView</comment>
@@ -353,6 +361,10 @@
     <value>Number:</value>
     <comment>UserTransactionsView</comment>
   </data>
+  <data name="Ok" xml:space="preserve">
+    <value>OK</value>
+    <comment>DisplayAlertDialog</comment>
+  </data>
   <data name="PasswordEmpty" xml:space="preserve">
     <value>Enter a password</value>
     <comment>CreateNewPasswordViewModel, PasswordRegistrationViewModel, LoginViewModel</comment>
@@ -418,7 +430,7 @@
     <comment>LoginView</comment>
   </data>
   <data name="SignUp" xml:space="preserve">
-    <value>Sign up.</value>
+    <value>Sign up</value>
     <comment>LoginView</comment>
   </data>
   <data name="Terms" xml:space="preserve">

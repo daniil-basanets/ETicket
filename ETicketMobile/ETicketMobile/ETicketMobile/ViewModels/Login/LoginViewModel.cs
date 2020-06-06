@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Business.Validators;
 using ETicketMobile.Data.Entities;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
+using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
 using ETicketMobile.Views.Registration;
 using ETicketMobile.Views.UserActions;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism.Navigation;
 using Prism.Services;
 using Xamarin.Forms;
@@ -21,11 +20,9 @@ namespace ETicketMobile.ViewModels.Login
     {
         #region Fields
 
+        private readonly ILocalTokenService localTokenService;
         private readonly IPageDialogService dialogService;
         private readonly ITokenService tokenService;
-        private readonly IHttpService httpService;
-
-        private readonly ILocalApi localApi;
 
         private ICommand navigateToRegistrationView;
         private ICommand navigateToForgetPasswordView;
@@ -43,13 +40,13 @@ namespace ETicketMobile.ViewModels.Login
 
         #region Properties
 
-        public ICommand NavigateToForgetPasswordView => navigateToForgetPasswordView 
+        public ICommand NavigateToForgetPasswordView => navigateToForgetPasswordView
             ??= new Command(OnNavigateToForgetPasswordView);
 
-        public ICommand NavigateToRegistrationView => navigateToRegistrationView 
+        public ICommand NavigateToRegistrationView => navigateToRegistrationView
             ??= new Command(OnNavigateToRegistrationView);
 
-        public ICommand NavigateToLoginView => navigateToLoginView 
+        public ICommand NavigateToLoginView => navigateToLoginView
             ??= new Command<string>(OnNavigateToLoginView);
 
         public string EmailWarning
@@ -86,23 +83,19 @@ namespace ETicketMobile.ViewModels.Login
 
         public LoginViewModel(
             INavigationService navigationService,
+            ILocalTokenService localTokenService,
             IPageDialogService dialogService,
-            ITokenService tokenService,
-            IHttpService httpService,
-            ILocalApi localApi
+            ITokenService tokenService
         ) : base(navigationService)
         {
-            this.localApi = localApi
-                ?? throw new ArgumentNullException(nameof(localApi));
+            this.localTokenService = localTokenService
+                ?? throw new ArgumentNullException(nameof(localTokenService));
 
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
 
             this.tokenService = tokenService
                 ?? throw new ArgumentNullException(nameof(tokenService));
-
-            this.httpService = httpService
-                ?? throw new ArgumentNullException(nameof(httpService));
         }
 
         public override void OnAppearing()
@@ -147,14 +140,15 @@ namespace ETicketMobile.ViewModels.Login
             {
                 IsDataLoad = false;
 
-                await dialogService.DisplayAlertAsync("Error", "Check connection with server", "OK");
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
                 return;
             }
 
             if (token.RefreshJwtToken == null)
             {
-                //TODO UserDoesnExists
+                IsDataLoad = false;
+
                 EmailWarning = AppResource.EmailWarning;
 
                 Password = string.Empty;
@@ -164,7 +158,7 @@ namespace ETicketMobile.ViewModels.Login
                 return;
             }
 
-            await localApi.AddAsync(token);
+            await localTokenService.AddAsync(token);
 
             var navigationParameters = new NavigationParameters { { "email", email } };
             await NavigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
@@ -203,5 +197,6 @@ namespace ETicketMobile.ViewModels.Login
         }
 
         #endregion
+
     }
 }

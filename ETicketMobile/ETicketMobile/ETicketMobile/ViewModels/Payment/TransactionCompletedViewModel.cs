@@ -17,7 +17,7 @@ namespace ETicketMobile.ViewModels.Payment
 
         #region Properties
 
-        public ICommand NavigateToMainMenu => navigateToMainMenu 
+        public ICommand NavigateToMainMenu => navigateToMainMenu
             ??= new Command(OnNavigateToMainMenu);
 
         #endregion

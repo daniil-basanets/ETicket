@@ -3,10 +3,11 @@ using System.Threading.Tasks;
 using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Data.Entities;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
+using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.Endpoints;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
+using Java.Net;
 
 namespace ETicketMobile.Business.Services
 {
@@ -14,18 +15,18 @@ namespace ETicketMobile.Business.Services
     {
         #region Fields
 
+        private readonly ILocalTokenService localTokenService;
         private readonly IHttpService httpService;
-        private readonly ILocalApi localApi;
 
         #endregion
 
-        public TokenService(IHttpService httpService, ILocalApi localApi)
+        public TokenService(ILocalTokenService localTokenService, IHttpService httpService)
         {
+            this.localTokenService = localTokenService
+                ?? throw new ArgumentNullException(nameof(localTokenService));
+
             this.httpService = httpService
                 ?? throw new ArgumentNullException(nameof(httpService));
-
-            this.localApi = localApi
-                ?? throw new ArgumentNullException(nameof(localApi));
         }
 
         public async Task<Token> GetTokenAsync(string email, string password)
@@ -36,34 +37,48 @@ namespace ETicketMobile.Business.Services
                 Password = password
             };
 
-            var tokenDto = await httpService.PostAsync<UserSignInRequestDto, TokenDto>(
-                AuthorizeEndpoint.Login, userSignIn);
+            try
+            {
+                var tokenDto = await httpService.PostAsync<UserSignInRequestDto, TokenDto>(
+                    AuthorizeEndpoint.Login, userSignIn);
 
-            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
+                var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
 
-            return token;
-        }
-
-        public async Task<string> GetAccessTokenAsync()
-        {
-            var token = await localApi.GetTokenAsync();
-
-            return token.AcessJwtToken;
+                return token;
+            }
+            catch (System.Net.WebException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
+            catch (SocketException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
         }
 
         public async Task<string> RefreshTokenAsync()
         {
-            var refreshTokenTask = await localApi.GetTokenAsync();
-            var refreshToken = refreshTokenTask.RefreshJwtToken;
+            try
+            {
+                var refreshToken = await localTokenService.GetReshreshTokenAsync();
 
-            var tokenDto = await httpService.PostAsync<string, TokenDto>(
-                AuthorizeEndpoint.RefreshToken, refreshToken);
+                var tokenDto = await httpService.PostAsync<string, TokenDto>(
+                    AuthorizeEndpoint.RefreshToken, refreshToken);
 
-            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
+                var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
 
-            await localApi.AddAsync(token);
+                await localTokenService.AddAsync(token);
 
-            return token.AcessJwtToken;
+                return token.AcessJwtToken;
+            }
+            catch (System.Net.WebException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
+            catch (SocketException ex)
+            {
+                throw new Exceptions.WebException("Server exception", ex);
+            }
         }
     }
 }

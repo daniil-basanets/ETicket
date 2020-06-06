@@ -1,9 +1,15 @@
 ﻿using System.Globalization;
 using System.Threading.Tasks;
-using ETicketMobile.DataAccess.Interfaces;
+using ETicketMobile.Business.Services;
+using ETicketMobile.Business.Services.Interfaces;
+using ETicketMobile.Business.Validators;
+using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.DataAccess.LocalAPI;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.DataAccess.Repositories;
+using ETicketMobile.DataAccess.Repositories.Interfaces;
+using ETicketMobile.DataAccess.Services;
+using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.UserInterface.Localization.Interfaces;
 using ETicketMobile.ViewModels;
@@ -25,16 +31,12 @@ using ETicketMobile.Views.Tickets;
 using ETicketMobile.Views.UserAccount;
 using ETicketMobile.Views.UserActions;
 using ETicketMobile.WebAccess.Network.Configs;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using ETicketMobile.WebAccess.Network.WebServices;
+using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Prism;
 using Prism.Ioc;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using ETicketMobile.Business.Validators;
-using ETicketMobile.Business.Validators.Interfaces;
-using ETicketMobile.Business.Services;
-using ETicketMobile.Business.Services.Interfaces;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace ETicketMobile
@@ -67,11 +69,25 @@ namespace ETicketMobile
             containerRegistry.RegisterInstance<ILocalApi>(localApi);
             containerRegistry.RegisterInstance<ILocalize>(localize);
 
+            var emailActivationService = new EmailActivationService(httpService);
+
+            var localTokenService = new LocalTokenService(localApi);
+            var tokenService = new TokenService(localTokenService, httpService);
+
+            var ticketsService = new TicketsService(tokenService, httpService);
+            var transactionService = new TransactionService(httpService);
+
+            var userService = new UserService(httpService);
             var userValidator = new UserValidator(httpService);
+
             containerRegistry.RegisterInstance<IUserValidator>(userValidator);
 
-            var tokenService = new TokenService(httpService, localApi);
+            containerRegistry.RegisterInstance<IUserService>(userService);
+            containerRegistry.RegisterInstance<ILocalTokenService>(localTokenService);
+            containerRegistry.RegisterInstance<IEmailActivationService>(emailActivationService);
             containerRegistry.RegisterInstance<ITokenService>(tokenService);
+            containerRegistry.RegisterInstance<ITicketsService>(ticketsService);
+            containerRegistry.RegisterInstance<ITransactionService>(transactionService);
 
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainView, MainViewModel>();

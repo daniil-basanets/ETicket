@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using ETicketMobile.Business.Validators;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
@@ -18,15 +17,14 @@ namespace ETicketMobile.ViewModels.Registration
 
         private string passwordWarning;
 
-        private string confirmPasswordWarning;
-
         private string confirmPassword;
+        private string confirmPasswordWarning;
 
         #endregion
 
         #region Properties
 
-        public ICommand NavigateToBirthDateRegistrationView => navigateToBirthDateRegistrationView 
+        public ICommand NavigateToBirthDateRegistrationView => navigateToBirthDateRegistrationView
             ??= new Command<string>(OnNavigateToBirthDateRegistrationView);
 
         public string PasswordWarning
@@ -79,14 +77,14 @@ namespace ETicketMobile.ViewModels.Registration
                 return false;
             }
 
-            if (!Validator.IsPasswordShort(password))
+            if (Validator.IsPasswordShort(password))
             {
                 PasswordWarning = AppResource.PasswordShort;
 
                 return false;
             }
 
-            if (!Validator.IsPasswordLong(password))
+            if (Validator.IsPasswordLong(password))
             {
                 PasswordWarning = AppResource.PasswordLong;
 
@@ -111,5 +109,6 @@ namespace ETicketMobile.ViewModels.Registration
         }
 
         #endregion
+
     }
 }

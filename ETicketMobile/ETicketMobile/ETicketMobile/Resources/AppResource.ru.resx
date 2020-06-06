@@ -441,4 +441,16 @@
     <value>Не можете войти?</value>
     <comment>ForgotPasswordView</comment>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Ошибка</value>
+    <comment>DisplayAlertDialog</comment>
+  </data>
+  <data name="ErrorConnection" xml:space="preserve">
+    <value>Проверьте подключение к сети и попробуйте снова</value>
+    <comment>DisplayAlertDialog</comment>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>OK</value>
+    <comment>DisplayAlertDialog</comment>
+  </data>
 </root>

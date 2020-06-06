@@ -33,7 +33,7 @@ namespace ETicketMobile.ViewModels.Settings
 
         #endregion
 
-        public LocalizationViewModel(INavigationService navigationService, ILocalApi localApi, ILocalize localize) 
+        public LocalizationViewModel(INavigationService navigationService, ILocalApi localApi, ILocalize localize)
             : base(navigationService)
         {
             this.localApi = localApi

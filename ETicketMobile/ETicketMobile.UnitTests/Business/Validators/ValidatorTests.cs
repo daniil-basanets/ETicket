@@ -38,19 +38,19 @@ namespace ETicketMobile.UnitTests.Business.Validators
             var actualValue = Validator.IsPasswordShort(password);
 
             // Assert
-            Assert.True(actualValue);
+            Assert.False(actualValue);
         }
 
         [Theory]
-        [InlineData("12345612321312312312321323")]
-        [InlineData("ABCABCABCC")]
+        [InlineData("asdasdasdasdasdasdasdasddasdasdasdasasdasdasd" +
+                    "asdasdasdasdasddasdasdasdasasdasdasdasdasdasdasdasdaasss")]
         public void CheckIsPasswordShort_ReturnsFalse(string password)
         {
             // Act
             var actualValue = Validator.IsPasswordShort(password);
 
             // Assert
-            Assert.False(actualValue);
+            Assert.True(actualValue);
         }
 
         [Theory]

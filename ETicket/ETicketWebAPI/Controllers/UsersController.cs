@@ -46,13 +46,7 @@ namespace ETicket.WebAPI.Controllers
 
             try
             {
-                var ticketPage = ticketService.GetTicketsByUserEmail(email)
-                                              .ToPage(pageNumber, pageSize);
-
-                if (ticketPage.TotalRowsCount == 0)
-                {
-                    return NoContent();
-                }
+                var ticketPage = ticketService.GetTicketsByUserEmail(email);
 
                 return Json(ticketPage);
             }

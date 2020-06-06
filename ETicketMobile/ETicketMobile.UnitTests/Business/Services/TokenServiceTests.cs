@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using ETicketMobile.Business.Services;
 using ETicketMobile.Data.Entities;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
+using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
@@ -14,8 +14,8 @@ namespace ETicketMobile.UnitTests.Business.Services
     {
         #region Fields
 
+        private readonly Mock<ILocalTokenService> localTokenServiceMock;
         private readonly Mock<IHttpService> httpServiceMock;
-        private readonly Mock<ILocalApi> localApiMock;
 
         private readonly TokenService tokenService;
 
@@ -29,8 +29,8 @@ namespace ETicketMobile.UnitTests.Business.Services
 
         public TokenServiceTests()
         {
+            localTokenServiceMock = new Mock<ILocalTokenService>();
             httpServiceMock = new Mock<IHttpService>();
-            localApiMock = new Mock<ILocalApi>();
 
             email = "email";
             password = "password";
@@ -47,37 +47,41 @@ namespace ETicketMobile.UnitTests.Business.Services
                 RefreshJwtToken = "RefreshToken"
             };
 
-            localApiMock
-                    .Setup(l => l.GetTokenAsync())
-                    .ReturnsAsync(token);
+            localTokenServiceMock
+                    .Setup(l => l.GetAccessTokenAsync())
+                    .ReturnsAsync(token.AcessJwtToken);
 
-            localApiMock.Setup(l => l.AddAsync(It.IsAny<Token>()));
+            localTokenServiceMock
+                    .Setup(l => l.GetReshreshTokenAsync())
+                    .ReturnsAsync(token.RefreshJwtToken);
+
+            localTokenServiceMock.Setup(l => l.AddAsync(It.IsAny<Token>()));
+
+            httpServiceMock
+                .Setup(hs => hs.PostAsync<string, TokenDto>(
+                    It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(tokenDto);
 
             httpServiceMock
                 .Setup(hs => hs.PostAsync<UserSignInRequestDto, TokenDto>(
                     It.IsAny<Uri>(), It.IsAny<UserSignInRequestDto>(), It.IsAny<string>()))
                 .ReturnsAsync(tokenDto);
 
-            httpServiceMock
-                    .Setup(hs => hs.PostAsync<string, TokenDto>(
-                        It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<string>()))
-                    .ReturnsAsync(tokenDto);
+            tokenService = new TokenService(localTokenServiceMock.Object, httpServiceMock.Object);
+        }
 
-            tokenService = new TokenService(httpServiceMock.Object, localApiMock.Object);
+        [Fact]
+        public void CheckConstructorWithParameters_CheckNullableLocalTokenService_ShouldThrowException()
+        {
+            // Assert
+            Assert.Throws<ArgumentNullException>(() => new TokenService(null, httpServiceMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
         {
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new TokenService(null, localApiMock.Object));
-        }
-
-        [Fact]
-        public void CheckConstructorWithParameters_CheckNullableLocalApi_ShouldThrowException()
-        {
-            // Assert
-            Assert.Throws<ArgumentNullException>(() => new TokenService(httpServiceMock.Object, null));
+            Assert.Throws<ArgumentNullException>(() => new TokenService(localTokenServiceMock.Object, null));
         }
 
         [Fact]
@@ -98,28 +102,6 @@ namespace ETicketMobile.UnitTests.Business.Services
 
             // Assert
             Assert.Equal(tokenDto.RefreshJwtToken, token.RefreshJwtToken);
-        }
-
-        [Fact]
-        public async Task GetAccessTokenAsync_CompareAccessesTokens_ShouldBeEqual()
-        {
-            // Act
-            var accessToken = await tokenService.GetAccessTokenAsync();
-
-            // Assert
-            Assert.Equal(token.AcessJwtToken, accessToken);
-        }
-
-        [Fact]
-        public async Task RefreshTokenAsync_CompareRefreshesTokens_ShouldBeEqual()
-        {
-            // Act
-            var accessToken = await tokenService.RefreshTokenAsync();
-
-            localApiMock.VerifyAll();
-
-            // Assert
-            Assert.Equal(tokenDto.AcessJwtToken, accessToken);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Input;
 using ETicketMobile.Business.Model.UserAccount;
 using ETicketMobile.Resources;
@@ -14,15 +13,15 @@ namespace ETicketMobile.ViewModels.Settings
     {
         #region Fields
 
-        private ICommand navigateToAction;
-
         private IEnumerable<UserAction> settings;
+
+        private ICommand navigateToAction;
 
         #endregion
 
         #region Properties
 
-        public ICommand NavigateToAction => navigateToAction 
+        public ICommand NavigateToAction => navigateToAction
             ??= new Command<UserAction>(OnNavigateToAction);
 
         public IEnumerable<UserAction> Settings
@@ -33,7 +32,7 @@ namespace ETicketMobile.ViewModels.Settings
 
         #endregion
 
-        public SettingsViewModel(INavigationService navigationService) 
+        public SettingsViewModel(INavigationService navigationService)
             : base(navigationService)
         {
         }

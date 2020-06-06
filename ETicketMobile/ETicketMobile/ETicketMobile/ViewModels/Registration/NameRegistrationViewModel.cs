@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using ETicketMobile.Business.Validators;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
@@ -26,7 +25,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToPasswordRegistrationView => navigateToPasswordRegistrationView 
+        public ICommand NavigateToPasswordRegistrationView => navigateToPasswordRegistrationView
             ??= new Command(OnMoveToPasswordRegistrationView);
 
         public string FirstName
@@ -112,5 +111,6 @@ namespace ETicketMobile.ViewModels.Registration
         }
 
         #endregion
+
     }
 }

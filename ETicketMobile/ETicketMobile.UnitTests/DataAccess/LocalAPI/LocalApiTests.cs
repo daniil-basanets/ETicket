@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using ETicketMobile.Data.Entities;
-using ETicketMobile.DataAccess.Interfaces;
 using ETicketMobile.DataAccess.LocalAPI;
 using ETicketMobile.DataAccess.Repositories;
+using ETicketMobile.DataAccess.Repositories.Interfaces;
 using ETicketMobile.UnitTests.DataAccess.Comparers;
 using Moq;
 using Xunit;
