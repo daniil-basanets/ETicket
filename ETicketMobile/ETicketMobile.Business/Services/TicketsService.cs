@@ -65,7 +65,7 @@ namespace ETicketMobile.Business.Services
         {
             try
             {
-                var ticketTypesDto = await httpService.GetAsync<IEnumerable<TicketTypeDto>>(
+                var ticketTypesDto = await httpService.GetAsync<IList<TicketTypeDto>>(
                         TicketTypesEndpoint.GetTicketTypes, accessToken);
 
                 if (ticketTypesDto == null)
