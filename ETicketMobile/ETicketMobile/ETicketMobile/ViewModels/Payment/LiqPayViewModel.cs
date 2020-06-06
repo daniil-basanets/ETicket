@@ -45,7 +45,7 @@ namespace ETicketMobile.ViewModels.Payment
 
         #region Properties
 
-        public ICommand Pay => pay 
+        public ICommand Pay => pay
             ??= new Command(OnPay);
 
         public decimal Amount
@@ -181,7 +181,6 @@ namespace ETicketMobile.ViewModels.Payment
                 CVV2 = cvv2
             };
         }
-
 
         #region Validation
 

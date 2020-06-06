@@ -45,10 +45,10 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToSignInView => navigateToSignInView 
+        public ICommand NavigateToSignInView => navigateToSignInView
             ??= new Command<string>(OnNavigateToSignInView);
 
-        public ICommand SendActivationCode => sendActivationCode 
+        public ICommand SendActivationCode => sendActivationCode
             ??= new Command(OnSendActivationCode);
 
         public string ConfirmEmailWarning

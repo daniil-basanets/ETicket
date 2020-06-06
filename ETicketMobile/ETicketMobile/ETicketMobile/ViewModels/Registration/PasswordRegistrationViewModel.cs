@@ -24,7 +24,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToBirthDateRegistrationView => navigateToBirthDateRegistrationView 
+        public ICommand NavigateToBirthDateRegistrationView => navigateToBirthDateRegistrationView
             ??= new Command<string>(OnNavigateToBirthDateRegistrationView);
 
         public string PasswordWarning
@@ -109,5 +109,6 @@ namespace ETicketMobile.ViewModels.Registration
         }
 
         #endregion
+
     }
 }

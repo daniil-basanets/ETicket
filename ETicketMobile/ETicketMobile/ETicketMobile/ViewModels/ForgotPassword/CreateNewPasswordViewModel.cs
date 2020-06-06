@@ -34,7 +34,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #region Properties
 
-        public ICommand NavigateToSignInView => navigateToSignInView 
+        public ICommand NavigateToSignInView => navigateToSignInView
             ??= new Command<string>(OnNavigateToSignInView);
 
         public string PasswordWarning
@@ -158,5 +158,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         }
 
         #endregion
+
     }
 }

@@ -21,7 +21,7 @@ namespace ETicketMobile.ViewModels.Settings
 
         #region Properties
 
-        public ICommand NavigateToAction => navigateToAction 
+        public ICommand NavigateToAction => navigateToAction
             ??= new Command<UserAction>(OnNavigateToAction);
 
         public IEnumerable<UserAction> Settings
@@ -32,7 +32,7 @@ namespace ETicketMobile.ViewModels.Settings
 
         #endregion
 
-        public SettingsViewModel(INavigationService navigationService) 
+        public SettingsViewModel(INavigationService navigationService)
             : base(navigationService)
         {
         }

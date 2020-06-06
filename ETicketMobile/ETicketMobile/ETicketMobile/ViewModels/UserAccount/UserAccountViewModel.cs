@@ -33,7 +33,7 @@ namespace ETicketMobile.ViewModels.UserAccount
             set => SetProperty(ref actions, value);
         }
 
-        public ICommand NavigateToAction => navigateToAction 
+        public ICommand NavigateToAction => navigateToAction
             ??= new Command<UserAction>(OnNavigateToAction);
 
         #endregion

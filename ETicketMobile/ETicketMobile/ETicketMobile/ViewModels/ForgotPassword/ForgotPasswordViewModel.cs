@@ -34,10 +34,10 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #region Properties
 
-        public ICommand NavigateToConfirmForgotPasswordView => navigateToConfirmForgotPasswordView 
+        public ICommand NavigateToConfirmForgotPasswordView => navigateToConfirmForgotPasswordView
             ??= new Command<string>(OnNavigateToConfirmForgotPasswordView);
 
-        public ICommand CancelCommand => cancelCommand 
+        public ICommand CancelCommand => cancelCommand
             ??= new Command(OnCancelCommand);
 
         public string EmailWarning
@@ -132,7 +132,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            if (! await userValidator.UserExistsAsync(email))
+            if (!await userValidator.UserExistsAsync(email))
             {
                 EmailWarning = AppResource.EmailWrong;
 
@@ -143,5 +143,6 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         }
 
         #endregion
-        }
+
+    }
 }

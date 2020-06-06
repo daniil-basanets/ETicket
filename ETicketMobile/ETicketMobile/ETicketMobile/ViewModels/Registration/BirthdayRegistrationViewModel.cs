@@ -37,7 +37,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToConfirmEmailView => navigateToConfirmEmailView 
+        public ICommand NavigateToConfirmEmailView => navigateToConfirmEmailView
             ??= new Command<DateTime>(OnNavigateToConfirmEmailView);
 
         public DateTime DefaultDisplayDate

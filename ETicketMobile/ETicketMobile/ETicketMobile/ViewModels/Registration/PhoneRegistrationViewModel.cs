@@ -22,7 +22,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToNameRegistrationView => navigateToNameRegistrationView 
+        public ICommand NavigateToNameRegistrationView => navigateToNameRegistrationView
             ??= new Command<string>(OnNavigateToNameRegistrationView);
 
         public string PhoneWarning
@@ -33,7 +33,7 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public PhoneRegistrationViewModel(INavigationService navigationService) 
+        public PhoneRegistrationViewModel(INavigationService navigationService)
             : base(navigationService)
         {
         }

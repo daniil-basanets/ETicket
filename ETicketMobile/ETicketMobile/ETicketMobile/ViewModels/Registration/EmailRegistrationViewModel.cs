@@ -30,10 +30,10 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Properties
 
-        public ICommand NavigateToPhoneRegistrationView => navigateToPhoneRegistrationView 
+        public ICommand NavigateToPhoneRegistrationView => navigateToPhoneRegistrationView
             ??= new Command<string>(OnMoveToPhoneRegistrationView);
 
-        public ICommand NavigateToSignInView => navigateToSignInView 
+        public ICommand NavigateToSignInView => navigateToSignInView
             ??= new Command(OnNavigateToSignInView);
 
         public string EmailWarning
@@ -121,5 +121,6 @@ namespace ETicketMobile.ViewModels.Registration
         }
 
         #endregion
+
     }
 }
