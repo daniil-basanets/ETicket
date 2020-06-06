@@ -169,17 +169,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
                 () => new MyTicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, null));
         }
 
-        //[Fact]
-        //public void OnNavigatedTo_CompareTickets_ShouldBeEqual()
-        //{
-        //    // Act
-        //    myTicketsViewModel.OnNavigatedTo(navigationParameters);
-
-        //    // Assert
-        //    Assert.Equal(tickets, myTicketsViewModel.Tickets, ticketsEqualityComparer);
-
-        //}
-
         [Fact]
         public void OnNavigatedTo_CheckThrowWebException()
         {
@@ -190,52 +179,5 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
             Assert.ThrowsAsync<WebException>(
                 () => httpServiceMock.Object.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(null, null, null));
         }
-
-        //[Fact]
-        //public void OnNavigatedTo_Tickets_CheckRefreshTokenWhenAccessTokenShouldBeNull()
-        //{
-        //    // Arrange
-        //    httpServiceMock
-        //        .Setup(hs => hs.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
-        //            It.IsAny<Uri>(), It.IsAny<GetTicketsByEmailRequestDto>(), It.IsAny<string>()))
-        //        .ReturnsAsync(() => null);
-
-        //    // Act
-        //    myTicketsViewModel.OnNavigatedTo(navigationParameters);
-
-        //    // Assert
-        //    httpServiceMock.Verify(hs => hs.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
-        //        It.IsAny<Uri>(), It.IsAny<GetTicketsByEmailRequestDto>(), It.IsAny<string>()), Times.Exactly(2));
-        //}
-
-        //[Fact]
-        //public void OnNavigatedTo_CompareUnusedTickets_ShouldBeEqual()
-        //{
-        //    // Act
-        //    myTicketsViewModel.OnNavigatedTo(navigationParameters);
-
-        //    // Assert
-        //    Assert.Equal(unusedTickets, myTicketsViewModel.UnusedTickets, ticketsEqualityComparer);
-        //}
-
-        //[Fact]
-        //public void OnNavigatedTo_CompareActivatedTickets_ShouldBeEqual()
-        //{
-        //    // Act
-        //    myTicketsViewModel.OnNavigatedTo(navigationParameters);
-
-        //    // Assert
-        //    Assert.Equal(activatedTickets, myTicketsViewModel.ActivatedTickets, ticketsEqualityComparer);
-        //}
-
-        //[Fact]
-        //public void OnNavigatedTo_CompareExpiredTickets_ShouldBeEqual()
-        //{
-        //    // Act
-        //    myTicketsViewModel.OnNavigatedTo(navigationParameters);
-
-        //    // Assert
-        //    Assert.Equal(expiredTickets, myTicketsViewModel.ExpiredTickets, ticketsEqualityComparer);
-        //}
     }
 }

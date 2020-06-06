@@ -133,47 +133,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
                 () => new TicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, null, tokenServiceMock.Object));
         }
 
-        //[Fact]
-        //public void OnAppearing_CompareTickets_ShouldBeEqual()
-        //{
-        //    // Arrange
-        //    var ticketTypesEqualityComparer = new TicketTypesEqualityComparer();
-
-        //    // Act
-        //    ticketsViewModel.OnAppearing();
-
-        //    // Assert
-        //    Assert.Equal(ticketTypes, ticketsViewModel.Tickets, ticketTypesEqualityComparer);
-        //}
-
-        //[Fact]
-        //public void OnAppearing_CompareAreas_ShouldBeEqual()
-        //{
-        //    // Arrange
-        //    var areasViewModelEqualityComparer = new AreasViewModelEqualityComparer();
-
-        //    // Act
-        //    ticketsViewModel.OnAppearing();
-
-        //    // Assert
-        //    Assert.Equal(areas, ticketsViewModel.Areas, areasViewModelEqualityComparer);
-        //}
-
-        //[Fact]
-        //public void OnNavigatedTo_Tickets_CheckRefreshTokenAsyncWhenAccessTokenShouldBeNull()
-        //{
-        //    // Arrange
-        //    httpServiceMock
-        //            .Setup(hs => hs.GetAsync<IEnumerable<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
-        //            .ReturnsAsync(() => null);
-
-        //    // Act
-        //    ticketsViewModel.OnAppearing();
-
-        //    // Assert
-        //    httpServiceMock.Verify(hs => hs.GetAsync<IEnumerable<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()), Times.Exactly(2));
-        //}
-
         [Fact]
         public void OnNavigatedTo_NullNavigationParameters_ThrowArgumentNullException()
         {

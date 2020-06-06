@@ -103,17 +103,5 @@ namespace ETicketMobile.UnitTests.Business.Services
             // Assert
             Assert.Equal(tokenDto.RefreshJwtToken, token.RefreshJwtToken);
         }
-
-        //[Fact]
-        //public async Task RefreshTokenAsync_CompareAccessesTokens_ShouldBeEqual()
-        //{
-        //    // Act
-        //    var accessToken = await tokenService.RefreshTokenAsync();
-
-        //    localTokenServiceMock.VerifyAll();
-
-        //    // Assert
-        //    Assert.Equal(tokenDto.AcessJwtToken, accessToken);
-        //}
     }
 }

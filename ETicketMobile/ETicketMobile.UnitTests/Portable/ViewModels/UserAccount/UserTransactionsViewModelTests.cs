@@ -84,19 +84,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
                 () => new UserTransactionsViewModel(transactionServiceMock.Object, null, null));
         }
 
-        //[Fact]
-        //public void OnNavigatedTo_CompareTransactions_ShouldBeEqual()
-        //{
-        //    // Arrange
-        //    var transactionEqualityComparer = new TransactionEqualityComparer();
-
-        //    // Act
-        //    userTransactionsViewModel.OnNavigatedTo(navigationParameters);
-
-        //    // Assert
-        //    Assert.Equal(transactions, userTransactionsViewModel.Transactions, transactionEqualityComparer);
-        //}
-
         [Fact]
         public void OnNavigatedTo_CheckThrowWebException()
         {

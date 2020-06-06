@@ -69,51 +69,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
             Assert.Equal(passwordWarning, createNewPasswordViewModel.PasswordWarning);
         }
 
-        //[Theory]
-        //[InlineData("1")]
-        //[InlineData("1234567")]
-        //public void OnNavigateToSignInView_CheckIfIsValid_CheckIfIsPasswordShort_ReturnsFalse(string password)
-        //{
-        //    // Arrange
-        //    var passwordWarning = "Use 8 characters or more for your password";
-
-        //    // Act
-        //    createNewPasswordViewModel.NavigateToSignInView.Execute(password);
-
-        //    // Assert
-        //    Assert.Equal(passwordWarning, createNewPasswordViewModel.PasswordWarning);
-        //}
-
-        //[Theory]
-        //[InlineData("asdasdasdasdasdasdasdasddasdasdasdasasdasdasd" +
-        //            "asdasdasdasdasddasdasdasdasasdasdasdasdasdasdasdasdaasss")]
-        //public void OnNavigateToSignInView_CheckIfIsValid_CheckIfIsPasswordLong_ReturnsFalse(string password)
-        //{
-        //    // Arrange
-        //    var passwordWarning = "Use 100 characters or fewer for your password";
-
-        //    // Act
-        //    createNewPasswordViewModel.NavigateToSignInView.Execute(password);
-
-        //    // Assert
-        //    Assert.Equal(passwordWarning, createNewPasswordViewModel.PasswordWarning);
-        //}
-
-        //[Theory]
-        //[InlineData("12345678")]
-        //[InlineData("12345678123123123")]
-        //public void OnNavigateToSignInView_CheckIfIsValid_CheckIfIsPasswordWeak_ReturnsFalse(string password)
-        //{
-        //    // Arrange
-        //    var passwordWarning = "Please, choose a stronger password. Try a mix of letters, numbers, symbols.";
-
-        //    // Act
-        //    createNewPasswordViewModel.NavigateToSignInView.Execute(password);
-
-        //    // Assert
-        //    Assert.Equal(passwordWarning, createNewPasswordViewModel.PasswordWarning);
-        //}
-
         [Theory]
         [InlineData("qwerty12", "qwerty21")]
         public void OnNavigateToSignInView_CheckIfIsValid_CheckIfPasswordsMatched_ReturnsFalse(string password, string confirmPassword)
