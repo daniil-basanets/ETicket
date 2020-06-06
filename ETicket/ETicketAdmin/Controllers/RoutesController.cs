@@ -93,7 +93,7 @@ namespace ETicket.Admin.Controllers
 
                 throw;
             }
-            
+
         }
 
         [HttpPost]

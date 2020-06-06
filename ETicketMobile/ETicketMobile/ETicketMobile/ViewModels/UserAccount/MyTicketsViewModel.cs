@@ -5,7 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using ETicketMobile.Business.Mapping;
 using ETicketMobile.Business.Model.Tickets;
-using ETicketMobile.Data.Entities;
+using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.Endpoints;
@@ -21,6 +21,7 @@ namespace ETicketMobile.ViewModels.BoughtTickets
         #region Fields
 
         private readonly IPageDialogService dialogService;
+        private readonly ITokenService tokenService;
         private readonly IHttpService httpService;
 
         private readonly ILocalApi localApi;
@@ -65,12 +66,16 @@ namespace ETicketMobile.ViewModels.BoughtTickets
         public MyTicketsViewModel(
             INavigationService navigationService,
             IPageDialogService dialogService,
+            ITokenService tokenService,
             IHttpService httpService,
             ILocalApi localApi
         ) : base(navigationService)
         {
             this.dialogService = dialogService
                 ?? throw new ArgumentNullException(nameof(dialogService));
+
+            this.tokenService = tokenService
+                ?? throw new ArgumentNullException(nameof(tokenService));
 
             this.localApi = localApi
                 ?? throw new ArgumentNullException(nameof(localApi));
@@ -81,7 +86,8 @@ namespace ETicketMobile.ViewModels.BoughtTickets
 
         public async override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
-            email = navigationParameters.GetValue<string>("email");
+            email = navigationParameters.GetValue<string>("email")
+                 ?? throw new ArgumentNullException(nameof(navigationParameters));
 
             try
             {
@@ -122,7 +128,7 @@ namespace ETicketMobile.ViewModels.BoughtTickets
 
             if (ticketsDto == null)
             {
-                accessToken = await RefreshTokenAsync();
+                accessToken = await tokenService.RefreshTokenAsync();
 
                 await httpService.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
                     TicketsEndpoint.GetTickets, getTicketsByEmailRequestDto, accessToken);
@@ -131,21 +137,6 @@ namespace ETicketMobile.ViewModels.BoughtTickets
             var tickets = AutoMapperConfiguration.Mapper.Map<IEnumerable<Ticket>>(ticketsDto);
 
             return tickets;
-        }
-
-        private async Task<string> RefreshTokenAsync()
-        {
-            var refreshTokenTask = await localApi.GetTokenAsync();
-            var refreshToken = refreshTokenTask.RefreshJwtToken;
-
-            var tokenDto = await httpService.PostAsync<string, TokenDto>(
-                AuthorizeEndpoint.RefreshToken, refreshToken);
-
-            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
-
-            await localApi.AddAsync(token);
-
-            return token.AcessJwtToken;
         }
 
         private IEnumerable<Ticket> GetUnusedTickets()

@@ -25,7 +25,8 @@ namespace ETicket.ApplicationServices.Services.Transaction
 
         public TransactionService(IUnitOfWork unitOfWork)
         {
-            this.unitOfWork = unitOfWork;
+            this.unitOfWork = unitOfWork
+                ?? throw new ArgumentNullException(nameof(unitOfWork));
 
             mapperService = new MapperService();
             
@@ -35,6 +36,12 @@ namespace ETicket.ApplicationServices.Services.Transaction
 
         public void AddTransaction(TransactionHistoryDto transactionDto)
         {
+            if (transactionDto == null)
+                throw new ArgumentNullException(nameof(transactionDto));
+
+            if (transactionDto.TotalPrice <= 0)
+                throw new ArgumentException("Total Price should be greather than 0");
+
             var transaction = mapperService.Map<TransactionHistoryDto, TransactionHistory>(transactionDto);
 
             unitOfWork.TransactionHistory.Create(transaction);
@@ -48,11 +55,14 @@ namespace ETicket.ApplicationServices.Services.Transaction
             return mapperService.Map<IQueryable<TransactionHistory>, IEnumerable<TransactionHistoryDto>>(transactions).ToList();
         }
 
-        public IEnumerable<TransactionHistoryDto> GetTransactionsByUserId(Guid id)
+        public IEnumerable<TransactionHistoryDto> GetTransactionsByUserId(Guid userId)
         {
+            if (userId == Guid.Empty)
+                throw new ArgumentException("UserId can't be empty");
+
             var transactions = unitOfWork.Tickets
                 .GetAll()
-                .Where(t => t.UserId == id)
+                .Where(t => t.UserId == userId)
                 .Select(t => t.TransactionHistory);
             
             return mapperService.Map<IQueryable<TransactionHistory>, IEnumerable<TransactionHistoryDto>>(transactions).ToList();
@@ -65,9 +75,17 @@ namespace ETicket.ApplicationServices.Services.Transaction
             return mapperService.Map<DataTablePage<TransactionHistory>, DataTablePage<TransactionHistoryDto>>(transactionsPage);
         }
 
-        public TransactionHistoryDto GetTransactionById(Guid id)
+        public TransactionHistoryDto GetTransactionById(Guid transactionId)
         {
-            return mapperService.Map<TransactionHistory, TransactionHistoryDto>(unitOfWork.TransactionHistory.Get(id));
+            if (transactionId == Guid.Empty)
+                throw new ArgumentException("TransactionId can't be empty");
+
+            var transaction = unitOfWork.TransactionHistory.Get(transactionId);
+
+            if (transaction == null)
+                throw new NullReferenceException("Transaction not found.");
+
+            return mapperService.Map<TransactionHistory, TransactionHistoryDto>(transaction);
         }
     }
 }

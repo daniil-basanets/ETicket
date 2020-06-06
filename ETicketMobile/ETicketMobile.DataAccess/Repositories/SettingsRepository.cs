@@ -2,19 +2,20 @@
 using System.IO;
 using System.Threading.Tasks;
 using ETicketMobile.Data.Entities;
+using ETicketMobile.DataAccess.Interfaces;
 using SQLite;
 
 namespace ETicketMobile.DataAccess.Repositories
 {
-    public class SettingsRepository
+    public class SettingsRepository : ISettingsRepository
     {
         #region Fields
 
-        private SQLiteAsyncConnection database;
+        private readonly SQLiteAsyncConnection database;
 
         #endregion
 
-        public void Connect()
+        public SettingsRepository()
         {
             var databasePath = GetDatabasePath();
 

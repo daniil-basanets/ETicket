@@ -50,6 +50,37 @@ function poolColors(a) {
     return pool;
 }
 
+var selectedRoutesPassengersByRoutesByHoursChart = [];
+
+$(document).ready(function () {
+    var slimSelectRoutesPassengersByRoutesByHours = new SlimSelect({
+        select: '#routes-for-passengers-by-hours-by-routes',
+        searchingText: 'Searching...', // Optional - Will show during ajax request
+        hideSelectedOption: true,
+        placeholder: 'Select routes',
+        onChange: (info) => {
+            selectedRoutesPassengersByRoutesByHoursChart = [];
+            for (let i = 0; i < info.length; i++) {
+                selectedRoutesPassengersByRoutesByHoursChart.push(info[i].value);
+            }
+            refreshPassengersByRoutesByHoursChart();
+        }
+    });
+
+    var actionUrl = '/routes/GetRoutesList';
+    $.getJSON(actionUrl, function (response) {
+        let responseResult = [];
+        if (response != null) {
+            for (let i = 0; i < response.length; i++) {
+                responseResult.push({ value: response[i].Id, text: response[i].Number })
+            }
+        }
+
+        slimSelectRoutesPassengersByRoutesByHours.setData(responseResult);
+    });
+})
+
+
 $(document).ready(function () {
     var selectedDate = new Date(new Date().setMonth(new Date().getMonth() - 1));
     $('#passengers-by-hours-by-routes-date').val(yyyy_mm_dd(selectedDate));
