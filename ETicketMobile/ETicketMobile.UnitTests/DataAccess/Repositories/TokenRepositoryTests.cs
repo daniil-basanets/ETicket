@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.Interfaces;
 using ETicketMobile.DataAccess.Repositories;
-using ETicketMobile.UnitTests.DataAccess.Comparers;
+using ETicketMobile.UnitTests.Comparers;
 using Moq;
 using Xunit;
 

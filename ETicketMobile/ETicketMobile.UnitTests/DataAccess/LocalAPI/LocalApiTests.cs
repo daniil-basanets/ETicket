@@ -4,7 +4,7 @@ using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.LocalAPI;
 using ETicketMobile.DataAccess.Repositories;
 using ETicketMobile.DataAccess.Repositories.Interfaces;
-using ETicketMobile.UnitTests.DataAccess.Comparers;
+using ETicketMobile.UnitTests.Comparers;
 using Moq;
 using Xunit;
 
