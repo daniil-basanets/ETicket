@@ -8,7 +8,6 @@ using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.UnitTests.Comparers;
-using ETicketMobile.UnitTests.Portable.Comparer;
 using ETicketMobile.ViewModels.BoughtTickets;
 using ETicketMobile.WebAccess.DTO;
 using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
@@ -32,9 +31,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         private readonly Mock<ILocalTokenService> localTokenServiceMock;
         private readonly Mock<IPageDialogService> dialogServiceMock;
         private readonly Mock<ITicketsService> ticketsServiceMock;
-        private readonly Mock<ITokenService> tokenServiceMock;
-        private readonly Mock<IHttpService> httpServiceMock;
-        private readonly Mock<ILocalApi> localApiMock;
 
         private readonly IEnumerable<TicketDto> ticketsDto;
 
@@ -52,9 +48,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
             localTokenServiceMock = new Mock<ILocalTokenService>();
             dialogServiceMock = new Mock<IPageDialogService>();
             ticketsServiceMock = new Mock<ITicketsService>();
-            tokenServiceMock = new Mock<ITokenService>();
-            httpServiceMock = new Mock<IHttpService>();
-            localApiMock = new Mock<ILocalApi>();
 
             ticketsDto = new List<TicketDto>
             {
@@ -126,17 +119,13 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
                 RefreshJwtToken = "RefreshToken"
             };
 
-            localApiMock
-                    .Setup(l => l.GetTokenAsync())
-                    .ReturnsAsync(token);
+            localTokenServiceMock
+                    .Setup(lts => lts.GetAccessTokenAsync())
+                    .ReturnsAsync(token.AcessJwtToken);
 
-            tokenServiceMock.Setup(ts => ts.RefreshTokenAsync());
-
-            httpServiceMock
-                    .SetupSequence(hs => hs.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(
-                        It.IsAny<Uri>(), It.IsAny<GetTicketsByEmailRequestDto>(), It.IsAny<string>()))
-                    .ReturnsAsync(ticketsDto)
-                    .Throws(new WebException());
+            ticketsServiceMock
+                    .Setup(ts => ts.GetTicketsAsync(It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(tickets);
 
             myTicketsViewModel = new MyTicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, ticketsServiceMock.Object);
 
@@ -171,14 +160,33 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_CheckThrowWebException()
+        public void OnNavigatedTo_CompareUnusedTickets_ShouldBeEqual()
         {
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
 
             // Assert
-            Assert.ThrowsAsync<WebException>(
-                () => httpServiceMock.Object.PostAsync<GetTicketsByEmailRequestDto, IEnumerable<TicketDto>>(null, null, null));
+            Assert.Equal(unusedTickets, myTicketsViewModel.UnusedTickets, ticketsEqualityComparer);
+        }
+
+        [Fact]
+        public void OnNavigatedTo_CompareActivatedTickets_ShouldBeEqual()
+        {
+            // Act
+            myTicketsViewModel.OnNavigatedTo(navigationParameters);
+
+            // Assert
+            Assert.Equal(activatedTickets, myTicketsViewModel.ActivatedTickets, ticketsEqualityComparer);
+        }
+
+        [Fact]
+        public void OnNavigatedTo_CompareExpiredTickets_ShouldBeEqual()
+        {
+            // Act
+            myTicketsViewModel.OnNavigatedTo(navigationParameters);
+
+            // Assert
+            Assert.Equal(expiredTickets, myTicketsViewModel.ExpiredTickets, ticketsEqualityComparer);
         }
     }
 }
