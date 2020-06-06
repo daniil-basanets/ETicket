@@ -208,6 +208,7 @@ function refreshPassengersByDayOfWeekChart() {
                     datasets: datasetsChart,
                 },
                 options: {
+                    maintainAspectRatio: false,
                     tooltips: {
                         backgroundColor: "rgb(255,255,255)",
                         bodyFontColor: "#858796",

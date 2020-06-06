@@ -348,7 +348,7 @@ namespace ETicket.ApplicationServices.Services
                 {
                     for (int j = 0; j < daysOfWeek.Length; j++)
                     {
-                        chartData[i, j] = (passengerTraffic.Where(t => t.Number == transportNumbers[i] && t.DayOfWeek == j).Count() != 0 ? passengerTraffic.Where(t => t.Number == transportNumbers[i] && t.DayOfWeek == j).First().PassengersCount : 0).ToString();
+                        chartData[i, j] = (passengerTraffic.Where(t => t.Number == transportNumbers[i] && t.DayOfWeek == (int)daysOfWeek[j]).Count() != 0 ? passengerTraffic.Where(t => t.Number == transportNumbers[i] && t.DayOfWeek == (int)daysOfWeek[j]).First().PassengersCount : 0).ToString();
                     }
                 }
 
