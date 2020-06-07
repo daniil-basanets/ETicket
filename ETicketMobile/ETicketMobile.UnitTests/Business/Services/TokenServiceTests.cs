@@ -90,7 +90,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTokenAsync_AccessToken_CompareAccessesTokens_ShouldBeEqual()
+        public async Task GetToken_CheckAccessTokens_ShouldBeEqual()
         {
             // Act
             var token = await tokenService.GetTokenAsync(email, password);
@@ -100,7 +100,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTokenAsync_AccessToken_ShouldThrowException()
+        public async Task GetToken_ShouldThrowException()
         {
             // Act
             await tokenService.GetTokenAsync(email, password);
@@ -110,7 +110,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTokenAsync_RefreshToken_CompareRefreshesTokens_ShouldBeEqual()
+        public async Task GetToken_CheckRefreshTokens_ShouldBeEqual()
         {
             // Act
             var accessToken = await tokenService.RefreshTokenAsync();
@@ -120,7 +120,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTokenAsync_RefreshToken_ShouldThrowException()
+        public async Task GetToken_CheckRefreshToken_ShouldThrowException()
         {
             // Act
             await tokenService.RefreshTokenAsync();
@@ -130,7 +130,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTokenAsync_RefreshToken_VerifyAddToken()
+        public async Task GetToken_CheckRefreshToken_VerifyAddToken()
         {
             // Act
             await tokenService.RefreshTokenAsync();

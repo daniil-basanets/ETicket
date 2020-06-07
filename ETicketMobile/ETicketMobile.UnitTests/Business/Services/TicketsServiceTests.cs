@@ -267,7 +267,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTicketsAsync_Tickets_CompareTickets_ShouldBeEqual()
+        public async Task GetTickets_CheckTickets_ShouldBeEqual()
         {
             // Arrange
             var ticketsEqualityComparer = new TicketsEqualityComparer();
@@ -280,23 +280,25 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTicketsAsync_RefreshTokenAsync_ShouldInvokeHttpPostTwice()
+        public async Task GetTickets_WhenSecurityTokenExpired()
         {
             // Arrange
+            var ticketsEqualityComparer = new TicketsEqualityComparer();
+
             httpServiceMock
-                    .Setup(hs => hs.GetAsync<IEnumerable<TicketDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
-                    .ReturnsAsync(() => null);
+                    .SetupSequence(hs => hs.GetAsync<IEnumerable<TicketDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
+                    .ReturnsAsync(() => null)
+                    .ReturnsAsync(ticketsDto);
 
             // Act
-            await ticketsService.GetTicketsAsync(acessToken, email);
+            var actualTickets = await ticketsService.GetTicketsAsync(acessToken, email);
 
             // Assert
-            httpServiceMock.Verify(hs =>
-                hs.GetAsync<IEnumerable<TicketDto>>(It.IsAny<Uri>(), It.IsAny<string>()), Times.Exactly(2));
+            Assert.Equal(tickets, actualTickets, ticketsEqualityComparer);
         }
 
         [Fact]
-        public async Task GetTicketsAsync_ShouldThrowException()
+        public async Task GetTickets_ShouldThrowException()
         {
             // Act
             await ticketsService.GetTicketsAsync(acessToken, email);
@@ -306,7 +308,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTicketTypesAsync_TicketTypes_CompareTicketTypes_ShouldBeEqual()
+        public async Task GetTicketTypes_CheckTicketTypes_ShouldBeEqual()
         {
             // Arrange
             var ticketTypesEqualityComparer = new TicketTypesEqualityComparer();
@@ -319,23 +321,25 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTicketTypesAsync_RefreshTokenAsync_ShouldInvokeHttpPostTwice()
+        public async Task GetTicketTypes_WhenSecurityTokenExpired()
         {
             // Arrange
+            var ticketTypesEqualityComparer = new TicketTypesEqualityComparer();
+
             httpServiceMock
-                    .Setup(hs => hs.GetAsync<IList<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
-                    .ReturnsAsync(() => null);
+                    .SetupSequence(hs => hs.GetAsync<IList<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
+                    .ReturnsAsync(() => null)
+                    .ReturnsAsync(ticketTypesDto);
 
             // Act
-            await ticketsService.GetTicketTypesAsync(acessToken);
+            var actualTicketTypesDto = await ticketsService.GetTicketTypesAsync(acessToken);
 
             // Assert
-            httpServiceMock.Verify(hs => 
-                    hs.GetAsync<IList<TicketTypeDto>>(It.IsAny<Uri>(), It.IsAny<string>()), Times.Exactly(2));
+            Assert.Equal(ticketTypes, actualTicketTypesDto, ticketTypesEqualityComparer);
         }
 
         [Fact]
-        public async Task GetTicketTypesAsync_ShouldThrowException()
+        public async Task GetTicketTypes_ShouldThrowException()
         {
             // Act
             await ticketsService.GetTicketTypesAsync(acessToken);
@@ -345,7 +349,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetAreasAsync_Areas_CompareAreas_ShouldBeEqual()
+        public async Task GetAreas_CheckAreas_ShouldBeEqual()
         {
             // Arrange
             var areasDtoEqualityComparer = new AreasDtoEqualityComparer();
@@ -358,23 +362,25 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetAreasAsync_RefreshTokenAsync_ShouldInvokeHttpPostTwice()
+        public async Task GetAreas_WhenSecurityTokenExpired()
         {
             // Arrange
+            var areasDtoEqualityComparer = new AreasDtoEqualityComparer();
+
             httpServiceMock
-                    .Setup(hs => hs.GetAsync<IList<AreaDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
-                    .ReturnsAsync(() => null);
+                    .SetupSequence(hs => hs.GetAsync<IList<AreaDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
+                    .ReturnsAsync(() => null)
+                    .ReturnsAsync(areasDto);
 
             // Act
-            await ticketsService.GetAreasDtoAsync(acessToken);
+            var actualAreasDto = await ticketsService.GetAreasDtoAsync(acessToken);
 
             // Assert
-            httpServiceMock.Verify(hs =>
-                hs.GetAsync<IList<AreaDto>>(It.IsAny<Uri>(), It.IsAny<string>()), Times.Exactly(2));
+            Assert.Equal(areasDto, actualAreasDto, areasDtoEqualityComparer);
         }
 
         [Fact]
-        public async Task GetAreasAsync_ShouldThrowException()
+        public async Task GetAreas_ShouldThrowException()
         {
             // Act
             await ticketsService.GetAreasDtoAsync(acessToken);
@@ -384,7 +390,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task RequestGetTicketPriceAsync_GetTicketPriceResponseDto_CompareResponses_ShouldBeEqual()
+        public async Task TryRequestGetTicketPrice_CheckTotalPrices_ShouldBeEqual()
         {
             // Arrange
             var ticketPriceEqualityComparer = new GetTicketPriceResponseDtoEqualityComparer();
@@ -397,7 +403,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task RequestGetTicketPriceAsync_ShouldThrowException()
+        public async Task TryRequestGetTicketPrice_ShouldThrowException()
         {
             // Act
             await ticketsService.RequestGetTicketPriceAsync(areasId, ticketTypeId);
@@ -407,7 +413,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task RequestBuyTicketAsync_BuyTicketResponseDto_CompareResponses_ShouldBeEqual()
+        public async Task TryRequestBuyTicket_CheckBuyTicketReponses_ShouldBeEqual()
         {
             // Arrange
             var ticketReponseDtoEqualityComparer = new BuyTicketReponseDtoEqualityComparer();
@@ -420,7 +426,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task RequestBuyTicketAsync_ShouldThrowException()
+        public async Task TryRequestBuyTicketAsync_ShouldThrowException()
         {
             // Act
             await ticketsService.RequestBuyTicketAsync(buyTicketRequestDto);

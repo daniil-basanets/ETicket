@@ -60,7 +60,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task ActivateEmailAsync_ReturnsTrue()
+        public async Task TryActivateEmail_ReturnsTrue()
         {
             // Arrange
             confirmEmailResponseDto.Succeeded = true;
@@ -73,7 +73,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task ActivateEmailAsync_ReturnsFalse()
+        public async Task TryActivateEmail_ReturnsFalse()
         {
             // Arrange
             confirmEmailResponseDto.Succeeded = false;
@@ -86,7 +86,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task ActivateEmailAsync_ShouldThrowException()
+        public async Task TryActivateEmail_ShouldThrowException()
         {
             // Act
             await emailActivationService.ActivateEmailAsync(email, code);
@@ -96,18 +96,17 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task RequestActivationCodeAsync()
+        public async Task VerifyRequestActivationCode()
         {
             // Act
             await emailActivationService.RequestActivationCodeAsync(email);
 
             // Assert
-            httpServiceMock.Verify(hs => 
-                hs.PostAsync<string, string>(It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            httpServiceMock.Verify(hs => hs.PostAsync<string, string>(It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
-        public async Task GetTransactionsAsync_Transactions_ShouldThrowException()
+        public async Task GetTransactions_ShouldThrowException()
         {
             // Act
             await emailActivationService.RequestActivationCodeAsync(email);

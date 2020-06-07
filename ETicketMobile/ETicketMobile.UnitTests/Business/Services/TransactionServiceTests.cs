@@ -98,7 +98,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTransactionsAsync_Transactions_CompareTransactions_ShouldBeEqual()
+        public async Task GetTransactions_CheckTransactions_ShouldBeEqual()
         {
             // Arrange
             var transactionEqualityComparer = new TransactionEqualityComparer();
@@ -111,7 +111,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTransactionsAsync_Transactions_ShouldThrowException()
+        public async Task GetTransactions_CheckTransactions_ShouldThrowException()
         {
             // Act
             await transactionService.GetTransactionsAsync(email);

@@ -75,7 +75,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task RequestChangePasswordAsync_ReturnsTrue()
+        public async Task TryRequestChangePassword_ReturnsTrue()
         {
             // Arrange
             createNewPasswordResponseDto.Succeeded = true;
@@ -88,7 +88,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task RequestChangePasswordAsync_ReturnsFalse()
+        public async Task TryRequestChangePassword_ReturnsFalse()
         {
             // Arrange
             createNewPasswordResponseDto.Succeeded = false;
@@ -101,7 +101,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task RequestChangePasswordAsync_ShouldThrowException()
+        public async Task TryRequestChangePassword_ShouldThrowException()
         {
             // Act
             await userService.RequestChangePasswordAsync(email, password);
@@ -111,7 +111,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task CreateNewUserAsync_ReturnsTrue()
+        public async Task TryCreateNewUser_ReturnsTrue()
         {
             // Arrange
             userSignUpResponseDto.Succeeded = true;
@@ -124,7 +124,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task CreateNewUserAsync_ReturnsFalse()
+        public async Task TryCreateNewUser_ReturnsFalse()
         {
             // Arrange
             userSignUpResponseDto.Succeeded = false;
@@ -137,7 +137,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task CreateNewUserAsync_ShouldThrowException()
+        public async Task TryCreateNewUser_ShouldThrowException()
         {
             // Act
             await userService.CreateNewUserAsync(userSignUpRequestDto);
