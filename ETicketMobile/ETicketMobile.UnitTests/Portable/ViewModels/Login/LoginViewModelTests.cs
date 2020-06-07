@@ -22,17 +22,11 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Login
         private readonly Mock<IPageDialogService> dialogServiceMock;
         private readonly Mock<ITokenService> tokenServiceMock;
 
-        private readonly string email;
-        private readonly string password;
-
         #endregion
 
         public LoginViewModelTests()
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
-
-            email = "email";
-            password = "password";
 
             navigationServiceMock = new Mock<INavigationService>();
             localTokenServiceMock = new Mock<ILocalTokenService>();
@@ -110,6 +104,8 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Login
         public void NavigateToLoginView_ValidThatEmptyPassword(string password)
         {
             // Arrange
+            var email = "email";
+
             loginViewModel.Password = password;
             var passwordWarning = "Enter a password";
 

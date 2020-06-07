@@ -85,16 +85,6 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task TryActivateEmail_ShouldThrowException()
-        {
-            // Act
-            await emailActivationService.ActivateEmailAsync(email, code);
-
-            // Assert
-            await Assert.ThrowsAsync<WebException>(() => emailActivationService.ActivateEmailAsync(email, code));
-        }
-
-        [Fact]
         public async Task VerifyRequestActivationCode()
         {
             // Act
@@ -102,16 +92,6 @@ namespace ETicketMobile.UnitTests.Business.Services
 
             // Assert
             httpServiceMock.Verify(hs => hs.PostAsync<string, string>(It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task GetTransactions_ShouldThrowException()
-        {
-            // Act
-            await emailActivationService.RequestActivationCodeAsync(email);
-
-            // Assert
-            await Assert.ThrowsAsync<WebException>(() => emailActivationService.RequestActivationCodeAsync(email));
         }
     }
 }
