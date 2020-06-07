@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.ViewModels.Payment;
 using ETicketMobile.WebAccess.DTO;

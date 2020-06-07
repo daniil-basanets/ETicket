@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Services;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.WebAccess.DTO;
