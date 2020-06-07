@@ -67,8 +67,11 @@ namespace ETicketMobile.UnitTests.Business.Services
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
         {
+            // Arrange
+            IHttpService httpService = null;
+
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new UserService(null));
+            Assert.Throws<ArgumentNullException>(() => new UserService(httpService));
         }
 
         [Fact]

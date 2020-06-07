@@ -72,15 +72,21 @@ namespace ETicketMobile.UnitTests.Business.Services
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableLocalTokenService_ShouldThrowException()
         {
+            // Arrange
+            ILocalTokenService localTokenService = null;
+
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new TokenService(null, httpServiceMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new TokenService(localTokenService, httpServiceMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
         {
+            // Arrange
+            IHttpService httpService = null;
+
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new TokenService(localTokenServiceMock.Object, null));
+            Assert.Throws<ArgumentNullException>(() => new TokenService(localTokenServiceMock.Object, httpService));
         }
 
         [Fact]
@@ -124,7 +130,7 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTokenAsync_RefreshToken_Verify_Add_Token()
+        public async Task GetTokenAsync_RefreshToken_VerifyAddToken()
         {
             // Act
             await tokenService.RefreshTokenAsync();

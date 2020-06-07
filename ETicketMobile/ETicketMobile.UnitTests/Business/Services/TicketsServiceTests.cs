@@ -249,15 +249,21 @@ namespace ETicketMobile.UnitTests.Business.Services
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableTokenService_ShouldThrowException()
         {
+            // Arrange
+            ITokenService tokenService = null;
+
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new TicketsService(null, httpServiceMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new TicketsService(tokenService, httpServiceMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
         {
+            // Arrange
+            IHttpService httpService = null;
+
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new TicketsService(tokenServiceMock.Object, null));
+            Assert.Throws<ArgumentNullException>(() => new TicketsService(tokenServiceMock.Object, httpService));
         }
 
         [Fact]
