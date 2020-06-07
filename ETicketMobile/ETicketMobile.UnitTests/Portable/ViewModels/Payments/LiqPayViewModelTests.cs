@@ -67,6 +67,26 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Payments
         }
 
         [Fact]
+        public void OnAppearing_CheckExpirationDate_ShouldBeEmpty()
+        {
+            // Act
+            liqPayViewModel.OnAppearing();
+
+            // Assert
+            Assert.Empty(liqPayViewModel.ExpirationDate);
+        }
+
+        [Fact]
+        public void OnAppearing_CheckCVV2_ShouldBeEmpty()
+        {
+            // Act
+            liqPayViewModel.OnAppearing();
+
+            // Assert
+            Assert.Empty(liqPayViewModel.CVV2);
+        }
+
+        [Fact]
         public void Pay_ValidThatHasCardNumberCorrectLength()
         {
             // Arrange
