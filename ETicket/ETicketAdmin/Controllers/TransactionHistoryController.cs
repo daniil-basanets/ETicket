@@ -1,9 +1,10 @@
-﻿using System;
-using System.Linq;
+using System;
+using System.Reflection;
+using ETicket.Admin.Models.DataTables;
 using ETicket.ApplicationServices.Services.Interfaces;
+using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ETicket.Admin.Controllers
 {
@@ -12,48 +13,87 @@ namespace ETicket.Admin.Controllers
     {
         #region Private Members
 
-        private readonly ITransactionAppService transactionAppService;
-        private readonly ITicketTypeService ticketTypeService;
+        private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        
+        private readonly ITransactionService transactionService;
 
         #endregion
 
-        public TransactionHistoryController(
-            ITransactionAppService transactionAppService,
-            ITicketTypeService ticketTypeService)
+        public TransactionHistoryController(ITransactionService transactionService)
         {
-            this.transactionAppService = transactionAppService;
-            this.ticketTypeService = ticketTypeService;
+            this.transactionService = transactionService;
         }
 
-        // GET: TransactionHistories
         public IActionResult Index()
         {
-            var transactions = transactionAppService.Read();
-            var ticketTypes = ticketTypeService.GetAll()
-                    .OrderBy(t => t.TypeName)
-                    .Select(t => new { t.Id, t.TypeName });
+            logger.Info(nameof(TransactionHistoryController.Index));
 
-            ViewData["TicketTypeId"] = new SelectList(ticketTypes, "Id", "TypeName");
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
 
-            return View(transactions);
+                return BadRequest();
+            }
         }
 
-        // GET: TransactionHistories/Details/5
+        [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
+        {
+            logger.Info(nameof(TransactionHistoryController.GetCurrentPage));
+
+            try
+            {
+                if (pagingInfo == null)
+                {
+                    logger.Warn(nameof(TransactionHistoryController.GetCurrentPage) + " pagingInfo is null");
+
+                    return NotFound();
+                }
+
+                return Json(transactionService.GetTransactionsPage(pagingInfo));
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+
+                return BadRequest(ex);
+            }
+        }
+
         public IActionResult Details(Guid? id)
         {
+            logger.Info(nameof(TransactionHistoryController.Details));
+
             if (id == null)
             {
+                logger.Warn(nameof(TransactionHistoryController.Details) + " id is null");
+
                 return NotFound();
             }
 
-            var transaction = transactionAppService.Read(id.Value);
-
-            if (transaction == null)
+            try
             {
-                return NotFound();
-            }
+                var transaction = transactionService.GetTransactionById(id.Value);
 
-            return View(transaction);
+                if (transaction == null)
+                {
+                    logger.Warn(nameof(TransactionHistoryController.Details) + " transaction is null");
+
+                    return NotFound();
+                }
+
+                return View(transaction);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+
+                return BadRequest();
+            }
         }
     }
 }

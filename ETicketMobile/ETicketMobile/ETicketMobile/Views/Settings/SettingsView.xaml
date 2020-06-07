@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com"
+    xmlns:local="clr-namespace:ETicketMobile.Localizations.Extensions;assembly=ETicketMobile" 
+    xmlns:useraccount="clr-namespace:ETicketMobile.Business.Model.UserAccount;assembly=ETicketMobile.Business"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="ETicketMobile.Views.Settings.SettingsView"
+    BackgroundColor="#F7F8FA"
+    Title="{local:Translate Text=Settings}">
+
+    <ContentPage.Content>
+
+        <ListView
+            x:Name="Settings"
+            ItemsSource="{Binding Settings, Mode=OneWay}"
+            SeparatorVisibility="None">
+            <ListView.Behaviors>
+                <prism:EventToCommandBehavior
+                    EventName="ItemTapped"
+                    Command="{Binding NavigateToAction, Mode=OneTime}"
+                    CommandParameter="{Binding Source={x:Reference Settings}, Path=SelectedItem, Mode=OneWay}"/>
+            </ListView.Behaviors>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="useraccount:UserAction">
+                    <ViewCell>
+                        <Frame
+                            BackgroundColor="White"
+                            Padding="12"
+                            BorderColor="#F7F8FA">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="9*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label
+                                    Grid.Column="0"
+                                    Text="{Binding Name, Mode=OneWay}"
+                                    Style="{x:StaticResource Key=NormalLabelStyle}"
+                                    HorizontalTextAlignment="Start"
+                                    FontSize="15"/>
+                                <Image
+                                    Grid.Column="1"
+                                    Source="RightArrow.png"/>
+                            </Grid>
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+    </ContentPage.Content>
+    
+</ContentPage>

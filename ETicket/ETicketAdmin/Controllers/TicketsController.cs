@@ -1,35 +1,44 @@
-﻿using System;
-using System.Linq;
+﻿using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Collections.Generic;
+using ETicket.Admin.Models.DataTables;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
-using log4net;
-using System.Reflection;
-using ETicket.DataAccess.Domain.Entities;
 
 namespace ETicket.Admin.Controllers
 {
     [Authorize(Roles = "Admin, SuperUser")]
-    public class TicketController : Controller
+    public class TicketController : BaseMvcController
     {
         #region Private members
 
         private readonly ITicketService ticketService;
         private readonly ITicketTypeService ticketTypeService;
         private readonly IUserService userService;
-        private readonly ITransactionAppService transactionService;
+        private readonly ITransactionService transactionService;
+        private readonly IAreaService areaService;
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 
-        public TicketController(ITransactionAppService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService)
+        public TicketController(ITransactionService transactionAppService, ITicketService ticketService, ITicketTypeService ticketTypeService, IUserService userService, IAreaService areaService)
         {
             this.ticketService = ticketService;
             this.ticketTypeService = ticketTypeService;
             this.userService = userService;
-            transactionService = transactionAppService;
+            this.transactionService = transactionAppService;
+            this.areaService = areaService;
+        }
+
+        [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
+        {
+            return Json(ticketService.GetTicketsPage(pagingInfo));    
         }
 
         private void InitViewDataForSelectList(TicketDto ticketDto = null)
@@ -38,9 +47,10 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName", ticketDto?.Id);
+                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketTypes(), "Id", "TypeName", ticketDto?.Id);
                 ViewData["TransactionHistoryId"] = new SelectList(transactionService.GetTransactions(), "Id", "ReferenceNumber", ticketDto?.TransactionHistoryId);
                 ViewData["UserId"] = new SelectList(userService.GetUsers().Select(s => new { s.Id, Name = $"{s.LastName} {s.FirstName}" }), "Id", "Name", ticketDto?.UserId);
+                ViewData["AreaId"] = new MultiSelectList(areaService.GetAreas().Select(a => new { a.Id, a.Name }), "Id", "Name", ticketDto?.Areas);
             }
             catch (Exception e)
             {
@@ -55,10 +65,9 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketType(), "Id", "TypeName");
-                var tickets = ticketService.GetTickets();
-
-                return View(tickets.ToList());
+                ViewData["TicketTypeId"] = new SelectList(ticketTypeService.GetTicketTypes(), "Id", "TypeName");
+                
+                return View();
             }
             catch (Exception e)
             {
@@ -80,7 +89,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            Ticket ticket;
+            TicketDto ticket;
 
             try
             {
@@ -108,9 +117,11 @@ namespace ETicket.Admin.Controllers
         {
             log.Info(nameof(TicketController.Create));
 
+            TicketDto ticketDto = new TicketDto();
+            ticketDto.SelectedAreaIds = new List<int>();
             InitViewDataForSelectList();
 
-            return View();
+            return View(ticketDto);
         }
 
         [HttpPost]
@@ -121,7 +132,7 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                TicketType ticketType = null;
+                TicketTypeDto ticketType = null;
 
                 ticketType = ticketTypeService.GetTicketTypeById(ticketDto.TicketTypeId);
 
@@ -168,7 +179,12 @@ namespace ETicket.Admin.Controllers
 
             try
             {
-                ticketDto = ticketService.GetDto((Guid)id);
+                ticketDto = ticketService.GetTicketById((Guid)id);
+                ticketDto.SelectedAreaIds = new List<int>();
+                foreach (var ticketArea in ticketDto.Areas)
+                {
+                    ticketDto.SelectedAreaIds.Add(ticketArea.Key);
+                }             
             }
             catch (Exception e)
             {
@@ -195,7 +211,7 @@ namespace ETicket.Admin.Controllers
         {
             log.Info(nameof(TicketController.Edit) + ":Post");
 
-            TicketType ticketType = null;
+            TicketTypeDto ticketType = null;
 
             if (id != ticketDto.Id)
             {
@@ -246,7 +262,7 @@ namespace ETicket.Admin.Controllers
                 return NotFound();
             }
 
-            Ticket ticket;
+            TicketDto ticket;
 
             try
             {

@@ -1,0 +1,55 @@
+@model ETicket.ApplicationServices.DTOs.AreaDto
+
+@{
+    
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h1>Details</h1>
+
+<div>
+    <h4>Area</h4>
+    
+    <hr/>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Stations)
+        </dt>
+        <dd class="col-sm-10">
+            <ol style="column-count: 3">
+                @foreach (var station in Model.Stations)
+                {
+                    <li>@Html.ActionLink(station.Name, "Details", "Station", new {id = station.Id}, null) </li>
+                }
+            </ol>
+        </dd>
+        <dt class="col-sm-2">Map</dt>
+        <dd class="col-sm-10">
+            <button class="btn btn-google btn-block fab fa-google fa-fw btn-sm" onclick='initMap(@Json.Serialize(Model.Stations.Select(c=> new {c.Latitude, c.Longitude})))' style="width:120px">oogle Map</button>
+            <div id="GeoLocation" style="width:100%;height:400px; display: none"></div>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a href="javascript:history.back()">Back</a> |
+    <a asp-action="Index">Back to Area table</a>
+</div>
+
+<script src="~/js/google-map-area-display-stations.js"></script>
+    
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6R62fVbZG6cb50dEJZDMle-TGT28drV4&callback=initMap"></script>

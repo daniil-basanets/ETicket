@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.ApplicationServices.Validation;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
 
@@ -13,6 +15,7 @@ namespace ETicket.ApplicationServices.Services
 
         private readonly IUnitOfWork uow;
         private readonly MapperService mapper;
+        private readonly CarrierValidator carrierValidator;
 
         #endregion
 
@@ -20,10 +23,18 @@ namespace ETicket.ApplicationServices.Services
         {
             this.uow = uow;
             mapper = new MapperService();
+            carrierValidator = new CarrierValidator();
         }
 
         public void Create(CarrierDto carrierDto)
         {
+            var validationResult = carrierValidator.Validate(carrierDto);
+
+            if (!validationResult.IsValid)
+            {
+                throw new ArgumentException(validationResult.Errors.First().ErrorMessage);
+            }
+
             var carrier = mapper.Map<CarrierDto, Carrier>(carrierDto);
 
             uow.Carriers.Create(carrier);
@@ -36,9 +47,11 @@ namespace ETicket.ApplicationServices.Services
             uow.Save();
         }
 
-        public IEnumerable<Carrier> GetAll()
+        public IEnumerable<CarrierDto> GetAll()
         {
-            return uow.Carriers.GetAll().ToList();
+            var carriers = uow.Carriers.GetAll();
+
+            return mapper.Map<IQueryable<Carrier>, IEnumerable<CarrierDto>>(carriers).ToList();
         }
 
         public CarrierDto Get(int id)
@@ -50,6 +63,13 @@ namespace ETicket.ApplicationServices.Services
 
         public void Update(CarrierDto carrierDto)
         {
+            var validationResult = carrierValidator.Validate(carrierDto);
+
+            if (!validationResult.IsValid)
+            {
+                throw new ArgumentException(validationResult.Errors.First().ErrorMessage);
+            }
+
             var carrier = mapper.Map<CarrierDto, Carrier>(carrierDto);
 
             uow.Carriers.Update(carrier);

@@ -8,63 +8,43 @@
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Registration.BirthdayRegistrationView">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <ControlTemplate x:Key="placeholderTemplate">
-                <Label Text="{TemplateBinding Placeholder}" 
-                    FontAttributes="Bold" 
-                    TextColor="White"
-                    BackgroundColor="#B73562" 
-                    HeightRequest="50"
-                    VerticalTextAlignment="Center"
-                    HorizontalTextAlignment="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{TemplateBinding ToggleCommand}" />
-                    </Label.GestureRecognizers>
-                </Label>
-            </ControlTemplate>
+    <ContentPage.Content>
 
-            <ControlTemplate x:Key="footerTemplate">
-                <StackLayout Orientation="Horizontal" Spacing="0" HorizontalOptions="FillAndExpand" BackgroundColor="#B73562">
-                    <Button Text="{TemplateBinding CancelButtonText}" 
-                        TextColor="White"
-                        BackgroundColor="Transparent"
-                        Command="{TemplateBinding CancelCommand}" />
-                    <Button Text="{TemplateBinding AcceptButtonText}" 
-                        TextColor="White"
-                        BackgroundColor="Transparent"
-                        Command="{TemplateBinding AcceptCommand}" />
-                </StackLayout>
-            </ControlTemplate>
-        </ResourceDictionary>
-    </ContentPage.Resources>
-    
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-        </Grid.RowDefinitions>
+        <Grid Margin="10, 0">
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1.6*"/>
+                <RowDefinition Height="0.5*"/>
+                <RowDefinition Height="0.9*"/>
+                <RowDefinition Height="7*"/>
+            </Grid.RowDefinitions>
 
-        <StackLayout Margin="10, 0">
             <Label
-                Text="{local:Translate EnterBirthday}"
-                Style="{StaticResource TitleLabelStyle}" />
+                Grid.Row="0"
+                Text="{local:Translate Text=EnterBirthday}"
+                Style="{x:StaticResource Key=TitleLabelStyle}"/>
 
             <telerikInput:RadDateTimePicker
-                SelectedDate="{Binding Birthday}"
+                Grid.Row="1"
+                x:Name="BirthDay"
                 DisplayStringFormat="dd.MM.yyyy"
                 SpinnerFormatString="yyyy MMMM dd"
-                StartDate="1990,1,1"
-                EndDate="2013,1,1"
-                Placeholder="Pick a time!"
+                StartDate="1900, 1, 1"
+                EndDate="2013, 1, 1"
+                HorizontalOptions="Center"
+                Placeholder="{Binding DefaultDisplayDate, StringFormat='{0:dd.MM.yyyy}', Mode=OneWay}"
                 AreSpinnerHeadersVisible="True">
             </telerikInput:RadDateTimePicker>
 
             <telerikInput:RadButton
-                Command="{Binding NavigateToConfirmEmailView}"
-                Text="{local:Translate Next}"
-                Style="{StaticResource ActionButtonStyle}" />
-        </StackLayout>
-    </Grid>
+                Grid.Row="2"
+                Command="{Binding NavigateToConfirmEmailView, Mode=OneTime}"
+                CommandParameter="{Binding Source={x:Reference BirthDay}, Path=SelectedDate, Mode=OneWay}"
+                Text="{local:Translate Text=Next}"
+                Style="{x:StaticResource Key=ActionButtonStyle}"/>
+            
+        </Grid>
+
+    </ContentPage.Content>
 
 </ContentPage>

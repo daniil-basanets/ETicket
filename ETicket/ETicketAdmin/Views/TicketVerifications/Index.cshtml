@@ -1,0 +1,142 @@
+﻿@model IEnumerable<ETicket.ApplicationServices.DTOs.TicketVerificationDto>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<link href="/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="~/css/ButtonMoves/moved-data-table-controls.css" rel="stylesheet" />
+
+<div class="container-fluid">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Ticket verification</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.TicketId)
+                                    </summary>
+                                    <div class="filters">
+                                        <input type="text" class="document-filter-form form-control form-control-sm" id="ticket-id-input">
+                                    </div>
+                                </details>
+                            </th>
+                            <th>
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.VerificationUTCDate)
+                                    </summary>
+                                    <div class="filters">
+                                        <input type="date" class="document-filter-form form-control form-control-sm" id="verification-date-datepicker">
+                                    </div>
+                                </details>
+
+                            </th>
+                            <th>
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.StationName)
+                                    </summary>
+                                    <div class="filters">
+                                        <input type="text" class="document-filter-form form-control form-control-sm" id="station-name-input">
+                                    </div>
+                                </details>
+                            </th>
+                            <th>
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.TransportNumber)
+                                    </summary>
+                                    <div class="filters">
+                                        <input type="text" class="document-filter-form form-control form-control-sm" id="transport-number-input">
+                                    </div>
+                                </details>
+                            </th>
+                            <th>
+                                <details onclick="makeSingleOnClickEvent()">
+                                    <summary>
+                                        @Html.DisplayNameFor(model => model.IsVerified)
+                                    </summary>
+                                    <div class="filters">
+                                        <select id="is-verified-select" class="document-filter-form form-control form-control-sm">
+                                            <option value=""></option>
+                                            <option value="True">Yes</option>
+                                            <option value="False">No</option>
+                                        </select>
+                                    </div>
+                                </details>
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.TicketId)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.VerificationUTCDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.StationName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.TransportNumber)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.IsVerified)
+                            </th>
+                            <th>
+                                Actions
+                            </th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.ActionLink(item.TicketId.ToString(), "Details", "Ticket", new { id = item.TicketId }, null)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.VerificationUTCDate)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink(item.StationName, "Details", "Station", new { id = item.StationId }, null)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink(item.TransportNumber, "Details", "Transports", new { id = item.TransportId }, null)
+                                    </td>
+                                    <td>
+                                        @(item.IsVerified ? "Yes" : "No")
+                                    </td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/vendor/jquery/jquery.min.js"></script>
+
+<!-- Page level plugins -->
+<script src="/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="~/js/data-table-ticketVerifications.js"></script>
+<script src="~/js/button-create-moves/button-create-move.js"></script>

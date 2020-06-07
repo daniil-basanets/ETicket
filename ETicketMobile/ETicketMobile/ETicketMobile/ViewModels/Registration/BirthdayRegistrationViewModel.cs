@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using ETicketMobile.Business.Exceptions;
+using ETicketMobile.Business.Services.Interfaces;
+using ETicketMobile.Resources;
 using ETicketMobile.Views.Registration;
-using ETicketMobile.WebAccess.Network;
-using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Registration
 {
     public class BirthdayRegistrationViewModel : ViewModelBase
     {
-        #region Constanst
+        #region Constants
 
         private const int MinAge = 13;
         private const int MaxAge = 120;
@@ -19,14 +22,14 @@ namespace ETicketMobile.ViewModels.Registration
 
         #region Fields
 
-        private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
+
+        private readonly IEmailActivationService emailActivationService;
+        private readonly IPageDialogService dialogService;
 
         private ICommand navigateToConfirmEmailView;
 
-        private readonly HttpClientService httpClient;
-
-        private DateTime birthday;
+        private DateTime defaultDisplayDate;
         private DateTime minBirthday;
         private DateTime maxBirthday;
 
@@ -35,12 +38,12 @@ namespace ETicketMobile.ViewModels.Registration
         #region Properties
 
         public ICommand NavigateToConfirmEmailView => navigateToConfirmEmailView
-            ?? (navigateToConfirmEmailView = new Command(OnNavigateToConfirmEmailView));
+            ??= new Command<DateTime>(OnNavigateToConfirmEmailView);
 
-        public DateTime Birthday
+        public DateTime DefaultDisplayDate
         {
-            get => birthday;
-            set => SetProperty(ref birthday, value);
+            get => defaultDisplayDate;
+            set => SetProperty(ref defaultDisplayDate, value);
         }
 
         public DateTime MinBirthday
@@ -57,13 +60,17 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        public BirthdayRegistrationViewModel(INavigationService navigationService) 
-            : base(navigationService)
+        public BirthdayRegistrationViewModel(
+            IEmailActivationService emailActivationService,
+            INavigationService navigationService,
+            IPageDialogService dialogService
+        ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
+            this.emailActivationService = emailActivationService
+                ?? throw new ArgumentNullException(nameof(emailActivationService));
 
-            httpClient = new HttpClientService();
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
         }
 
         public override void OnAppearing()
@@ -73,10 +80,10 @@ namespace ETicketMobile.ViewModels.Registration
 
         private void FillProperties()
         {
+            DefaultDisplayDate = DateTime.Now.Date;
+
             MinBirthday = DateTime.Today.AddYears(-MinAge);
             MaxBirthday = DateTime.Today.AddYears(-MaxAge);
-
-            Birthday = DateTime.Today.Date;
         }
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
@@ -84,18 +91,28 @@ namespace ETicketMobile.ViewModels.Registration
             this.navigationParameters = navigationParameters;
         }
 
-        private async void OnNavigateToConfirmEmailView(object obj)
+        private async void OnNavigateToConfirmEmailView(DateTime birthday)
         {
-            var email = navigationParameters.GetValue<string>("email");
-            RequestActivationCode(email);
-
-            navigationParameters.Add("birth", birthday.Date);
-            await navigationService.NavigateAsync(nameof(ConfirmEmailView), navigationParameters);
+            await NavigateToConfirmEmailViewAsync(birthday.Date);
         }
 
-        private async void RequestActivationCode(string email)
+        private async Task NavigateToConfirmEmailViewAsync(DateTime birthday)
         {
-            await httpClient.PostAsync<string, string>(TicketsEndpoint.RequestActivationCode, email);
+            var email = navigationParameters.GetValue<string>("email");
+
+            try
+            {
+                await emailActivationService.RequestActivationCodeAsync(email);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
+
+                return;
+            }
+
+            navigationParameters.Add("birth", birthday);
+            await NavigationService.NavigateAsync(nameof(ConfirmEmailView), navigationParameters);
         }
     }
 }

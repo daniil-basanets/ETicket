@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
 using ETicket.WebAPI.Models.Interfaces;
 using LiqPay.SDK;
 using LiqPay.SDK.Dto;
@@ -17,14 +18,18 @@ namespace ETicket.WebAPI.LiqPayApi
 
         private readonly LiqPayClient liqPayClient;
 
-        private readonly ITransactionAppService transactionAppService;
+        private readonly ITransactionService transactionAppService;
+        private readonly IPriceListService priceListService;
+        private readonly ITicketTypeService ticketTypeService;
         private readonly ITicketService ticketService;
         private readonly IUserService userService;
 
         #endregion
 
         public PaymentsService(
-            ITransactionAppService transactionAppService,
+            ITransactionService transactionAppService,
+            IPriceListService priceListService,
+            ITicketTypeService ticketTypeService,
             ITicketService ticketService,
             IUserService userService,
             IMerchant merchant
@@ -34,11 +39,34 @@ namespace ETicket.WebAPI.LiqPayApi
             this.ticketService = ticketService;
             this.userService = userService;
             this.transactionAppService = transactionAppService;
+            this.priceListService = priceListService;
+            this.ticketTypeService = ticketTypeService;
 
             liqPayClient = new LiqPayClient(merchant.PublicKey, merchant.PrivateKey);
         }
 
-        public async Task<LiqPayResponse> Process(
+        public decimal GetTicketPrice(IEnumerable<int> areasId, int ticketTypeId)
+        {
+            var ticketType = ticketTypeService.GetTicketTypeById(ticketTypeId);
+            var coefficient = ticketType.Coefficient;
+
+            var ticketPrice = CalculateTicketPrice(areasId);
+            var totalPrice = ticketPrice * coefficient;
+
+            return totalPrice;
+        }
+
+        private decimal CalculateTicketPrice(IEnumerable<int> areasId)
+        {
+            var totalPrice = priceListService.GetAll()
+                    .Where(p => areasId.Any(a => a == p.AreaId))
+                    .Select(p => (decimal)p.Price)
+                    .Sum();
+
+            return totalPrice;
+        }
+
+        public async Task<LiqPayResponse> MakePayment(
             decimal amount,
             string description,
             string card,
@@ -68,10 +96,9 @@ namespace ETicket.WebAPI.LiqPayApi
             string cvv2
         )
         {
-            var requestParams = CreateLiqPayRequest(amount, description, card, expirationMonth, expirationYear, cvv2);
+            var payParameters = CreateLiqPayRequest(amount, description, card, expirationMonth, expirationYear, cvv2);
 
-            var endpoint = "request";
-            var response = await liqPayClient.RequestAsync(endpoint, requestParams);
+            var response = await liqPayClient.RequestAsync("request", payParameters);
 
             return response;
         }
@@ -105,10 +132,10 @@ namespace ETicket.WebAPI.LiqPayApi
 
         private void SaveTransaction(Guid transactionHistoryId, long referenceNumber, double totalPrice)
         {
-            var transaction = new TransactionHistory
+            var transaction = new TransactionHistoryDto
             {
                 Id = transactionHistoryId,
-                Date = DateTime.Now.Date,
+                Date = DateTime.Now,
                 ReferenceNumber = $"{referenceNumber}",
                 TotalPrice = (decimal)totalPrice
             };

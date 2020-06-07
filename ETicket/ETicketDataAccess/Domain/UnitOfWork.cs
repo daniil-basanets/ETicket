@@ -9,22 +9,29 @@ namespace ETicket.DataAccess.Domain
     {
         #region private members
 
-        private ETicketDataContext eTicketDataContext;
+        private readonly ETicketDataContext eTicketDataContext;
 
-        private DocumentRepository documentRepository;
-        private DocumentTypeRepository documentTypeRepository;
-        private PrivilegeRepository privilegeRepository;
-        private TicketRepository ticketRepository;
-        private TicketTypeRepository ticketTypeRepository;
-        private TransactionHistoryRepository transactionHistoryRepository;
-        private UserRepository userRepository;
-        private CarrierRepository carrierRepository;
-        private RouteStationRepository routeStationRepository;
+        private IRepository<Document,Guid> documentRepository;
+        private IRepository<DocumentType,int> documentTypeRepository;
+        private IRepository<Privilege,int> privilegeRepository;
+        private IRepository<Ticket,Guid> ticketRepository;
+        private IRepository<TicketType,int> ticketTypeRepository;
+        private IRepository<TicketVerification,Guid> ticketVerificationRepository;
+        private IRepository<TransactionHistory,Guid> transactionHistoryRepository;
+        private IRepository<User,Guid> userRepository;
+        private IRepository<Carrier,int> carrierRepository;
+        private IRepository<RouteStation,int> routeStationRepository;
         private SecretCodeRepository secretCodeRepository;
+        private IRepository<Route,int> routeRepository;
+        private IRepository<Station,int> stationRepository;
+        private IRepository<Transport,int> transportRepository;
+        private IRepository<PriceList,int> priceListRepository;
+        private IRepository<Area,int> areaRepository;
+        private IRepository<TicketArea,TicketArea> ticketAreaRepository;
 
         #endregion
 
-        public DocumentRepository Documents
+        public IRepository<Document,Guid> Documents
         {
             get
             {
@@ -34,7 +41,17 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public DocumentTypeRepository DocumentTypes
+        public IRepository<Route,int> Routes
+        {
+            get
+            {
+                if (routeRepository == null)
+                    routeRepository = new RouteRepository(eTicketDataContext);
+                return routeRepository;
+            }
+        }
+
+        public IRepository<DocumentType,int> DocumentTypes
         {
             get
             {
@@ -44,7 +61,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public PrivilegeRepository Privileges
+        public IRepository<Privilege,int> Privileges
         {
             get
             {
@@ -54,7 +71,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public TicketRepository Tickets
+        public IRepository<Ticket,Guid> Tickets
         {
             get
             {
@@ -64,7 +81,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public TicketTypeRepository TicketTypes
+        public IRepository<TicketType,int> TicketTypes
         {
             get
             {
@@ -75,7 +92,18 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public TransactionHistoryRepository TransactionHistory
+        public IRepository<TicketVerification,Guid> TicketVerifications
+        {
+            get
+            {
+                if (ticketVerificationRepository == null)
+                    ticketVerificationRepository = new TicketVerificationRepository(eTicketDataContext);
+
+                return ticketVerificationRepository;
+            }
+        }
+
+        public IRepository<TransactionHistory,Guid> TransactionHistory
         {
             get
             {
@@ -86,7 +114,7 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public UserRepository Users
+        public IRepository<User,Guid> Users
         {
             get
             {
@@ -95,8 +123,19 @@ namespace ETicket.DataAccess.Domain
                 return userRepository;
             }
         }
+        
+        public IRepository<PriceList,int> PriceList
+        {
+            get
+            {
+                if (priceListRepository == null)
+                    priceListRepository = new PriceListRepository(eTicketDataContext);
 
-        public CarrierRepository Carriers
+                return priceListRepository;
+            }
+        }
+
+        public IRepository<Carrier,int> Carriers
         {
             get
             {
@@ -107,7 +146,7 @@ namespace ETicket.DataAccess.Domain
                 return carrierRepository;
             }
         }
-                public RouteStationRepository RouteStation
+        public IRepository<RouteStation,int> RouteStation
         {
             get
             {
@@ -120,7 +159,20 @@ namespace ETicket.DataAccess.Domain
             }
         }
 
-        public SecretCodeRepository SecretCodes
+        public IRepository<TicketArea, TicketArea> TicketArea
+        {
+            get
+            {
+                if (ticketAreaRepository == null)
+                {
+                    ticketAreaRepository = new TicketAreaRepository(eTicketDataContext);
+                }
+
+                return ticketAreaRepository;
+            }
+        }
+
+        public ISecretCodeRepository SecretCodes
         {
             get
             {
@@ -128,6 +180,39 @@ namespace ETicket.DataAccess.Domain
                     secretCodeRepository = new SecretCodeRepository(eTicketDataContext);
 
                 return secretCodeRepository;
+            }
+        }
+
+        public IRepository<Station,int> Stations
+        {
+            get
+            {
+                if (stationRepository == null)
+                    stationRepository = new StationRepository(eTicketDataContext);
+
+                return stationRepository;
+            }
+        }
+        
+        public IRepository<Area,int> Areas
+        {
+            get 
+            {
+                if (areaRepository == null)
+                    areaRepository = new AreaRepository(eTicketDataContext);
+
+                return areaRepository;
+            }
+        }
+
+        public IRepository<Transport,int> Transports
+        {
+            get
+            {
+                if (transportRepository == null)
+                    transportRepository = new TransportRepository(eTicketDataContext);
+
+                return transportRepository;
             }
         }
 

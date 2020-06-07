@@ -2,15 +2,14 @@
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
-using ETicketMobile.Business.Mapping;
-using ETicketMobile.Data.Entities;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
+using ETicketMobile.Business.Exceptions;
+using ETicketMobile.Business.Services.Interfaces;
+using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.UserActions;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network;
-using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.Registration
@@ -19,12 +18,13 @@ namespace ETicketMobile.ViewModels.Registration
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
-        private readonly ILocalApi localApi;
-        
-        private readonly HttpClientService httpClient;
+        private readonly IEmailActivationService emailActivationService;
+        private readonly ILocalTokenService localTokenService;
+        private readonly IPageDialogService dialogService;
+        private readonly ITokenService tokenService;
+        private readonly IUserService userService;
 
         private Timer timer;
 
@@ -39,15 +39,17 @@ namespace ETicketMobile.ViewModels.Registration
         private string email;
         private string password;
 
+        private bool isDataLoad;
+
         #endregion
 
         #region Properties
 
         public ICommand NavigateToSignInView => navigateToSignInView
-            ?? (navigateToSignInView = new Command<string>(OnNavigateToSignInView));
+            ??= new Command<string>(OnNavigateToSignInView);
 
         public ICommand SendActivationCode => sendActivationCode
-            ?? (sendActivationCode = new Command(OnSendActivationCode));
+            ??= new Command(OnSendActivationCode);
 
         public string ConfirmEmailWarning
         {
@@ -67,18 +69,37 @@ namespace ETicketMobile.ViewModels.Registration
             set => SetProperty(ref activationCodeTimer, value);
         }
 
+        public bool IsDataLoad
+        {
+            get => isDataLoad;
+            set => SetProperty(ref isDataLoad, value);
+        }
+
         #endregion
 
-        public ConfirmEmailViewModel(INavigationService navigationService, ILocalApi localApi) 
-            : base(navigationService)
+        public ConfirmEmailViewModel(
+            IEmailActivationService emailActivationService,
+            INavigationService navigationService,
+            ILocalTokenService localTokenService,
+            IPageDialogService dialogService,
+            ITokenService tokenService,
+            IUserService userService
+        ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
+            this.emailActivationService = emailActivationService
+                ?? throw new ArgumentNullException(nameof(emailActivationService));
 
-            this.localApi = localApi
-                ?? throw new ArgumentNullException(nameof(localApi));
+            this.localTokenService = localTokenService
+                ?? throw new ArgumentNullException(nameof(localTokenService));
 
-            httpClient = new HttpClientService();
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
+
+            this.tokenService = tokenService
+                ?? throw new ArgumentNullException(nameof(tokenService));
+
+            this.userService = userService
+                ?? throw new ArgumentNullException(nameof(userService));
         }
 
         public override void OnAppearing()
@@ -115,13 +136,12 @@ namespace ETicketMobile.ViewModels.Registration
                 timer.Stop();
         }
 
-        private void OnSendActivationCode()
+        private async void OnSendActivationCode()
         {
             if (ActivationCodeTimer != 0)
                 return;
 
-            var email = navigationParameters.GetValue<string>("email");
-            RequestActivationCode(email);
+            await SendActivationCodeAsync();
 
             ActivationCodeTimer = 60;
 
@@ -130,55 +150,71 @@ namespace ETicketMobile.ViewModels.Registration
             TimerActivated = true;
         }
 
-        private async void RequestActivationCode(string email)
+        private async Task SendActivationCodeAsync()
         {
-            await httpClient.PostAsync<string, string>(TicketsEndpoint.RequestActivationCode, email);
+            var email = navigationParameters.GetValue<string>("email");
+
+            try
+            {
+                await emailActivationService.RequestActivationCodeAsync(email);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
+
+                return;
+            }
         }
 
         private async void OnNavigateToSignInView(string code)
         {
+            await NavigateToSignInViewAsync(code);
+        }
+
+        private async Task NavigateToSignInViewAsync(string code)
+        {
             if (!IsValid(code))
                 return;
 
-            var userCreated = await ConfirmAndCreateUser(code);
-
-            if (!userCreated)
-                return;
-
-            var token = await GetTokenAsync();
-
-            await localApi.AddAsync(token);
-            await navigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
-        }
-        private async Task<Token> GetTokenAsync()
-        {
-            var userSignIn = new UserSignInRequestDto
+            try
             {
-                Email = email,
-                Password = password
-            };
+                var userCreated = await ConfirmAndCreateUserAsync(code);
 
-            var tokenDto = await httpClient.PostAsync<UserSignInRequestDto, TokenDto>(
-                TicketsEndpoint.Login, userSignIn);
+                if (!userCreated)
+                    return;
 
-            var token = AutoMapperConfiguration.Mapper.Map<Token>(tokenDto);
+                IsDataLoad = true;
 
-            return token;
+                var token = await tokenService.GetTokenAsync(email, password);
+                await localTokenService.AddAsync(token);
+            }
+            catch (WebException)
+            {
+                IsDataLoad = false;
+
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
+
+                return;
+            }
+
+            await NavigationService.NavigateAsync(nameof(MainMenuView), navigationParameters);
+
+            IsDataLoad = false;
         }
 
-        private async Task<bool> ConfirmAndCreateUser(string code)
+        private async Task<bool> ConfirmAndCreateUserAsync(string code)
         {
-            var confirmEmailIsSucceeded = await ConfirmEmail(code);
-            if (!confirmEmailIsSucceeded)
+            var emailActivated = await emailActivationService.ActivateEmailAsync(email, code);
+            if (!emailActivated)
             {
                 ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
 
                 return false;
             }
 
-            var userCreated = await CreateNewUser();
+            await CreateNewUserAsync();
 
-            return userCreated;
+            return true;
         }
 
         #region Validation
@@ -197,22 +233,6 @@ namespace ETicketMobile.ViewModels.Registration
 
         #endregion
 
-        private async Task<bool> ConfirmEmail(string activationCode)
-        {
-            var confirmEmailRequestDto = new ConfirmEmailRequestDto
-            {
-                Email = navigationParameters.GetValue<string>("email"),
-                ActivationCode = activationCode
-            };
-
-            var response = await httpClient.PostAsync<ConfirmEmailRequestDto, ConfirmEmailResponseDto>(
-                TicketsEndpoint.ConfirmEmail,
-                confirmEmailRequestDto
-            );
-
-            return response.Succeeded;
-        }
-
         private UserSignUpRequestDto CreateUserSignUpRequest()
         {
             return new UserSignUpRequestDto
@@ -226,17 +246,11 @@ namespace ETicketMobile.ViewModels.Registration
             };
         }
 
-        private async Task<bool> CreateNewUser()
+        private async Task CreateNewUserAsync()
         {
             var user = CreateUserSignUpRequest();
 
-            var response = await httpClient
-                .PostAsync<UserSignUpRequestDto, UserSignUpResponseDto>(
-                    TicketsEndpoint.Registration,
-                    user
-            );
-
-            return response.Succeeded;
+            await userService.CreateNewUserAsync(user);
         }
     }
 }

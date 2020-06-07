@@ -2,6 +2,7 @@
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,14 +24,15 @@ namespace ETicket.ApplicationServices.Services
             mapper = new MapperService();
         }
 
-        public IEnumerable<PriceList> GetAll()
+        public IEnumerable<PriceListDto> GetAll()
         {
-            return uow.PriceList.GetAll().ToList();
+            var priceLists = uow.PriceList.GetAll();
+            return mapper.Map<IQueryable<PriceList>, IEnumerable<PriceListDto>>(priceLists).ToList();
         }
 
-        public PriceList Get(int id)
+        public PriceListDto Get(int id)
         {
-            return uow.PriceList.Get(id);
+            return mapper.Map<PriceList, PriceListDto>(uow.PriceList.Get(id));
         }
 
         public void Create(PriceListDto priceListDto)

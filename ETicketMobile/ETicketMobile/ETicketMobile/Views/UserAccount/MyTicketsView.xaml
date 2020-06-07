@@ -1,0 +1,321 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com" 
+    xmlns:telerikPrimitives="clr-namespace:Telerik.XamarinForms.Primitives;assembly=Telerik.XamarinForms.Primitives" xmlns:tickets="clr-namespace:ETicketMobile.Business.Model.Tickets;assembly=ETicketMobile.Business"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="ETicketMobile.Views.UserAccount.MyTicketsView">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="telerikPrimitives:AccordionItemHeader">
+                <Setter Property="IndicatorColor" Value="Blue"/>
+                <Setter Property="IndicatorFontSize" Value="16"/>
+                <Setter Property="IndicatorLocation" Value="End"/>
+                <Setter Property="BorderColor" Value="LightBlue"/>
+                <Setter Property="BorderThickness" Value="2"/>
+            </Style>
+
+            <Style TargetType="telerikPrimitives:AccordionItem">
+                <Setter Property="BorderColor" Value="LightBlue"/>
+                <Setter Property="BorderThickness" Value="2"/>
+            </Style>
+
+            <Style TargetType="Frame">
+                <Setter Property="Padding" Value="5"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+
+        <telerikPrimitives:RadAccordion 
+            CanCollapseAllItems="True"
+            AnimationDuration="1500"
+            AnimationEasing="SpringOut"
+            Spacing="5">
+
+            <telerikPrimitives:AccordionItem>
+                <telerikPrimitives:AccordionItem.Header>
+                    <telerikPrimitives:AccordionItemHeader>
+                        <Label
+                            Text="Unused"
+                            Margin="8"/>
+                    </telerikPrimitives:AccordionItemHeader>
+                </telerikPrimitives:AccordionItem.Header>
+                <telerikPrimitives:AccordionItem.Content>
+                    <ScrollView>
+                        <StackLayout BindableLayout.ItemsSource="{Binding UnusedTickets, Mode=OneWay}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="tickets:Ticket">
+                                    <Frame>
+                                        <Grid HeightRequest="80">
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="3.725*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="0.1*"/>
+                                                <RowDefinition Height="0.1*"/>
+                                                <RowDefinition Height="0.1*"/>
+                                            </Grid.RowDefinitions>
+
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.Row="0"
+                                                Text="Ticket type"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"/>
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.Row="1"
+                                                Text="Ticket Ref"
+                                                HorizontalTextAlignment="Start"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"/>
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.Row="2"
+                                                Text="Created At"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"/>
+
+                                            <Label
+                                                Grid.Column="1"
+                                                Grid.Row="0"
+                                                Text="{Binding TicketType, Mode=OneWay}"
+                                                HorizontalTextAlignment="Start"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"/>
+                                            <Label
+                                                Grid.Column="1"
+                                                Grid.Row="1"
+                                                Text="{Binding ReferenceNumber, Mode=OneWay}"
+                                                HorizontalTextAlignment="Start"
+                                                FontSize="14.499"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"/>
+                                            <Label
+                                                Grid.Column="1"
+                                                Grid.Row="2"
+                                                Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}', Mode=OneWay}"
+                                                HorizontalTextAlignment="Start"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"/>
+
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                    </ScrollView>
+                </telerikPrimitives:AccordionItem.Content>
+            </telerikPrimitives:AccordionItem>
+
+            <telerikPrimitives:AccordionItem>
+                <telerikPrimitives:AccordionItem.Header>
+                    <telerikPrimitives:AccordionItemHeader>
+                        <Label
+                            Text="Active"
+                            Margin="8"/>
+                    </telerikPrimitives:AccordionItemHeader>
+                </telerikPrimitives:AccordionItem.Header>
+                <telerikPrimitives:AccordionItem.Content>
+                    <ScrollView>
+                        <StackLayout BindableLayout.ItemsSource="{Binding ActivatedTickets, Mode=OneWay}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="tickets:Ticket">
+                                    <Frame>
+                                        <Grid HeightRequest="120">
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="3.725*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="0.1*"/>
+                                                <RowDefinition Height="0.1*"/>
+                                                <RowDefinition Height="0.1*"/>
+                                                <RowDefinition Height="0.1*"/>
+                                                <RowDefinition Height="0.1*"/>
+                                            </Grid.RowDefinitions>
+
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.Row="0"
+                                                Text="Ticket type"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalTextAlignment="Start"/>
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.Row="1"
+                                                Text="Ticket Ref"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalTextAlignment="Start"/>
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.Row="2"
+                                                Text="Created at"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalTextAlignment="Start"/>
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.Row="3"
+                                                Text="Activated"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalTextAlignment="Start"/>
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.Row="4"
+                                                Text="Will expire"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalTextAlignment="Start"/>
+
+                                            <Label
+                                                Grid.Column="1"
+                                                Grid.Row="0"
+                                                Text="{Binding TicketType, Mode=OneWay}"
+                                                HorizontalTextAlignment="Start"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"/>
+                                            <Label
+                                                Grid.Column="1"
+                                                Grid.Row="1"
+                                                Text="{Binding ReferenceNumber, Mode=OneWay}"
+                                                HorizontalTextAlignment="Start"
+                                                FontSize="14.499"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"/>
+                                            <Label
+                                                Grid.Column="1"
+                                                Grid.Row="2"
+                                                Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}', Mode=OneWay}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalTextAlignment="Start"/>
+                                            <Label
+                                                Grid.Column="1"
+                                                Grid.Row="3"
+                                                Text="{Binding ActivatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}', Mode=OneWay}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalTextAlignment="Start"/>
+                                            <Label
+                                                Grid.Column="1"
+                                                Grid.Row="4"
+                                                Text="{Binding ExpiredAt, StringFormat='{0:dd.MM.yyyy HH.mm}', Mode=OneWay}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalTextAlignment="Start"/>
+
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                    </ScrollView>
+                </telerikPrimitives:AccordionItem.Content>
+            </telerikPrimitives:AccordionItem>
+
+            <telerikPrimitives:AccordionItem IsExpanded="True">
+                <telerikPrimitives:AccordionItem.Header>
+                    <telerikPrimitives:AccordionItemHeader>
+                        <Label
+                            Text="Expired"
+                            HorizontalTextAlignment="Start"
+                            Margin="8"/>
+                    </telerikPrimitives:AccordionItemHeader>
+                </telerikPrimitives:AccordionItem.Header>
+                <telerikPrimitives:AccordionItem.Content>
+                    <ScrollView>
+                        <StackLayout
+                            x:Name="ExpiredTickets"
+                            BindableLayout.ItemsSource="{Binding ExpiredTickets, Mode=OneWay}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="tickets:Ticket">
+                                    <Frame>
+                                        <Grid HeightRequest="120">
+
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="3.725*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="0.1*"/>
+                                                <RowDefinition Height="0.1*"/>
+                                                <RowDefinition Height="0.1*"/>
+                                                <RowDefinition Height="0.1*"/>
+                                                <RowDefinition Height="0.1*"/>
+                                            </Grid.RowDefinitions>
+
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.Row="0"
+                                                Text="Ticket type"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalTextAlignment="Start"/>
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.Row="1"
+                                                Text="Ticket Ref"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalTextAlignment="Start"/>
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.Row="2"
+                                                Text="Created At"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalTextAlignment="Start"/>
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.Row="3"
+                                                Text="Activated At"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalTextAlignment="Start"/>
+                                            <Label
+                                                Grid.Column="0"
+                                                Grid.Row="4"
+                                                Text="Expired At"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalTextAlignment="Start"/>
+
+                                            <Label
+                                                Grid.Column="1"
+                                                Grid.Row="0"
+                                                Text="{Binding TicketType}"
+                                                HorizontalOptions="Start"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"/>
+                                            <Label
+                                                Grid.Column="1"
+                                                Grid.Row="1"
+                                                Text="{Binding ReferenceNumber, Mode=OneWay}"
+                                                HorizontalTextAlignment="Start"
+                                                FontSize="14.499"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"/>
+                                            <Label
+                                                Grid.Column="1"
+                                                Grid.Row="2"
+                                                Text="{Binding CreatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}', Mode=OneWay}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                            <Label
+                                                Grid.Column="1"
+                                                Grid.Row="3"
+                                                Text="{Binding ActivatedAt, StringFormat='{0:dd.MM.yyyy HH.mm}', Mode=OneWay}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+                                            <Label
+                                                Grid.Column="1"
+                                                Grid.Row="4"
+                                                Text="{Binding ExpiredAt, StringFormat='{0:dd.MM.yyyy HH.mm}', Mode=OneWay}"
+                                                Style="{x:StaticResource Key=NormalLabelStyle}"
+                                                HorizontalOptions="Start"/>
+
+                                        </Grid>
+                                    </Frame>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                    </ScrollView>
+                </telerikPrimitives:AccordionItem.Content>
+            </telerikPrimitives:AccordionItem>
+
+        </telerikPrimitives:RadAccordion>
+
+    </ContentPage.Content>
+
+</ContentPage>

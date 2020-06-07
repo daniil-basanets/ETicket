@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Account" xml:space="preserve">
+    <value>Аккаунт</value>
+    <comment>MainMenuView</comment>
+  </data>
   <data name="ActivationCode" xml:space="preserve">
     <value>Код активації</value>
     <comment>ConfirmForgotPasswordView</comment>
@@ -148,6 +152,10 @@
   <data name="BuyTicket" xml:space="preserve">
     <value>Купити квиток</value>
     <comment>ChooseActionViewModel</comment>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Скасувати</value>
+    <comment>ForgotPasswordView</comment>
   </data>
   <data name="CardExpiration" xml:space="preserve">
     <value>Введіть термін дії карти</value>
@@ -329,6 +337,14 @@
     <value>Вибір мови</value>
     <comment>SettingsViewModel</comment>
   </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Вийти</value>
+    <comment>SettingsView</comment>
+  </data>
+  <data name="MyTickets" xml:space="preserve">
+    <value>Мої квитки</value>
+    <comment>UserAccountViewModel</comment>
+  </data>
   <data name="Next" xml:space="preserve">
     <value>Далі</value>
     <comment>ForgotPasswordView</comment>
@@ -345,11 +361,11 @@
     <value>Використовуйте 100 символів або менше для вашого пароля</value>
     <comment>CreateNewPasswordViewModel, PasswordRegistrationViewModel</comment>
   </data>
-  <data name="PasswordPlaceHolderDefault" xml:space="preserve">
+  <data name="PasswordWatermarkDefault" xml:space="preserve">
     <value>Пароль</value>
     <comment>LoginViewModel</comment>
   </data>
-  <data name="PasswordPlaceHolderWrong" xml:space="preserve">
+  <data name="PasswordWatermarkWrong" xml:space="preserve">
     <value>або невірний пароль</value>
     <comment>LoginViewModel</comment>
   </data>
@@ -424,5 +440,17 @@
   <data name="WrongSignIn" xml:space="preserve">
     <value>Чи не можете увійти?</value>
     <comment>ForgotPasswordView</comment>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Помилка</value>
+    <comment>DisplayAlertDialog</comment>
+  </data>
+  <data name="ErrorConnection" xml:space="preserve">
+    <value>Перевірте підключення до мережі та повторіть спробу</value>
+    <comment>DisplayAlertDialog</comment>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>OK</value>
+    <comment>DisplayAlertDialog</comment>
   </data>
 </root>

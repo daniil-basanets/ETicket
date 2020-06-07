@@ -1,0 +1,25 @@
+﻿@{
+    Layout = null;
+}
+
+<!-- Radar chart-->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Passenger traffic by days of week</h6>
+        From: <input type="date" id="passengers-by-days-of-week-start" class="form-control form-control-sm">
+        To: <input type="date" id="passengers-by-days-of-week-end" class="form-control form-control-sm">
+        Routes:
+        <select id="routes-for-passengers-by-days-of-week" multiple>
+            <option data-placeholder="true"></option>
+        </select>
+    </div>
+    <div class="card-body">
+        <div class="chart-bar">
+            <canvas id="passengers-by-days-of-week"></canvas>
+        </div>
+        <hr>
+        <span id="passengers-by-days-of-week-error" class="text-danger"></span>
+    </div>
+</div>
+
+<script src="~/js/chart/chart-radar-passengers-by-days-of-week.js"></script>

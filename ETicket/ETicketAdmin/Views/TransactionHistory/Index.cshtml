@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ETicket.DataAccess.Domain.Entities.TransactionHistory>
+﻿@model IEnumerable<ETicket.ApplicationServices.DTOs.TransactionHistoryDto>
 
 @{
     ViewData["Title"] = "Index";
@@ -6,7 +6,7 @@
 
 <link href="~/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 <link href="~/css/trans-style.css" rel="stylesheet">
-<link href="~/css/ButtonMoves/moved-data-table-controls.css" rel="stylesheet" />
+<link href="~/css/ButtonMoves/moved-data-table-controls.css" rel="stylesheet"/>
 
 <div class="container-fluid">
     <div class="card shadow mb-4">
@@ -14,71 +14,60 @@
             <h6 class="m-0 font-weight-bold text-primary">Transaction history</h6>
         </div>
         <div class="card-body transactions">
-            <div class="filters">
-                <details>
-                    <summary>Filters</summary>
-                    <table border="0" class="filter-table">
-                        <tr>
-                            <th>Total price:</th>
-                            <th>
-                                <form class="trans-filter-form">
-                                    <input type="text" class="trans-filter-form form-control form-control-sm" id="total-price-input">
-                                </form>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>Count:</th>
-                            <th>
-                                <form class="trans-filter-form">
-                                    <input type="text" class="trans-filter-form form-control form-control-sm" id="count-input">
-                                </form>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>Ticket type:</th>
-                            <th>
-                                <form class="trans-filter-form">
-
-                                    @Html.DropDownList("type-select", ViewData["TicketTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "trans-filter-form custom-select custom-select-sm form-control form-control-sm" })
-
-                                </form>
-                            </th>
-                        </tr>
-                    </table>
-                </details>
-                <p></p>
-            </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 
                     <thead>
-                        <tr>
-                            <th>
-                                @Html.DisplayName("Total Price")
-                            </th>
-                            <th>
-                                @Html.DisplayName("Date")
-                            </th>
-                            <th>
-                                Actions
-                            </th>
-                        </tr>
+                    <tr>
+                        <th>
+                            <details onclick="makeSingleOnClickEvent()">
+                                <summary>
+                                    @Html.DisplayName("Total Price")
+                                </summary>
+                                <input type="text" class="document-filter-form form-control form-control-sm" id="total-price-input">
+                            </details>
+                        </th>
+                        <th>
+                            <details onclick="makeSingleOnClickEvent()">
+                                <summary>
+                                    @Html.DisplayName("Date")
+                                </summary>
+                                <input type="date" id="date-datepicker" class="document-filter-form form-control form-control-sm">
+                            </details>
+                        </th>
+                        <th>
+                            <details onclick="makeSingleOnClickEvent()">
+                                <summary>
+                                    @Html.DisplayName("Reference number")
+                                </summary>
+                                <input type="text" class="document-filter-form form-control form-control-sm" id="reference-number-input">
+                            </details>
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
                     </thead>
                     <tfoot>
-                        <tr>
-                            <th>
-                                @Html.DisplayName("Total Price")
-                            </th>
-                            <th>
-                                @Html.DisplayName("Date")
-                            </th>
-                            <th>
-                                Actions
-                            </th>
-                        </tr>
+                    <tr>
+                        <th>
+                            @Html.DisplayName("Total Price")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Date")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Reference number")
+                        </th>
+                        <th>
+                            Actions
+                        </th>
+                    </tr>
                     </tfoot>
                     <tbody>
-                        @foreach (var item in Model)
+                    @if (Model != null)
+                    {
+                        foreach (var item in Model)
                         {
                             <tr>
                                 <td>
@@ -87,12 +76,16 @@
 
                                 <td>
                                     @item.Date.ToString("yyyy-MM-dd hh:mm:ss")
-                                </td>    
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ReferenceNumber)
+                                </td>
                                 <td>
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
                                 </td>
                             </tr>
                         }
+                    }
                     </tbody>
                 </table>
             </div>
@@ -109,4 +102,3 @@
 <!-- Page level custom scripts -->
 <script src="~/js/data-table-trans-filters.js"></script>
 <script src="~/js/button-create-moves/button-create-move.js"></script>
-<br />

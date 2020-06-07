@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<!-- Custom fonts for this template-->
+<link href="~/css/slimselect.min.css" rel="stylesheet">
+<link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+<!-- Custom styles for this template-->
+<link href="~/css/sb-admin-2.min.css" rel="stylesheet">
+<link href="~/css/metric-style.css" rel="stylesheet" />
+
+<button type="button" id="metrics-button" class="btn btn-primary" data-toggle="modal" data-target="#chartSelectorModal">
+    Select chart
+</button>
+<!-- Content Row -->
+<div id="metrics-content" class="row card-body">
+    <!-- Modal -->
+    <div class="modal fade" id="chartSelectorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Choose chart</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="check-box-list" class="modal-body">
+                    <input type="checkbox" id="TicketsByTicketTypesChartCheckbox" onchange="ManageChart(this, '/metrics/TicketsByTicketTypesChart', '#TicketsByTicketTypesChartPlace')"> Tickets by ticket types
+                    <br>
+                    <input type="checkbox" id="PassengerByTimeChartCheckbox" onchange="ManageChart(this, '/metrics/PassengersByTimeChart', '#PassengersByTimeChartPlace')" checked> Passenger by time
+                    <br>
+                    <input type="checkbox" id="PassengersByPrivilegeChartCheckbox" onchange="ManageChart(this, '/metrics/PassengersByPrivilegesChart', '#PassengersByPrivilegeChartPlace')"> Passengers by privilege
+                    <br>
+                    <input type="checkbox" id="PassengersByPrivilegesChartCheckbox" onchange="ManageChart(this, '/metrics/PassengerTrafficByDaysOfWeekChart', '#PassengerTrafficByDaysOfWeekChartPlace')"> Passenger traffic by days of week
+                    <br>
+                    <input type="checkbox" id="PassengersByHoursByRoutesChartCheckbox" onchange="ManageChart(this, '/metrics/PassengersByHoursByRoutesChart', '#PassengersByHoursByRoutes')"> Passengers by hours by routes
+                    <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-primary">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p id="empty-chart-list">No charts selected</p>
+
+    <div class="col-xl-12 col-lg-12">
+        <div id="TicketsByTicketTypesChartPlace"></div>
+
+        <div id="PassengersByTimeChartPlace"></div>
+
+        <div id="PassengersByPrivilegeChartPlace"></div>
+
+        <div id="PassengerTrafficByDaysOfWeekChartPlace"></div>
+
+        <div id="PassengersByHoursByRoutes"></div>
+    </div>
+</div>
+
+
+<!-- Bootstrap core JavaScript-->
+<script src="~/vendor/jquery/jquery.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Page level plugins -->
+<script src="~/vendor/chart.js/Chart.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="~/js/slimselect.min.js"></script>
+<script src="~/js/chart/chart-selector.js"></script>
+

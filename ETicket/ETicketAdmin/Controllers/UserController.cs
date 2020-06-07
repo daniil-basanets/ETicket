@@ -1,13 +1,13 @@
-﻿using System;
-using ETicket.DataAccess.Domain.Interfaces;
+﻿using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Reflection;
+
+using ETicket.Admin.Models.DataTables;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
-using log4net;
-using System.Reflection;
 
 namespace ETicket.Admin.Controllers
 {
@@ -41,7 +41,7 @@ namespace ETicket.Admin.Controllers
             {
                 ViewData["PrivilegeId"] = new SelectList(privilegeService.GetPrivileges(), "Id", "Name");
 
-                return View(userService.GetUsers());
+                return View();
             }
             catch (Exception e)
             {
@@ -49,6 +49,12 @@ namespace ETicket.Admin.Controllers
 
                 return BadRequest();
             }
+        }
+
+        [HttpGet]
+        public IActionResult GetCurrentPage([FromQuery]DataTablePagingInfo pagingInfo)
+        {
+            return Json(userService.GetUsersPage(pagingInfo));
         }
 
         [HttpGet]

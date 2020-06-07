@@ -1,9 +1,11 @@
 ﻿using ETicket.DataAccess.Domain.Entities;
 using System.Linq;
+using ETicket.DataAccess.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ETicket.DataAccess.Domain.Repositories
 {
-    public class TransportRepository
+    public class TransportRepository : IRepository<Transport,int>
     {
         #region
 
@@ -21,7 +23,7 @@ namespace ETicket.DataAccess.Domain.Repositories
             context.Transports.Add(item);
         }
 
-        public void Delete(long id)
+        public void Delete(int id)
         {
             var transport = context.Transports.Find(id);
 
@@ -31,14 +33,19 @@ namespace ETicket.DataAccess.Domain.Repositories
             }
         }
 
-        public Transport Get(long id)
+        public Transport Get(int id)
         {
-            return context.Transports.FirstOrDefault(t => t.Id == id);
+            return context.Transports
+                .Include(r => r.Route)
+                .Include(c => c.Carriers)
+                .FirstOrDefault(t => t.Id == id);
         }
 
         public IQueryable<Transport> GetAll()
         {
-            return context.Transports;
+            return context.Transports
+                .Include(c => c.Carriers)
+                .Include(r => r.Route);
         }
 
         public void Update(Transport item)

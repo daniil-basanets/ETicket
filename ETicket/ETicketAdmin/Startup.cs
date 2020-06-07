@@ -1,14 +1,12 @@
 using System;
 using ETicket.ApplicationServices.DTOs;
+using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
 using ETicket.ApplicationServices.Services.DocumentTypes;
-using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Services.Transaction;
 using ETicket.DataAccess.Domain;
-using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
-using ETicket.WebAPI.Validation;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -19,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ETicket.ApplicationServices.Validation;
 
 namespace ETicket.Admin
 {
@@ -39,19 +38,19 @@ namespace ETicket.Admin
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
             services.AddTransient<IUnitOfWork, UnitOfWork>(u => new UnitOfWork(u.GetService<ETicketDataContext>()));
 
-            services.AddTransient<ITransactionAppService, TransactionAppService>();
-
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ETicketDataContext>()
                 .AddDefaultTokenProviders();
             services.AddControllersWithViews().AddFluentValidation();
-            services.AddTransient<IValidator<TicketType>, TicketTypeValidator>();
-            services.AddTransient<IValidator<Ticket>, TicketValidator>();
-            services.AddTransient<IValidator<User>, UserValidator>();
-            services.AddTransient<IValidator<Document>, DocumentValidator>();
-            services.AddTransient<IValidator<DocumentType>, DocumentTypeValidator>();
-            services.AddTransient<IValidator<Privilege>, PrivilegeValidator>();
-            services.AddTransient<IValidator<TransactionHistory>, TransactionHistoryValidator>();
+            services.AddTransient<IValidator<TicketTypeDto>, TicketTypeValidator>();
+            services.AddTransient<IValidator<TicketDto>, TicketValidator>();
+            services.AddTransient<IValidator<UserDto>, UserValidator>();
+            services.AddTransient<IValidator<DocumentDto>, DocumentValidator>();
+            services.AddTransient<IValidator<DocumentTypeDto>, DocumentTypeValidator>();
+            services.AddTransient<IValidator<PrivilegeDto>, PrivilegeValidator>();
+            services.AddTransient<IValidator<TransactionHistoryDto>, TransactionHistoryValidator>();
+            services.AddTransient<IValidator<AreaDto>, AreaValidator>();
+            services.AddTransient<IValidator<CarrierDto>, CarrierValidator>();
 
 
             services.AddTransient<ITicketService, TicketService>();
@@ -61,6 +60,15 @@ namespace ETicket.Admin
             services.AddTransient<ITicketTypeService, TicketTypeService>();
             services.AddTransient<ICarrierService, CarrierService>();
             services.AddTransient<IPrivilegeService, PrivilegeService>();
+            services.AddTransient<IAreaService, AreaService>();
+            services.AddTransient<IStationService, StationService>();
+            services.AddTransient<IDocumentService, DocumentService>();
+            services.AddTransient<IPriceListService, PriceListService>();
+            services.AddTransient<IRouteService, RouteService>();
+            services.AddTransient<ITransactionService, TransactionService>();
+            services.AddTransient<ITransportService, TransportService>();
+            services.AddTransient<ITicketVerificationService, TicketVerificationService>();
+            services.AddTransient<IMetricsService, MetricsService>();
 
 
             services.AddIdentityCore<IdentityUser>(o =>
@@ -110,7 +118,7 @@ namespace ETicket.Admin
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Metrics}/{action=Index}/{id?}");
             });
         }
     }

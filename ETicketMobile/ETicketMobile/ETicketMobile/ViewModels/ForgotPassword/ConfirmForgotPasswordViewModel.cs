@@ -2,13 +2,12 @@
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
+using ETicketMobile.Business.Exceptions;
+using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
-using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network;
-using ETicketMobile.WebAccess.Network.WebService;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.ForgotPassword
@@ -17,10 +16,12 @@ namespace ETicketMobile.ViewModels.ForgotPassword
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
         private INavigationParameters navigationParameters;
 
-        private readonly HttpClientService httpClient;
+        private readonly IEmailActivationService emailActivationService;
+        private readonly IPageDialogService dialogService;
+
+        private string email;
 
         private Timer timer;
 
@@ -37,10 +38,10 @@ namespace ETicketMobile.ViewModels.ForgotPassword
         #region Properties
 
         public ICommand NavigateToCreateNewPasswordView => navigateToCreateNewPasswordView
-            ?? (navigateToCreateNewPasswordView = new Command<string>(OnNavigateToCreateNewPasswordView));
+            ??= new Command<string>(OnNavigateToCreateNewPasswordView);
 
         public ICommand SendActivationCode => sendActivationCode
-            ?? (sendActivationCode = new Command(OnSendActivationCode));
+            ??= new Command(OnSendActivationCode);
 
         public string ConfirmEmailWarning
         {
@@ -62,13 +63,17 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         #endregion
 
-        public ConfirmForgotPasswordViewModel(INavigationService navigationService)
-            : base(navigationService)
+        public ConfirmForgotPasswordViewModel(
+            IEmailActivationService emailActivationService,
+            INavigationService navigationService,
+            IPageDialogService dialogService
+        ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
+            this.emailActivationService = emailActivationService
+                ?? throw new ArgumentNullException(nameof(emailActivationService));
 
-            httpClient = new HttpClientService();
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
         }
 
         public override void OnAppearing()
@@ -92,7 +97,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             ActivationCodeTimer = 0;
         }
 
-        private void TimerElapsed(object sender, ElapsedEventArgs e) 
+        private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
             ActivationCodeTimer--;
 
@@ -104,16 +109,18 @@ namespace ETicketMobile.ViewModels.ForgotPassword
 
         public override void OnNavigatedTo(INavigationParameters navigationParameters)
         {
-            this.navigationParameters = navigationParameters;
+            this.navigationParameters = navigationParameters
+                ?? throw new ArgumentNullException(nameof(navigationParameters));
+
+            email = navigationParameters.GetValue<string>("email");
         }
 
-        private void OnSendActivationCode()
+        private async void OnSendActivationCode()
         {
             if (ActivationCodeTimer != 0)
                 return;
 
-            var email = navigationParameters.GetValue<string>("email");
-            RequestActivationCode(email);
+            await SendActivationCodeAsync();
 
             ActivationCodeTimer = 60;
 
@@ -122,22 +129,29 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             TimerActivated = true;
         }
 
-        private async void RequestActivationCode(string email)
+        private async Task SendActivationCodeAsync()
         {
-            await httpClient.PostAsync<string, string>(TicketsEndpoint.RequestActivationCode, email);
+            try
+            {
+                await emailActivationService.RequestActivationCodeAsync(email);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
+
+                return;
+            }
         }
 
         private async void OnNavigateToCreateNewPasswordView(string code)
         {
-            if (! await IsValid(code))
+            if (!await TryValidateUserEmailAsync(code))
                 return;
 
-            await navigationService.NavigateAsync(nameof(CreateNewPasswordView), navigationParameters);
+            await NavigationService.NavigateAsync(nameof(CreateNewPasswordView), navigationParameters);
         }
 
-        #region Validation
-
-        private async Task<bool> IsValid(string code)
+        private async Task<bool> TryValidateUserEmailAsync(string code)
         {
             if (string.IsNullOrEmpty(code))
             {
@@ -146,27 +160,21 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            var confirmEmailIsSucceeded = await ConfirmEmail(code);
-            if (!confirmEmailIsSucceeded)
+            try
             {
-                ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
+                var emailActivated = await emailActivationService.ActivateEmailAsync(email, code);
 
-                return false;
+                if (emailActivated)
+                    return true;
+
+                ConfirmEmailWarning = AppResource.ConfirmEmailWrong;
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
             }
 
-            return true;
+            return false;
         }
-
-        private async Task<bool> ConfirmEmail(string activationCode)
-        {
-            var response = await httpClient.PostAsync<string, ConfirmEmailResponseDto>(
-                TicketsEndpoint.ConfirmEmail,
-                activationCode
-            );
-
-            return response.Succeeded;
-        }
-
-        #endregion
     }
 }

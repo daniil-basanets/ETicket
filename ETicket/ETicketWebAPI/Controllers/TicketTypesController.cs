@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Reflection;
+using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using log4net;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ETicket.WebAPI.Controllers
 {
-    [Route("api/tickettypes")]
+    [Route("api/ticket-types")]
     [ApiController]
-    public class TicketTypesController : ControllerBase
+    [SwaggerTag("Ticket type service")]
+    public class TicketTypesController : BaseAPIController
     {
         private readonly ITicketTypeService ticketTypeService;
         private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -19,6 +22,9 @@ namespace ETicket.WebAPI.Controllers
         }
         
         [HttpGet]
+        [SwaggerOperation(Summary = "Get all ticket types", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a list of ticket types")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
         public IActionResult GetTicketTypes()
         {
             logger.Info(nameof(TicketTypesController.GetTicketTypes));
@@ -36,7 +42,10 @@ namespace ETicket.WebAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetTicketType(int id)
+        [SwaggerOperation(Summary = "Get ticket type by id", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a TicketType object", typeof(TicketTypeDto))]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        public IActionResult GetTicketType([SwaggerParameter("Int", Required = true)] int id)
         {
             logger.Info(nameof(TicketTypesController.GetTicketType));
             

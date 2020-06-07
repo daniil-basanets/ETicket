@@ -7,13 +7,8 @@
 
 _build/
 _site/
-Properties/
 **/logs
-
-# See #577
-# Use git add -f to force override .sln when required. Not needed in most cases.
-# git add -f myProj.sln
-*.sln
+Properties/
 
 Project_Readme.html
 
@@ -225,3 +220,4 @@ __pycache__/
 # Windows thumbnail cache files
 Thumbs.db
 /ETicket/ETicketAdmin/Logs/ETicketLogs.txt
+*.cobertura.xml

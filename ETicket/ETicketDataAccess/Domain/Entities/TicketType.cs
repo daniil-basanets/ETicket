@@ -15,11 +15,11 @@ namespace ETicket.DataAccess.Domain.Entities
         
         [Required]
         [Range(1, uint.MaxValue)]
-        [DisplayName("Duration(in hours)")]
+        [DisplayName("Duration (in hours)")]
         public uint DurationHours { get; set; }
         
         [Required]
-        [DisplayName("Peronal")]
+        [DisplayName("Personal")]
         public bool IsPersonal { get; set; }
         
         [Required]

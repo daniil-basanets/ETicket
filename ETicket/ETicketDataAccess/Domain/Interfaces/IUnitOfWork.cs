@@ -1,26 +1,44 @@
-﻿using ETicket.DataAccess.Domain.Repositories;
+﻿using System;
+using ETicket.DataAccess.Domain.Entities;
+using ETicket.DataAccess.Domain.Repositories;
 
 namespace ETicket.DataAccess.Domain.Interfaces
 {
     public interface IUnitOfWork
     {
-        DocumentRepository Documents { get; }
+        IRepository<Document,Guid> Documents { get; }
 
-        DocumentTypeRepository DocumentTypes { get; }
+        IRepository<Route,int> Routes { get; }
+        
+        IRepository<DocumentType,int> DocumentTypes { get; }
+        
+        IRepository<RouteStation, int> RouteStation { get; }
 
-        PrivilegeRepository Privileges { get; }
+        IRepository<Privilege,int> Privileges { get; }
 
-        TicketRepository Tickets { get; }
+        IRepository<Ticket,Guid> Tickets { get; }
 
-        TicketTypeRepository TicketTypes { get; }
+        IRepository<TicketType,int> TicketTypes { get; }
 
-        TransactionHistoryRepository TransactionHistory { get; }
+        IRepository<TicketArea, TicketArea> TicketArea { get; }
 
-        UserRepository Users { get; }
+        IRepository<TicketVerification,Guid> TicketVerifications { get; }
+        
+        IRepository<TransactionHistory,Guid> TransactionHistory { get; }
 
-        CarrierRepository Carriers { get; }
+        IRepository<User,Guid> Users { get; }
 
-        SecretCodeRepository SecretCodes { get; }
+        IRepository<Carrier,int> Carriers { get; }
+
+        ISecretCodeRepository SecretCodes { get; }
+        
+        IRepository<Area,int> Areas { get; }
+        
+        IRepository<Station,int> Stations { get; }
+        
+        IRepository<Transport,int> Transports { get; }
+        
+        IRepository<PriceList,int> PriceList { get; }
 
         void Save();
     }

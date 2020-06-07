@@ -140,7 +140,18 @@ namespace ETicketMobile.Resources {
                 return ResourceManager.GetString("CardExpiration", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enter cancel.
+        /// </summary>
+        internal static string Cancel
+        {
+            get
+            {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Card number.
         /// </summary>
@@ -194,7 +205,18 @@ namespace ETicketMobile.Resources {
                 return ResourceManager.GetString("Confirm", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        internal static string Ok
+        {
+            get
+            {
+                return ResourceManager.GetString("Ok", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Enter activation code.
         /// </summary>
@@ -311,7 +333,18 @@ namespace ETicketMobile.Resources {
                 return ResourceManager.GetString("EmailCorrect", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Account.
+        /// </summary>
+        internal static string Account
+        {
+            get
+            {
+                return ResourceManager.GetString("Account", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Sorry, your username must be fewer than 50 characters long..
         /// </summary>
@@ -482,7 +515,29 @@ namespace ETicketMobile.Resources {
                 return ResourceManager.GetString("GeneratePassword", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        internal static string Error
+        {
+            get
+            {
+                return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Check your network connection and try again.
+        /// </summary>
+        internal static string ErrorConnection
+        {
+            get
+            {
+                return ResourceManager.GetString("ErrorConnection", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to We will remember your data for sign in, and you dont need anymore to fill it again.
         /// </summary>
@@ -500,7 +555,18 @@ namespace ETicketMobile.Resources {
                 return ResourceManager.GetString("Info", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Logout.
+        /// </summary>
+        internal static string Logout
+        {
+            get
+            {
+                return ResourceManager.GetString("Logout", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Enter last name.
         /// </summary>
@@ -534,6 +600,15 @@ namespace ETicketMobile.Resources {
         internal static string Localization {
             get {
                 return ResourceManager.GetString("Localization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to My Tickets.
+        /// </summary>
+        internal static string MyTickets {
+            get {
+                return ResourceManager.GetString("MyTickets", resourceCulture);
             }
         }
         
@@ -576,18 +651,18 @@ namespace ETicketMobile.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
-        internal static string PasswordPlaceHolderDefault {
+        internal static string PasswordWatermarkDefault {
             get {
-                return ResourceManager.GetString("PasswordPlaceHolderDefault", resourceCulture);
+                return ResourceManager.GetString("PasswordWatermarkDefault", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to or wrong password.
         /// </summary>
-        internal static string PasswordPlaceHolderWrong {
+        internal static string PasswordWatermarkWrong {
             get {
-                return ResourceManager.GetString("PasswordPlaceHolderWrong", resourceCulture);
+                return ResourceManager.GetString("PasswordWatermarkWrong", resourceCulture);
             }
         }
         
@@ -700,7 +775,7 @@ namespace ETicketMobile.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign up..
+        ///   Looks up a localized string similar to Sign up.
         /// </summary>
         internal static string SignUp {
             get {

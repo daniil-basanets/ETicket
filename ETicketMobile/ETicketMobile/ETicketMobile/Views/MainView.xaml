@@ -5,25 +5,6 @@
     x:Class="ETicketMobile.Views.MainView"
     Title="{Binding Title}">
 
-    <StackLayout
-        Margin="30">
-        <Frame BorderColor="Black"
-               CornerRadius="10">
-            <StackLayout HorizontalOptions="Center">
-                <Label
-                    Text="{Binding Name}"
-                    Margin="10"
-                    HorizontalOptions="Center"/>
-                <Label Text="Price"
-                       HorizontalOptions="Center"/>
-                <Label Text="{Binding Price}"
-                       HorizontalOptions="Center"/>
-                <Label Text="Duration Hours:"
-                       HorizontalOptions="Center"/>
-                <Label Text="{Binding DurationHours}"
-                       HorizontalOptions="Center"/>
-            </StackLayout>
-        </Frame>
-    </StackLayout>
+    
 
 </ContentPage>

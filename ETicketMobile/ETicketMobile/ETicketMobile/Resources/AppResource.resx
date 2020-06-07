@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Account" xml:space="preserve">
+    <value>Account</value>
+    <comment>MainMenuView</comment>
+  </data>
   <data name="ActivationCode" xml:space="preserve">
     <value>Activation Code</value>
     <comment>ConfirmForgotPasswordView</comment>
@@ -148,6 +152,10 @@
   <data name="BuyTicket" xml:space="preserve">
     <value>Buy Ticket</value>
     <comment>ChooseActionViewModel</comment>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>ForgotPasswordView</comment>
   </data>
   <data name="CardExpiration" xml:space="preserve">
     <value>Enter card expiration</value>
@@ -273,6 +281,14 @@
     <value>Enter your phone</value>
     <comment>PhoneRegistrationView</comment>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+    <comment>DisplayAlertDialog</comment>
+  </data>
+  <data name="ErrorConnection" xml:space="preserve">
+    <value>Check your network connection and try again</value>
+    <comment>DisplayAlertDialog</comment>
+  </data>
   <data name="Expiration" xml:space="preserve">
     <value>Expiration</value>
     <comment>LiqPayView</comment>
@@ -329,6 +345,14 @@
     <value>Localizations</value>
     <comment>SettingsViewModel</comment>
   </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Log out</value>
+    <comment>SettingsView</comment>
+  </data>
+  <data name="MyTickets" xml:space="preserve">
+    <value>My Tickets</value>
+    <comment>UserAccountViewModel</comment>
+  </data>
   <data name="Next" xml:space="preserve">
     <value>Next</value>
     <comment>ForgotPasswordView</comment>
@@ -337,6 +361,10 @@
     <value>Number:</value>
     <comment>UserTransactionsView</comment>
   </data>
+  <data name="Ok" xml:space="preserve">
+    <value>OK</value>
+    <comment>DisplayAlertDialog</comment>
+  </data>
   <data name="PasswordEmpty" xml:space="preserve">
     <value>Enter a password</value>
     <comment>CreateNewPasswordViewModel, PasswordRegistrationViewModel, LoginViewModel</comment>
@@ -344,14 +372,6 @@
   <data name="PasswordLong" xml:space="preserve">
     <value>Use 100 characters or fewer for your password</value>
     <comment>CreateNewPasswordViewModel, PasswordRegistrationViewModel</comment>
-  </data>
-  <data name="PasswordPlaceHolderDefault" xml:space="preserve">
-    <value>Password</value>
-    <comment>LoginViewModel</comment>
-  </data>
-  <data name="PasswordPlaceHolderWrong" xml:space="preserve">
-    <value>or wrong password</value>
-    <comment>LoginViewModel</comment>
   </data>
   <data name="PasswordShort" xml:space="preserve">
     <value>Use 8 characters or more for your password</value>
@@ -368,6 +388,14 @@
   <data name="PasswordStrong" xml:space="preserve">
     <value>Please, choose a stronger password. Try a mix of letters, numbers, symbols.</value>
     <comment>CreateNewPasswordViewModel, PasswordRegistrationViewModel</comment>
+  </data>
+  <data name="PasswordWatermarkDefault" xml:space="preserve">
+    <value>Password</value>
+    <comment>LoginViewModel</comment>
+  </data>
+  <data name="PasswordWatermarkWrong" xml:space="preserve">
+    <value>or wrong password</value>
+    <comment>LoginViewModel</comment>
   </data>
   <data name="PayAccept" xml:space="preserve">
     <value>By pressing the button «Pay» you accept</value>
@@ -402,7 +430,7 @@
     <comment>LoginView</comment>
   </data>
   <data name="SignUp" xml:space="preserve">
-    <value>Sign up.</value>
+    <value>Sign up</value>
     <comment>LoginView</comment>
   </data>
   <data name="Terms" xml:space="preserve">

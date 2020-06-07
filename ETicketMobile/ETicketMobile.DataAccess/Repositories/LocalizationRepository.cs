@@ -1,18 +1,29 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.Interfaces;
+using ETicketMobile.DataAccess.Repositories.Interfaces;
 using Newtonsoft.Json;
 
 namespace ETicketMobile.DataAccess.Repositories
 {
     public class LocalizationRepository : ILocalizationRepository
     {
-        private readonly SettingsRepository settingsRepository;
+        #region Fields
+
+        private readonly ISettingsRepository settingsRepository;
+
+        #endregion
 
         public LocalizationRepository()
         {
             settingsRepository = new SettingsRepository();
-            settingsRepository.Connect();
+        }
+
+        public LocalizationRepository(ISettingsRepository settingsRepository)
+        {
+            this.settingsRepository = settingsRepository
+                ?? throw new ArgumentNullException(nameof(settingsRepository));
         }
 
         public async Task<Localization> GetLocalizationAsync()

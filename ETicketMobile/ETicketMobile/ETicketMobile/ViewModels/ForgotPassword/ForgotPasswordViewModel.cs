@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Android.Util;
+using ETicketMobile.Business.Exceptions;
+using ETicketMobile.Business.Services.Interfaces;
+using ETicketMobile.Business.Validators;
+using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.Resources;
 using ETicketMobile.Views.ForgotPassword;
-using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.Views.Login;
 using Prism.Navigation;
+using Prism.Services;
 using Xamarin.Forms;
 
 namespace ETicketMobile.ViewModels.ForgotPassword
@@ -16,22 +18,27 @@ namespace ETicketMobile.ViewModels.ForgotPassword
     {
         #region Fields
 
-        private readonly INavigationService navigationService;
+        private readonly IEmailActivationService emailActivationService;
+        private readonly IPageDialogService dialogService;
+
+        private readonly IUserValidator userValidator;
 
         private ICommand navigateToConfirmForgotPasswordView;
-
-        private readonly HttpClientService httpClient;
+        private ICommand cancelCommand;
 
         private string emailWarning;
 
-        private const int EmailMaxLength = 50;
+        private bool isDataLoad;
 
         #endregion
 
         #region Properties
 
-        public ICommand NavigateToConfirmForgotPasswordView => navigateToConfirmForgotPasswordView 
-            ?? (navigateToConfirmForgotPasswordView = new Command<string>(OnNavigateToConfirmForgotPasswordView));
+        public ICommand NavigateToConfirmForgotPasswordView => navigateToConfirmForgotPasswordView
+            ??= new Command<string>(OnNavigateToConfirmForgotPasswordView);
+
+        public ICommand CancelCommand => cancelCommand
+            ??= new Command(OnCancelCommand);
 
         public string EmailWarning
         {
@@ -39,35 +46,70 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             set => SetProperty(ref emailWarning, value);
         }
 
+        public bool IsDataLoad
+        {
+            get => isDataLoad;
+            set => SetProperty(ref isDataLoad, value);
+        }
+
         #endregion
 
-        public ForgotPasswordViewModel(INavigationService navigationService)
-            : base(navigationService)
+        public ForgotPasswordViewModel(
+            IEmailActivationService emailActivationService,
+            INavigationService navigationService,
+            IPageDialogService dialogService,
+            IUserValidator userValidator
+        ) : base(navigationService)
         {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
+            this.emailActivationService = emailActivationService
+                ?? throw new ArgumentNullException(nameof(emailActivationService));
 
-            httpClient = new HttpClientService();
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
+
+            this.userValidator = userValidator
+                ?? throw new ArgumentNullException(nameof(userValidator));
         }
 
         private async void OnNavigateToConfirmForgotPasswordView(string email)
         {
-            if (! await IsValid(email))
-                return;
+            await NavigateToConfirmForgotPasswordViewAsync(email);
+        }
 
-            RequestActivationCode(email);
-
-            var navigationParameters = new NavigationParameters
+        private async Task NavigateToConfirmForgotPasswordViewAsync(string email)
+        {
+            try
             {
-                { "email", email }
-            };
+                if (!await IsValidAsync(email))
+                    return;
 
-            await navigationService.NavigateAsync(nameof(ConfirmForgotPasswordView), navigationParameters);
+                IsDataLoad = true;
+
+                await emailActivationService.RequestActivationCodeAsync(email);
+            }
+            catch (WebException)
+            {
+                IsDataLoad = false;
+
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
+
+                return;
+            }
+
+            var navigationParameters = new NavigationParameters { { "email", email } };
+            await NavigationService.NavigateAsync(nameof(ConfirmForgotPasswordView), navigationParameters);
+
+            IsDataLoad = false;
+        }
+
+        private async void OnCancelCommand()
+        {
+            await NavigationService.NavigateAsync(nameof(LoginView));
         }
 
         #region Validation
 
-        private async Task<bool> IsValid(string email)
+        private async Task<bool> IsValidAsync(string email)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -76,23 +118,21 @@ namespace ETicketMobile.ViewModels.ForgotPassword
                 return false;
             }
 
-            if (!IsEmailValid(email))
+            if (!Validator.IsEmailValid(email))
             {
                 EmailWarning = AppResource.EmailInvalid;
 
                 return false;
             }
 
-            if (!IsEmailConstainsCorrectLong(email))
+            if (!Validator.HasEmailCorrectLength(email))
             {
                 EmailWarning = AppResource.EmailCorrectLong;
 
                 return false;
             }
 
-            var isUserExists = await RequestUserExists(email);
-
-            if (!isUserExists)
+            if (!await userValidator.UserExistsAsync(email))
             {
                 EmailWarning = AppResource.EmailWrong;
 
@@ -102,32 +142,7 @@ namespace ETicketMobile.ViewModels.ForgotPassword
             return true;
         }
 
-        private async Task<bool> RequestUserExists(string email)
-        {
-            var signUpRequestDto = new ForgotPasswordRequestDto { Email = email };
-
-            var isUserExists = await httpClient.PostAsync<ForgotPasswordRequestDto, ForgotPasswordResponseDto>(
-                    TicketsEndpoint.CheckEmail, 
-                    signUpRequestDto);
-
-            return isUserExists.Succeeded;
-        }
-
-        private bool IsEmailValid(string email)
-        {
-            return Patterns.EmailAddress.Matcher(email).Matches();
-        }
-
-        private bool IsEmailConstainsCorrectLong(string email)
-        {
-            return email.Length <= EmailMaxLength;
-        }
-
         #endregion
 
-        private async void RequestActivationCode(string email)
-        {
-            await httpClient.PostAsync<string, string>(TicketsEndpoint.RequestActivationCode, email);
-        }
     }
 }

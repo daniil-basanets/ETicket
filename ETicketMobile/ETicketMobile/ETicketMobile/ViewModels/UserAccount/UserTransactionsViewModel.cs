@@ -1,22 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using ETicketMobile.Business.Mapping;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Model.Transactions;
-using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network;
-using ETicketMobile.WebAccess.Network.WebService;
+using ETicketMobile.Business.Services.Interfaces;
+using ETicketMobile.Resources;
 using Prism.Navigation;
+using Prism.Services;
 
 namespace ETicketMobile.ViewModels.UserAccount
 {
     public class UserTransactionsViewModel : ViewModelBase
     {
-        private readonly INavigationService navigationService;
+        #region Fields
 
-        private readonly HttpClientService httpClient;
+        private readonly ITransactionService transactionService;
+        private readonly IPageDialogService dialogService;
 
         private IEnumerable<Transaction> transactions;
+
+        #endregion
+
+        #region Properties
 
         public IEnumerable<Transaction> Transactions
         {
@@ -24,32 +28,36 @@ namespace ETicketMobile.ViewModels.UserAccount
             set => SetProperty(ref transactions, value);
         }
 
-        public UserTransactionsViewModel(INavigationService navigationService) 
-            : base(navigationService)
-        {
-            this.navigationService = navigationService
-                ?? throw new ArgumentNullException(nameof(navigationService));
+        #endregion
 
-            httpClient = new HttpClientService();
+        public UserTransactionsViewModel(
+            ITransactionService transactionService,
+            INavigationService navigationService,
+            IPageDialogService dialogService
+        ) : base(navigationService)
+        {
+            this.transactionService = transactionService
+                ?? throw new ArgumentNullException(nameof(transactionService));
+
+            this.dialogService = dialogService
+                ?? throw new ArgumentNullException(nameof(dialogService));
         }
 
         public override async void OnNavigatedTo(INavigationParameters navigationParameters)
         {
-            var email = navigationParameters.GetValue<string>("email");
+            var email = navigationParameters.GetValue<string>("email")
+                ?? throw new ArgumentNullException(nameof(navigationParameters));
 
-            Transactions = await GetTransactions(email);
-        }
+            try
+            {
+                Transactions = await transactionService.GetTransactionsAsync(email);
+            }
+            catch (WebException)
+            {
+                await dialogService.DisplayAlertAsync(AppResource.Error, AppResource.ErrorConnection, AppResource.Ok);
 
-        private async Task<IEnumerable<Transaction>> GetTransactions(string email)
-        {
-            var getTransactionsRequestDto = new GetTransactionsRequestDto { Email = email };
-
-            var transacationsDto = await httpClient.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>>(
-                    TransactionsEndpoint.Post, getTransactionsRequestDto);
-
-            var transactions = AutoMapperConfiguration.Mapper.Map<IEnumerable<Transaction>>(transacationsDto);
-
-            return transactions;
+                return;
+            }
         }
     }
 }

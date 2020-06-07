@@ -2,69 +2,47 @@
 <ContentPage 
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:prism="http://prismlibrary.com"
+    xmlns:prism="http://prismlibrary.com" 
+    xmlns:settings="clr-namespace:ETicketMobile.ViewModels.Settings"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="ETicketMobile.Views.Settings.LocalizationView">
 
     <ContentPage.Content>
 
-        <StackLayout>
-            <ListView 
-                x:Name="Languages"
-                ItemsSource="{Binding Languages}"
-                SeparatorVisibility="None"
-                RowHeight="70">
-                <ListView.Behaviors>
-                    <prism:EventToCommandBehavior
-                        EventName="ItemTapped"
-                        Command="{Binding ChooseLanguage}"
-                        CommandParameter="{Binding Source={x:Reference Languages}, Path=SelectedItem}"/>
-                </ListView.Behaviors>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Frame 
-                                BackgroundColor="White"
-                                Padding="12"
-                                BorderColor="#F7F8FA">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="1*"/>
-                                        <ColumnDefinition Width="1*"/>
-                                    </Grid.ColumnDefinitions>
+        <ListView
+            x:Name="Languages"
+            ItemsSource="{Binding Localizations, Mode=OneWay}"
+            SeparatorVisibility="None">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="settings:LocalizationItemViewModel">
+                    <ViewCell>
+                        <Frame
+                            BackgroundColor="White"
+                            Padding="12"
+                            BorderColor="#F7F8FA">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="9*"/>
+                                </Grid.ColumnDefinitions>
 
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="1*"/>
-                                        <RowDefinition Height="1*"/>
-                                    </Grid.RowDefinitions>
+                                <RadioButton
+                                    Command="{Binding SelectCommand, Mode=OneTime}"
+                                    CommandParameter="{Binding Language, Mode=OneWay}"
+                                    Grid.Column="0"
+                                    GroupName="0"/>
 
-                                    <StackLayout
-                                        Grid.Column="0">
-                                        <Label
-                                            Grid.Row="0"
-                                            Text="{Binding Language}"/>
-                                        <Label
-                                            Grid.Row="1"
-                                            Text="{Binding Country}"/>
-                                    </StackLayout>
+                                <Label
+                                    x:Name="Language"
+                                    Grid.Column="1"
+                                    Text="{Binding Language, Mode=OneWay}"/>
+                            </Grid>
+                        </Frame>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
-                                    <Image
-                                        Grid.Column="1"
-                                        Grid.RowSpan="2"
-                                        HeightRequest="40"
-                                        WidthRequest="40"
-                                        MinimumHeightRequest="40"
-                                        MinimumWidthRequest="40"
-                                        VerticalOptions="Center"
-                                        HorizontalOptions="End"
-                                        Source="RightArrow.png"/>
-                                </Grid>
-                            </Frame>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </StackLayout>
     </ContentPage.Content>
 
 </ContentPage>

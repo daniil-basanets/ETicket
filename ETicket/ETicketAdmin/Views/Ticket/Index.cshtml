@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ETicket.DataAccess.Domain.Entities.Ticket>
+﻿@model IEnumerable<ETicket.ApplicationServices.DTOs.TicketDto>
 
 @{
     ViewData["Title"] = "Tickets";
@@ -20,47 +20,50 @@
         </div>
         <div class="card-body tickets">
             <div class="filters">
-                <details>
-                    <summary>Filters</summary>
-                    <table border="0" class="filter-table">
-                        <tr>
-                            <th>User name:</th>
-                            <th>
-                                <form class="ticket-filter-form">
-                                    <input type="text" class="ticket-filter-form form-control form-control-sm" id="user-name-input">
-                                </form>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>Ticket type:</th>
-                            <th>
-                                <form class="ticket-filter-form">
-                                    @Html.DropDownList("ticket-type-select", ViewData["TicketTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "ticket-filter-form custom-select custom-select-sm form-control form-control-sm" })
-                                </form>
-                            </th>
-                        </tr>
-                    </table>
-
-                </details>
                 <p></p>
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.TicketType)
+                                    <details onclick="makeSingleOnClickEvent()">
+                                        <summary>
+                                            @Html.DisplayNameFor(model => model.TicketTypeName)
+                                        </summary>
+                                        @Html.DropDownList("ticket-type-select", ViewData["TicketTypeId"] as IEnumerable<SelectListItem>, "", new { @class = "ticket-filter-form custom-select custom-select-sm form-control form-control-sm" })
+                                    </details>
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.CreatedUTCDate)
+                                    <details onclick="makeSingleOnClickEvent()">
+                                        <summary>
+                                            @Html.DisplayNameFor(model => model.CreatedUTCDate)
+                                        </summary>
+                                        <input type="date" id="created-date-datepicker" class="ticket-filter-form form-control form-control-sm">
+                                    </details>
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.ActivatedUTCDate)
+                                    <details onclick="makeSingleOnClickEvent()">
+                                        <summary>
+                                            @Html.DisplayNameFor(model => model.ActivatedUTCDate)
+                                        </summary>
+                                        <input type="date" id="activated-date-datepicker" class="ticket-filter-form form-control form-control-sm">
+                                    </details>
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.ExpirationUTCDate)
+                                    <details onclick="makeSingleOnClickEvent()">
+                                        <summary>
+                                            @Html.DisplayNameFor(model => model.ExpirationUTCDate)
+                                        </summary>
+                                        <input type="date" id="expiration-date-datepicker" class="ticket-filter-form form-control form-control-sm">
+                                    </details>
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.User)
+                                    <details onclick="makeSingleOnClickEvent()">
+                                        <summary>
+                                            @Html.DisplayNameFor(model => model.UserName)
+                                        </summary>
+                                        <input type="text" id="user-name-input" class="ticket-filter-form form-control form-control-sm">
+                                    </details>
                                 </th>
                                 <th>
                                     Actions
@@ -70,7 +73,7 @@
                         <tfoot>
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.TicketType)
+                                    @Html.DisplayNameFor(model => model.TicketTypeName)
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.CreatedUTCDate)
@@ -82,7 +85,7 @@
                                     @Html.DisplayNameFor(model => model.ExpirationUTCDate)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.User)
+                                    @Html.DisplayNameFor(model => model.UserName)
                                 </th>
                                 <th>
                                     Actions
@@ -90,41 +93,44 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            @foreach (var item in Model)
+                            @if (Model != null)
                             {
-                                <tr>
-                                    <td>
-                                        @Html.ActionLink(item.TicketType.TypeName, "Details", "TicketType", new { id = item.TicketTypeId }, null)
-                                    </td>
-                                    <td>
-                                        @item.CreatedUTCDate.ToString("yyyy-MM-dd hh:mm")
-                                    </td>
-                                    <td>
-                                        @item.ActivatedUTCDate?.ToString("yyyy-MM-dd hh:mm")
-                                    </td>
-                                    <td>
-                                        @item.ExpirationUTCDate?.ToString("yyyy-MM-dd hh:mm")
-                                    </td>
-                                    <td>
-                                        @if (item.User != null)
-                                        {
-                                            @Html.ActionLink(item.User.LastName, "Details", "User", new { id = item.UserId }, null)
-                                        }
-                                    </td>
-                                    <td>
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
-                                    </td>
-                                </tr>
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.ActionLink(item.TicketTypeName, "Details", "TicketType", new { id = item.TicketTypeId }, null)
+                                        </td>
+                                        <td>
+                                            @item.CreatedUTCDate.ToString("yyyy-MM-dd hh:mm")
+                                        </td>
+                                        <td>
+                                            @item.ActivatedUTCDate?.ToString("yyyy-MM-dd hh:mm")
+                                        </td>
+                                        <td>
+                                            @item.ExpirationUTCDate?.ToString("yyyy-MM-dd hh:mm")
+                                        </td>
+                                        <td>
+                                            @if (item.UserName != null)
+                                            {
+                                                @Html.ActionLink(item.UserName, "Details", "User", new { id = item.UserId }, null)
+                                            }
+                                        </td>
+                                        <td>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                                        </td>
+                                    </tr>
+                                }
                             }
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-</div>
     </div>
+</div>
 <script src="/vendor/jquery/jquery.min.js"></script>
 
 <!-- Page level plugins -->

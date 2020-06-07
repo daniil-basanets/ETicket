@@ -1,6 +1,9 @@
+using System;
 using ETicket.ApplicationServices.Logger;
 using ETicket.ApplicationServices.Services;
+using ETicket.ApplicationServices.Services.DocumentTypes;
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.ApplicationServices.Services.Transaction;
 using ETicket.DataAccess.Domain;
 using ETicket.DataAccess.Domain.Interfaces;
 using ETicket.WebAPI.Models;
@@ -31,32 +34,38 @@ namespace ETicket.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var merchantId = Configuration["Merchant:MerchantId"];
-            var password = Configuration["Merchant:Password"];
+            var publicKey = Configuration["Merchant:Public_Key"];
+            var privateKey = Configuration["Merchant:Private_Key"];
 
             IMerchant merchant = new Merchant
             {
-                MerchantId = int.Parse(merchantId),
-                Password = password
-            };
-
-            var cardNumber = Configuration["MerchantSettings:CardNumber"];
-
-            IMerchantSettings merchantSettings = new MerchantSettings
-            {
-                CardNumber = cardNumber
+                PublicKey = publicKey,
+                PrivateKey = privateKey
             };
 
             services.AddDbContext<ETicketDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnectionString")));
             services.AddTransient<IUnitOfWork, UnitOfWork>(e => new UnitOfWork(e.GetService<ETicketDataContext>()));
 
+            services.AddTransient<ITicketService, TicketService>();
+            services.AddTransient<ITicketTypeService, TicketTypeService>();
             services.AddTransient<ICarrierService, CarrierService>();
-
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IMailService, MailService>();
+            services.AddTransient<IDocumentTypesService, DocumentTypesService>();
+            services.AddTransient<ITransactionService, TransactionService>();
+            services.AddTransient<IPriceListService, PriceListService>();
+            services.AddTransient<IAreaService, AreaService>();
+            services.AddTransient<ITicketVerificationService, TicketVerificationService>();
+            services.AddTransient<IPrivilegeService, PrivilegeService>();
+            services.AddTransient<IDocumentService, DocumentService>();
+            services.AddTransient<IRouteService, RouteService>();
+            services.AddTransient<IStationService, StationService>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                .AddEntityFrameworkStores<ETicketDataContext>()
                .AddDefaultTokenProviders()
                .AddTokenProvider(AuthOptions.ISSUER, typeof(DataProtectorTokenProvider<IdentityUser>));
+            
             services.AddIdentityCore<IdentityUser>(o =>
             {
                 o.Password.RequireDigit = false;
@@ -92,7 +101,6 @@ namespace ETicket.WebAPI
 
             services.AddControllers();
             services.AddSingleton<IMerchant>(merchant);
-            services.AddSingleton<IMerchantSettings>(merchantSettings);
 
             services.AddTransient<IMailService, MailService>();
             services.AddTransient<IUserService, UserService>();
@@ -101,6 +109,7 @@ namespace ETicket.WebAPI
 
             services.AddSwaggerGen(c =>
             {
+                c.EnableAnnotations();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ETicket API", Version = "v1" });
             });
         }

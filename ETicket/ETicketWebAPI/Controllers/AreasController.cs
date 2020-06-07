@@ -1,40 +1,64 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Reflection;
+using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
-using ETicket.DataAccess.Domain.Entities;
+using log4net;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ETicket.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/areas")]
     [ApiController]
-    public class AreasController : ControllerBase
+    [SwaggerTag("Area service")]
+    public class AreasController : BaseAPIController
     {
         private readonly IAreaService areaService;
+        private static readonly ILog logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public AreasController(IAreaService areaService)
         {
             this.areaService = areaService;
         }
-
-        // GET: api/Areas
+        
         [HttpGet]
-        public IEnumerable<Area> GetAreas()
+        [SwaggerOperation(Summary = "Get all areas", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains a list of areas")]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        public IActionResult GetAreas()
         {
-            return areaService.GetAll();
+            logger.Info(nameof(AreasController.GetAreas));
+            
+            try
+            {
+                return Ok(areaService.GetAreas());
+            }
+            catch (Exception exception)
+            {
+                logger.Error(exception);
+                
+                return BadRequest();
+            }
         }
 
-        // GET: api/Areas/5
         [HttpGet("{id}")]
-        public ActionResult<Area> GetArea(int id)
+        [SwaggerOperation(Summary = "Get area by id", Description = "Allowed: everyone")]
+        [SwaggerResponse(200, "Returns if everything is correct. Contains an Area object", typeof(AreaDto))]
+        [SwaggerResponse(400, "Returns if an exception occurred")]
+        public IActionResult GetArea([SwaggerParameter("Int", Required = true)] int id)
         {
-            var area = areaService.Get(id);
-
-            if (area == null)
+            logger.Info(nameof(AreasController.GetArea));
+            
+            try
             {
-                return NotFound();
+                return Ok(areaService.GetAreaById(id));
             }
-
-            return area;
+            catch (Exception exception)
+            {
+                logger.Error(exception);
+                
+                return BadRequest();
+            }
         }
     }
 }
