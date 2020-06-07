@@ -46,7 +46,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         }
 
         [Fact]
-        public async Task CheckUserExistsAsyncWhenSignUpSucceededTrue_ReturnsTrue()
+        public async Task CheckUserExists_ReturnsTrue()
         {
             // Arrange
             signUpResponseDto.Succeeded = true;
@@ -59,7 +59,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         }
 
         [Fact]
-        public async Task CheckUserExistsAsyncWhenSihnUpSucceededFalse_ReturnsFalse()
+        public async Task CheckUserExists_ReturnsFalse()
         {
             // Arrange
             signUpResponseDto.Succeeded = false;
@@ -72,7 +72,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         }
 
         [Fact]
-        public async Task GetTokenAsync_AccessToken_ShouldThrowException()
+        public async Task GetToken_ShouldThrowException()
         {
             // Act
             await userValidator.UserExistsAsync(email);
