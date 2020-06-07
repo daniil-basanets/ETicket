@@ -38,7 +38,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
             var actualValue = Validator.IsPasswordShort(password);
 
             // Assert
-            Assert.False(actualValue);
+            Assert.True(actualValue);
         }
 
         [Theory]
@@ -50,7 +50,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
             var actualValue = Validator.IsPasswordShort(password);
 
             // Assert
-            Assert.True(actualValue);
+            Assert.False(actualValue);
         }
 
         [Theory]
