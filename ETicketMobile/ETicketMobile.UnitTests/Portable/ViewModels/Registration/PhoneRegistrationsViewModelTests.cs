@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
+﻿using System.Globalization;
 using System.Threading;
 using ETicketMobile.ViewModels.Registration;
 using Moq;
@@ -10,7 +7,7 @@ using Xunit;
 
 namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
 {
-    public class PhoneRegistrationsTests
+    public class PhoneRegistrationsViewModelTests
     {
         #region Fiels
 
@@ -23,7 +20,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
 
         #endregion
 
-        public PhoneRegistrationsTests()
+        public PhoneRegistrationsViewModelTests()
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
 
@@ -50,7 +47,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         }
 
         [Fact]
-        public void NavigateToNameRegistrationViewCommand_IsValid_ComparePasswordWarning_ShouldBeEqual()
+        public void NavigateToNameRegistrationViewCommand_IsValid_ComparePhoneWarning_ShouldBeEqual()
         {
             // Arrange
             phone = string.Empty;
