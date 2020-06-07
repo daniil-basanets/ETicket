@@ -45,7 +45,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void NavigateToPhoneRegistrationView_IsValid_IsNullOrEmpty_Email_ReturnsTrue(string email)
+        public void NavigateToPhoneRegistrationView_ValidThatEmptyEmail(string email)
         {
             // Arrange
             var emailWarning = "Are you sure you entered your email correctly?";

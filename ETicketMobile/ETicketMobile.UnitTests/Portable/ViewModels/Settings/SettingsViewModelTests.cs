@@ -34,7 +34,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Settings
         }
 
         [Fact]
-        public void OnAppearing_Init_CompareSettings_ShouldBeEqual()
+        public void OnAppearing_CheckSettings_ShouldBeEqual()
         {
             // Arrange
             var userActionEqualityComparer = new UserActionEqualityComparer();

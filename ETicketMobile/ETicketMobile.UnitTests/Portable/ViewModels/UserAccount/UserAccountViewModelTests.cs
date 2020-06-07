@@ -51,7 +51,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnAppearing_CompareUserActions_ShouldBeEqual()
+        public void OnAppearing_CheckUserActions_ShouldBeEqual()
         {
             // Act
             userAccountViewModel.OnAppearing();
@@ -61,7 +61,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_CheckIfIsValid__CheckIfEmptyEmail_ReturnFalse()
+        public void OnNavigatedTo_ValidThatEmptyEmail()
         {
             // Act
             userAccountViewModel.OnNavigatedTo(navigationParametersMock.Object);

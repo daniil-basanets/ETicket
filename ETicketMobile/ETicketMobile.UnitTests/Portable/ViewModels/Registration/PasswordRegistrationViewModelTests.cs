@@ -16,17 +16,11 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         private readonly Mock<INavigationParameters> navigationParametersMock;
         private readonly Mock<INavigationService> navigationServiceMock;
 
-        private string passwordWarning;
-        private string password;
-
         #endregion
 
         public PasswordRegistrationViewModelTests()
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
-
-            passwordWarning = string.Empty;
-            password = string.Empty;
 
             navigationServiceMock = new Mock<INavigationService>();
             navigationParametersMock = new Mock<INavigationParameters>();
@@ -37,10 +31,10 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         }
 
         [Fact]
-        public void NavigateToNameRegistrationViewCommand_Verify_WhenNavigationParametersAdd()
+        public void NavigateToBirthDateRegistrationView_VerifyNavigationParameters()
         {
             // Arrange
-            password = "qwerty12";
+            var password = "qwerty12";
             passwordRegistrationViewModel.ConfirmPassword = "qwerty12";
 
             passwordRegistrationViewModel.OnNavigatedTo(navigationParametersMock.Object);
@@ -55,10 +49,10 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void NavigateToBirthDateRegistrationView_IsValid_IsNullOrEmpty_ReturnsTrue(string password)
+        public void NavigateToBirthDateRegistrationView_ValidThatPasswordEmpty(string password)
         {
             // Arrange
-            passwordWarning = "Enter a password";
+            var passwordWarning = "Enter a password";
 
             // Act
             passwordRegistrationViewModel.NavigateToBirthDateRegistrationView.Execute(password);
@@ -71,10 +65,10 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         [InlineData("1")]
         [InlineData("1234567")]
         [InlineData("abcdefg")]
-        public void NavigateToBirthDateRegistrationView_IsValid_IsPasswordShort_ReturnsTrue(string password)
+        public void NavigateToBirthDateRegistrationView_ValidThatPasswordShort(string password)
         {
             // Arrange
-            passwordWarning = "Use 8 characters or more for your password";
+            var passwordWarning = "Use 8 characters or more for your password";
 
             // Act
             passwordRegistrationViewModel.NavigateToBirthDateRegistrationView.Execute(password);
@@ -84,13 +78,13 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         }
 
         [Fact]
-        public void NavigateToBirthDateRegistrationView_IsValid_IsPasswordLong_ReturnsTrue()
+        public void NavigateToBirthDateRegistrationView_ValidThatPasswordLong()
         {
             // Arrange
             var password = "asdasdasdasdasdasdasdasddasdasdasdasasdasdasds1345" +
                            "asdasdasdasdasddasdasdasdasasdasdasdasdasdasdasdasd";
 
-            passwordWarning = "Use 100 characters or fewer for your password";
+            var passwordWarning = "Use 100 characters or fewer for your password";
 
             // Act
             passwordRegistrationViewModel.NavigateToBirthDateRegistrationView.Execute(password);
@@ -102,10 +96,10 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         [Theory]
         [InlineData("12345678")]
         [InlineData("12311231231223")]
-        public void NavigateToBirthDateRegistrationView_IsValid_IsPasswordWeak_ReturnsTrue(string password)
+        public void NavigateToBirthDateRegistrationView_ValidThatPasswordIsNotEnoughStrong(string password)
         {
             // Arrange
-            passwordWarning = "Please, choose a stronger password. Try a mix of letters, numbers, symbols.";
+            var passwordWarning = "Please, choose a stronger password. Try a mix of letters, numbers, symbols.";
 
             // Act
             passwordRegistrationViewModel.NavigateToBirthDateRegistrationView.Execute(password);
@@ -117,11 +111,11 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         [Theory]
         [InlineData("qwerty12", "qwerty21")]
         [InlineData("1234567A", "A1234567")]
-        public void NavigateToBirthDateRegistrationView_IsValid_PasswordsMatched_ReturnsTrue(string password, string confirmPassword)
+        public void NavigateToBirthDateRegistrationView_CheckConfirmPasswordsValidation_DoesntMatch(string password, string confirmPassword)
         {
             // Arrange
             passwordRegistrationViewModel.ConfirmPassword = confirmPassword;
-            passwordWarning = "Please, make sure your passwords match";
+            var passwordWarning = "Please, make sure your passwords match";
 
             // Act
             passwordRegistrationViewModel.NavigateToBirthDateRegistrationView.Execute(password);

@@ -34,7 +34,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         }
 
         [Fact]
-        public void NavigateToNameRegistrationViewCommand_Verify_WhenNavigationParametersAdd()
+        public void NavigateToNameRegistrationViewCommand_VerifyNavigationParameters()
         {
             // Arrange
             phoneRegistrationViewModel.OnNavigatedTo(navigationParametersMock.Object);
@@ -47,7 +47,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         }
 
         [Fact]
-        public void NavigateToNameRegistrationViewCommand_IsValid_ComparePhoneWarning_ShouldBeEqual()
+        public void NavigateToNameRegistrationViewCommand_ValidThatPhoneEmpty()
         {
             // Arrange
             phone = string.Empty;

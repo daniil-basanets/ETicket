@@ -4,7 +4,6 @@ using System.Threading;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Business.Validators.Interfaces;
 using ETicketMobile.ViewModels.ForgotPassword;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
 using Prism.Services;
 using Xunit;
@@ -20,7 +19,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         private readonly Mock<IEmailActivationService> emailActivationServiceMock;
         private readonly Mock<IPageDialogService> dialogServiceMock;
         private readonly Mock<IUserValidator> userValidatorMock;
-        private readonly Mock<IHttpService> httpServiceMock;
 
         #endregion
 
@@ -31,7 +29,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
             emailActivationServiceMock = new Mock<IEmailActivationService>();
             dialogServiceMock = new Mock<IPageDialogService>();
             userValidatorMock = new Mock<IUserValidator>();
-            httpServiceMock = new Mock<IHttpService>();
 
             forgotPasswordViewModel = new ForgotPasswordViewModel(emailActivationServiceMock.Object, null, dialogServiceMock.Object, userValidatorMock.Object);
         }
@@ -39,31 +36,40 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableEmailActivationService_ShouldThrowException()
         {
+            // Arrange
+            IEmailActivationService emailActivationService = null;
+
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new ForgotPasswordViewModel(null, null, dialogServiceMock.Object, userValidatorMock.Object));
+                () => new ForgotPasswordViewModel(emailActivationService, null, dialogServiceMock.Object, userValidatorMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableDialogService_ShouldThrowException()
         {
+            // Arrange
+            IPageDialogService dialogService = null;
+
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new ForgotPasswordViewModel(emailActivationServiceMock.Object, null, null, userValidatorMock.Object));
+                () => new ForgotPasswordViewModel(emailActivationServiceMock.Object, null, dialogService, userValidatorMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableUserValidator_ShouldThrowException()
         {
+            // Arrange
+            IUserValidator userValidator = null;
+
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new ForgotPasswordViewModel(emailActivationServiceMock.Object, null, dialogServiceMock.Object, null));
+                () => new ForgotPasswordViewModel(emailActivationServiceMock.Object, null, dialogServiceMock.Object, userValidator));
         }
 
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void OnNavigateToConfirmForgotPasswordView_CheckIfIsValid_CheckIfIsNullOrEmpty_ReturnsFalse(string email)
+        public void OnNavigateToConfirmForgotPasswordView_ValidThatEmailEmpty(string email)
         {
             // Arrange
             var emailCorrect = "Are you sure you entered your email correctly?";

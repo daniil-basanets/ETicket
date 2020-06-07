@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Threading;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.ViewModels.ForgotPassword;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
 using Prism.Services;
 using Xunit;
@@ -18,7 +17,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
 
         private readonly Mock<IPageDialogService> dialogServiceMock;
         private readonly Mock<IUserService> userServiceMock;
-        private readonly Mock<IHttpService> httpServiceMock;
 
         #endregion
 
@@ -28,7 +26,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
 
             dialogServiceMock = new Mock<IPageDialogService>();
             userServiceMock = new Mock<IUserService>();
-            httpServiceMock = new Mock<IHttpService>();
 
             createNewPasswordViewModel = new CreateNewPasswordViewModel(null, dialogServiceMock.Object, userServiceMock.Object);
         }
@@ -36,15 +33,21 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableNullDialogService_ShouldThrowException()
         {
+            // Arrange
+            IPageDialogService dialogService = null;
+
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new CreateNewPasswordViewModel(null, null, userServiceMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new CreateNewPasswordViewModel(null, dialogService, userServiceMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableNullUserService_ShouldThrowException()
         {
+            // Arrange
+            IUserService userService = null;
+
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new CreateNewPasswordViewModel(null, dialogServiceMock.Object, null));
+            Assert.Throws<ArgumentNullException>(() => new CreateNewPasswordViewModel(null, dialogServiceMock.Object, userService));
         }
 
         [Fact]
@@ -57,7 +60,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         [Theory]
         [InlineData(null)]
         [InlineData("")]
-        public void OnNavigateToSignInView_CheckIfIsValid_CheckIfIsNullOrEmpty_ReturnsFalse(string password)
+        public void OnNavigateToSignInView_ValidThatEmptyPassword(string password)
         {
             // Arrange
             var passwordWarning = "Enter a password";
@@ -71,7 +74,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
 
         [Theory]
         [InlineData("qwerty12", "qwerty21")]
-        public void OnNavigateToSignInView_CheckIfIsValid_CheckIfPasswordsMatched_ReturnsFalse(string password, string confirmPassword)
+        public void OnNavigateToSignInView_CheckConfirmPasswordsValidation_DoesntMatch(string password, string confirmPassword)
         {
             // Arrange
             var passwordWarning = "Please, make sure your passwords match";

@@ -45,7 +45,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void NavigateToPasswordRegistrationView_IsValid_IsNullOrEmpty_FirstName_ReturnsTrue(string firstName)
+        public void NavigateToPasswordRegistrationView_ValidThatFirstNameEmpty(string firstName)
         {
             // Arrange
             nameRegistrationViewModel.FirstName = firstName;
@@ -61,7 +61,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void NavigateToPasswordRegistrationView_IsValid_IsNullOrEmpty_LastName_ReturnsTrue(string lastName)
+        public void NavigateToPasswordRegistrationView_ValidThatLastNameEmpty(string lastName)
         {
             // Arrange
             nameRegistrationViewModel.FirstName = firstName;
@@ -78,7 +78,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         [Theory]
         [InlineData("a")]
         [InlineData("Wolfe­schlegel­stein­hausen­berger­dorff")]
-        public void NavigateToPasswordRegistrationView_IsValid_IsNameValid_FirstName_ReturnsTrue(string firstName)
+        public void NavigateToPasswordRegistrationView_ValidThatFirstNameValid(string firstName)
         {
             // Arrange
             nameRegistrationViewModel.FirstName = firstName;
@@ -95,7 +95,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         [Theory]
         [InlineData("b")]
         [InlineData("Wolfe­schlegel­stein­hausen­berger­dorff")]
-        public void NavigateToPasswordRegistrationView_IsValid_IsNameValid_LastName_ReturnsTrue(string lastName)
+        public void NavigateToPasswordRegistrationView_ValidThatLastNameValid(string lastName)
         {
             // Arrange
             nameRegistrationViewModel.FirstName = firstName;
@@ -110,7 +110,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         }
 
         [Fact]
-        public void NavigateToNameRegistrationViewCommand_Verify_WhenNavigationParametersAdd()
+        public void NavigateToNameRegistrationViewCommand_Verify_NavigationParameters()
         {
             // Arrange
             nameRegistrationViewModel.FirstName = firstName;

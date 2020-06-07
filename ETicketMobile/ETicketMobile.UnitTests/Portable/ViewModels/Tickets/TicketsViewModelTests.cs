@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.UnitTests.Comparers;
 using ETicketMobile.ViewModels.Tickets;
-using ETicketMobile.WebAccess;
 using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
 using Prism.Services;
 using Xunit;
@@ -27,7 +24,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         private readonly Mock<ITicketsService> ticketsServiceMock;
         private readonly Mock<ITokenService> tokenServiceMock;
 
-        private readonly IEnumerable<TicketTypeDto> ticketTypesDto;
         private readonly IList<TicketType> ticketTypes;
 
         private readonly IList<AreaViewModel> areas;
@@ -41,60 +37,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
 
         public TicketsViewModelTests()
         {
-            localTokenServiceMock = new Mock<ILocalTokenService>();
-            dialogServiceMock = new Mock<IPageDialogService>();
-            ticketsServiceMock = new Mock<ITicketsService>();
-            tokenServiceMock = new Mock<ITokenService>();
-
-            accessToken = "AccessToken";
-
-            getTicketPriceResponseDto = new GetTicketPriceResponseDto { TotalPrice = 100 };
-
-            ticketTypesDto = new List<TicketTypeDto>
-            {
-                new TicketTypeDto
-                {
-                    Id = 1,
-                    Name = "TickeType",
-                    Coefficient = 1,
-                    DurationHours = 10
-                }
-            };
-
-            ticketTypes = new List<TicketType>
-            {
-                new TicketType
-                {
-                    Id = 1,
-                    Name = "TickeType",
-                    Coefficient = 1,
-                    DurationHours = 10,
-                    Amount = 100
-                }
-            };
-
-            areasDto = new List<AreaDto>
-            {
-                new AreaDto
-                {
-                    Id = 1,
-                    Name = "Area1",
-                    Description = "Description1"
-                },
-                new AreaDto
-                {
-                    Id = 2,
-                    Name = "Area2",
-                    Description = "Description2"
-                },
-                new AreaDto
-                {
-                    Id = 3,
-                    Name = "Area3",
-                    Description = "Description3"
-                }
-            };
-
             areas = new List<AreaViewModel>
             {
                 new AreaViewModel
@@ -120,23 +62,69 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
                 }
             };
 
+            tokenServiceMock = new Mock<ITokenService>();
+
             tokenServiceMock.Setup(ts => ts.RefreshTokenAsync());
+
+            localTokenServiceMock = new Mock<ILocalTokenService>();
+
+            accessToken = "AccessToken";
 
             localTokenServiceMock
                     .Setup(lts => lts.GetAccessTokenAsync())
                     .ReturnsAsync(accessToken);
 
+            ticketsServiceMock = new Mock<ITicketsService>();
+
+            ticketTypes = new List<TicketType>
+            {
+                new TicketType
+                {
+                    Id = 1,
+                    Name = "TickeType",
+                    Coefficient = 1,
+                    DurationHours = 10,
+                    Amount = 100
+                }
+            };
+
             ticketsServiceMock
                     .Setup(ts => ts.GetTicketTypesAsync(It.IsAny<string>()))
                     .ReturnsAsync(ticketTypes);
+
+            areasDto = new List<AreaDto>
+            {
+                new AreaDto
+                {
+                    Id = 1,
+                    Name = "Area1",
+                    Description = "Description1"
+                },
+                new AreaDto
+                {
+                    Id = 2,
+                    Name = "Area2",
+                    Description = "Description2"
+                },
+                new AreaDto
+                {
+                    Id = 3,
+                    Name = "Area3",
+                    Description = "Description3"
+                }
+            };
 
             ticketsServiceMock
                     .Setup(ts => ts.GetAreasDtoAsync(It.IsAny<string>()))
                     .ReturnsAsync(areasDto);
 
+            getTicketPriceResponseDto = new GetTicketPriceResponseDto { TotalPrice = 100 };
+
             ticketsServiceMock
                     .Setup(ts => ts.RequestGetTicketPriceAsync(It.IsAny<IEnumerable<int>>(), It.IsAny<int>()))
                     .ReturnsAsync(getTicketPriceResponseDto);
+
+            dialogServiceMock = new Mock<IPageDialogService>();
 
             ticketsViewModel = new TicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, ticketsServiceMock.Object, tokenServiceMock.Object);
         }
@@ -144,33 +132,45 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableLocalTokenService_ShouldThrowException()
         {
+            // Arrange
+            ILocalTokenService localTokenService = null;
+
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new TicketsViewModel(null, null, dialogServiceMock.Object, ticketsServiceMock.Object, tokenServiceMock.Object));
+                () => new TicketsViewModel(null, localTokenService, dialogServiceMock.Object, ticketsServiceMock.Object, tokenServiceMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableDialogService_ShouldThrowException()
         {
+            // Arrange
+            IPageDialogService dialogService = null;
+
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new TicketsViewModel(null, localTokenServiceMock.Object, null, ticketsServiceMock.Object, tokenServiceMock.Object));
+                () => new TicketsViewModel(null, localTokenServiceMock.Object, dialogService, ticketsServiceMock.Object, tokenServiceMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableTokenService_ShouldThrowException()
         {
+            // Arrange
+            ITokenService tokenService = null;
+
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new TicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, ticketsServiceMock.Object, null));
+                () => new TicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, ticketsServiceMock.Object, tokenService));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableTicketsService_ShouldThrowException()
         {
+            // Arrange
+            ITicketsService ticketsService = null;
+
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new TicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, null, tokenServiceMock.Object));
+                () => new TicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, ticketsService, tokenServiceMock.Object));
         }
 
         [Fact]
@@ -181,7 +181,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void OnAppearing_Init_CompareTotalPrices_ShouldBeEqual()
+        public void OnAppearing_CheckTotalPrices_ShouldBeZero()
         {
             // Arrange
             var totalPrice = 0;
@@ -194,20 +194,21 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void OnAppearing_GetTicketTypesAsync_CompareTicketTypes_ShouldBeEqual()
+        public void OnAppearing_CheckTicketTypesLoading()
         {
             // Arrange
             var ticketTypesEqualityComparer = new TicketTypesEqualityComparer();
 
             // Act
             ticketsViewModel.OnAppearing();
+            var actualTicketTypes = ticketsViewModel.Tickets;
 
             // Assert
-            Assert.Equal(ticketTypes, ticketsViewModel.Tickets, ticketTypesEqualityComparer);
+            Assert.Equal(ticketTypes, actualTicketTypes, ticketTypesEqualityComparer);
         }
 
         [Fact]
-        public void OnAppearing_GetAreasAsync_CompareAreas_ShouldBeEqual()
+        public void OnAppearing_CheckAreasLoading()
         {
             // Arrange
             var areasEqualityComparer = new AreasViewModelEqualityComparer();
@@ -220,7 +221,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void TicketSelectedProperty_ZeroSelectedAreas_Return()
+        public void TicketSelected_CheckPriceWhenNoneOfAreasSelected_TotalPriceShouldBeZero()
         {
             // Arrange
             getTicketPriceResponseDto.TotalPrice = 0;
@@ -235,7 +236,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void TicketSelectedProperty_CountTotalPrice_ZeroSelectedArea_ShouldBeEqual()
+        public void TicketSelectedProperty_CheckPriceWhenNoneOfTicketsSelected_TotalPriceShouldBeZero()
         {
             // Arrange
             getTicketPriceResponseDto.TotalPrice = 0;
@@ -251,7 +252,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
         }
 
         [Fact]
-        public void TicketSelectedProperty_CountTotalPrice_CompareTotalPrices_ShouldBeEqual()
+        public void TicketSelectedProperty_CheckTotalPrice_ShouldBeEqual()
         {
             // Arrange
             ticketsViewModel.Areas = areas;

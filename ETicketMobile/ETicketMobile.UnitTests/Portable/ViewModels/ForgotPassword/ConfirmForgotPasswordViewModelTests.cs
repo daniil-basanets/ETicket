@@ -1,7 +1,6 @@
 ﻿using System;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.ViewModels.ForgotPassword;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
 using Prism.Services;
 using Xunit;
@@ -16,7 +15,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
 
         private readonly Mock<IEmailActivationService> emailActivationServiceMock;
         private readonly Mock<IPageDialogService> dialogServiceMock;
-        private readonly Mock<IHttpService> httpServiceMock;
 
         #endregion
 
@@ -24,7 +22,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         {
             emailActivationServiceMock = new Mock<IEmailActivationService>();
             dialogServiceMock = new Mock<IPageDialogService>();
-            httpServiceMock = new Mock<IHttpService>();
 
             confirmForgotPasswordViewModel = new ConfirmForgotPasswordViewModel(emailActivationServiceMock.Object, null, dialogServiceMock.Object);
         }
@@ -32,19 +29,25 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableEmailActivationService_ShouldThrowException()
         {
+            // Arrange
+            IEmailActivationService emailActivationService = null;
+
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new ConfirmForgotPasswordViewModel(null, null, dialogServiceMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new ConfirmForgotPasswordViewModel(emailActivationService, null, dialogServiceMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableDialogService_ShouldThrowException()
         {
+            // Arrange
+            IPageDialogService dialogService = null;
+
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new ConfirmForgotPasswordViewModel(emailActivationServiceMock.Object, null, null));
+            Assert.Throws<ArgumentNullException>(() => new ConfirmForgotPasswordViewModel(emailActivationServiceMock.Object, null, dialogService));
         }
 
         [Fact]
-        public void OnAppearing_CompareActivationCodeTimers_ShouldBeEqual()
+        public void OnAppearing_CheckActivationCodeTimers_ShouldBeZero()
         {
             // Arrange
             var activationCodeTimer = 0;
@@ -57,16 +60,13 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.ForgotPassword
         }
 
         [Fact]
-        public void OnAppearing_CompareTimersActivated_ShouldBeEqual()
+        public void OnAppearing_CheckTimersActivated_ShouldBefalse()
         {
-            // Arrange
-            var timerActivated = false;
-
             // Act
             confirmForgotPasswordViewModel.OnAppearing();
 
             // Assert
-            Assert.Equal(timerActivated, confirmForgotPasswordViewModel.TimerActivated);
+            Assert.False(confirmForgotPasswordViewModel.TimerActivated);
         }
 
         [Fact]

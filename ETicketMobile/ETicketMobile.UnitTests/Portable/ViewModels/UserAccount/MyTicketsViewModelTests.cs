@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using ETicketMobile.Business.Model.Tickets;
 using ETicketMobile.Business.Services.Interfaces;
 using ETicketMobile.Data.Entities;
-using ETicketMobile.DataAccess.LocalAPI.Interfaces;
 using ETicketMobile.DataAccess.Services.Interfaces;
 using ETicketMobile.UnitTests.Comparers;
 using ETicketMobile.ViewModels.BoughtTickets;
-using ETicketMobile.WebAccess.DTO;
-using ETicketMobile.WebAccess.Network.WebServices.Interfaces;
 using Moq;
 using Prism.Navigation;
 using Prism.Services;
@@ -32,8 +28,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         private readonly Mock<IPageDialogService> dialogServiceMock;
         private readonly Mock<ITicketsService> ticketsServiceMock;
 
-        private readonly IEnumerable<TicketDto> ticketsDto;
-
         private readonly IEnumerable<Ticket> tickets;
         private readonly IEnumerable<Ticket> unusedTickets;
         private readonly IEnumerable<Ticket> activatedTickets;
@@ -48,35 +42,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
             localTokenServiceMock = new Mock<ILocalTokenService>();
             dialogServiceMock = new Mock<IPageDialogService>();
             ticketsServiceMock = new Mock<ITicketsService>();
-
-            ticketsDto = new List<TicketDto>
-            {
-                new TicketDto
-                {
-                    TicketType = "Unused",
-                    ReferenceNumber = "ReferenceNumber1",
-                    TicketAreas = new List<string> { "A" },
-                    CreatedAt = DateTime.Parse("02/01/20 12:00:00")
-                },
-                new TicketDto
-                {
-                    TicketType = "Activated",
-                    ReferenceNumber = "ReferenceNumber2",
-                    TicketAreas = new List<string> { "A", "B" },
-                    CreatedAt = DateTime.Parse("02/02/20 13:00:00"),
-                    ActivatedAt = DateTime.Parse("02/02/20 13:00:00"),
-                    ExpiredAt = DateTime.Parse("02/07/20 14:00:00")
-                },
-                new TicketDto
-                {
-                    TicketType = "Expired",
-                    ReferenceNumber = "ReferenceNumber3",
-                    TicketAreas = new List<string> { "A", "B", "C" },
-                    CreatedAt = DateTime.Parse("02/03/20 14:00:00"),
-                    ActivatedAt = DateTime.Parse("02/03/20 14:00:00"),
-                    ExpiredAt = DateTime.Parse("02/06/20 15:00:00")
-                }
-            };
 
             tickets = new List<Ticket>
             {
@@ -138,29 +103,38 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableLocalTokenServiceService_ShouldThrowException()
         {
+            // Arrange
+            ILocalTokenService localTokenService = null;
+
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new MyTicketsViewModel(null, null, dialogServiceMock.Object, ticketsServiceMock.Object));
+                () => new MyTicketsViewModel(null, localTokenService, dialogServiceMock.Object, ticketsServiceMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableDialogService_ShouldThrowException()
         {
+            // Arrange
+            IPageDialogService dialogService = null;
+
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new MyTicketsViewModel(null, localTokenServiceMock.Object, null, ticketsServiceMock.Object));
+                () => new MyTicketsViewModel(null, localTokenServiceMock.Object, dialogService, ticketsServiceMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableTicketsService_ShouldThrowException()
         {
+            // Arrange
+            ITicketsService ticketsService = null;
+
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new MyTicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, null));
+                () => new MyTicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, ticketsService));
         }
 
         [Fact]
-        public void OnNavigatedTo_CompareUnusedTickets_ShouldBeEqual()
+        public void OnNavigatedTo_CheckUnusedTickets_ShouldBeEqual()
         {
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
@@ -170,7 +144,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_CompareActivatedTickets_ShouldBeEqual()
+        public void OnNavigatedTo_CheckActivatedTickets_ShouldBeEqual()
         {
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);
@@ -180,7 +154,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_CompareExpiredTickets_ShouldBeEqual()
+        public void OnNavigatedTo_CheckExpiredTickets_ShouldBeEqual()
         {
             // Act
             myTicketsViewModel.OnNavigatedTo(navigationParameters);

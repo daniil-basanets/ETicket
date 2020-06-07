@@ -68,28 +68,27 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableTransactionService_ShouldThrowException()
         {
+            // Arrange
+            ITransactionService transactionService = null;
+
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new UserTransactionsViewModel(null, null, dialogServiceMock.Object));
+                () => new UserTransactionsViewModel(transactionService, null, dialogServiceMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableDialogService_ShouldThrowException()
         {
+            // Arrange
+            IPageDialogService dialogService = null;
+
             // Assert
             Assert.Throws<ArgumentNullException>(
-                () => new UserTransactionsViewModel(transactionServiceMock.Object, null, null));
+                () => new UserTransactionsViewModel(transactionServiceMock.Object, null, dialogService));
         }
 
         [Fact]
-        public void OnNavigatedTo_CheckNullableNavigationParameters_ShouldThrowException()
-        {
-            // Assert
-            Assert.Throws<NullReferenceException>(() => userTransactionsViewModel.OnNavigatedTo(null));
-        }
-
-        [Fact]
-        public void OnNavigatedTo_CompareTransactions_ShouldBeEqual()
+        public void OnNavigatedTo_CheckTransactions_ShouldBeEqual()
         {
             // Arrange
             var transactionEqualityComparer = new TransactionEqualityComparer();
