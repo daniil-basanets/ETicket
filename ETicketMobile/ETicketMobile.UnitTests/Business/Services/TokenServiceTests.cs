@@ -30,9 +30,6 @@ namespace ETicketMobile.UnitTests.Business.Services
 
         public TokenServiceTests()
         {
-            localTokenServiceMock = new Mock<ILocalTokenService>();
-            httpServiceMock = new Mock<IHttpService>();
-
             email = "email";
             password = "password";
 
@@ -48,12 +45,14 @@ namespace ETicketMobile.UnitTests.Business.Services
                 RefreshJwtToken = "RefreshToken"
             };
 
+            localTokenServiceMock = new Mock<ILocalTokenService>();
             localTokenServiceMock
                     .Setup(l => l.GetReshreshTokenAsync())
                     .ReturnsAsync(token.RefreshJwtToken);
 
             localTokenServiceMock.Setup(l => l.AddAsync(It.IsAny<Token>()));
 
+            httpServiceMock = new Mock<IHttpService>();
             httpServiceMock
                     .SetupSequence(hs => hs.PostAsync<UserSignInRequestDto, TokenDto>(
                         It.IsAny<Uri>(), It.IsAny<UserSignInRequestDto>(), It.IsAny<string>()))

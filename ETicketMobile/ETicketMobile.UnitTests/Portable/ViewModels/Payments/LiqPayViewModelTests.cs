@@ -38,10 +38,9 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Payments
             expirationDate = "12/34";
             cvv2 = "123";
 
-            ticketsServiceMock = new Mock<ITicketsService>();
-
             buyTicketResponseDto = new BuyTicketResponseDto();
 
+            ticketsServiceMock = new Mock<ITicketsService>();
             ticketsServiceMock
                     .Setup(ts => ts.RequestBuyTicketAsync(It.IsAny<BuyTicketRequestDto>()))
                     .ReturnsAsync(buyTicketResponseDto);

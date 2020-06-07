@@ -23,8 +23,8 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
 
             navigationServiceMock = new Mock<INavigationService>();
-            navigationParametersMock = new Mock<INavigationParameters>();
 
+            navigationParametersMock = new Mock<INavigationParameters>();
             navigationParametersMock.Setup(np => np.Add(It.IsAny<string>(), It.IsAny<object>()));
 
             passwordRegistrationViewModel = new PasswordRegistrationViewModel(navigationServiceMock.Object);

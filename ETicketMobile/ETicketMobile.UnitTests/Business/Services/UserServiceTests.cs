@@ -48,7 +48,6 @@ namespace ETicketMobile.UnitTests.Business.Services
             userSignUpResponseDto = new UserSignUpResponseDto();
 
             httpServiceMock = new Mock<IHttpService>();
-
             httpServiceMock
                     .SetupSequence(hs => hs.PostAsync<CreateNewPasswordRequestDto, CreateNewPasswordResponseDto>(
                         It.IsAny<Uri>(), It.IsAny<CreateNewPasswordRequestDto>(), It.IsAny<string>()))

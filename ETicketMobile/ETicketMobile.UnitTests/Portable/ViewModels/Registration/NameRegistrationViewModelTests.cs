@@ -33,10 +33,10 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
 
             lastName = "lastName";
             lastNameWarning = string.Empty;
-
-            navigationParametersMock = new Mock<INavigationParameters>();
+            
             navigationServiceMock = new Mock<INavigationService>();
 
+            navigationParametersMock = new Mock<INavigationParameters>();
             navigationParametersMock.Setup(np => np.Add(It.IsAny<string>(), It.IsAny<object>()));
 
             nameRegistrationViewModel = new NameRegistrationViewModel(navigationServiceMock.Object);

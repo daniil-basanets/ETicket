@@ -22,14 +22,13 @@ namespace ETicketMobile.UnitTests.DataAccess.Services
 
         public LocalTokenServiceTests()
         {
-            localApiMock = new Mock<ILocalApi>();
-
             token = new Token
             {
                 AcessJwtToken = "AccessToken",
                 RefreshJwtToken = "RefreshToken"
             };
 
+            localApiMock = new Mock<ILocalApi>();
             localApiMock.Setup(l => l.AddAsync(token));
 
             localApiMock
@@ -57,7 +56,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Services
         }
 
         [Fact]
-        public async Task GetAccessTokenAsync_AcessToken_CompareAcessTokens_ShouldBeEqual()
+        public async Task GetAccessToken_CheckAcessTokens_ShouldBeEqual()
         {
             // Act
             var acessToken = await localTokenService.GetAccessTokenAsync();
@@ -67,7 +66,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Services
         }
 
         [Fact]
-        public async Task GetRefreshTokenAsync_RefreshToken_CompareRefreshTokens_ShouldBeEqual()
+        public async Task GetRefreshToken_CheckRefreshTokens_ShouldBeEqual()
         {
             // Act
             var refreshToken = await localTokenService.GetReshreshTokenAsync();

@@ -30,7 +30,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
 
         public UserTransactionsViewModelTests()
         {
-            transactionServiceMock = new Mock<ITransactionService>();
             dialogServiceMock = new Mock<IPageDialogService>();
 
             email = "email";
@@ -58,6 +57,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
                 }
             };
 
+            transactionServiceMock = new Mock<ITransactionService>();
             transactionServiceMock
                     .Setup(ts => ts.GetTransactionsAsync(email))
                     .ReturnsAsync(transactions);

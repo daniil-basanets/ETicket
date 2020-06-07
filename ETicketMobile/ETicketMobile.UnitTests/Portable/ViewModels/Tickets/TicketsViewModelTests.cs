@@ -62,19 +62,15 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
                 }
             };
 
-            tokenServiceMock = new Mock<ITokenService>();
+            accessToken = "AccessToken";
 
+            tokenServiceMock = new Mock<ITokenService>();
             tokenServiceMock.Setup(ts => ts.RefreshTokenAsync());
 
             localTokenServiceMock = new Mock<ILocalTokenService>();
-
-            accessToken = "AccessToken";
-
             localTokenServiceMock
                     .Setup(lts => lts.GetAccessTokenAsync())
                     .ReturnsAsync(accessToken);
-
-            ticketsServiceMock = new Mock<ITicketsService>();
 
             ticketTypes = new List<TicketType>
             {
@@ -87,10 +83,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
                     Amount = 100
                 }
             };
-
-            ticketsServiceMock
-                    .Setup(ts => ts.GetTicketTypesAsync(It.IsAny<string>()))
-                    .ReturnsAsync(ticketTypes);
 
             areasDto = new List<AreaDto>
             {
@@ -113,6 +105,11 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Tickets
                     Description = "Description3"
                 }
             };
+
+            ticketsServiceMock = new Mock<ITicketsService>();
+            ticketsServiceMock
+                    .Setup(ts => ts.GetTicketTypesAsync(It.IsAny<string>()))
+                    .ReturnsAsync(ticketTypes);
 
             ticketsServiceMock
                     .Setup(ts => ts.GetAreasDtoAsync(It.IsAny<string>()))

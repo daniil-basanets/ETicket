@@ -210,12 +210,11 @@ namespace ETicketMobile.UnitTests.Business.Services
             };
 
             tokenServiceMock = new Mock<ITokenService>();
-            httpServiceMock = new Mock<IHttpService>();
-
             tokenServiceMock
                     .Setup(ts => ts.RefreshTokenAsync())
                     .ReturnsAsync(acessToken);
 
+            httpServiceMock = new Mock<IHttpService>();
             httpServiceMock
                     .SetupSequence(hs => hs.GetAsync<IEnumerable<TicketDto>>(It.IsAny<Uri>(), It.IsAny<string>()))
                     .ReturnsAsync(ticketsDto)

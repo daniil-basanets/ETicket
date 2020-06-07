@@ -33,10 +33,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
 
-            navigationParametersMock = new Mock<INavigationParameters>();
             navigationServiceMock = new Mock<INavigationService>();
-
-            userAccountViewModel = new UserAccountViewModel(navigationServiceMock.Object);
 
             userActionEqualityComparer = new UserActionEqualityComparer();
 
@@ -47,7 +44,10 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
                 new UserAction { Name = "My Tickets", View = nameof(MyTicketsView) }
             };
 
+            navigationParametersMock = new Mock<INavigationParameters>();
             navigationParametersMock.Setup(np => np.GetValue<string>(It.IsAny<string>()));
+
+            userAccountViewModel = new UserAccountViewModel(navigationServiceMock.Object);
         }
 
         [Fact]

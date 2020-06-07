@@ -26,9 +26,6 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
 
         public LocalApiTests()
         {
-            tokenRepositoryMock = new Mock<ITokenRepository>();
-            localizationRepositoryMock = new Mock<ILocalizationRepository>();
-
             token = new Token
             {
                 AcessJwtToken = "AccessToken",
@@ -37,8 +34,10 @@ namespace ETicketMobile.UnitTests.DataAccess.LocalAPI
 
             localization = new Localization { Culture = "ru-RU" };
 
+            tokenRepositoryMock = new Mock<ITokenRepository>();
             tokenRepositoryMock.Setup(tr => tr.SaveTokenAsync(It.IsAny<Token>()));
 
+            localizationRepositoryMock = new Mock<ILocalizationRepository>();
             localizationRepositoryMock.Setup(l => l.SaveLocalizationAsync(It.IsAny<Localization>()));
 
             localizationRepositoryMock

@@ -26,17 +26,17 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         public EmailRegistrationViewModelTests()
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
-
-            navigationParametersMock = new Mock<INavigationParameters>();
+            
             navigationServiceMock = new Mock<INavigationService>();
 
             dialogServiceMock = new Mock<IPageDialogService>();
-            userValidatorMock = new Mock<IUserValidator>();
 
+            userValidatorMock = new Mock<IUserValidator>();
             userValidatorMock
                     .Setup(uv => uv.UserExistsAsync(It.IsAny<string>()))
                     .ReturnsAsync(() => true);
 
+            navigationParametersMock = new Mock<INavigationParameters>();
             navigationParametersMock.Setup(np => np.Add(It.IsAny<string>(), It.IsAny<object>()));
 
             nameRegistrationViewModel = new EmailRegistrationViewModel(navigationServiceMock.Object, dialogServiceMock.Object, userValidatorMock.Object);

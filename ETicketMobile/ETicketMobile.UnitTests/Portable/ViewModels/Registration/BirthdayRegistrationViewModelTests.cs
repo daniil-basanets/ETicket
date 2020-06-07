@@ -33,7 +33,6 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
             navigationServiceMock = new Mock<INavigationService>();
 
             emailActivationServiceMock = new Mock<IEmailActivationService>();
-
             emailActivationServiceMock.Setup(eas => eas.RequestActivationCodeAsync(It.IsAny<string>()));
 
             navigationParametersMock = new Mock<INavigationParameters>();

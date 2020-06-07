@@ -27,13 +27,12 @@ namespace ETicketMobile.UnitTests.Business.Services
 
         public EmailActivationServiceTests()
         {
-            httpServiceMock = new Mock<IHttpService>();
-
             email = "email";
             code = "code";
-
+            
             confirmEmailResponseDto = new ConfirmEmailResponseDto();
 
+            httpServiceMock = new Mock<IHttpService>();
             httpServiceMock
                     .SetupSequence(hs => hs.PostAsync<ConfirmEmailRequestDto, ConfirmEmailResponseDto>(
                         It.IsAny<Uri>(), It.IsAny<ConfirmEmailRequestDto>(), It.IsAny<string>()))

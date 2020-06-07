@@ -23,8 +23,6 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
 
         public TokenRepositoryTests()
         {
-            settingsRepositoryMock = new Mock<ISettingsRepository>();
-
             token = new Token
             {
                 AcessJwtToken = "AccessToken",
@@ -34,6 +32,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
             setting = "{\"AcessJwtToken\":\"AccessToken\"," +
                       "\"RefreshJwtToken\":\"RefreshToken\"}";
 
+            settingsRepositoryMock = new Mock<ISettingsRepository>();
             settingsRepositoryMock
                     .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
                     .ReturnsAsync(setting);

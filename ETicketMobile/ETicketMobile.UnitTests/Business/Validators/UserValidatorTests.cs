@@ -24,11 +24,11 @@ namespace ETicketMobile.UnitTests.Business.Validators
 
         public UserValidatorTests()
         {
-            httpServiceMock = new Mock<IHttpService>();
-
             email = "email";
 
             signUpResponseDto = new SignUpResponseDto();
+
+            httpServiceMock = new Mock<IHttpService>();
             httpServiceMock
                 .SetupSequence(hs => hs.PostAsync<SignUpRequestDto, SignUpResponseDto>(
                     It.IsAny<Uri>(), It.IsAny<SignUpRequestDto>(), It.IsAny<string>()))

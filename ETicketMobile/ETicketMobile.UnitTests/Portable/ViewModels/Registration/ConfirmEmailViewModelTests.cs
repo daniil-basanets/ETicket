@@ -38,14 +38,12 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
 
-            dialogServiceMock = new Mock<IPageDialogService>();
-
-            navigationServiceMock = new Mock<INavigationService>();
-
-            emailActivationServiceMock = new Mock<IEmailActivationService>();
-
             code = "code";
 
+            dialogServiceMock = new Mock<IPageDialogService>();
+            navigationServiceMock = new Mock<INavigationService>();            
+
+            emailActivationServiceMock = new Mock<IEmailActivationService>();
             emailActivationServiceMock.Setup(eas => eas.RequestActivationCodeAsync(It.IsAny<string>()));
 
             emailActivationServiceMock
@@ -53,10 +51,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
                     .ReturnsAsync(() => false);
 
             localTokenServiceMock = new Mock<ILocalTokenService>();
-
             localTokenServiceMock.Setup(lts => lts.AddAsync(It.IsAny<Token>()));
-
-            tokenServiceMock = new Mock<ITokenService>();
 
             token = new Token
             {
@@ -64,16 +59,15 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.Registration
                 RefreshJwtToken = "RefreshToken"
             };
 
+            tokenServiceMock = new Mock<ITokenService>();
             tokenServiceMock
                     .Setup(ts => ts.GetTokenAsync(It.IsAny<string>(), It.IsAny<string>()))
                     .ReturnsAsync(token);
 
             userServiceMock = new Mock<IUserService>();
-
             userServiceMock.Setup(us => us.CreateNewUserAsync(It.IsAny<UserSignUpRequestDto>()));
 
             navigationParametersMock = new Mock<INavigationParameters>();
-
             navigationParametersMock.Setup(np => np.Add(It.IsAny<string>(), It.IsAny<object>()));
 
             confirmEmailViewModel = new ConfirmEmailViewModel(emailActivationServiceMock.Object, navigationServiceMock.Object, 

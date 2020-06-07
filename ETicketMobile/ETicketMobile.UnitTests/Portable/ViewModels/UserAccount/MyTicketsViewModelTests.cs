@@ -39,9 +39,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
 
         public MyTicketsViewModelTests()
         {
-            localTokenServiceMock = new Mock<ILocalTokenService>();
             dialogServiceMock = new Mock<IPageDialogService>();
-            ticketsServiceMock = new Mock<ITicketsService>();
 
             tickets = new List<Ticket>
             {
@@ -84,20 +82,22 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
                 RefreshJwtToken = "RefreshToken"
             };
 
+            localTokenServiceMock = new Mock<ILocalTokenService>();
             localTokenServiceMock
                     .Setup(lts => lts.GetAccessTokenAsync())
                     .ReturnsAsync(token.AcessJwtToken);
 
+            ticketsServiceMock = new Mock<ITicketsService>();
             ticketsServiceMock
                     .Setup(ts => ts.GetTicketsAsync(It.IsAny<string>(), It.IsAny<string>()))
                     .ReturnsAsync(tickets);
-
-            myTicketsViewModel = new MyTicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, ticketsServiceMock.Object);
 
             ticketsEqualityComparer = new TicketsEqualityComparer();
 
             var email = "email";
             navigationParameters = new NavigationParameters { { email, "email" } };
+
+            myTicketsViewModel = new MyTicketsViewModel(null, localTokenServiceMock.Object, dialogServiceMock.Object, ticketsServiceMock.Object);
         }
 
         [Fact]

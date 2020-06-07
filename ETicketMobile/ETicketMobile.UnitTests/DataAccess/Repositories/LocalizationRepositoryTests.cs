@@ -21,12 +21,11 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
 
         public LocalizationRepositoryTests()
         {
-            settingsRepositoryMock = new Mock<ISettingsRepository>();
-
             localization = new Localization { Culture = "ru-RU" };
 
             var culture = "{\"Culture\":\"ru-RU\"}";
 
+            settingsRepositoryMock = new Mock<ISettingsRepository>();
             settingsRepositoryMock
                     .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
                     .ReturnsAsync(culture);

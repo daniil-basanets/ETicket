@@ -30,8 +30,6 @@ namespace ETicketMobile.UnitTests.Business.Services
 
         public TransactionServiceTests()
         {
-            httpServiceMock = new Mock<IHttpService>();
-
             email = "email";
 
             transactionsDto = new List<TransactionDto>
@@ -78,6 +76,7 @@ namespace ETicketMobile.UnitTests.Business.Services
                 }
             };
 
+            httpServiceMock = new Mock<IHttpService>();
             httpServiceMock
                     .SetupSequence(hs => hs.PostAsync<GetTransactionsRequestDto, IEnumerable<TransactionDto>>(
                         It.IsAny<Uri>(), It.IsAny<GetTransactionsRequestDto>(), It.IsAny<string>()))
