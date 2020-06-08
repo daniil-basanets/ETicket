@@ -25,9 +25,4 @@
     <ProjectReference Include="..\ETicketDataAccess\ETicket.DataAccess.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ETicket.ApplicationServices\ETicket.ApplicationServices.csproj" />
-    <ProjectReference Include="..\ETicketDataAccess\ETicket.DataAccess.csproj" />
-  </ItemGroup>
-
 </Project>
