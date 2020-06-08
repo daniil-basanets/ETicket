@@ -8,7 +8,8 @@ using System.Text;
 namespace ETicket.DataAccess.Domain.Entities
 {
     public class Route
-    {
+    {        
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int Id { get; set; }
 
