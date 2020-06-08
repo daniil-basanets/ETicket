@@ -5,6 +5,7 @@ using log4net;
 using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
 using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ETicket.WebAPI.Controllers
 {
@@ -78,6 +79,7 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // PUT: api/Carriers/5
+        [Authorize]
         [HttpPut("{id}")]
         [SwaggerOperation(Summary = "Update carrier", Description = "Allowed: Admin")]
         [SwaggerResponse(204, "Returns if everything is correct, without content")]
@@ -109,6 +111,7 @@ namespace ETicket.WebAPI.Controllers
         }
 
         // POST: api/Carriers
+        [Authorize]
         [HttpPost]
         [SwaggerOperation(Summary = "Create carrier", Description = "Allowed: Admin")]
         [SwaggerResponse(201, "Returns if carrier is created")]
