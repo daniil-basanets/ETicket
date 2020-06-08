@@ -29,7 +29,7 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
 
         public PrivilegeServiceTests()
         {
-            var mockRepository = new Mock<PrivilegeRepository>();
+            var mockRepository = new Mock<IRepository<Privilege, int>>();
             var mockUnitOfWork = new Mock<IUnitOfWork>();
 
             fakePrivileges = new List<Privilege>
