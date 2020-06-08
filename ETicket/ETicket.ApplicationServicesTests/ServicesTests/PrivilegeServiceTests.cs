@@ -235,7 +235,6 @@ namespace ETicket.ApplicationServicesTests.ServicesTests
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(3)]
-        [InlineData(4)]
         public void Get_ValidPrivilegeId_NameTheSameAsInFake(int id)
         {
             var expected = fakePrivileges.Single(t => t.Id == id).Name;
