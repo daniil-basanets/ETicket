@@ -9,13 +9,14 @@ namespace ETicket.ApplicationServices.Validation
         public DocumentValidator()
         {
             RuleFor(d => d.DocumentTypeId)
-                .NotEmpty();
+                .NotEmpty().WithMessage("{PropertyName} is empty");
 
             RuleFor(d=>d.Number)
-                .NotEmpty();
+                .NotEmpty().WithMessage("{PropertyName} is empty")
+                .Length(1, 50).WithMessage("Length {TotalLength} of {PropertyName} is invalid");
 
             RuleFor(d => d.IsValid)
-                .NotNull();
+                .NotNull().WithMessage("{PropertyName} is empty");
             
             RuleFor(d => d.ExpirationDate)
                 .Must(BeValidDate).WithMessage("Invalid {PropertyName}");

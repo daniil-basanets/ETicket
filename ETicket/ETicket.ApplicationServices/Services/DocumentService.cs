@@ -10,6 +10,7 @@ using ETicket.ApplicationServices.Services.DataTable.Interfaces;
 using ETicket.ApplicationServices.Services.Interfaces;
 using ETicket.ApplicationServices.Services.PagingServices;
 using ETicket.ApplicationServices.Services.PagingServices.Models;
+using ETicket.ApplicationServices.Validation;
 
 namespace ETicket.ApplicationServices.Services
 {
@@ -18,6 +19,7 @@ namespace ETicket.ApplicationServices.Services
         private readonly IUnitOfWork unitOfWork;
         private readonly MapperService mapper;
         private readonly IDataTableService<Document> dataTableService;
+        private readonly DocumentValidator documentValidator;
 
         public DocumentService(IUnitOfWork uow)
         {
@@ -25,10 +27,16 @@ namespace ETicket.ApplicationServices.Services
             mapper = new MapperService();
             var dataTablePagingService = new DocumentPagingService(unitOfWork);
             dataTableService = new DataTableService<Document>(dataTablePagingService);
+            documentValidator = new DocumentValidator();
         }
 
         public void Create(DocumentDto documentDto)
         {
+            if (!documentValidator.Validate(documentDto).IsValid)
+            {
+                throw new ArgumentException(documentValidator.Validate(documentDto).Errors.First().ErrorMessage);
+            }
+
             var document = mapper.Map<DocumentDto, Document>(documentDto);
             unitOfWork.Documents.Create(document);
             unitOfWork.Save();
@@ -48,8 +56,15 @@ namespace ETicket.ApplicationServices.Services
 
         public void Update(DocumentDto documentDto)
         {
+            if (!documentValidator.Validate(documentDto).IsValid)
+            {
+                throw new ArgumentException(documentValidator.Validate(documentDto).Errors.First().ErrorMessage);
+            }
+
             var document = mapper.Map<DocumentDto, Document>(documentDto);
+
             unitOfWork.Documents.Update(document);
+
             unitOfWork.Save();
         }
 

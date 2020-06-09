@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ETicket.ApplicationServices.DTOs
 {
@@ -8,6 +9,7 @@ namespace ETicket.ApplicationServices.DTOs
         public int Id { get; set; }
 
         [DisplayName("Route number")]
+        [Required]
         public string Number { get; set; }
                 
         public int FirstStationId { get; set; }

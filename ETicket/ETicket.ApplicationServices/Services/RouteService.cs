@@ -1,7 +1,9 @@
 ﻿using ETicket.ApplicationServices.DTOs;
 using ETicket.ApplicationServices.Services.Interfaces;
+using ETicket.ApplicationServices.Validation;
 using ETicket.DataAccess.Domain.Entities;
 using ETicket.DataAccess.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,16 +13,22 @@ namespace ETicket.ApplicationServices.Services
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly MapperService mapper;
+        private readonly RouteValidator routeValidator;
 
         public RouteService(IUnitOfWork uow)
         {
             unitOfWork = uow;
-
+            routeValidator = new RouteValidator();
             mapper = new MapperService();
         }
 
         public void Create(RouteDto routeDto)
         {
+            if (!routeValidator.Validate(routeDto).IsValid)
+            {
+                throw new ArgumentException(routeValidator.Validate(routeDto).Errors.First().ErrorMessage);
+            }
+
             var routeService = mapper.Map<RouteDto, Route>(routeDto);
             unitOfWork.Routes.Create(routeService);
             unitOfWork.Save();
@@ -35,6 +43,11 @@ namespace ETicket.ApplicationServices.Services
 
         public RouteDto GetRouteById(int id)
         {
+            if (id <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "id should be greater than zero");
+            }
+
             var route = unitOfWork.Routes.Get(id);
 
             return mapper.Map<Route, RouteDto>(route);
@@ -42,6 +55,11 @@ namespace ETicket.ApplicationServices.Services
 
         public void Update(RouteDto routeDto)
         {
+            if (!routeValidator.Validate(routeDto).IsValid)
+            {
+                throw new ArgumentException(routeValidator.Validate(routeDto).Errors.First().ErrorMessage);
+            }
+
             Route routeToUpdate = unitOfWork.Routes.Get(routeDto.Id);
 
             mapper.Map(routeDto, routeToUpdate);
@@ -62,6 +80,11 @@ namespace ETicket.ApplicationServices.Services
 
         public void Delete(int id)
         {
+            if (id <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(id), "id should be greater than zero");
+            }
+
             unitOfWork.Routes.Delete(id);
             unitOfWork.Save();
         }
