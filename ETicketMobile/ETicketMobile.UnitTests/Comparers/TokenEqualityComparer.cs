@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using ETicketMobile.Data.Entities;
 
-namespace ETicketMobile.UnitTests.DataAccess.Comparers
+namespace ETicketMobile.UnitTests.Comparers
 {
     public class TokenEqualityComparer : EqualityComparer<Token>
     {

@@ -35,7 +35,7 @@ namespace ETicketMobile.Business.Validators
 
         public static bool IsPasswordShort(string password)
         {
-            return password.Length > PasswordMinLength;
+            return password.Length < PasswordMinLength;
         }
 
         public static bool IsPasswordLong(string password)

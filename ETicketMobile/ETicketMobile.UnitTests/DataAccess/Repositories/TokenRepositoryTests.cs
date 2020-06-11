@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.Interfaces;
 using ETicketMobile.DataAccess.Repositories;
-using ETicketMobile.UnitTests.DataAccess.Comparers;
+using ETicketMobile.UnitTests.Comparers;
 using Moq;
 using Xunit;
 
@@ -23,8 +23,6 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
 
         public TokenRepositoryTests()
         {
-            settingsRepositoryMock = new Mock<ISettingsRepository>();
-
             token = new Token
             {
                 AcessJwtToken = "AccessToken",
@@ -34,6 +32,7 @@ namespace ETicketMobile.UnitTests.DataAccess.Repositories
             setting = "{\"AcessJwtToken\":\"AccessToken\"," +
                       "\"RefreshJwtToken\":\"RefreshToken\"}";
 
+            settingsRepositoryMock = new Mock<ISettingsRepository>();
             settingsRepositoryMock
                     .Setup(sr => sr.GetByNameAsync(It.IsAny<string>()))
                     .ReturnsAsync(setting);

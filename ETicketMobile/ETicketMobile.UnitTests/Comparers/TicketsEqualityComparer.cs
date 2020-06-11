@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using ETicketMobile.Business.Model.Tickets;
 
-namespace ETicketMobile.UnitTests.Portable.Comparer
+namespace ETicketMobile.UnitTests.Comparers
 {
     public class TicketsEqualityComparer : EqualityComparer<Ticket>
     {

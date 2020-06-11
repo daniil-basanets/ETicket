@@ -32,19 +32,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData("")]
         [InlineData("1")]
         [InlineData("1234567")]
-        public void CheckIsPasswordShort_ReturnsTrue(string password)
-        {
-            // Act
-            var actualValue = Validator.IsPasswordShort(password);
-
-            // Assert
-            Assert.False(actualValue);
-        }
-
-        [Theory]
-        [InlineData("asdasdasdasdasdasdasdasddasdasdasdasasdasdasd" +
-                    "asdasdasdasdasddasdasdasdasasdasdasdasdasdasdasdasdaasss")]
-        public void CheckIsPasswordShort_ReturnsFalse(string password)
+        public void CheckIfPasswordShort_ReturnsTrue(string password)
         {
             // Act
             var actualValue = Validator.IsPasswordShort(password);
@@ -53,11 +41,27 @@ namespace ETicketMobile.UnitTests.Business.Validators
             Assert.True(actualValue);
         }
 
-        [Theory]
-        [InlineData("asdasdasdasdasdasdasdasddasdasdasdasasdasdasd" +
-                    "asdasdasdasdasddasdasdasdasasdasdasdasdasdasdasdasdaasss")]
-        public void CheckIsPasswordLong_ReturnsTrue(string password)
+        [Fact]
+        public void CheckIfPasswordShort_ReturnsFalse()
         {
+            // Arrange
+            var password = "asdasdasdasdasdasdasdasddasdasdasdasasdasdasd123abc" +
+                           "asdasdasdasdasddasdasdasdasasdasdasdasdasdasdassass";
+
+            // Act
+            var actualValue = Validator.IsPasswordShort(password);
+
+            // Assert
+            Assert.False(actualValue);
+        }
+
+        [Fact]
+        public void CheckIfPasswordLong_ReturnsTrue()
+        {
+            // Arrange
+            var password = "asdasdasdasdasdasdasdasddasdasdasdasasdasdasd123abc" +
+                           "asdasdasdasdasddasdasdasdasasdasdasdasdasdasdassass";
+
             // Act
             var actualValue = Validator.IsPasswordLong(password);
 
@@ -69,7 +73,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData("")]
         [InlineData("1")]
         [InlineData("1234567")]
-        public void CheckIsPasswordLong_ReturnsFalse(string password)
+        public void CheckIfPasswordLong_ReturnsFalse(string password)
         {
             // Act
             var actualValue = Validator.IsPasswordLong(password);
@@ -81,7 +85,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [Theory]
         [InlineData("123123")]
         [InlineData("12311231231223")]
-        public void CheckIsPasswordWeak_ReturnsTrue(string password)
+        public void CheckIfPasswordWeak_ReturnsTrue(string password)
         {
             // Act
             var actualValue = Validator.IsPasswordWeak(password);
@@ -94,7 +98,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData("a")]
         [InlineData("abc")]
         [InlineData("qwerty12")]
-        public void CheckIsPasswordWeak_ReturnsFalse(string password)
+        public void CheckIfPasswordWeak_ReturnsFalse(string password)
         {
             // Act
             var actualValue = Validator.IsPasswordWeak(password);
@@ -106,7 +110,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [Theory]
         [InlineData("qwerty12", "qwerty12")]
         [InlineData("abcdefgh", "abcdefgh")]
-        public void CheckPasswordsMatched_ReturnsTrue(string password, string confirmPassword)
+        public void CheckIfPasswordsMatched_ReturnsTrue(string password, string confirmPassword)
         {
             // Act
             var actualValue = Validator.PasswordsMatched(password, confirmPassword);
@@ -118,7 +122,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [Theory]
         [InlineData("qwerty12", "qwerty21")]
         [InlineData("1234567A", "1234567a")]
-        public void CheckPasswordsMatched_ReturnsFalse(string password, string confirmPassword)
+        public void CheckIfPasswordsMatched_ReturnsFalse(string password, string confirmPassword)
         {
             // Act
             var actualValue = Validator.PasswordsMatched(password, confirmPassword);
@@ -206,7 +210,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [Theory]
         [InlineData("Mo")]
         [InlineData("Wolfe­schlegel­stein­haus")]
-        public void CheckIsNameValid_ReturnsTrue(string name)
+        public void CheckIfNameValid_ReturnsTrue(string name)
         {
             // Act
             var actualValue = Validator.IsNameValid(name);
@@ -220,7 +224,7 @@ namespace ETicketMobile.UnitTests.Business.Validators
         [InlineData("")]
         [InlineData("a")]
         [InlineData("Wolfe­schlegel­stein­hausen­berger­dorff")]
-        public void CheckIsNameValid_ReturnsFalse(string name)
+        public void CheckIfNameValid_ReturnsFalse(string name)
         {
             // Act
             var actualValue = Validator.IsNameValid(name);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 using ETicketMobile.Business.Model.UserAccount;
-using ETicketMobile.UnitTests.Portable.Comparer;
+using ETicketMobile.UnitTests.Comparers;
 using ETicketMobile.ViewModels.UserAccount;
 using ETicketMobile.Views.Tickets;
 using ETicketMobile.Views.UserAccount;
@@ -33,10 +33,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
 
-            navigationParametersMock = new Mock<INavigationParameters>();
             navigationServiceMock = new Mock<INavigationService>();
-
-            userAccountViewModel = new UserAccountViewModel(navigationServiceMock.Object);
 
             userActionEqualityComparer = new UserActionEqualityComparer();
 
@@ -47,11 +44,14 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
                 new UserAction { Name = "My Tickets", View = nameof(MyTicketsView) }
             };
 
+            navigationParametersMock = new Mock<INavigationParameters>();
             navigationParametersMock.Setup(np => np.GetValue<string>(It.IsAny<string>()));
+
+            userAccountViewModel = new UserAccountViewModel(navigationServiceMock.Object);
         }
 
         [Fact]
-        public void OnAppearing_CompareUserActions_ShouldBeEqual()
+        public void OnAppearing_CheckUserActions_ShouldBeEqual()
         {
             // Act
             userAccountViewModel.OnAppearing();
@@ -61,7 +61,7 @@ namespace ETicketMobile.UnitTests.Portable.ViewModels.UserAccount
         }
 
         [Fact]
-        public void OnNavigatedTo_CheckIfIsValid__CheckIfEmptyEmail_ReturnFalse()
+        public void OnNavigatedTo_ValidThatEmptyEmail()
         {
             // Act
             userAccountViewModel.OnNavigatedTo(navigationParametersMock.Object);

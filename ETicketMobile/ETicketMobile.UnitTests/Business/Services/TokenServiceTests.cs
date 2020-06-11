@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ETicketMobile.Business.Exceptions;
 using ETicketMobile.Business.Services;
 using ETicketMobile.Data.Entities;
 using ETicketMobile.DataAccess.Services.Interfaces;
@@ -29,9 +30,6 @@ namespace ETicketMobile.UnitTests.Business.Services
 
         public TokenServiceTests()
         {
-            localTokenServiceMock = new Mock<ILocalTokenService>();
-            httpServiceMock = new Mock<IHttpService>();
-
             email = "email";
             password = "password";
 
@@ -47,25 +45,25 @@ namespace ETicketMobile.UnitTests.Business.Services
                 RefreshJwtToken = "RefreshToken"
             };
 
-            localTokenServiceMock
-                    .Setup(l => l.GetAccessTokenAsync())
-                    .ReturnsAsync(token.AcessJwtToken);
-
+            localTokenServiceMock = new Mock<ILocalTokenService>();
             localTokenServiceMock
                     .Setup(l => l.GetReshreshTokenAsync())
                     .ReturnsAsync(token.RefreshJwtToken);
 
             localTokenServiceMock.Setup(l => l.AddAsync(It.IsAny<Token>()));
 
+            httpServiceMock = new Mock<IHttpService>();
             httpServiceMock
-                .Setup(hs => hs.PostAsync<string, TokenDto>(
-                    It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(tokenDto);
+                    .SetupSequence(hs => hs.PostAsync<UserSignInRequestDto, TokenDto>(
+                        It.IsAny<Uri>(), It.IsAny<UserSignInRequestDto>(), It.IsAny<string>()))
+                    .ReturnsAsync(tokenDto)
+                    .ThrowsAsync(new System.Net.WebException());
 
             httpServiceMock
-                .Setup(hs => hs.PostAsync<UserSignInRequestDto, TokenDto>(
-                    It.IsAny<Uri>(), It.IsAny<UserSignInRequestDto>(), It.IsAny<string>()))
-                .ReturnsAsync(tokenDto);
+                    .SetupSequence(hs => hs.PostAsync<string, TokenDto>(
+                        It.IsAny<Uri>(), It.IsAny<string>(), It.IsAny<string>()))
+                    .ReturnsAsync(tokenDto)
+                    .ThrowsAsync(new System.Net.WebException());
 
             tokenService = new TokenService(localTokenServiceMock.Object, httpServiceMock.Object);
         }
@@ -73,19 +71,25 @@ namespace ETicketMobile.UnitTests.Business.Services
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableLocalTokenService_ShouldThrowException()
         {
+            // Arrange
+            ILocalTokenService localTokenService = null;
+
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new TokenService(null, httpServiceMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new TokenService(localTokenService, httpServiceMock.Object));
         }
 
         [Fact]
         public void CheckConstructorWithParameters_CheckNullableHttpService_ShouldThrowException()
         {
+            // Arrange
+            IHttpService httpService = null;
+
             // Assert
-            Assert.Throws<ArgumentNullException>(() => new TokenService(localTokenServiceMock.Object, null));
+            Assert.Throws<ArgumentNullException>(() => new TokenService(localTokenServiceMock.Object, httpService));
         }
 
         [Fact]
-        public async Task GetTokenAsync_AccessToken_CompareAccessesTokens_ShouldBeEqual()
+        public async Task GetToken_CheckAccessTokens_ShouldBeEqual()
         {
             // Act
             var token = await tokenService.GetTokenAsync(email, password);
@@ -95,13 +99,43 @@ namespace ETicketMobile.UnitTests.Business.Services
         }
 
         [Fact]
-        public async Task GetTokenAsync_RefreshToken_CompareRefreshesTokens_ShouldBeEqual()
+        public async Task GetToken_ShouldThrowException()
         {
             // Act
-            var token = await tokenService.GetTokenAsync(email, password);
+            await tokenService.GetTokenAsync(email, password);
 
             // Assert
-            Assert.Equal(tokenDto.RefreshJwtToken, token.RefreshJwtToken);
+            await Assert.ThrowsAsync<WebException>(() => tokenService.GetTokenAsync(email, password));
+        }
+
+        [Fact]
+        public async Task GetToken_CheckRefreshTokens_ShouldBeEqual()
+        {
+            // Act
+            var accessToken = await tokenService.RefreshTokenAsync();
+
+            // Assert
+            Assert.Equal(tokenDto.AcessJwtToken, accessToken);
+        }
+
+        [Fact]
+        public async Task GetToken_CheckRefreshToken_ShouldThrowException()
+        {
+            // Act
+            await tokenService.RefreshTokenAsync();
+
+            // Assert
+            await Assert.ThrowsAsync<WebException>(() => tokenService.RefreshTokenAsync());
+        }
+
+        [Fact]
+        public async Task GetToken_CheckRefreshToken_VerifyAddToken()
+        {
+            // Act
+            await tokenService.RefreshTokenAsync();
+
+            // Assert
+            localTokenServiceMock.Verify(lts => lts.AddAsync(It.IsAny<Token>()));
         }
     }
 }

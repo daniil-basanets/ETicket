@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using ETicketMobile.Business.Model.Transactions;
 
-namespace ETicketMobile.UnitTests.Portable.Comparer
+namespace ETicketMobile.UnitTests.Comparers
 {
     public class TransactionEqualityComparer : EqualityComparer<Transaction>
     {

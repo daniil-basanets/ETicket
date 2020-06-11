@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using ETicketMobile.ViewModels.Tickets;
 
-namespace ETicketMobile.UnitTests.Portable.Comparer
+namespace ETicketMobile.UnitTests.Comparers
 {
     public class AreasViewModelEqualityComparer : EqualityComparer<AreaViewModel>
     {
